@@ -36,3 +36,14 @@ get_signal = get_signal_calc(adapted_aroon)
 df = get_signal(fake_market_data_4_years)
 ```
 
+### Usage with finmarketpy
+
+```python
+from infertrade.example_one.algos.external.finmarketpy import finmarketpy_adapter
+from infertrade.example_one.base import get_signal_calc
+from infertrade.data import fake_market_data_4_years
+
+adapted_ATR = finmarketpy_adapter("ATR", **{"atr_period": 10})
+get_signal = get_signal_calc(adapted_ATR)
+df = get_signal(fake_market_data_4_years)
+```

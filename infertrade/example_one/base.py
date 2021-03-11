@@ -30,4 +30,3 @@ def _get_portfolio(df: pd.DataFrame):
     # Not implemented yet
     df["portfolio"] = 1.
     return df
-
