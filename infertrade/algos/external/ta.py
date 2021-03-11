@@ -12,7 +12,7 @@ from ta.utils import IndicatorMixin
 from typing_extensions import Type
 
 
-def ta_adapter(indicator_mixin: Type[IndicatorMixin], method: str, **kwargs):
+def ta_adaptor(indicator_mixin: Type[IndicatorMixin], method: str, **kwargs):
     def func(df):
         column_strings = _get_required_columns(indicator_mixin)
         column_inputs = {column_name: df[column_name] for column_name in column_strings}

@@ -1,7 +1,5 @@
 """
-__init__.py
 
-Details about __init__.py
 
 © Copyright 2021 InferStat All or parts of this software may not be distributed, copied or re-used without the express,
  written permission of either the CEO of InferStat or an authorised representative.
@@ -9,3 +7,6 @@ Details about __init__.py
 Created by: Joshua Mason
 Created date: 11/03/2021
 """
+
+from infertrade.algos.external.ta import ta_adaptor
+from infertrade.algos.external.finmarketpy import finmarketpy_adapter
