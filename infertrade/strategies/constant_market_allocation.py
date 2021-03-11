@@ -14,7 +14,7 @@ def fifty_fifty(dataframe):
     return dataframe
 
 
-def constant_allocation_size(dataframe: pd.DataFrame, parameter_dict: dict) -> pd.DataFrame:
+def constant_market_allocation(dataframe: pd.DataFrame, parameter_dict: dict) -> pd.DataFrame:
     """
     Returns a constant allocation, controlled by the constant_position_size parameter.
 
