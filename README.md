@@ -12,7 +12,7 @@ The project is licenced under the [Apache 2.0](https://choosealicense.com/licens
 
 ## Quickstart
 
-Please note this requires Python 3.7 or higher due to dependent libraries used.
+Please note the project requires Python 3.7 or higher due to dependent libraries used.
 
 
 ### My First InferTrade Rule
