@@ -1,8 +1,10 @@
-# Functinal?
+# Functional implementation
 
 ## Quickstart
 
 ### Basic usage with community functions
+
+"Community" functions are those declared in this repository, not retrieved from an external package. They are all exposed at `infertrade.example_one.algos.community`. 
 
 ```python
 from infertrade.example_one.algos.community import cps
@@ -34,6 +36,8 @@ params = {"window": 100}
 adapted_aroon = ta_adapter(AroonIndicator, "aroon_down", **params)
 get_signal = get_signal_calc(adapted_aroon)
 df = get_signal(fake_market_data_4_years)
+
+# TODO add implementation where get_position converts signal to position calculation based on regressions automatically?
 ```
 
 ### Usage with finmarketpy
