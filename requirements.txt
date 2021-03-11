@@ -1,0 +1,4 @@
+pandas==1.1.5
+numpy==1.19.5
+ta==0.7.0
+# backtrader don't think we can use as it is GPL license?

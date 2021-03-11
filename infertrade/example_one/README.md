@@ -1,0 +1,38 @@
+# Functinal?
+
+## Quickstart
+
+### Basic usage with community functions
+
+```python
+from infertrade.example_one.algos.community import cps
+from infertrade.example_one.base import get_portfolio_calc
+from infertrade.data import fake_market_data_4_years
+
+portfolio_calculation = get_portfolio_calc(cps)
+df = portfolio_calculation(fake_market_data_4_years)
+```
+
+### Usage with TA
+
+```python
+from infertrade.example_one.algos.external import ta_adapter
+from infertrade.example_one.base import get_signal_calc
+from ta.trend import AroonIndicator
+from infertrade.data import fake_market_data_4_years
+
+adapted_aroon = ta_adapter(AroonIndicator, "aroon_up")
+get_signal = get_signal_calc(adapted_aroon)
+df = get_signal(fake_market_data_4_years)
+
+adapted_aroon = ta_adapter(AroonIndicator, "aroon_down", window=1)
+get_signal = get_signal_calc(adapted_aroon)
+df = get_signal(fake_market_data_4_years)
+
+params = {"window": 100}
+
+adapted_aroon = ta_adapter(AroonIndicator, "aroon_down", **params)
+get_signal = get_signal_calc(adapted_aroon)
+df = get_signal(fake_market_data_4_years)
+```
+
