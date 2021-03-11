@@ -7,6 +7,7 @@ Creation date: 11th March 2021
 
 import pandas as pd
 import matplotlib.pyplot as plt
+from infertrade.utilities.performance import calculate_portfolio_performance_python
 
 
 def my_first_infertrade_rule(df: pd.DataFrame) -> pd.DataFrame:
@@ -24,12 +25,13 @@ def buy_on_small_rises(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+# Import Gold prices and apply the buy_on_small_rises algorithm and plot.
 my_dataframe = pd.read_csv("LBMA_Gold.csv")
-print(my_dataframe)
-assert "LBMA/GOLD usd (pm)" in my_dataframe.columns
 my_dataframe_without_allocations = my_dataframe.rename(columns={"LBMA/GOLD usd (pm)": "price", "Date": "date"})
-print(my_dataframe_without_allocations)
 my_dataframe_with_allocations = buy_on_small_rises(my_dataframe_without_allocations)
-my_dataframe_with_allocations.plot(x="date", y="allocation")
+
+my_dataframe_with_returns = calculate_portfolio_performance_python(my_dataframe_with_allocations)
+
+my_dataframe_with_returns.plot(x="date", y=["allocation","portfolio returns"])
 plt.show()
 
