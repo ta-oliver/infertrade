@@ -32,6 +32,8 @@ my_dataframe_with_allocations.plot(["close"], ["allocation"])
 plt.show()
 ```
 
+![image](https://user-images.githubusercontent.com/29981664/110859161-ed2ef800-82b2-11eb-8bcb-cfdc3596b880.png)
+
 
 ### Basic usage with community functions
 
