@@ -1,12 +1,37 @@
+<p align="center">
+  <img src="https://www.infertrade.com/static/media/InferTradeLogo.5c2cc437.svg" alt="Zappa Rocks!"/>
+</p>
+
 # infertrade
 
-Please note this requires python3.7 or higher due to dependent libraries used.
-
-Open source trading and investment strategy library designed for accessibility and compatibility
+InferTrade is an open source trading and investment strategy library designed for accessibility and compatibility
 
 The project is in an early stage - readme will be updated with more information soon.
 
+The project is licenced under the [Apache 2.0](https://choosealicense.com/licenses/apache-2.0/).  
+
 ## Quickstart
+
+Please note this requires Python 3.7 or higher due to dependent libraries used.
+
+
+### My First InferTrade Rule
+
+```
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def my_first_infertrade_rule(df: pd.DataFrame) -> pd.DataFrame:
+    df["allocation"] = 0.0
+    df["allocation"][df.pct_change() > 0.02] = 0.5     
+    return df
+    
+my_dataframe = pd.read_csv("example_market_data.csv")    
+my_dataframe_with_allocations = my_first_infertrade_rule(my_dataframe)
+my_dataframe_with_allocations.plot(["close"], ["allocation"])
+plt.show()
+```
+
 
 ### Basic usage with community functions
 
