@@ -123,21 +123,16 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
         pass
 
     def fit(self, X, y = None):
-
         self.fitted_features_and_target_ = None
         return self
 
     def transform(self, X, y = None):
         X_ = deepcopy(X)
         regression_period = 120
-        kelly_fraction = 1.0
-        volatility = 0.01
         forecast_period = min(regression_period, len(X_))
         prediction_indices = self._get_model_prediction_indices(len(X_), regression_period, forecast_period)
-        historical_signal_levels = X_["signal"]
         self._fit_features_matrix_target_array(X_)
         historical_signal_levels, historical_price_moves = self._get_features_matrix_target_array(X_)
-
 
         for ii_day in range(len(prediction_indices)):
             model_idx = prediction_indices[ii_day]["model_idx"]
@@ -150,8 +145,6 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
             rolling_regression_model = LinearRegression().fit(
                 regression_period_signal, regression_period_price_change
             )
-            # self.coef_list.append(rolling_regression_model.coef_)
-
             # Predictions
             current_research = historical_signal_levels[prediction_idx, :]
             forecast_price_change = rolling_regression_model.predict(current_research)
@@ -160,19 +153,6 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
             X_.loc[prediction_idx, "forecast_price_change"] = forecast_price_change
 
         X_["forecast_price_change"].shift(-1)
-        # Shift position series  (QUESTION - does not appear to shift?)
-        # X_["position"] = self._shift_position_series(price_research_series)
-
-        # Calculate price forecast for last research value
-        # try:
-        #     last_research = self._get_last_input_values(price_research_series)
-        #     last_forecast_price = rolling_regression_model.predict(last_research)  # TODO - only true for research.
-        #     last_position = self.kelly_fraction * (last_forecast_price / volatility ** 2)
-        #     price_research_series.iloc[-1, price_research_series.columns.get_loc("position")] = last_position
-        # except:  # TODO - bare except needs specific error types listed.
-        #     price_research_series.iloc[-1, price_research_series.columns.get_loc("position")] = 0.0
-
-        # complicated combination regression?
         return X_
 
     def _get_features_matrix_transformer(self):
@@ -293,7 +273,6 @@ class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
         kelly_recommended_optimum = X["forecast_price_change"] / volatility ** 2
         rule_recommended_allocation = kelly_fraction * kelly_recommended_optimum
         X_["position"] = rule_recommended_allocation
-        # use kelly criterion to estimate positions from predicted prices
         return X_
 
 
