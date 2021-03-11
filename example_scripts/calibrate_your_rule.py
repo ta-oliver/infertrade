@@ -1,9 +1,15 @@
 """
-Example calculations of returns using InferTrade functions.
+Example calibration to market data.
 
 Author: Thomas Oliver
 Creation date: 11th March 2021
 """
+
+
+from infertrade.algos.community import scikit_position_factory
+
+
+
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -25,6 +31,10 @@ def buy_on_small_rises(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+scikit_position_factory(buy_on_small_rises)
+
+
+
 # Import Gold prices and apply the buy_on_small_rises algorithm and plot.
 my_dataframe = pd.read_csv("LBMA_Gold.csv")
 my_dataframe_without_allocations = my_dataframe.rename(columns={"LBMA/GOLD usd (pm)": "price", "Date": "date"})
@@ -34,4 +44,3 @@ my_dataframe_with_returns = calculate_portfolio_performance_python(my_dataframe_
 
 my_dataframe_with_returns.plot(x="date", y=["allocation", "portfolio returns"])
 plt.show()
-
