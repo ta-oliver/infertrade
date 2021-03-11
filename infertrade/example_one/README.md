@@ -6,11 +6,11 @@
 
 ```python
 from infertrade.example_one.algos.community import cps
-from infertrade.example_one.base import get_portfolio_calc
+from infertrade.example_one.base import get_positions_calc
 from infertrade.data import fake_market_data_4_years
 
-portfolio_calculation = get_portfolio_calc(cps)
-df = portfolio_calculation(fake_market_data_4_years)
+position_calculation = get_positions_calc(cps)
+df_with_positions = position_calculation(fake_market_data_4_years)
 ```
 
 ### Usage with TA
