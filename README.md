@@ -8,7 +8,7 @@ InferTrade is an open source trading and investment strategy library designed fo
 
 The project is in an early stage - readme will be updated with more information soon.
 
-The project is licenced under the [Apache 2.0](https://choosealicense.com/licenses/apache-2.0/).  
+The project is licenced under the [Apache 2.0](https://choosealicense.com/licenses/apache-2.0/) licence.  
 
 ## Quickstart
 
