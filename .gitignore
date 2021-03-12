@@ -131,3 +131,5 @@ dmypy.json
 *.iml
 
 *.xml
+
+get-pip.py
