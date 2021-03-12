@@ -60,27 +60,5 @@ export_positions = {
 }
 
 
-class PositionTransformerMixin(TransformerMixin, BaseEstimator):
-
-    @property
-    @abstractmethod
-    def position_function(self):
-        raise NotImplementedError
-
-    def __init__(self, func_params: dict = None):
-        if not func_params:
-            func_params = {}
-        self.func_params = func_params
-
-    def fit(self, X, y=None):
-        return self
-
-    def transform(self, X, y = None):
-        X_ = deepcopy(X)
-        return self.__class__.position_function(X_, **self.func_params)
-
-
-# creates wrapper classes to fit sci-kit learn interface
 def scikit_position_factory(position_function):
-    PositionClass = type('PositionClass', (PositionTransformerMixin,), {"position_function": position_function,})
-    return PositionClass()
+    return FunctionTransformer(position_function)

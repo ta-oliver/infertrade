@@ -4,11 +4,8 @@ functions used to compute signals
 Created by: Joshua Mason
 Created date: 11/03/2021
 """
-from abc import abstractmethod
-from copy import deepcopy
-
 import pandas as pd
-from sklearn.base import TransformerMixin, BaseEstimator
+from sklearn.preprocessing import FunctionTransformer
 
 from infertrade.data import fake_market_data_4_years
 
@@ -29,30 +26,9 @@ def high_low_diff_scaled(df: pd.DataFrame, amplitude: float = 1):
     return df
 
 
-class SignalTransformerMixin(TransformerMixin, BaseEstimator):
-
-    @property
-    @abstractmethod
-    def signal_function(self):
-        raise NotImplementedError
-
-    def __init__(self):
-        pass
-
-    def fit(self, X, y = None):
-        return self
-
-    def transform(self, X, y = None):
-        if not y:
-            y = {}
-        X_ = deepcopy(X)
-        return self.__class__.signal_function(X_, **y)
-
-
 # creates wrapper classes to fit sci-kit learn interface
 def scikit_signal_factory(signal_function):
-    SignalClass = type('SignalClass', (SignalTransformerMixin,), {"signal_function": signal_function})
-    return SignalClass()
+    return FunctionTransformer(signal_function)
 
 
 export_signals = {
