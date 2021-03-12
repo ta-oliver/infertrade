@@ -326,7 +326,7 @@ def _get_percentage_bid_offer(df_with_positions, day, daily_spread_percent_overr
         daily_spread_percentage = daily_spread_percent_override
     else:
         try:
-            daily_spread_percentage = df_with_positions[SeriesEnum.BID_OFFER.value][day]  # TODO - is percentage?
+            daily_spread_percentage = df_with_positions["bid_offer_spread"][day]  # TODO - is percentage?
         except (KeyError, IndexError):
             daily_spread_percentage = 0.0
     return daily_spread_percentage
