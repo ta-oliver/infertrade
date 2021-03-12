@@ -152,7 +152,10 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
             # Apply the calculated allocation to the dataframe.
             X_.loc[prediction_idx, "forecast_price_change"] = forecast_price_change
 
-        X_["forecast_price_change"].shift(-1)
+        if len(prediction_indices) == 0:
+            X_["forecast_price_change"] = 0
+        else:
+            X_["forecast_price_change"].shift(-1)
         return X_
 
     def _get_features_matrix_transformer(self):

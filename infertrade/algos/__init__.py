@@ -7,6 +7,11 @@
 Created by: Joshua Mason
 Created date: 11/03/2021
 """
-
-from infertrade.algos.external.ta import ta_adaptor
+from infertrade.algos.community import community_export
+from infertrade.algos.external.ta import ta_adaptor, ta_export
 from infertrade.algos.external.finmarketpy import finmarketpy_adapter
+
+export_functions = {
+    "infertrade": community_export,
+    "ta": ta_export,
+}

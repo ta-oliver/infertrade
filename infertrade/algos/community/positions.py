@@ -9,17 +9,7 @@ from copy import deepcopy
 
 import pandas as pd
 from sklearn.base import TransformerMixin, BaseEstimator
-
-
-def cps(df: pd.DataFrame, cps: float = 1.0):
-    """
-    Returns a constant allocation, controlled by the constant_position_size parameter.
-
-    parameters:
-    constant_allocation_size: determines allocation size.
-    """
-    df["position"] = cps
-    return df
+from sklearn.preprocessing import FunctionTransformer
 
 
 def fifty_fifty(dataframe):
@@ -28,15 +18,46 @@ def fifty_fifty(dataframe):
     return dataframe
 
 
-def constant_allocation_size(dataframe: pd.DataFrame, parameter_dict: dict) -> pd.DataFrame:
+def constant_allocation_size(dataframe: pd.DataFrame, constant_allocation_size: float = 1.0) -> pd.DataFrame:
     """
     Returns a constant allocation, controlled by the constant_position_size parameter.
 
     parameters:
     constant_allocation_size: determines allocation size.
     """
-    dataframe["position"] = parameter_dict["constant_allocation_size"]
+    dataframe["position"] = constant_allocation_size
     return dataframe
+
+
+def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: float = 0.0) -> pd.DataFrame:
+    """
+    Returns an allocation based on the difference in high and low values. This has been added as an
+    example with multiple series and parameters
+
+    parameters:
+    scale: determines amplitude factor.
+    """
+    dataframe["position"] = ((dataframe["high"] - dataframe["low"]) * scale + constant)
+    return dataframe
+
+
+export_positions = {
+    "fifty_fifty": {
+        "function": fifty_fifty,
+        "parameters": {},
+        "series": []
+    },
+    "constant_allocation_size": {
+        "function": constant_allocation_size,
+        "parameters": {"constant_allocation_size": 1.0},
+        "series": []
+    },
+    "high_low_difference": {
+        "function": high_low_difference,
+        "parameters":  {"scale": 1.0, "constant": 0.},
+        "series": ["high", "low"]
+    },
+}
 
 
 class PositionTransformerMixin(TransformerMixin, BaseEstimator):
@@ -46,18 +67,20 @@ class PositionTransformerMixin(TransformerMixin, BaseEstimator):
     def position_function(self):
         raise NotImplementedError
 
-    def __init__(self):
-        pass
+    def __init__(self, func_params: dict = None):
+        if not func_params:
+            func_params = {}
+        self.func_params = func_params
 
     def fit(self, X, y=None):
         return self
 
-    def transform(self, X, y=None):
+    def transform(self, X, y = None):
         X_ = deepcopy(X)
-        return self.__class__.position_function(X_)
+        return self.__class__.position_function(X_, **self.func_params)
 
 
 # creates wrapper classes to fit sci-kit learn interface
 def scikit_position_factory(position_function):
-    PositionClass = type('PositionClass', (PositionTransformerMixin,), {"position_function": position_function})
+    PositionClass = type('PositionClass', (PositionTransformerMixin,), {"position_function": position_function,})
     return PositionClass()

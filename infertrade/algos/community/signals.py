@@ -15,8 +15,17 @@ from infertrade.data import fake_market_data_4_years
 
 
 def normalised_close(df: pd.DataFrame):
-    # cps = kwargs.get("cps", 1.0)  # default CPS value defined in function
     df["signal"] = df["close"] / max(df["close"])
+    return df
+
+
+def high_low_diff(df: pd.DataFrame):
+    df["signal"] = df["high"] - max(df["low"])
+    return df
+
+
+def high_low_diff_scaled(df: pd.DataFrame, amplitude: float = 1):
+    df["signal"] = (df["high"] - max(df["low"])) * amplitude
     return df
 
 
@@ -34,8 +43,10 @@ class SignalTransformerMixin(TransformerMixin, BaseEstimator):
         return self
 
     def transform(self, X, y = None):
+        if not y:
+            y = {}
         X_ = deepcopy(X)
-        return self.__class__.signal_function(X_)
+        return self.__class__.signal_function(X_, **y)
 
 
 # creates wrapper classes to fit sci-kit learn interface
@@ -43,6 +54,24 @@ def scikit_signal_factory(signal_function):
     SignalClass = type('SignalClass', (SignalTransformerMixin,), {"signal_function": signal_function})
     return SignalClass()
 
+
+export_signals = {
+    "normalised_close": {
+        "function": normalised_close,
+        "parameters": {},
+        "series": ["close"]
+    },
+    "high_low_diff": {
+        "function": high_low_diff,
+        "parameters": {},
+        "series": ["high", "low"]
+    },
+    "high_low_diff_scaled": {
+        "function": high_low_diff_scaled,
+        "parameters": {"amplitude": 1.0},
+        "series": ["high", "low"]
+    },
+}
 
 def test_NormalisedCloseTransformer():
     # nct = NormalisedCloseTransformer()

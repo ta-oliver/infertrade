@@ -8,7 +8,7 @@ from sklearn.pipeline import make_pipeline
 from ta.momentum import AwesomeOscillatorIndicator
 
 from infertrade.data import fake_market_data_4_years
-from infertrade.algos.community import cps, normalised_close, scikit_signal_factory
+from infertrade.algos.community import normalised_close, scikit_signal_factory
 from infertrade.algos.community.operations import PositionsFromPricePrediction, \
     PricePredictionFromPositions, PricePredictionFromSignalRegression
 # from infertrade.algos.community import
@@ -16,13 +16,6 @@ from infertrade.algos import ta_adaptor
 from infertrade.algos import finmarketpy_adapter
 from infertrade.base import get_portfolio_calc, get_signal_calc
 from ta.trend import AroonIndicator
-
-
-def test_run_cps(test_market_data_4_years):
-    portfolio_calculation = get_portfolio_calc(cps)
-    print(test_market_data_4_years)
-    df = portfolio_calculation(test_market_data_4_years)
-    print(df)
 
 
 def test_run_aroon_indicator(test_market_data_4_years):
@@ -96,6 +89,7 @@ def test_readme_example_one():
     signal_transformer = scikit_signal_factory(normalised_close)
     signal_transformer.fit_transform(fake_market_data_4_years)
 
+
 def test_readme_example_one_external():
     """Example of signal generation from time series via simple function"""
     from infertrade.algos.community import scikit_signal_factory
@@ -109,9 +103,9 @@ def test_readme_example_one_external():
 
 def test_readme_example_two():
     """Example of position calculation from simple position function"""
-    from infertrade.algos.community import cps, scikit_position_factory
+    from infertrade.algos.community.positions import constant_allocation_size, scikit_position_factory
     from infertrade.data import fake_market_data_4_years
-    position_transformer = scikit_position_factory(cps)
+    position_transformer = scikit_position_factory(constant_allocation_size)
     position_transformer.fit_transform(fake_market_data_4_years)
 
 
