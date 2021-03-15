@@ -1,25 +1,21 @@
-# Github Issues and Pull Requests
+# Contributing to InferTrade
 
-Found a new feature, or a bug? We welcome your pull requests!
+Found a new feature, or a bug? We welcome your pull requests.
 
-## Contribute to InferTrade
+## Licencing
 
-* Fork it (https://github.com/ta-oliver/infertrade/fork).
-* Study how it's implemented.
-* Create your additional branch which contains your feature (git checkout -b name_new_feature).
-* Try to keep the same code style as the rest of the code.
-* Make sure the local tests pass.
-* Run `black` code formatter to maintain the code style.
-* Commit your changes (git commit -am 'Add new feature').
-* Push to the branch your changes.
-* Create a new Pull Request.
-* Thank you for your contribution!
+infertrade is an [Apache 2.0 project](https://github.com/ta-oliver/infertrade/blob/main/LICENSE).
 
-## Responsabilities
+Contributions should be consistent with the [Apache 2.0 licence](https://www.apache.org/licenses/LICENSE-2.0) and with the principles of the [Developer Certificate of Origin](https://developercertificate.org/). 
 
-* Ensure cross-platform compatibility for every change that's accepted. Windows, Mac & Linux.
-* Ensure no malicious code is introduced into the core code.
-* Create issues for any major changes and enhancements that you wish to make. Discuss things transparently and get 
-  community feedback.
-  
 
+## Contribution process
+
+1. Submit an issue describing your proposed change to the repo in question.
+1. The repo owner will respond to your issue promptly and the community can provide feedback.
+1. If your proposed change is accepted, fork infertrade, develop and test your code changes.
+1. Ensure that your code adheres to the existing style within InferTrade. Refer to the 
+   [Google Style Guide](https://google.github.io/styleguide/pyguide.html) if unsure. For linting we recommend the `black` package with 120 char lines (`black -l 120 infertrade`)
+1. Ensure that your code has an appropriate set of unit tests which all pass.
+1. If this is your first pull request, please add yourself to the [list of project copyright contributors](https://github.com/ta-oliver/infertrade/blob/main/docs/list_of_copyright_contributors.md).
+1. Submit a pull request.

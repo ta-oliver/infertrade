@@ -1,0 +1,14 @@
+
+APACHE 2.0:
+finmarketpy - https://github.com/cuemacro/finmarketpy/blob/master/LICENCE
+findatapy - https://github.com/cuemacro/findatapy/blob/master/LICENCE
+
+MIT:
+ta - https://github.com/bukosabino/ta/blob/master/LICENSE
+
+BSD 3:
+pandas - https://github.com/pandas-dev/pandas/blob/master/LICENSE
+numpy - https://github.com/numpy/numpy/blob/main/LICENSE.txt
+
+BSD 2:
+ta-lib - https://github.com/mrjbq7/ta-lib/blob/master/LICENSE
