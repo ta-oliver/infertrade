@@ -2,7 +2,7 @@
   <img src="https://www.infertrade.com/static/media/InferTradeLogo.5c2cc437.svg" alt="Zappa Rocks!"/>
 </p>
 
-# infertrade
+# InferTrade
 
 InferTrade is an open source trading and investment strategy library designed for accessibility and compatibility
 
