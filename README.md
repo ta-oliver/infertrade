@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://www.infertrade.com/static/media/InferTradeLogo.5c2cc437.svg" alt="Zappa Rocks!"/>
+  <img src="https://www.infertrade.com/static/media/InferTradeLogo.5c2cc437.svg" alt="InferTrade"/>
 </p>
 
 # infertrade
