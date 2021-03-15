@@ -14,3 +14,12 @@ Found a new feature, or a bug? We welcome your pull requests!
 * Push to the branch your changes.
 * Create a new Pull Request.
 * Thank you for your contribution!
+
+## Responsabilities
+
+* Ensure cross-platform compatibility for every change that's accepted. Windows, Mac & Linux.
+* Ensure no malicious code is introduced into the core code.
+* Create issues for any major changes and enhancements that you wish to make. Discuss things transparently and get 
+  community feedback.
+  
+
