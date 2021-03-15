@@ -4,7 +4,7 @@ Found a new feature, or a bug? We welcome your pull requests!
 
 ## Contribute to InferTrade
 
-* Clone the repository.
+* Fork it (https://github.com/ta-oliver/infertrade/fork).
 * Study how it's implemented.
 * Create your additional branch which contains your feature (git checkout -b name_new_feature).
 * Try to keep the same code style as the rest of the code.
