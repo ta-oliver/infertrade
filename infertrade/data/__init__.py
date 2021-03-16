@@ -18,7 +18,3 @@ limitations under the License.
 Created by: Joshua Mason
 Created date: 11/03/2021
 """
-
-# Can optionally run as a script:
-from infertrade.data.fake import fake_market_data_4_years_gen
-fake_market_data_4_years = fake_market_data_4_years_gen()
