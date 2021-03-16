@@ -1,12 +1,14 @@
 """
-adapter functionality for finmarketpy
+Adapter functionality for finmarketpy
 
 Created by: Joshua Mason
 Created date: 11/03/2021
 """
+
 from finmarketpy.economics import TechIndicator, TechParams
 
 import pandas as pd
+
 
 def finmarketpy_adapter(indicator_name, **kwargs):
     def func(df: pd.DataFrame):
@@ -20,4 +22,5 @@ def finmarketpy_adapter(indicator_name, **kwargs):
         df["dataset.signal"] = tech_ind.get_techind()
         df.columns = [column[8:] for column in df.columns]
         return df
+
     return func
