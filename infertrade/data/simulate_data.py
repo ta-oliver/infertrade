@@ -46,7 +46,6 @@ def simulated_market_data_4_years_gen():
 
 def simulated_correlated_equities_4_years_gen():
     """This function creates ~4 years of simulated equity pair daily data for testing interfaces."""
-    # We use another assets
     asset_1 = np.cumprod([1 + 0.01*(np.random.random() - np.random.random()) for _ in range(1000)])
     independent_asset = np.cumprod([1 + 0.02*(np.random.random() - np.random.random()) for _ in range(1000)])
     asset_2 = asset_1 * independent_asset

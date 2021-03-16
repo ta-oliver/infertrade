@@ -11,4 +11,5 @@ from infertrade.data import simulated_daily_data_4_years_gen
 
 @pytest.fixture()
 def test_market_data_4_years():
+    """Creates a small amount of simulated market data for testing."""
     return simulated_daily_data_4_years_gen()
