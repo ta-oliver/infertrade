@@ -23,6 +23,7 @@ import pandas as pd
 from ta.momentum import AwesomeOscillatorIndicator
 from ta.trend import AroonIndicator
 from ta.utils import IndicatorMixin
+from typing import List
 from typing_extensions import Type
 
 
