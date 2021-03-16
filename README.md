@@ -123,3 +123,30 @@ pipeline = make_pipeline(scikit_signal_factory(adapted_aroon),
 
 pipeline.fit_transform(fake_market_data_4_years)
 ```
+
+### Creating simulated data for testing
+
+For convenience, the `infertrade.data` module contains some basic functions for simulating market data.
+
+```
+import matplotlib.pyplot as plt
+from infertrade.data.simulate_data import simulated_market_data_4_years_gen
+simulated_market_data_4_years_gen().plot(y=["open", "close", "high", "low", "last"])
+plt.show()
+```
+
+![image](https://user-images.githubusercontent.com/29981664/111359984-1e794080-8684-11eb-88df-5e2af83eadd5.png)
+
+```
+import matplotlib.pyplot as plt
+from infertrade.data.simulate_data import simulated_correlated_equities_4_years_gen
+simulated_correlated_equities_4_years_gen().plot(y=["price", "signal"])
+plt.show()
+```
+![image](https://user-images.githubusercontent.com/29981664/111360130-4668a400-8684-11eb-933e-e8f10662b0bb.png)
+
+
+
+ 
+
+
