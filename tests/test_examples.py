@@ -9,12 +9,12 @@ from ta.momentum import AwesomeOscillatorIndicator
 
 from infertrade.data import fake_market_data_4_years
 from infertrade.algos.community import normalised_close, scikit_signal_factory
-from infertrade.algos.community.operations import PositionsFromPricePrediction, \
+from infertrade.utilities.operations import PositionsFromPricePrediction, \
     PricePredictionFromPositions, PricePredictionFromSignalRegression
 # from infertrade.algos.community import
 from infertrade.algos import ta_adaptor
 from infertrade.algos import finmarketpy_adapter
-from infertrade.base import get_portfolio_calc, get_signal_calc
+from infertrade.base import get_signal_calc
 from ta.trend import AroonIndicator
 
 
@@ -113,7 +113,7 @@ def test_readme_example_three():
     """Get price prediction and positions from a signal transformer"""
     from infertrade.algos.community import normalised_close, scikit_signal_factory
     from infertrade.data import fake_market_data_4_years
-    from infertrade.algos.community.operations import PositionsFromPricePrediction, \
+    from infertrade.utilities.operations import PositionsFromPricePrediction, \
         PricePredictionFromSignalRegression
     from sklearn.pipeline import make_pipeline
 
@@ -128,7 +128,7 @@ def test_readme_example_four():
     """Get price prediction and positions from an external signal transformer"""
     from infertrade.algos.community import scikit_signal_factory
     from infertrade.data import fake_market_data_4_years
-    from infertrade.algos.community.operations import PositionsFromPricePrediction, \
+    from infertrade.utilities.operations import PositionsFromPricePrediction, \
         PricePredictionFromSignalRegression
     from sklearn.pipeline import make_pipeline
     from infertrade.algos import ta_adaptor

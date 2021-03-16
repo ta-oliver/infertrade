@@ -1,10 +1,26 @@
 """
 Performance calculation using the InferTrade inferface.
 
+Copyright 2021 InferStat Ltd
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
 Author: Thomas Oliver
 Created: 11th March 2021
 """
+
 from typing import Optional
+from infertrade.base import PandasNames
 
 import numpy as np
 import pandas as pd
@@ -33,7 +49,7 @@ def calculate_portfolio_performance_python(
     day_of_return_to_calculate = df_with_positions.shape[0]
 
     # Set up price, returns and cumulative total.
-    price_list = list(df_with_positions["price"])
+    price_list = list(df_with_positions[PandasNames.MID.value])
     returns_list = []
     cumulative_portfolio_return = 1.0
 
@@ -102,7 +118,7 @@ def calculate_portfolio_performance_python(
                     last_good_price_usd = price_list[ii_period - 1]
 
         # We extract the recommended position size for today.
-        todays_target_position = df_with_positions["allocation"][ii_period]  # Note may be NaN
+        todays_target_position = df_with_positions[PandasNames.ALLOCATION.value][ii_period]  # Note may be NaN
 
         # Force close out of positions if portfolio_bankrupt.
         current_valuation = spot_price * last_securities_after_transaction + last_cash_after_trade
@@ -285,7 +301,7 @@ def calculate_portfolio_performance_python(
         df_with_positions["cash_flow"] = cash_flow_ls
 
     time_series_with_returns = df_with_positions
-    time_series_with_returns["portfolio returns"] = returns_list
+    time_series_with_returns[PandasNames.VALUATION.value] = returns_list
     return time_series_with_returns
 
 
@@ -326,7 +342,7 @@ def _get_percentage_bid_offer(df_with_positions, day, daily_spread_percent_overr
         daily_spread_percentage = daily_spread_percent_override
     else:
         try:
-            daily_spread_percentage = df_with_positions["bid_offer_spread"][day]  # TODO - is percentage?
+            daily_spread_percentage = df_with_positions[PandasNames.BID_OFFER_SPREAD.value][day]
         except (KeyError, IndexError):
             daily_spread_percentage = 0.0
     return daily_spread_percentage

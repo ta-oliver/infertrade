@@ -1,5 +1,5 @@
 """
-Directory for example scripts showing usages of InferTrade.
+Utilties directory for functions that uses the infertrade interface.
 
 Copyright 2021 InferStat Ltd
 
@@ -15,9 +15,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-Data for LBMA Gold price (USD PM fixing) obtained via Quandl.com from the London Bullion Market Association
-https://www.quandl.com/data/LBMA-London-Bullion-Market-Association
-
-Author: Thomas Oliver
-Creation date: 11th March 2021
+Created by: Thomas Oliver
+Created date: 16th March 2021
 """
