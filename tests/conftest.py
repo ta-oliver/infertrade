@@ -6,9 +6,9 @@ Created date: 11/03/2021
 """
 
 import pytest
-from infertrade.data import fake_market_data_4_years_gen
+from infertrade.data import simulated_daily_data_4_years_gen
 
 
 @pytest.fixture()
 def test_market_data_4_years():
-    return fake_market_data_4_years_gen()
+    return simulated_daily_data_4_years_gen()

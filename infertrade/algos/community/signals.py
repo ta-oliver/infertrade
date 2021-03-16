@@ -22,7 +22,7 @@ Created date: 11/03/2021
 import pandas as pd
 from sklearn.preprocessing import FunctionTransformer
 
-from infertrade.data import fake_market_data_4_years
+from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
 
 def normalised_close(df: pd.DataFrame) -> pd.DataFrame:
@@ -76,5 +76,5 @@ export_signals = {
 def test_NormalisedCloseTransformer():
     # nct = NormalisedCloseTransformer()
     nct = scikit_signal_factory(normalised_close)
-    X = nct.fit_transform(fake_market_data_4_years)
+    X = nct.fit_transform(simulated_market_data_4_years_gen)
     print(X)
