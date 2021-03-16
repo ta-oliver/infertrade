@@ -1,32 +1,104 @@
 """
-base functionality
+Base functionality
 
-Created by: Joshua Mason
+Copyright 2021 InferStat Ltd
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Created by: Joshua Mason and Thomas Oliver
 Created date: 11/03/2021
 """
+
 import pandas as pd
+from copy import deepcopy
+from enum import Enum
+from infertrade.utilities.performance import calculate_portfolio_performance_python
+
+
+class PandasNames(Enum):
+
+    """
+    Provides the strings for special column names that InferTrade uses in identify pandas dataframe contents.
+
+    These strings should not be used for other purposes.
+
+    Meanings:
+    MID - this is the mid price used to calculate performance.
+
+    ALLOCATION - the fraction of the overall portfolio the strategy wants to invest in the market. May differ from the amount
+     invested where the strategy requires minimum deviations to trigger position adjustment.
+
+    VALUATION - the value of strategy, after running a hypothetical rule implementing the strategy. 1.0 = 100% means no
+     profit or loss. 0.9 = 90%, means a -10% cumulative loss. 1.1 = 110% means a 10% overall cumulative gain.
+
+    BID_OFFER_SPREAD - the fractional bid-offer spread - 2 * (ask - bid)/(ask + bid) - for that time period.
+    """
+    # Core string labels
+    MID = "price_1"
+    ALLOCATION = "position"
+    VALUATION = "portfolio_returns"
+    BID_OFFER_SPREAD = "bid_offer_spread"
+
+    # Diagnostic string labels
+    PERIOD_START_CASH = "period_start_cash"
+    PERIOD_START_SECURITIES = "period_start_securities"
+    PERIOD_START_ALLOCATION = "start_of_period_allocation"
+    PERIOD_END_CASH = "period_end_cash"
+    PERIOD_END_SECURITIES = "period_end_securities"
+    PERIOD_END_ALLOCATION = "end_of_period_allocation"
+    PERCENTAGE_TO_BUY = "trade_percentage"
+    TRADING_SKIPPED = "trading_skipped"
+    SECURITIES_BOUGHT = "security_purchases"
+    CASH_INCREASE = "cash_flow"
 
 
 def get_signal_calc(func: callable, adapter: callable = None) -> callable:
+    """An adapter to calculate a signal prior to usage within a trading rule."""
     if adapter:
         func = adapter(func)
     return func
 
 
-def get_positions_calc(func: callable) -> callable:
-    return func
+def get_positions_calc(df: pd.DataFrame, func: callable) -> callable:
+    """Pass through method to return the results of the allocation calculation."""
+    try:
+        df_with_positions = func(df)
+    except IndexError as index_error:
+        df_with_positions = deepcopy(df)
+        print("Index error occurred: ", index_error)
+        df_with_positions["position"] = 1.0
+
+    return df_with_positions
 
 
 def get_portfolio_calc(func: callable) -> callable:
+    """Given a position calculation generates the portfolio valuation index."""
 
     def get_portfolio(df: pd.DataFrame):
+        """Inner function to apply the position calculation."""
         position_data = func(df)
         return _get_portfolio(position_data)
 
     return get_portfolio
 
 
-def _get_portfolio(df: pd.DataFrame):
-    # Not implemented yet
-    df["portfolio"] = 1.
-    return df
+def _get_portfolio(df: pd.DataFrame) -> pd.DataFrame:
+    """Calculates the cumulative portfolio performance."""
+    try:
+        df_with_returns = calculate_portfolio_performance_python(df)
+    except IndexError as index_error:
+        df_with_returns = deepcopy(df)
+        print("Index error occurred: ", index_error)
+        df_with_returns["portfolio_returns"] = 1.0
+
+    return df_with_returns
