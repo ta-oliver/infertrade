@@ -24,6 +24,7 @@ import pandas as pd
 
 
 def fake_market_data_4_years_gen():
+    """This function creates ~4 years of daily data for testing interfaces."""
     # open,high,last,low,turnover,volume
     open = [1 + np.random.random() for _ in range(1000)]
     close = [1 + np.random.random() for _ in range(1000)]
