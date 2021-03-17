@@ -27,16 +27,19 @@ def test_run_aroon_indicator(test_market_data_4_years):
     adapted_aroon = ta_adaptor(AroonIndicator, "aroon_up")
     get_signal = get_signal_calc(adapted_aroon)
     df = get_signal(test_market_data_4_years)
+    assert isinstance(df, pd.DataFrame)
 
     adapted_aroon = ta_adaptor(AroonIndicator, "aroon_down", window=1)
     get_signal = get_signal_calc(adapted_aroon)
     df = get_signal(test_market_data_4_years)
+    assert isinstance(df, pd.DataFrame)
 
     params = {"window": 100}
 
     adapted_aroon = ta_adaptor(AroonIndicator, "aroon_down", **params)
     get_signal = get_signal_calc(adapted_aroon)
     df = get_signal(test_market_data_4_years)
+    assert isinstance(df, pd.DataFrame)
 
     adapted_aroon = ta_adaptor(AwesomeOscillatorIndicator, "awesome_oscillator")
     get_signal = get_signal_calc(adapted_aroon)
