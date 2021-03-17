@@ -41,8 +41,8 @@ class PandasEnum(Enum):
     BID_OFFER_SPREAD - the fractional bid-offer spread - 2 * (ask - bid)/(ask + bid) - for that time period.
     """
     # Core string labels
-    MID = "price_1"
-    ALLOCATION = "position"
+    MID = "price"
+    ALLOCATION = "allocation"
     VALUATION = "portfolio_returns"
     BID_OFFER_SPREAD = "bid_offer_spread"
 
