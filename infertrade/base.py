@@ -21,45 +21,7 @@ Created date: 11/03/2021
 
 import pandas as pd
 from copy import deepcopy
-from enum import Enum
 from infertrade.utilities.performance import calculate_portfolio_performance_python
-
-
-class PandasNames(Enum):
-
-    """
-    Provides the strings for special column names that InferTrade uses in identify pandas dataframe contents.
-
-    These strings should not be used for other purposes.
-
-    Meanings:
-    MID - this is the mid price used to calculate performance.
-
-    ALLOCATION - the fraction of the overall portfolio the strategy wants to invest in the market. May differ from the amount
-     invested where the strategy requires minimum deviations to trigger position adjustment.
-
-    VALUATION - the value of strategy, after running a hypothetical rule implementing the strategy. 1.0 = 100% means no
-     profit or loss. 0.9 = 90%, means a -10% cumulative loss. 1.1 = 110% means a 10% overall cumulative gain.
-
-    BID_OFFER_SPREAD - the fractional bid-offer spread - 2 * (ask - bid)/(ask + bid) - for that time period.
-    """
-    # Core string labels
-    MID = "price_1"
-    ALLOCATION = "position"
-    VALUATION = "portfolio_returns"
-    BID_OFFER_SPREAD = "bid_offer_spread"
-
-    # Diagnostic string labels
-    PERIOD_START_CASH = "period_start_cash"
-    PERIOD_START_SECURITIES = "period_start_securities"
-    PERIOD_START_ALLOCATION = "start_of_period_allocation"
-    PERIOD_END_CASH = "period_end_cash"
-    PERIOD_END_SECURITIES = "period_end_securities"
-    PERIOD_END_ALLOCATION = "end_of_period_allocation"
-    PERCENTAGE_TO_BUY = "trade_percentage"
-    TRADING_SKIPPED = "trading_skipped"
-    SECURITIES_BOUGHT = "security_purchases"
-    CASH_INCREASE = "cash_flow"
 
 
 def get_signal_calc(func: callable, adapter: callable = None) -> callable:
