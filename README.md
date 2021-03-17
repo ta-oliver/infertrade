@@ -82,17 +82,6 @@ signal_transformer = scikit_signal_factory(adapted_aroon)
 signal_transformer.fit_transform(fake_market_data_4_years)
 ```
 
-### Usage with finmarketpy
-
-```python
-from infertrade.algos import finmarketpy_adapter
-from infertrade.algos.community import scikit_signal_factory
-from infertrade.data import fake_market_data_4_years
-adapted_ATR = finmarketpy_adapter("ATR", **{"atr_period": 10})
-signal_transformer = scikit_signal_factory(adapted_ATR)
-signal_transformer.fit_transform(fake_market_data_4_years)
-```
-
 ### Calculate positions with simple position function
 
 ```python
