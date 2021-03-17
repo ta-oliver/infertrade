@@ -263,6 +263,8 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
 
 class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
 
+    """This class calculates the positions to take assuming Kelly Criterion."""
+
     def __init__(self):
         pass
 
@@ -281,13 +283,20 @@ class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
 
 class PricePredictionFromPositions(TransformerMixin, BaseEstimator):
 
+    """
+    This converts positions into implicit price predictions based on the Kelly Criterion and an assumed volatility.
+    """
+
     def __init__(self):
+        """Trivial creation method."""
         pass
 
     def fit(self, X, y=None):
+        """Not used."""
         return self
 
-    def transform(self, X, y=None):
+    def transform(self, X: pd.DataFrame, y=None):
+        """Converts positions into the forecast one-day price changes."""
         X_ = deepcopy(X)
         volatility = 0.1
         kelly_fraction = 1.0

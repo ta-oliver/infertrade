@@ -62,7 +62,7 @@ def test_transformers():
     df["forecast_price_change"] = df["close"] * 0.000_1
     df_with_positions = pos_from_price.fit_transform(df)
     predictions_from_positions = PricePredictionFromPositions()
-    df0 = predictions_from_positions.fit_transform(df["position"])
+    df0 = predictions_from_positions.fit_transform(df_with_positions)
     df0 = df0.round()
     df = df_with_positions.round()
     assert list(df["forecast_price_change"]) == list(df0["forecast_price_change"])
