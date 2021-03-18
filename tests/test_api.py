@@ -1,5 +1,5 @@
 """
-API facade that allows interaction with the library with strings and vanilla Python objects.
+Tests for the API facade that allows interaction with the library with strings and vanilla Python objects.
 
 Copyright 2021 InferStat Ltd
 
@@ -25,7 +25,7 @@ api_instance = Api()
 
 
 def test_get_available_algorithms():
-    """Checks can get algorithm list."""
+    """Checks can get algorithm list and that returned algorithms can supply all expected properties."""
     list_of_algos = Api.available_algorithms()
     assert isinstance(list_of_algos, list)
     for ii_algo_name in list_of_algos:
