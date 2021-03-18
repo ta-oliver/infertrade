@@ -16,11 +16,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from infertrade.algos.community.positions import scikit_position_factory, infertrade_export_positions
+from infertrade.PandasEnum import PandasEnum
+from infertrade.algos.community.allocations import scikit_allocation_factory, infertrade_export_allocations
 from infertrade.algos.community.signals import normalised_close, scikit_signal_factory, infertrade_export_signals
 
 # A dictionary providing the list of community signals and trading strategies.
-community_export = {
+infertrade_export = {
     "signal": infertrade_export_signals,
-    "position": infertrade_export_positions,
+    PandasEnum.ALLOCATION.value: infertrade_export_allocations,
 }

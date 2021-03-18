@@ -19,12 +19,12 @@ Created by: Joshua Mason
 Created date: 11/03/2021
 """
 
-from infertrade.algos.community import community_export
-from infertrade.algos.external.ta import ta_adaptor, ta_export_positions
+from infertrade.algos.community import infertrade_export
+from infertrade.algos.external.ta import ta_adaptor, ta_export
 from infertrade.algos.external.ta_lib import talib_adapter
 
 # A dictionary providing the list of available rules from InferTrade's community rules and external packages.
-export_functions = {
-    "infertrade": community_export,
-    "ta": ta_export_positions,
+algorithm_functions = {
+    "infertrade": infertrade_export,
+    "ta": ta_export,
 }
