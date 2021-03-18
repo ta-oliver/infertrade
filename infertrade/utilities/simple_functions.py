@@ -1,5 +1,5 @@
 """
-External algorithms directory.
+Simple functions used across the package.
 
 Copyright 2021 InferStat Ltd
 
@@ -15,15 +15,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-Created by: Joshua Mason
-Created date: 11/03/2021
+Author: Thomas Oliver
+Created: 18th March 2021
 """
 
-from infertrade.algos.community import community_export
-from infertrade.algos.external.ta import ta_adaptor, ta_export_positions
 
-# A dictionary providing the list of available rules from InferTrade's community rules and external packages.
-export_functions = {
-    "infertrade": community_export,
-    "ta": ta_export_positions,
-}
+def add_package(dictionary: dict, string_label: str) -> dict:
+    """Adds a string to every item."""
+    if dictionary:
+        for ii_key in dictionary.keys():
+            dictionary[ii_key]["package"] = string_label
+    else:
+        print("Warning - empty dictionary was passed to be appended.")
+    return dictionary

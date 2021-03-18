@@ -70,6 +70,7 @@ def test_example_ways_to_use_infertrade_2():
     # my_dataframe_with_returns.plot(x="date", y=["allocation", "portfolio_returns"])
     # plt.show()
 
+
 if __name__ == "__main__":
     test_example_ways_to_use_infertrade_2()
 

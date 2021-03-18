@@ -54,7 +54,7 @@ def scikit_signal_factory(signal_function: callable):
     return FunctionTransformer(signal_function)
 
 
-export_signals = {
+infertrade_export_signals = {
     "normalised_close": {
         "function": normalised_close,
         "parameters": {},

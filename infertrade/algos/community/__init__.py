@@ -16,11 +16,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from infertrade.algos.community.positions import scikit_position_factory, export_positions
-from infertrade.algos.community.signals import normalised_close, scikit_signal_factory, export_signals
+from infertrade.algos.community.positions import scikit_position_factory, infertrade_export_positions
+from infertrade.algos.community.signals import normalised_close, scikit_signal_factory, infertrade_export_signals
 
 # A dictionary providing the list of community signals and trading strategies.
 community_export = {
-    "signal": export_signals,
-    "position": export_positions,
+    "signal": infertrade_export_signals,
+    "position": infertrade_export_positions,
 }
