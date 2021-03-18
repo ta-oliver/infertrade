@@ -124,11 +124,11 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
     def __init__(self):
         pass
 
-    def fit(self, X, y = None):
+    def fit(self, X, y=None):
         self.fitted_features_and_target_ = None
         return self
 
-    def transform(self, X, y = None):
+    def transform(self, X, y=None):
         X_ = deepcopy(X)
         regression_period = 120
         forecast_period = min(regression_period, len(X_))
@@ -149,15 +149,15 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
             )
             # Predictions
             current_research = historical_signal_levels[prediction_idx, :]
-            forecast_price_change = rolling_regression_model.predict(current_research)
+            forecast = rolling_regression_model.predict(current_research)
 
             # Apply the calculated allocation to the dataframe.
-            X_.loc[prediction_idx, "forecast_price_change"] = forecast_price_change
+            X_.loc[prediction_idx, PandasEnum.FORECAST_PRICE_CHANGE.value] = forecast
 
         if len(prediction_indices) == 0:
-            X_["forecast_price_change"] = 0
+            X_[PandasEnum.FORECAST_PRICE_CHANGE.value] = 0
         else:
-            X_["forecast_price_change"].shift(-1)
+            X_[PandasEnum.FORECAST_PRICE_CHANGE.value].shift(-1)
         return X_
 
     def _get_features_matrix_transformer(self):
@@ -187,7 +187,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
         return features
 
     def _get_features_matrix_target_array(
-        self, input_time_series: pd.DataFrame
+            self, input_time_series: pd.DataFrame
     ) -> [pd.Series, pd.Series]:  # TODO - argument hints please.
         """Returns the target array features."""
         feat_tar_arr = self.fitted_features_and_target_.transform(input_time_series)
@@ -264,7 +264,6 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
 
 
 class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
-
     """This class calculates the positions to take assuming Kelly Criterion."""
 
     def __init__(self):
@@ -277,14 +276,13 @@ class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
         X_ = deepcopy(X)
         volatility = 0.1
         kelly_fraction = 1.0
-        kelly_recommended_optimum = X["forecast_price_change"] / volatility ** 2
+        kelly_recommended_optimum = X[PandasEnum.FORECAST_PRICE_CHANGE.value] / volatility ** 2
         rule_recommended_allocation = kelly_fraction * kelly_recommended_optimum
-        X_["position"] = rule_recommended_allocation
+        X_[PandasEnum.ALLOCATION.value] = rule_recommended_allocation
         return X_
 
 
 class PricePredictionFromPositions(TransformerMixin, BaseEstimator):
-
     """
     This converts positions into implicit price predictions based on the Kelly Criterion and an assumed volatility.
     """
@@ -298,21 +296,18 @@ class PricePredictionFromPositions(TransformerMixin, BaseEstimator):
         return self
 
     def transform(self, X: pd.DataFrame, y=None):
-        """Converts positions into the forecast one-day price changes."""
+        """Converts allocations into the forecast one-day price changes."""
         X_ = deepcopy(X)
         volatility = 0.1
         kelly_fraction = 1.0
 
-        kelly_recommended_optimum = X_["position"]/kelly_fraction
-        X_["forecast_price_change"] = kelly_recommended_optimum * volatility ** 2
+        kelly_recommended_optimum = X_[PandasEnum.ALLOCATION.value] / kelly_fraction
+        X_["PandasEnum.FORECAST_PRICE_CHANGE.value"] = kelly_recommended_optimum * volatility ** 2
         return X_
 
 
 class ReturnsFromPositions(TransformerMixin, BaseEstimator):
-
-    """
-    This calculate returns from positions
-    """
+    """This calculate returns from positions."""
 
     def __init__(self):
         """Trivial creation method."""

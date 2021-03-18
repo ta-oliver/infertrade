@@ -27,7 +27,7 @@ from infertrade.PandasEnum import PandasEnum
 
 def fifty_fifty(dataframe) -> pd.DataFrame:
     """Allocates 50% of strategy budget to asset, 50% to cash."""
-    dataframe["allocation"] = 0.5
+    dataframe[PandasEnum.ALLOCATION.value] = 0.5
     return dataframe
 
 
@@ -60,7 +60,7 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
     return dataframe
 
 
-infertrade_export_positions = {
+infertrade_export_allocations = {
     "fifty_fifty": {
         "function": fifty_fifty,
         "parameters": {},
@@ -84,6 +84,6 @@ infertrade_export_positions = {
 }
 
 
-def scikit_position_factory(position_function: callable) -> FunctionTransformer:
+def scikit_allocation_factory(allocation_function: callable) -> FunctionTransformer:
     """This creates a SciKit Learn compatible Transformer embedding the position calculation."""
-    return FunctionTransformer(position_function)
+    return FunctionTransformer(allocation_function)

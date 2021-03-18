@@ -13,7 +13,7 @@ from ta.trend import AroonIndicator
 from infertrade.algos import ta_adaptor
 from infertrade.algos.community import normalised_close
 from infertrade.algos.community import scikit_signal_factory
-from infertrade.algos.community.positions import constant_allocation_size, scikit_position_factory
+from infertrade.algos.community.allocations import constant_allocation_size, scikit_allocation_factory
 from infertrade.base import get_signal_calc
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 from infertrade.utilities.operations import PositionsFromPricePrediction, \
@@ -94,7 +94,7 @@ def test_readme_example_one_external():
 
 def test_readme_example_two():
     """Example of position calculation from simple position function"""
-    position_transformer = scikit_position_factory(constant_allocation_size)
+    position_transformer = scikit_allocation_factory(constant_allocation_size)
     position_transformer.fit_transform(simulated_market_data_4_years_gen())
 
 
