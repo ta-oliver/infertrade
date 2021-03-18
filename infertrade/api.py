@@ -46,7 +46,6 @@ class Api:
         """Provides information on algorithms that calculate signals."""
         combined_data = {}
         for ii_package in algorithm_functions:
-            print("PACAKAE:", algorithm_functions[ii_package])
             combined_data.update(algorithm_functions[ii_package][PandasEnum.SIGNAL.value])
         return combined_data
 
@@ -98,8 +97,6 @@ class Api:
         names = []
         for ii_package in filter_by_package:
             for jj_type in filter_by_category:
-                print(algorithm_functions)
-                print(algorithm_functions['ta'].keys())
                 algorithms = list(algorithm_functions[ii_package][jj_type].keys())
                 names += algorithms
         return names
