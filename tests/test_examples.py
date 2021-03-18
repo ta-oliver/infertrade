@@ -10,7 +10,6 @@ from sklearn.pipeline import make_pipeline
 from ta.momentum import AwesomeOscillatorIndicator
 from ta.trend import AroonIndicator
 
-from infertrade.algos import finmarketpy_adapter
 from infertrade.algos import ta_adaptor
 from infertrade.algos.community import normalised_close
 from infertrade.algos.community import scikit_signal_factory
@@ -43,14 +42,6 @@ def test_run_aroon_indicator(test_market_data_4_years):
 
     adapted_aroon = ta_adaptor(AwesomeOscillatorIndicator, "awesome_oscillator")
     get_signal = get_signal_calc(adapted_aroon)
-    df = get_signal(test_market_data_4_years)
-    assert isinstance(df, pd.DataFrame)
-
-
-def test_run_atr_indicator(test_market_data_4_years):
-    """Test implementation of finmarketpy technical indicators."""
-    adapted_ATR = finmarketpy_adapter("ATR", **{"atr_period": 10})
-    get_signal = get_signal_calc(adapted_ATR)
     df = get_signal(test_market_data_4_years)
     assert isinstance(df, pd.DataFrame)
 
