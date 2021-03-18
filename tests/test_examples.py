@@ -11,6 +11,7 @@ from ta.momentum import AwesomeOscillatorIndicator
 from ta.trend import AroonIndicator
 
 from infertrade.algos import ta_adaptor
+from infertrade.algos import talib_adapter
 from infertrade.algos.community import normalised_close
 from infertrade.algos.community import scikit_signal_factory
 from infertrade.algos.community.positions import constant_allocation_size, scikit_position_factory
@@ -19,6 +20,31 @@ from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 from infertrade.utilities.operations import PositionsFromPricePrediction, \
     PricePredictionFromSignalRegression
 from infertrade.utilities.operations import PricePredictionFromPositions
+
+
+def test_run_talib_indicator(test_market_data_4_years):
+    """Test implementation of ta-lib technical indicators."""
+    adapted_stoch = talib_adapter("STOCH", "slowk")
+    get_signal = get_signal_calc(adapted_stoch)
+    df = get_signal(test_market_data_4_years)
+    assert isinstance(df, pd.DataFrame)
+
+    adapted_stoch = talib_adapter("STOCH", "slowk", fastk_period=7)
+    get_signal = get_signal_calc(adapted_stoch)
+    df = get_signal(test_market_data_4_years)
+    assert isinstance(df, pd.DataFrame)
+
+    params = {"fastk_period": 10}
+
+    adapted_stoch = talib_adapter("STOCH", "slowk", **params)
+    get_signal = get_signal_calc(adapted_stoch)
+    df = get_signal(test_market_data_4_years)
+    assert isinstance(df, pd.DataFrame)
+
+    adapted_stoch = talib_adapter("ATR", "real")
+    get_signal = get_signal_calc(adapted_stoch)
+    df = get_signal(test_market_data_4_years)
+    assert isinstance(df, pd.DataFrame)
 
 
 def test_run_aroon_indicator(test_market_data_4_years):
