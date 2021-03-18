@@ -15,6 +15,8 @@ from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LinearRegression
 from sklearn.pipeline import make_pipeline, FeatureUnion
 from sklearn.preprocessing import FunctionTransformer, Binarizer
+from infertrade.utilities.performance import calculate_portfolio_performance_python
+from infertrade.PandasEnum import PandasEnum
 
 
 def pct_chg(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
@@ -306,3 +308,22 @@ class PricePredictionFromPositions(TransformerMixin, BaseEstimator):
         return X_
 
 
+class ReturnsFromPositions(TransformerMixin, BaseEstimator):
+
+    """
+    This calculate returns from positions
+    """
+
+    def __init__(self):
+        """Trivial creation method."""
+        pass
+
+    def fit(self, X, y=None):
+        """Not used."""
+        return self
+
+    def transform(self, X: pd.DataFrame, y=None):
+        """Converts positions into the cumulative portfolio return."""
+        X_ = deepcopy(X)
+        X_[PandasEnum.VALUATION.value] = calculate_portfolio_performance_python(X)
+        return X_
