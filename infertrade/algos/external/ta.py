@@ -26,6 +26,8 @@ from ta.utils import IndicatorMixin
 from typing import List
 from typing_extensions import Type
 
+from infertrade.PandasEnum import PandasEnum
+
 
 def ta_adaptor(indicator_mixin: Type[IndicatorMixin], function_name: str, **kwargs) -> callable:
     """Wraps strategies from ta to make them compatible with infertrade's interface."""
@@ -36,7 +38,7 @@ def ta_adaptor(indicator_mixin: Type[IndicatorMixin], function_name: str, **kwar
         column_inputs = {column_name: df[column_name] for column_name in column_strings}
         indicator = indicator_mixin(**column_inputs, **kwargs)
         indicator_callable = getattr(indicator, function_name)
-        df["signal"] = indicator_callable()
+        df[PandasEnum.SIGNAL.value] = indicator_callable()
         return df
 
     return func
@@ -73,4 +75,8 @@ ta_export_signals = {
         "series": ["low", "high"]
     },
 }
-ta_export_positions = {}
+ta_export_allocations = {}
+ta_export = {
+    "signal": ta_export_signals,
+    PandasEnum.ALLOCATION.value: ta_export_allocations,
+}

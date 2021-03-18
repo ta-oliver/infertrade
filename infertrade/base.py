@@ -38,7 +38,7 @@ def get_positions_calc(df: pd.DataFrame, func: callable) -> callable:
     except IndexError as index_error:
         df_with_positions = deepcopy(df)
         print("Index error occurred: ", index_error)
-        df_with_positions["position"] = 1.0
+        df_with_positions[PandasEnum.ALLOCATION.value] = 1.0
 
     return df_with_positions
 

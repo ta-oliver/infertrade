@@ -85,9 +85,10 @@ signal_transformer.fit_transform(fake_market_data_4_years)
 ### Calculate positions with simple position function
 
 ```python
-from infertrade.algos.community import cps, scikit_position_factory
+from infertrade.algos.community import cps, scikit_allocation_factory
 from infertrade.data import fake_market_data_4_years
-position_transformer = scikit_position_factory(cps)
+
+position_transformer = scikit_allocation_factory(cps)
 position_transformer.fit_transform(fake_market_data_4_years)
 # TODO add example with parameters
 ```

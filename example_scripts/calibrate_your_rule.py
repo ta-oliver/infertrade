@@ -24,7 +24,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from infertrade.utilities.performance import calculate_portfolio_performance_python
-from infertrade.algos.community import scikit_position_factory
+from infertrade.algos.community import scikit_allocation_factory
 from infertrade.utilities.operations import ReturnsFromPositions
 from sklearn.pipeline import make_pipeline
 
@@ -54,7 +54,7 @@ def test_example_ways_to_use_infertrade_2():
     my_dataframe = pd.read_csv(lbma_gold_location)
     my_dataframe_without_allocations = my_dataframe.rename(columns={"LBMA/GOLD usd (pm)": "price", "Date": "date"})
 
-    buy_on_small_rises_rule = scikit_position_factory(buy_on_small_rises)
+    buy_on_small_rises_rule = scikit_allocation_factory(buy_on_small_rises)
     returns_calc = ReturnsFromPositions()
 
     # Two stage version
