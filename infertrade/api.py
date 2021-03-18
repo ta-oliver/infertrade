@@ -23,12 +23,15 @@ Created date: 18th March 2021
 
 from typing import List, Union
 from copy import deepcopy
+import pandas as pd
 
 from infertrade.algos import ta_export_positions
 from infertrade.algos.community.positions import infertrade_export_positions
 from infertrade.algos.community.signals import infertrade_export_signals
 from infertrade.algos.external.ta import ta_export_signals
 from infertrade.utilities.simple_functions import add_package
+from infertrade.utilities.operations import ReturnsFromPositions
+from infertrade.PandasEnum import PandasEnum
 
 
 class Api:
@@ -144,3 +147,26 @@ class Api:
         full_info = Api.get_algorithm_information()
         required_inputs = full_info[name_of_strategy]["parameters"]
         return required_inputs
+
+    @staticmethod
+    def _get_raw_class(name_of_strategy: str) -> callable:
+        """Private method to return the raw class - should not be used externally."""
+        info = Api.get_position_information()
+        raw_class = info[name_of_strategy]["function"]
+        return raw_class
+
+    @staticmethod
+    def calculate_allocations(df: pd.DataFrame, name_of_strategy: str,
+                              name_of_price_series: str = "price") -> pd.DataFrame:
+        """Calculates the allocations using the supplied strategy."""
+        if name_of_price_series is not "price":
+            df[PandasEnum.MID.value] = df[name_of_price_series]
+        class_of_rule = Api._get_raw_class(name_of_strategy)
+        df_with_positions = class_of_rule(df)
+        return df_with_positions
+
+    @staticmethod
+    def calculate_returns(df: pd.DataFrame) -> pd.DataFrame:
+        """Calculates the allocations using the supplied strategy."""
+        df_with_returns = ReturnsFromPositions().transform(df)
+        return df_with_returns

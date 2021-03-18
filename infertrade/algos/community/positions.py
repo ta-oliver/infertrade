@@ -22,17 +22,18 @@ Created date: 11/03/2021
 
 import pandas as pd
 from sklearn.preprocessing import FunctionTransformer
+from infertrade.PandasEnum import PandasEnum
 
 
 def fifty_fifty(dataframe) -> pd.DataFrame:
     """Allocates 50% of strategy budget to asset, 50% to cash."""
-    dataframe["position"] = 0.5
+    dataframe["allocation"] = 0.5
     return dataframe
 
 
 def buy_and_hold(dataframe) -> pd.DataFrame:
     """Allocates 100% of strategy budget to asset, holding to end of period (or security bankruptcy)."""
-    dataframe["position"] = 1.0
+    dataframe[PandasEnum.ALLOCATION.value] = 1.0
     return dataframe
 
 
@@ -43,7 +44,7 @@ def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: flo
     parameters:
     constant_allocation_size: determines allocation size.
     """
-    dataframe["position"] = fixed_allocation_size
+    dataframe[PandasEnum.ALLOCATION.value] = fixed_allocation_size
     return dataframe
 
 
@@ -55,7 +56,7 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
     parameters:
     scale: determines amplitude factor.
     """
-    dataframe["position"] = ((dataframe["high"] - dataframe["low"]) * scale + constant)
+    dataframe[PandasEnum.ALLOCATION.value] = ((dataframe["high"] - dataframe["low"]) * scale + constant)
     return dataframe
 
 
