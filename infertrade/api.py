@@ -25,11 +25,7 @@ from typing import List, Union
 from copy import deepcopy
 import pandas as pd
 
-from infertrade.algos import ta_export_positions
-from infertrade.algos.community.positions import infertrade_export_positions
-from infertrade.algos.community.signals import infertrade_export_signals
-from infertrade.algos.external.ta import ta_export_signals
-from infertrade.utilities.simple_functions import add_package
+from infertrade.algos import algorithm_functions
 from infertrade.utilities.operations import ReturnsFromPositions
 from infertrade.PandasEnum import PandasEnum
 
@@ -38,47 +34,43 @@ class Api:
     """All public methods should input/output json-serialisable dictionaries."""
 
     @staticmethod
-    def get_position_information() -> dict:
+    def get_allocation_information() -> dict:
         """Provides information on algorithms that calculate positions."""
-        infertrade_positions = add_package(deepcopy(infertrade_export_positions), "infertrade")
-        ta_positions = add_package(deepcopy(ta_export_positions), "ta")
-        combined_position_data = {}
-        combined_position_data.update(infertrade_positions)
-        combined_position_data.update(ta_positions)
-        return combined_position_data
+        combined_data = {}
+        for ii_package in algorithm_functions:
+            combined_data.update(algorithm_functions[ii_package][PandasEnum.ALLOCATION.value])
+        return combined_data
 
     @staticmethod
     def get_signal_information() -> dict:
         """Provides information on algorithms that calculate signals."""
-        infertrade_signals = add_package(deepcopy(infertrade_export_signals), "infertrade")
-        ta_signals = add_package(deepcopy(ta_export_signals), "ta")
-        combined_signal_data = {}
-        combined_signal_data.update(infertrade_signals)
-        combined_signal_data.update(ta_signals)
-        return combined_signal_data
+        combined_data = {}
+        for ii_package in algorithm_functions:
+            combined_data.update(algorithm_functions[ii_package][PandasEnum.SIGNAL.value])
+        return combined_data
 
     @staticmethod
     def get_algorithm_information() -> dict:
-        """Provides information on algorithms (signals and positions)."""
-        combined_position_data = Api.get_position_information()
+        """Provides information on algorithms (signals and positions) as flat list (not nested by category)."""
+        combined_allocation_data = Api.get_allocation_information()
         combined_signal_data = Api.get_signal_information()
         combined_data = {}
-        combined_data.update(combined_position_data)
+        combined_data.update(combined_allocation_data)
         combined_data.update(combined_signal_data)
         return combined_data
 
     @staticmethod
     def available_packages() -> List[str]:
         """Returns the list of supported packages."""
-        return ["ta", "infertrade"]
+        return list(algorithm_functions.keys())
 
     @staticmethod
     def return_algorithm_category(algorithm_name: str) -> str:
         """Returns the category of algorithm as a string."""
         if algorithm_name in Api.get_signal_information():
             algo_type = "signal"
-        elif algorithm_name in Api.get_position_information():
-            algo_type = "position"
+        elif algorithm_name in Api.get_allocation_information():
+            algo_type = PandasEnum.ALLOCATION.value
         else:
             raise NameError("Algorithm is not supported: ", algorithm_name)
         return algo_type
@@ -86,7 +78,7 @@ class Api:
     @staticmethod
     def algorithm_categories() -> List[str]:
         """Returns the list of supported packages."""
-        return ["position", "signal"]
+        return [PandasEnum.ALLOCATION.value, "signal"]
 
     @staticmethod
     def available_algorithms(filter_by_package: Union[str, List[str]] = None,
@@ -105,22 +97,8 @@ class Api:
         names = []
         for ii_package in filter_by_package:
             for jj_type in filter_by_category:
-                if ii_package is "infertrade":
-                    if jj_type is "position":
-                        names += list(infertrade_export_positions.keys())
-                    elif jj_type is "signal":
-                        names += list(infertrade_export_signals.keys())
-                    else:
-                        raise NameError("Unrecognised algorithm type: ", jj_type)
-                elif ii_package is "ta":
-                    if jj_type is "position":
-                        names += list(ta_export_positions.keys())
-                    elif jj_type is "signal":
-                        names += list(ta_export_signals.keys())
-                    else:
-                        raise NameError("Unrecognised algorithm type: ", jj_type)
-                else:
-                    raise NameError("Package not supported: ", ii_package)
+                algorithms = list(algorithm_functions[ii_package][jj_type].keys())
+                names += algorithms
         return names
 
     @staticmethod
@@ -151,7 +129,7 @@ class Api:
     @staticmethod
     def _get_raw_class(name_of_strategy: str) -> callable:
         """Private method to return the raw class - should not be used externally."""
-        info = Api.get_position_information()
+        info = Api.get_allocation_information()
         raw_class = info[name_of_strategy]["function"]
         return raw_class
 
@@ -167,6 +145,14 @@ class Api:
 
     @staticmethod
     def calculate_returns(df: pd.DataFrame) -> pd.DataFrame:
-        """Calculates the allocations using the supplied strategy."""
+        """Calculates the returns from supplied positions."""
         df_with_returns = ReturnsFromPositions().transform(df)
+        return df_with_returns
+
+    @staticmethod
+    def calculate_allocations_and_returns(df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = "price")\
+            -> pd.DataFrame:
+        """Calculates the returns using the supplied strategy."""
+        df_with_positions = Api.calculate_allocations(df, name_of_strategy, name_of_price_series)
+        df_with_returns = ReturnsFromPositions().transform(df_with_positions)
         return df_with_returns

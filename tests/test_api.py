@@ -20,6 +20,8 @@ Created date: 18th March 2021
 """
 
 import pandas as pd
+
+from infertrade.PandasEnum import PandasEnum
 from infertrade.api import Api
 
 api_instance = Api()
@@ -52,13 +54,13 @@ test_dfs = [simulated_market_data_4_years_gen(), simulated_market_data_4_years_g
 
 def test_calculation_positions():
     """Checks algorithms calculate positions and returns."""
-    list_of_algos = Api.available_algorithms(filter_by_category="position")
+    list_of_algos = Api.available_algorithms(filter_by_category="allocation")
     for ii_df in test_dfs:
         for jj_algo_name in list_of_algos:
             df_with_allocations = Api.calculate_allocations(ii_df, jj_algo_name, "close")
             isinstance(df_with_allocations, pd.DataFrame)
             df_with_returns = Api.calculate_returns(df_with_allocations)
             isinstance(df_with_returns, pd.DataFrame)
-            for ii_value in df_with_returns["portfolio_returns"]:
+            for ii_value in df_with_returns[PandasEnum.VALUATION.value]:
                 if not isinstance(ii_value, float):
                     assert ii_value is "NaN"

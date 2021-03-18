@@ -21,7 +21,6 @@ Created date: 11/03/2021
 
 import pandas as pd
 from sklearn.preprocessing import FunctionTransformer
-
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
 
