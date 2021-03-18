@@ -21,13 +21,15 @@ Created date: 16/03/2021
 
 import pandas as pd
 from talib.abstract import Function
-from typing_extensions import Type
-from talib.abstract import Function
+
+
+from infertrade.PandasEnum import PandasEnum
+
 
 def talib_adapter(function_mixin: str, function_name: str, **kwargs):
     output_strings = Function(function_mixin).output_names
     column_strings = Function(function_mixin).input_names
-    column_strings = list(column_strings.items())[0][1] #Gettng requiered columns from OrderedDict
+    column_strings = list(column_strings.items())[0][1]  # Get requireed columns from OrderedDict
 
     def func(df: pd.DataFrame) -> pd.DataFrame:
         try:
@@ -42,3 +44,18 @@ def talib_adapter(function_mixin: str, function_name: str, **kwargs):
         return df
 
     return func
+
+
+# Hardcoded list of available rules with added metadata.
+ta_lib_export_signals = {
+    # "aroon_down": {
+    #     "class": AroonIndicator,
+    #     "function_names": "aroon_down",
+    #     "parameters": {"window": 10},
+    #     "series": ["close"]
+    # },
+}
+talib_export = {
+    PandasEnum.SIGNAL.value: talib_export_signals,
+    PandasEnum.ALLOCATION.value: talib_export_allocations,
+}
