@@ -53,25 +53,24 @@ def _get_required_columns(indicator_mixin: Type[IndicatorMixin]) -> List[str]:
 
 
 # Hardcoded list of available rules with added metadata.
-ta_export = {
-    "signal": {
-        "aroon_down": {
-            "class": AroonIndicator,
-            "function_names": "aroon_down",
-            "parameters": {"window": 10},
-            "series": ["close"]
-        },
-        "aroon_up": {
-            "class": AroonIndicator,
-            "function_name": "aroon_up",
-            "parameters": {"window": 10},
-            "series": ["close"]
-        },
-        "AwesomeOscillatorIndicator": {
-            "class": AwesomeOscillatorIndicator,
-            "function_names": [],
-            "parameters": {"window1": 5, "window2": 34},
-            "series": ["low", "high"]
-        },
-    }
+ta_export_signals = {
+    "aroon_down": {
+        "class": AroonIndicator,
+        "function_names": "aroon_down",
+        "parameters": {"window": 10},
+        "series": ["close"]
+    },
+    "aroon_up": {
+        "class": AroonIndicator,
+        "function_name": "aroon_up",
+        "parameters": {"window": 10},
+        "series": ["close"]
+    },
+    "AwesomeOscillatorIndicator": {
+        "class": AwesomeOscillatorIndicator,
+        "function_names": [],
+        "parameters": {"window1": 5, "window2": 34},
+        "series": ["low", "high"]
+    },
 }
+ta_export_positions = {}

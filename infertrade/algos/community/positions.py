@@ -30,6 +30,12 @@ def fifty_fifty(dataframe) -> pd.DataFrame:
     return dataframe
 
 
+def buy_and_hold(dataframe) -> pd.DataFrame:
+    """Allocates 100% of strategy budget to asset, holding to end of period (or security bankruptcy)."""
+    dataframe["position"] = 1.0
+    return dataframe
+
+
 def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: float = 1.0) -> pd.DataFrame:
     """
     Returns a constant allocation, controlled by the constant_position_size parameter.
@@ -53,9 +59,14 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
     return dataframe
 
 
-export_positions = {
+infertrade_export_positions = {
     "fifty_fifty": {
         "function": fifty_fifty,
+        "parameters": {},
+        "series": []
+    },
+    "buy_and_hold": {
+        "function": buy_and_hold,
         "parameters": {},
         "series": []
     },
