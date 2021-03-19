@@ -75,6 +75,7 @@ ta_export_signals = {
         "series": ["low", "high"]
     },
 }
+ta_export_allocations = {}
 
 ta_export = {
     PandasEnum.SIGNAL.value: ta_export_signals,
