@@ -98,7 +98,7 @@ setup(
     tests_require=["pytest"],
     python_requires=">=3.7.0",
     classifiers=[
-        "License :: OSI Approved :: Apache Software License'",
+        "License :: OSI Approved :: Apache Software License",
 	"Development Status :: 2 - Pre-Alpha",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
