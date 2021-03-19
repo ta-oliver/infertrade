@@ -8,7 +8,7 @@
 
 The [`infertrade`](https://github.com/ta-oliver/infertrade) package seeks to achieve four objectives:
 
-- Simplicity: a simple `pandas` to `pandas` interface that those experienced in trading but new to Python can easily use.
+- Simplicity: a simple [`pandas`](https://github.com/pandas-dev/pandas) to [`pandas`](https://github.com/pandas-dev/pandas) interface that those experienced in trading but new to Python can easily use.
 
 - Gateway to data science: classes that allow rules created for the infertrade simple interface to be used with [`scikit-learn`](https://github.com/scikit-learn/scikit-learn) functionality for prediction and calibration. (fit, transform, predict, pipelines, gridsearch) and [`scikit-learn`](https://github.com/scikit-learn/scikit-learn) compatible libraries, like [`feature-engine`](https://github.com/solegalli/feature_engine).
 
