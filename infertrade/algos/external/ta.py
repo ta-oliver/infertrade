@@ -68,7 +68,7 @@ ta_export_signals = {
         "parameters": {"window": 10},
         "series": ["close"]
     },
-    "AwesomeOscillatorIndicator": {
+    "awesome_oscillator": {
         "class": AwesomeOscillatorIndicator,
         "function_names": [],
         "parameters": {"window1": 5, "window2": 34},

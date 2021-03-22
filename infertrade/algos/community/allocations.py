@@ -73,7 +73,7 @@ infertrade_export_allocations = {
     },
     "constant_allocation_size": {
         "function": constant_allocation_size,
-        "parameters": {"constant_allocation_size": 1.0},
+        "parameters": {"fixed_allocation_size": 1.0},
         "series": []
     },
     "high_low_difference": {
