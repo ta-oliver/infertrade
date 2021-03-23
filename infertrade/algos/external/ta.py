@@ -18,7 +18,7 @@ limitations under the License.
 Created by: Joshua Mason
 Created date: 11/03/2021
 """
-
+import inspect
 import pandas as pd
 from ta.momentum import *
 from ta.trend import *
@@ -34,7 +34,16 @@ from infertrade.PandasEnum import PandasEnum
 
 def ta_adaptor(indicator_mixin: Type[IndicatorMixin], function_name: str, **kwargs) -> callable:
     """Wraps strategies from ta to make them compatible with infertrade's interface."""
-    column_strings = _get_required_columns(indicator_mixin)
+    indicator_parameters = inspect.signature(indicator_mixin.__init__).parameters
+    allowed_keys = ["close", "open", "high", "low", "volume"]
+    column_strings = []
+    parameter_strings = []
+
+    for i in range(len(indicator_parameters)):
+        if list(indicator_parameters.items())[i][0] in allowed_keys:
+            column_strings.append(list(indicator_parameters.items())[i][0])
+        elif list(indicator_parameters.items())[i][0] != "self":
+            parameter_strings.append(list(indicator_parameters.items())[i][0])
 
     def func(df: pd.DataFrame) -> pd.DataFrame:
         """Inner function to create a Pandas -> Pandas interface."""
@@ -45,17 +54,6 @@ def ta_adaptor(indicator_mixin: Type[IndicatorMixin], function_name: str, **kwar
         return df
 
     return func
-
-
-def _get_required_columns(indicator_mixin: Type[IndicatorMixin]) -> List[str]:
-    """Determines which column names the ta function needs to calculate signals."""
-    # Automatic based on manually created dictionary? or docstring parsing probably better
-    # Temporary implementation to show how it would work
-    if indicator_mixin == AroonIndicator:
-        return ["close"]
-    if indicator_mixin == AwesomeOscillatorIndicator:
-        return ["high", "low"]
-
 
 # Hardcoded list of available rules with added metadata.
 ta_export_signals = {
@@ -664,6 +662,10 @@ ta_export_signals = {
 }
 
 ta_export_allocations = {}
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 ta_export = {
     "signal": ta_export_signals,
     PandasEnum.ALLOCATION.value: ta_export_allocations,
