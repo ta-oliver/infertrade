@@ -662,10 +662,7 @@ ta_export_signals = {
 }
 
 ta_export_allocations = {}
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
 ta_export = {
     "signal": ta_export_signals,
     PandasEnum.ALLOCATION.value: ta_export_allocations,
