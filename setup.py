@@ -29,7 +29,7 @@ from setuptools import  find_packages, setup
 
 # Hardcoded variables
 PROJECT_NAME = "infertrade"
-PROJECT_DESCRIPTION = "Implementation of algorithmic trading functions"
+PROJECT_DESCRIPTION = "Pandas and SciKit Learn compatible open source interface for algorithmic trading functions."
 BLACKLIST_DIRS = ["example_scripts"]
 
 this_directory = Path(__file__).cwd()
@@ -86,10 +86,11 @@ setup(
     name=PROJECT_NAME,
     version=get_version(),
     description=PROJECT_DESCRIPTION,
+    license='Apache License 2.0',
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
-    url=f"https://github.com/ProjectOPTimize/{PROJECT_NAME}",
-    author="InferStat Ltd",
+    url=f"https://github.com/ta-oliver/infertrade",
+    author="Thomas Oliver",
     author_email="support@infertrade.com",
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     install_requires=package_requirements,
@@ -97,10 +98,18 @@ setup(
     tests_require=["pytest"],
     python_requires=">=3.7.0",
     classifiers=[
-        "License :: OSI Approved :: Apache Software License'",
+        "License :: OSI Approved :: Apache Software License",
+	"Development Status :: 2 - Pre-Alpha",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
+        'Intended Audience :: Developers',
+        'Intended Audience :: Financial and Insurance Industry',
+        "Intended Audience :: Information Technology",
+        "Intended Audience :: Science/Research",
+        'Topic :: Software Development :: Libraries',
+        'Topic :: Scientific/Engineering :: Information Analysis',
+        "Natural Language :: English",
     ],
     zip_safe=False,
 )
