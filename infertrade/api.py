@@ -68,7 +68,7 @@ class Api:
     def return_algorithm_category(algorithm_name: str) -> str:
         """Returns the category of algorithm as a string."""
         if algorithm_name in Api.get_signal_information():
-            algo_type = "signal"
+            algo_type = PandasEnum.SIGNAL.value
         elif algorithm_name in Api.get_allocation_information():
             algo_type = PandasEnum.ALLOCATION.value
         else:
