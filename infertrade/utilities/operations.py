@@ -120,7 +120,6 @@ def research_over_price_minus_one(x: Union[np.ndarray, pd.Series], shift: int) -
 
 
 class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
-
     def __init__(self):
         pass
 
@@ -144,9 +143,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
             regression_period_signal = historical_signal_levels[model_idx, :]
             regression_period_price_change = historical_price_moves[model_idx]
 
-            rolling_regression_model = LinearRegression().fit(
-                regression_period_signal, regression_period_price_change
-            )
+            rolling_regression_model = LinearRegression().fit(regression_period_signal, regression_period_price_change)
             # Predictions
             current_research = historical_signal_levels[prediction_idx, :]
             forecast = rolling_regression_model.predict(current_research)
@@ -179,15 +176,11 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
                 ("signal_differences", lp_m_lr_l1, ["close", "signal"]),
             ]
         )
-        self.feature_names = [
-            "signal",
-            "signal_changes",
-            "signal_differences"
-        ]
+        self.feature_names = ["signal", "signal_changes", "signal_differences"]
         return features
 
     def _get_features_matrix_target_array(
-            self, input_time_series: pd.DataFrame
+        self, input_time_series: pd.DataFrame
     ) -> [pd.Series, pd.Series]:  # TODO - argument hints please.
         """Returns the target array features."""
         feat_tar_arr = self.fitted_features_and_target_.transform(input_time_series)
@@ -209,9 +202,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
     def _get_target_array_transformer(self):
         """Use level of price series as target (dependant) variable."""
         percent_change_trans = FunctionTransformer(pct_chg)
-        target = ColumnTransformer(
-            [("historical_price_moves", percent_change_trans, ["close"])]
-        )
+        target = ColumnTransformer([("historical_price_moves", percent_change_trans, ["close"])])
         self.target_name = ["historical_price_moves"]
         return target
 
@@ -254,10 +245,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
                 ind_pred_end = series_length
 
             indices_for_prediction.append(
-                {
-                    "model_idx": range(ind_start, ind_end),
-                    "prediction_idx": range(ind_pred_start, ind_pred_end),
-                }
+                {"model_idx": range(ind_start, ind_end), "prediction_idx": range(ind_pred_start, ind_pred_end),}
             )
 
         return indices_for_prediction

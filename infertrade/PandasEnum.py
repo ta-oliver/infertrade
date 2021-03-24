@@ -43,12 +43,13 @@ class PandasEnum(Enum):
 
     SIGNAL - an information time series that could be used for construction of an allocation series.
     """
+
     # Core string labels
     MID = "price"
     SIGNAL = "signal"
     FORECAST_PRICE_CHANGE = "forecast_price_change"
     ALLOCATION = "allocation"
-    VALUATION = "portfolio_returns"
+    VALUATION = "portfolio_return"
     BID_OFFER_SPREAD = "bid_offer_spread"
 
     # Diagnostic string labels
