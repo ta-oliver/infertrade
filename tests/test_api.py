@@ -49,6 +49,7 @@ def test_get_available_algorithms():
 
 
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
+
 test_dfs = [simulated_market_data_4_years_gen(), simulated_market_data_4_years_gen()]
 
 

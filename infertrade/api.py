@@ -81,8 +81,9 @@ class Api:
         return [PandasEnum.ALLOCATION.value, "signal"]
 
     @staticmethod
-    def available_algorithms(filter_by_package: Union[str, List[str]] = None,
-                             filter_by_category: Union[str, List[str]] = None) -> List[str]:
+    def available_algorithms(
+        filter_by_package: Union[str, List[str]] = None, filter_by_category: Union[str, List[str]] = None
+    ) -> List[str]:
         """Returns a list of strings that are available strategies."""
         if not filter_by_package:
             filter_by_package = Api.available_packages()
@@ -134,8 +135,9 @@ class Api:
         return raw_class
 
     @staticmethod
-    def calculate_allocations(df: pd.DataFrame, name_of_strategy: str,
-                              name_of_price_series: str = "price") -> pd.DataFrame:
+    def calculate_allocations(
+        df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = "price"
+    ) -> pd.DataFrame:
         """Calculates the allocations using the supplied strategy."""
         if name_of_price_series is not "price":
             df[PandasEnum.MID.value] = df[name_of_price_series]
@@ -150,8 +152,9 @@ class Api:
         return df_with_returns
 
     @staticmethod
-    def calculate_allocations_and_returns(df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = "price")\
-            -> pd.DataFrame:
+    def calculate_allocations_and_returns(
+        df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = "price"
+    ) -> pd.DataFrame:
         """Calculates the returns using the supplied strategy."""
         df_with_positions = Api.calculate_allocations(df, name_of_strategy, name_of_price_series)
         df_with_returns = ReturnsFromPositions().transform(df_with_positions)

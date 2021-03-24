@@ -55,6 +55,7 @@ def ta_adaptor(indicator_mixin: Type[IndicatorMixin], function_name: str, **kwar
 
     return func
 
+
 # Hardcoded list of available rules with added metadata.
 ta_export_signals = {
     "AwesomeOscillatorIndicator": {
@@ -278,21 +279,51 @@ ta_export_signals = {
         "class": KSTIndicator,
         "module": "ta.trend",
         "function_names": "kst",
-        "parameters": {"roc1": 10, "roc2": 15, "roc3": 20, "roc4": 30, "window1": 10, "window2": 10, "window3": 10, "window4": 15, "nsig": 9},
+        "parameters": {
+            "roc1": 10,
+            "roc2": 15,
+            "roc3": 20,
+            "roc4": 30,
+            "window1": 10,
+            "window2": 10,
+            "window3": 10,
+            "window4": 15,
+            "nsig": 9,
+        },
         "series": ["close"],
     },
     "kst_diff": {
         "class": KSTIndicator,
         "module": "ta.trend",
         "function_names": "kst_diff",
-        "parameters": {"roc1": 10, "roc2": 15, "roc3": 20, "roc4": 30, "window1": 10, "window2": 10, "window3": 10, "window4": 15, "nsig": 9},
+        "parameters": {
+            "roc1": 10,
+            "roc2": 15,
+            "roc3": 20,
+            "roc4": 30,
+            "window1": 10,
+            "window2": 10,
+            "window3": 10,
+            "window4": 15,
+            "nsig": 9,
+        },
         "series": ["close"],
     },
     "kst_sig": {
         "class": KSTIndicator,
         "module": "ta.trend",
         "function_names": "kst_sig",
-        "parameters": {"roc1": 10, "roc2": 15, "roc3": 20, "roc4": 30, "window1": 10, "window2": 10, "window3": 10, "window4": 15, "nsig": 9},
+        "parameters": {
+            "roc1": 10,
+            "roc2": 15,
+            "roc3": 20,
+            "roc4": 30,
+            "window1": 10,
+            "window2": 10,
+            "window3": 10,
+            "window4": 15,
+            "nsig": 9,
+        },
         "series": ["close"],
     },
     "macd": {
