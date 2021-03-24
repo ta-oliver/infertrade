@@ -19,14 +19,12 @@ Created by: Joshua Mason
 Created date: 11/03/2021
 """
 import inspect
-import pandas as pd
 from ta.momentum import *
 from ta.trend import *
 from ta.volatility import *
 from ta.volume import *
 from ta.others import *
 from ta.utils import IndicatorMixin
-from typing import List
 from typing_extensions import Type
 
 from infertrade.PandasEnum import PandasEnum
