@@ -56,30 +56,22 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
     parameters:
     scale: determines amplitude factor.
     """
-    dataframe[PandasEnum.ALLOCATION.value] = ((dataframe["high"] - dataframe["low"]) * scale + constant)
+    dataframe[PandasEnum.ALLOCATION.value] = (dataframe["high"] - dataframe["low"]) * scale + constant
     return dataframe
 
 
 infertrade_export_allocations = {
-    "fifty_fifty": {
-        "function": fifty_fifty,
-        "parameters": {},
-        "series": []
-    },
-    "buy_and_hold": {
-        "function": buy_and_hold,
-        "parameters": {},
-        "series": []
-    },
+    "fifty_fifty": {"function": fifty_fifty, "parameters": {}, "series": []},
+    "buy_and_hold": {"function": buy_and_hold, "parameters": {}, "series": []},
     "constant_allocation_size": {
         "function": constant_allocation_size,
         "parameters": {"fixed_allocation_size": 1.0},
-        "series": []
+        "series": [],
     },
     "high_low_difference": {
         "function": high_low_difference,
-        "parameters":  {"scale": 1.0, "constant": 0.},
-        "series": ["high", "low"]
+        "parameters": {"scale": 1.0, "constant": 0.0},
+        "series": ["high", "low"],
     },
 }
 
