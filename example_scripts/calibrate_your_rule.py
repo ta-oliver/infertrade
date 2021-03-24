@@ -73,7 +73,3 @@ def test_example_ways_to_use_infertrade_2():
 
 if __name__ == "__main__":
     test_example_ways_to_use_infertrade_2()
-
-
-
-

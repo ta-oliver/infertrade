@@ -16,8 +16,7 @@ from infertrade.algos.community import scikit_signal_factory
 from infertrade.algos.community.allocations import constant_allocation_size, scikit_allocation_factory
 from infertrade.base import get_signal_calc
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
-from infertrade.utilities.operations import PositionsFromPricePrediction, \
-    PricePredictionFromSignalRegression
+from infertrade.utilities.operations import PositionsFromPricePrediction, PricePredictionFromSignalRegression
 from infertrade.utilities.operations import PricePredictionFromPositions
 
 
@@ -71,9 +70,7 @@ def test_regression():
 def test_pipeline_signal_to_position():
     """Checks we can use a signal in conjunction with a rule to calculate a position."""
     signal_to_positions = make_pipeline(
-        scikit_signal_factory(normalised_close, ),
-        PricePredictionFromSignalRegression(),
-        PositionsFromPricePrediction()
+        scikit_signal_factory(normalised_close,), PricePredictionFromSignalRegression(), PositionsFromPricePrediction()
     )
     df = signal_to_positions.fit_transform(simulated_market_data_4_years_gen())
     assert isinstance(df, pd.DataFrame)
@@ -100,10 +97,9 @@ def test_readme_example_two():
 
 def test_readme_example_three():
     """Get price prediction and positions from a signal transformer"""
-    pipeline = make_pipeline(scikit_signal_factory(normalised_close),
-                             PricePredictionFromSignalRegression(),
-                             PositionsFromPricePrediction()
-                             )
+    pipeline = make_pipeline(
+        scikit_signal_factory(normalised_close), PricePredictionFromSignalRegression(), PositionsFromPricePrediction()
+    )
 
     pipeline.fit_transform(simulated_market_data_4_years_gen())
 
@@ -111,8 +107,7 @@ def test_readme_example_three():
 def test_readme_example_four():
     """Get price prediction and positions from an external signal transformer"""
     adapted_aroon = ta_adaptor(AroonIndicator, "aroon_down", window=1)
-    pipeline = make_pipeline(scikit_signal_factory(adapted_aroon),
-                             PricePredictionFromSignalRegression(),
-                             PositionsFromPricePrediction()
-                             )
+    pipeline = make_pipeline(
+        scikit_signal_factory(adapted_aroon), PricePredictionFromSignalRegression(), PositionsFromPricePrediction()
+    )
     pipeline.fit_transform(simulated_market_data_4_years_gen())
