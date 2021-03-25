@@ -1,5 +1,5 @@
 """
-File for storing current version of package
+Tests the ta library is linked.
 
 Copyright 2021 InferStat Ltd
 
@@ -15,8 +15,24 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-Created by: Joshua Mason
-Created date: 12/03/2021
+Created by: Thomas Oliver
+Created date: 19th March 2021
 """
 
-__version__ = "0.0.11"
+from infertrade.api import Api
+
+name_of_ta_package = "ta"
+
+
+def test_ta_in_package_list():
+    """Checks ta is in the package list"""
+    packages = Api().available_packages()
+    assert name_of_ta_package in packages
+
+
+def test_get_ta_rules():
+    """Checks we can get rules from ta."""
+    available_ta_algos = Api().available_algorithms(filter_by_package=name_of_ta_package)
+    # Check there are some algorithms.
+    assert available_ta_algos
+
