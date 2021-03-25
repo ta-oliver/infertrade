@@ -18,11 +18,7 @@ limitations under the License.
 Created by: Nikolay Alemasov
 Created date: 25/03/2021
 """
-
-import re, json
-import pandas as pd
-
-import inspect
+import inspect, json, warnings
 from ta import momentum, trend, volatility, volume, others
 
 def print_dict(export: dict):
@@ -39,7 +35,6 @@ def print_dict(export: dict):
 
 	for k, v in export.items():
 		p_("\"%s\": {"%k, level = 1)
-		
 		for key, val in v.items():
 			if key == 'class':
 				msg = val.__name__
@@ -53,12 +48,11 @@ def print_dict(export: dict):
 	p_("}")
 	
 
-def inspect_ta_module(module, series_params = ['open', 'high', 'low', 'close', 'volume']) -> dict:
+def inspect_ta_module(module, series_params = ['open', 'high', 'low', 'close', 'volume'], include_bools = False) -> dict:
 	"""Inspects the ta module provided. Outputs a dictionary based on the classes found and their methods."""
 	
 	def _gen_SMAIndicator_variants(desc: dict, windows = [20, 50, 200]) -> dict:
 		"""Generates individual variants in the case of SMAIndicator since its single parameter "window" has no default values."""
-		
 		assert len(desc['parameters'].keys()) == 1
 		assert list(desc['parameters'].keys())[0] == 'window'
 		assert list(desc['parameters'].values())[0] is None
@@ -87,6 +81,9 @@ def inspect_ta_module(module, series_params = ['open', 'high', 'low', 'close', '
 			if p == 'self' or p in ['fillna']:
 				continue
 				
+			if s.annotation == bool and not include_bools:
+				continue
+				
 			if p in series_params:
 				series.append(p)
 				continue
@@ -95,7 +92,7 @@ def inspect_ta_module(module, series_params = ['open', 'high', 'low', 'close', '
 				
 			if s.default is inspect.Parameter.empty:
 				default = None
-				print('[Warning] default is empty for', cls.__module__, n, p)
+				warnings.warn('Default value is empty for %s'%('.'.join([cls.__module__, n, p])))
 			
 			params.update({p: default})
 		
@@ -118,23 +115,16 @@ def inspect_ta_module(module, series_params = ['open', 'high', 'low', 'close', '
 
 		cls = c
 	
-		if len(methods) == 1:
-			desc = {'class': cls, 'module': cls.__module__, 'function_names': methods[0], 'parameters': params, 'series': series}
+		for m in methods:
+			desc = {'class': cls, 'module': cls.__module__, 'function_names': m, 'parameters': params, 'series': series}
 			
-			assert(not n in ta_export_signals.keys())
+			assert(not m in ta_export_signals.keys())
 			
 			if cls.__name__ == 'SMAIndicator':
 				ta_export_signals.update(_gen_SMAIndicator_variants(desc))
 			else:
-				ta_export_signals.update({n: desc})
-		else:
-			for m in methods:
-				desc = {'class': cls, 'module': cls.__module__, 'function_names': m, 'parameters': params, 'series': series}
-				
-				assert(not m in ta_export_signals.keys())
-				
 				ta_export_signals.update({m: desc})
-	
+
 	return ta_export_signals
 	
 if __name__ == "__main__":
