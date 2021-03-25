@@ -69,13 +69,19 @@ def test_signals_creation():
     list_of_algos = Api.available_algorithms(filter_by_category=PandasEnum.SIGNAL.value)
     for ii_df in test_dfs:
         for jj_algo_name in list_of_algos:
+            original_columns = ii_df.columns
+
             df_with_signal = Api.calculate_signal(ii_df, jj_algo_name)
             assert isinstance(df_with_signal, pd.DataFrame)
 
-            # Signals need to populate columns with name that matches the signal function name.
-            assert jj_algo_name in df_with_signal.columns
+            # Signal algorithms should be adding new columns with float or NaN data.
+            new_columns = False
+            for ii_column_name in df_with_signal:
+                if ii_column_name not in original_columns:
+                    new_columns = True
+                    for ii_value in df_with_signal[ii_column_name]:
+                        if not isinstance(ii_value, float):
+                            assert ii_value is "NaN"
 
-            # Signal values need to be floats or NaNs.
-            for ii_value in df_with_signal[jj_algo_name]:
-                if not isinstance(ii_value, float):
-                    assert ii_value is "NaN"
+            # At least one new column should have been added.
+            assert new_columns
