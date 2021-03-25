@@ -56,17 +56,17 @@ def ta_adaptor(indicator_mixin: Type[IndicatorMixin], function_name: str, **kwar
 
 # Hardcoded list of available rules with added metadata.
 ta_export_signals = {
-    "AwesomeOscillatorIndicator": {
+    "awesome_oscillator": {
         "class": AwesomeOscillatorIndicator,
         "module": "ta.momentum",
-        "function_names": [],
+        "function_names": "awesome_oscillator",
         "parameters": {"window1": 5, "window2": 34},
         "series": ["high", "low"],
     },
-    "KAMAIndicator": {
+    "kama": {
         "class": KAMAIndicator,
         "module": "ta.momentum",
-        "function_names": [],
+        "function_names": "kama",
         "parameters": {"window": 10, "pow1": 2, "pow2": 30},
         "series": ["close"],
     },
@@ -112,17 +112,17 @@ ta_export_signals = {
         "parameters": {"window_slow": 26, "window_fast": 12, "window_sign": 9},
         "series": ["volume"],
     },
-    "ROCIndicator": {
+    "roc": {
         "class": ROCIndicator,
         "module": "ta.momentum",
-        "function_names": [],
+        "function_names": "roc",
         "parameters": {"window": 12},
         "series": ["close"],
     },
-    "RSIIndicator": {
+    "rsi": {
         "class": RSIIndicator,
         "module": "ta.momentum",
-        "function_names": [],
+        "function_names": "rsi",
         "parameters": {"window": 14},
         "series": ["close"],
     },
@@ -161,24 +161,24 @@ ta_export_signals = {
         "parameters": {"window": 14, "smooth_window": 3},
         "series": ["high", "low", "close"],
     },
-    "TSIIndicator": {
+    "tsi": {
         "class": TSIIndicator,
         "module": "ta.momentum",
-        "function_names": [],
+        "function_names": "tsi",
         "parameters": {"window_slow": 25, "window_fast": 13},
         "series": ["close"],
     },
-    "UltimateOscillator": {
+    "ultimate_oscillator": {
         "class": UltimateOscillator,
         "module": "ta.momentum",
-        "function_names": [],
+        "function_names": "ultimate_oscillator",
         "parameters": {"window1": 7, "window2": 14, "window3": 28, "weight1": 4.0, "weight2": 2.0, "weight3": 1.0},
         "series": ["high", "low", "close"],
     },
-    "WilliamsRIndicator": {
+    "williams_r": {
         "class": WilliamsRIndicator,
         "module": "ta.momentum",
-        "function_names": [],
+        "function_names": "williams_r",
         "parameters": {"lbp": 14},
         "series": ["high", "low", "close"],
     },
