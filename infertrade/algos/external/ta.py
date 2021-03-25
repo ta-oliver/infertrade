@@ -645,6 +645,7 @@ ta_export_signals = {
         "series": ["close"],
     },
 }
+ta_export_allocations = {}
 
 ta_export_allocations = {}
 ta_export = {
