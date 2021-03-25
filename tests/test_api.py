@@ -74,13 +74,13 @@ def test_signals_creation():
             df_with_signal = Api.calculate_signal(ii_df, jj_algo_name)
             assert isinstance(df_with_signal, pd.DataFrame)
 
-            # Signal algorithms should be adding new columns with float or NaN data.
+            # Signal algorithms should be adding new columns with float, int or NaN data.
             new_columns = False
             for ii_column_name in df_with_signal:
                 if ii_column_name not in original_columns:
                     new_columns = True
                     for ii_value in df_with_signal[ii_column_name]:
-                        if not isinstance(ii_value, float):
+                        if not isinstance(ii_value, (float, int)):
                             assert ii_value is "NaN"
 
             # At least one new column should have been added.
