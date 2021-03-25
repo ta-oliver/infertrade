@@ -54,20 +54,12 @@ def scikit_signal_factory(signal_function: callable):
 
 
 infertrade_export_signals = {
-    "normalised_close": {
-        "function": normalised_close,
-        "parameters": {},
-        "series": ["close"]
-    },
-    "high_low_diff": {
-        "function": high_low_diff,
-        "parameters": {},
-        "series": ["high", "low"]
-    },
+    "normalised_close": {"function": normalised_close, "parameters": {}, "series": ["close"]},
+    "high_low_diff": {"function": high_low_diff, "parameters": {}, "series": ["high", "low"]},
     "high_low_diff_scaled": {
         "function": high_low_diff_scaled,
         "parameters": {"amplitude": 1.0},
-        "series": ["high", "low"]
+        "series": ["high", "low"],
     },
 }
 

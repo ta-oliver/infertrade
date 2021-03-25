@@ -23,8 +23,10 @@ import pandas as pd
 
 from infertrade.PandasEnum import PandasEnum
 from infertrade.api import Api
+from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
 api_instance = Api()
+test_dfs = [simulated_market_data_4_years_gen(), simulated_market_data_4_years_gen()]
 
 
 def test_get_available_algorithms():
@@ -46,10 +48,6 @@ def test_get_available_algorithms():
         for ii_param_name in params:
             assert isinstance(ii_param_name, str)
             assert isinstance(params[ii_param_name], (int, float))
-
-
-from infertrade.data.simulate_data import simulated_market_data_4_years_gen
-test_dfs = [simulated_market_data_4_years_gen(), simulated_market_data_4_years_gen()]
 
 
 def test_calculation_positions():

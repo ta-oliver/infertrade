@@ -1,5 +1,5 @@
 """
-Functions for signals and positions created within this package.
+Tests the ta library is linked.
 
 Copyright 2021 InferStat Ltd
 
@@ -14,14 +14,25 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+Created by: Thomas Oliver
+Created date: 19th March 2021
 """
 
-from infertrade.PandasEnum import PandasEnum
-from infertrade.algos.community.allocations import scikit_allocation_factory, infertrade_export_allocations
-from infertrade.algos.community.signals import normalised_close, scikit_signal_factory, infertrade_export_signals
+from infertrade.api import Api
 
-# A dictionary providing the list of community signals and trading strategies.
-infertrade_export = {
-    "signal": infertrade_export_signals,
-    PandasEnum.ALLOCATION.value: infertrade_export_allocations,
-}
+name_of_ta_package = "ta"
+
+
+def test_ta_in_package_list():
+    """Checks ta is in the package list"""
+    packages = Api().available_packages()
+    assert name_of_ta_package in packages
+
+
+def test_get_ta_rules():
+    """Checks we can get rules from ta."""
+    available_ta_algos = Api().available_algorithms(filter_by_package=name_of_ta_package)
+    # Check there are some algorithms.
+    assert available_ta_algos
+

@@ -26,31 +26,22 @@ import pandas as pd
 def simulated_market_data_4_years_gen():
     """This function creates ~4 years of simulated daily data for testing interfaces."""
     # open,high,last,low,turnover,volume
-    open = np.cumprod([1 + 0.1*(np.random.random() - np.random.random()) for _ in range(1000)])
-    high = open * [1 + 0.1*(np.random.random()) for _ in range(1000)]
-    low = open * [1 - 0.1*(np.random.random()) for _ in range(1000)]
-    close = (high + low)/2
+    open = np.cumprod([1 + 0.1 * (np.random.random() - np.random.random()) for _ in range(1000)])
+    high = open * [1 + 0.1 * (np.random.random()) for _ in range(1000)]
+    low = open * [1 - 0.1 * (np.random.random()) for _ in range(1000)]
+    close = (high + low) / 2
     last = close
     turnover = [100_000 + 10_000 * np.random.random() for _ in range(1000)]
     volume = [10_000 + 1000 * np.random.random() for _ in range(1000)]
-    return pd.DataFrame({
-        "open": open,
-        "close": close,
-        "high": high,
-        "low": low,
-        "last": last,
-        "turnover": turnover,
-        "volume": volume,
-    })
+    return pd.DataFrame(
+        {"open": open, "close": close, "high": high, "low": low, "last": last, "turnover": turnover, "volume": volume,}
+    )
 
 
 def simulated_correlated_equities_4_years_gen():
     """This function creates ~4 years of simulated equity pair daily data for testing interfaces."""
-    asset_1 = np.cumprod([1 + 0.01*(np.random.random() - np.random.random()) for _ in range(1000)])
-    independent_asset = np.cumprod([1 + 0.02*(np.random.random() - np.random.random()) for _ in range(1000)])
+    asset_1 = np.cumprod([1 + 0.01 * (np.random.random() - np.random.random()) for _ in range(1000)])
+    independent_asset = np.cumprod([1 + 0.02 * (np.random.random() - np.random.random()) for _ in range(1000)])
     asset_2 = asset_1 * independent_asset
 
-    return pd.DataFrame({
-        "price": asset_1,
-        "signal": asset_2,
-    })
+    return pd.DataFrame({"price": asset_1, "signal": asset_2,})
