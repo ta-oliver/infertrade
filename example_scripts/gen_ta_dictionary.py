@@ -126,7 +126,7 @@ def inspect_ta_module(module, series_params = ['open', 'high', 'low', 'close', '
 			if cls.__name__ == 'SMAIndicator':
 				ta_export_signals.update(_gen_SMAIndicator_variants(desc))
 			else:
-				ta_export_signals.update({n: desc})
+				ta_export_signals.update({methods[0]: desc})
 		else:
 			for m in methods:
 				desc = {'class': cls, 'module': cls.__module__, 'function_names': m, 'parameters': params, 'series': series}
