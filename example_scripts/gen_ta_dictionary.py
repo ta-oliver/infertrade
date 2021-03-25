@@ -35,6 +35,7 @@ def print_dict(export: dict):
 
 	for k, v in export.items():
 		p_("\"%s\": {"%k, level = 1)
+		
 		for key, val in v.items():
 			if key == 'class':
 				msg = val.__name__
@@ -53,6 +54,7 @@ def inspect_ta_module(module, series_params = ['open', 'high', 'low', 'close', '
 	
 	def _gen_SMAIndicator_variants(desc: dict, windows = [20, 50, 200]) -> dict:
 		"""Generates individual variants in the case of SMAIndicator since its single parameter "window" has no default values."""
+		
 		assert len(desc['parameters'].keys()) == 1
 		assert list(desc['parameters'].keys())[0] == 'window'
 		assert list(desc['parameters'].values())[0] is None
