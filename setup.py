@@ -25,7 +25,7 @@ from os import walk
 from pathlib import Path
 
 # Third library (not InferStat)
-from setuptools import  find_packages, setup
+from setuptools import find_packages, setup
 
 # Hardcoded variables
 PROJECT_NAME = "infertrade"
@@ -86,7 +86,7 @@ setup(
     name=PROJECT_NAME,
     version=get_version(),
     description=PROJECT_DESCRIPTION,
-    license='Apache License 2.0',
+    license="Apache License 2.0",
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
     url=f"https://github.com/ta-oliver/infertrade",
@@ -99,16 +99,16 @@ setup(
     python_requires=">=3.7.0",
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
-	"Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 2 - Pre-Alpha",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
-        'Intended Audience :: Developers',
-        'Intended Audience :: Financial and Insurance Industry',
+        "Intended Audience :: Developers",
+        "Intended Audience :: Financial and Insurance Industry",
         "Intended Audience :: Information Technology",
         "Intended Audience :: Science/Research",
-        'Topic :: Software Development :: Libraries',
-        'Topic :: Scientific/Engineering :: Information Analysis',
+        "Topic :: Software Development :: Libraries",
+        "Topic :: Scientific/Engineering :: Information Analysis",
         "Natural Language :: English",
     ],
     zip_safe=False,

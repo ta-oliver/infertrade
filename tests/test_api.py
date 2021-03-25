@@ -16,15 +16,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 Created by: Thomas Oliver
-Created date: 18th March 2021
+Created date: 25th March 2021
 """
 
 import pandas as pd
 
 from infertrade.PandasEnum import PandasEnum
 from infertrade.api import Api
+from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
 api_instance = Api()
+test_dfs = [simulated_market_data_4_years_gen(), simulated_market_data_4_years_gen()]
 
 
 def test_get_available_algorithms():
@@ -48,13 +50,9 @@ def test_get_available_algorithms():
             assert isinstance(params[ii_param_name], (int, float))
 
 
-from infertrade.data.simulate_data import simulated_market_data_4_years_gen
-test_dfs = [simulated_market_data_4_years_gen(), simulated_market_data_4_years_gen()]
-
-
 def test_calculation_positions():
     """Checks algorithms calculate positions and returns."""
-    list_of_algos = Api.available_algorithms(filter_by_category="allocation")
+    list_of_algos = Api.available_algorithms(filter_by_category=PandasEnum.ALLOCATION.value)
     for ii_df in test_dfs:
         for jj_algo_name in list_of_algos:
             df_with_allocations = Api.calculate_allocations(ii_df, jj_algo_name, "close")
@@ -64,3 +62,26 @@ def test_calculation_positions():
             for ii_value in df_with_returns[PandasEnum.VALUATION.value]:
                 if not isinstance(ii_value, float):
                     assert ii_value is "NaN"
+
+
+def test_signals_creation():
+    """Checks signal algorithms can create a signal in a Pandas dataframe."""
+    list_of_algos = Api.available_algorithms(filter_by_category=PandasEnum.SIGNAL.value)
+    for ii_df in test_dfs:
+        for jj_algo_name in list_of_algos:
+            original_columns = ii_df.columns
+
+            df_with_signal = Api.calculate_signal(ii_df, jj_algo_name)
+            assert isinstance(df_with_signal, pd.DataFrame)
+
+            # Signal algorithms should be adding new columns with float, int or NaN data.
+            new_columns = False
+            for ii_column_name in df_with_signal:
+                if ii_column_name not in original_columns:
+                    new_columns = True
+                    for ii_value in df_with_signal[ii_column_name]:
+                        if not isinstance(ii_value, (float, int)):
+                            assert ii_value is "NaN"
+
+            # At least one new column should have been added.
+            assert new_columns

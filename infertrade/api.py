@@ -68,7 +68,7 @@ class Api:
     def return_algorithm_category(algorithm_name: str) -> str:
         """Returns the category of algorithm as a string."""
         if algorithm_name in Api.get_signal_information():
-            algo_type = "signal"
+            algo_type = PandasEnum.SIGNAL.value
         elif algorithm_name in Api.get_allocation_information():
             algo_type = PandasEnum.ALLOCATION.value
         else:
@@ -81,8 +81,9 @@ class Api:
         return [PandasEnum.ALLOCATION.value, "signal"]
 
     @staticmethod
-    def available_algorithms(filter_by_package: Union[str, List[str]] = None,
-                             filter_by_category: Union[str, List[str]] = None) -> List[str]:
+    def available_algorithms(
+        filter_by_package: Union[str, List[str]] = None, filter_by_category: Union[str, List[str]] = None
+    ) -> List[str]:
         """Returns a list of strings that are available strategies."""
         if not filter_by_package:
             filter_by_package = Api.available_packages()
@@ -127,15 +128,16 @@ class Api:
         return required_inputs
 
     @staticmethod
-    def _get_raw_class(name_of_strategy: str) -> callable:
+    def _get_raw_class(name_of_strategy_or_signal: str) -> callable:
         """Private method to return the raw class - should not be used externally."""
         info = Api.get_allocation_information()
-        raw_class = info[name_of_strategy]["function"]
+        raw_class = info[name_of_strategy_or_signal]["function"]
         return raw_class
 
     @staticmethod
-    def calculate_allocations(df: pd.DataFrame, name_of_strategy: str,
-                              name_of_price_series: str = "price") -> pd.DataFrame:
+    def calculate_allocations(
+        df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = "price"
+    ) -> pd.DataFrame:
         """Calculates the allocations using the supplied strategy."""
         if name_of_price_series is not "price":
             df[PandasEnum.MID.value] = df[name_of_price_series]
@@ -150,9 +152,19 @@ class Api:
         return df_with_returns
 
     @staticmethod
-    def calculate_allocations_and_returns(df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = "price")\
-            -> pd.DataFrame:
+    def calculate_allocations_and_returns(
+        df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = "price"
+    ) -> pd.DataFrame:
         """Calculates the returns using the supplied strategy."""
         df_with_positions = Api.calculate_allocations(df, name_of_strategy, name_of_price_series)
         df_with_returns = ReturnsFromPositions().transform(df_with_positions)
         return df_with_returns
+
+    @staticmethod
+    def calculate_signal(
+        df: pd.DataFrame, name_of_signal: str
+    ) -> pd.DataFrame:
+        """Calculates the allocations using the supplied strategy."""
+        class_of_signal_generator = Api._get_raw_class(name_of_signal)
+        df_with_signal = class_of_signal_generator(df)
+        return df_with_signal
