@@ -1,25 +1,40 @@
+"""
+Functions to generate a dictionary wrapping ta's methods.
+
+Copyright 2021 InferStat Ltd
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Created by: Nikolay Alemasov
+Created date: 25/03/2021
+"""
+
 import re, json
 import pandas as pd
 
 import inspect
 from ta import momentum, trend, volatility, volume, others
 
-def print_dict_(export):
+def print_dict(export: dict):
+	"""Formats and outputs the generated dictionary into console."""
 	
 	def p_(*args, level = 0, ident = 4):
-	
+		"""Printing function. Now outputs into console."""
 		if level > 0:
 			print(" "*(level*ident-1), *args)
 		else:
 			print(*args)
 			
-	def fmt_(x):
-		if isinstance(x, str):
-			return "\"%s\""%x
-			
-		if isinstance(x, list):
-			return "\"%s\""%x
-		
 	p_("ta_export_signals = {")
 
 	for k, v in export.items():
@@ -29,7 +44,6 @@ def print_dict_(export):
 			if key == 'class':
 				msg = val.__name__
 			else:
-#				print(val)
 				msg = json.dumps(val)
 
 			p_("\"%s\": %s,"%(key, msg), level = 2)
@@ -39,7 +53,25 @@ def print_dict_(export):
 	p_("}")
 	
 
-def inspect_(module, series_params = ['open', 'high', 'low', 'close', 'volume']):
+def inspect_ta_module(module, series_params = ['open', 'high', 'low', 'close', 'volume']) -> dict:
+	"""Inspects the ta module provided. Outputs a dictionary based on the classes found and their methods."""
+	
+	def _gen_SMAIndicator_variants(desc: dict, windows = [20, 50, 200]) -> dict:
+		"""Generates individual variants in the case of SMAIndicator since its single parameter "window" has no default values."""
+		
+		assert len(desc['parameters'].keys()) == 1
+		assert list(desc['parameters'].keys())[0] == 'window'
+		assert list(desc['parameters'].values())[0] is None
+
+		res = {}
+
+		for w in windows:
+			d = desc.copy()
+			d.update({'parameters': {'window': w}})
+			res.update({'SMA%d'%w: d})
+			
+		return res
+	
 	ta_export_signals = {}
 	
 	for n, c in inspect.getmembers(module, inspect.isclass):
@@ -62,7 +94,7 @@ def inspect_(module, series_params = ['open', 'high', 'low', 'close', 'volume'])
 			default = s.default
 				
 			if s.default is inspect.Parameter.empty:
-				default = 'to_be_assigned'
+				default = None
 				print('[Warning] default is empty for', cls.__module__, n, p)
 			
 			params.update({p: default})
@@ -85,14 +117,16 @@ def inspect_(module, series_params = ['open', 'high', 'low', 'close', 'volume'])
 		assert(len(series) > 0)
 
 		cls = c
-		
 	
 		if len(methods) == 1:
 			desc = {'class': cls, 'module': cls.__module__, 'function_names': methods[0], 'parameters': params, 'series': series}
 			
 			assert(not n in ta_export_signals.keys())
 			
-			ta_export_signals.update({n: desc})
+			if cls.__name__ == 'SMAIndicator':
+				ta_export_signals.update(_gen_SMAIndicator_variants(desc))
+			else:
+				ta_export_signals.update({n: desc})
 		else:
 			for m in methods:
 				desc = {'class': cls, 'module': cls.__module__, 'function_names': m, 'parameters': params, 'series': series}
@@ -107,6 +141,6 @@ if __name__ == "__main__":
 	signals = {}
 	
 	for m in [momentum, trend, volatility, volume, others]:
-		signals.update(inspect_(m))
+		signals.update(inspect_ta_module(m))
 
-	print_dict_(signals)
+	print_dict(signals)
