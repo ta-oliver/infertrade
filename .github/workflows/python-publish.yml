@@ -27,5 +27,9 @@ jobs:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
+        echo Uploading as $TWINE_USERNAME
         python3.7 setup.py sdist bdist_wheel
+        python3 -m pip install --user --upgrade twine
+        python3.7 -m pip install --upgrade build
+        python3.7 -m build
         twine upload dist/*

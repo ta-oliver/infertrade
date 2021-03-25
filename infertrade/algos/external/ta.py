@@ -18,15 +18,13 @@ limitations under the License.
 Created by: Joshua Mason
 Created date: 11/03/2021
 """
-
-import pandas as pd
+import inspect
 from ta.momentum import *
 from ta.trend import *
 from ta.volatility import *
 from ta.volume import *
 from ta.others import *
 from ta.utils import IndicatorMixin
-from typing import List
 from typing_extensions import Type
 
 from infertrade.PandasEnum import PandasEnum
@@ -34,7 +32,16 @@ from infertrade.PandasEnum import PandasEnum
 
 def ta_adaptor(indicator_mixin: Type[IndicatorMixin], function_name: str, **kwargs) -> callable:
     """Wraps strategies from ta to make them compatible with infertrade's interface."""
-    column_strings = _get_required_columns(indicator_mixin)
+    indicator_parameters = inspect.signature(indicator_mixin.__init__).parameters
+    allowed_keys = ["close", "open", "high", "low", "volume"]
+    column_strings = []
+    parameter_strings = []
+
+    for i in range(len(indicator_parameters)):
+        if list(indicator_parameters.items())[i][0] in allowed_keys:
+            column_strings.append(list(indicator_parameters.items())[i][0])
+        elif list(indicator_parameters.items())[i][0] != "self":
+            parameter_strings.append(list(indicator_parameters.items())[i][0])
 
     def func(df: pd.DataFrame) -> pd.DataFrame:
         """Inner function to create a Pandas -> Pandas interface."""
@@ -47,29 +54,19 @@ def ta_adaptor(indicator_mixin: Type[IndicatorMixin], function_name: str, **kwar
     return func
 
 
-def _get_required_columns(indicator_mixin: Type[IndicatorMixin]) -> List[str]:
-    """Determines which column names the ta function needs to calculate signals."""
-    # Automatic based on manually created dictionary? or docstring parsing probably better
-    # Temporary implementation to show how it would work
-    if indicator_mixin == AroonIndicator:
-        return ["close"]
-    if indicator_mixin == AwesomeOscillatorIndicator:
-        return ["high", "low"]
-
-
 # Hardcoded list of available rules with added metadata.
 ta_export_signals = {
-    "AwesomeOscillatorIndicator": {
+    "awesome_oscillator": {
         "class": AwesomeOscillatorIndicator,
         "module": "ta.momentum",
-        "function_names": [],
+        "function_names": "awesome_oscillator",
         "parameters": {"window1": 5, "window2": 34},
         "series": ["high", "low"],
     },
-    "KAMAIndicator": {
+    "kama": {
         "class": KAMAIndicator,
         "module": "ta.momentum",
-        "function_names": [],
+        "function_names": "kama",
         "parameters": {"window": 10, "pow1": 2, "pow2": 30},
         "series": ["close"],
     },
@@ -115,17 +112,17 @@ ta_export_signals = {
         "parameters": {"window_slow": 26, "window_fast": 12, "window_sign": 9},
         "series": ["volume"],
     },
-    "ROCIndicator": {
+    "roc": {
         "class": ROCIndicator,
         "module": "ta.momentum",
-        "function_names": [],
+        "function_names": "roc",
         "parameters": {"window": 12},
         "series": ["close"],
     },
-    "RSIIndicator": {
+    "rsi": {
         "class": RSIIndicator,
         "module": "ta.momentum",
-        "function_names": [],
+        "function_names": "rsi",
         "parameters": {"window": 14},
         "series": ["close"],
     },
@@ -164,24 +161,24 @@ ta_export_signals = {
         "parameters": {"window": 14, "smooth_window": 3},
         "series": ["high", "low", "close"],
     },
-    "TSIIndicator": {
+    "tsi": {
         "class": TSIIndicator,
         "module": "ta.momentum",
-        "function_names": [],
+        "function_names": "tsi",
         "parameters": {"window_slow": 25, "window_fast": 13},
         "series": ["close"],
     },
-    "UltimateOscillator": {
+    "ultimate_oscillator": {
         "class": UltimateOscillator,
         "module": "ta.momentum",
-        "function_names": [],
+        "function_names": "ultimate_oscillator",
         "parameters": {"window1": 7, "window2": 14, "window3": 28, "weight1": 4.0, "weight2": 2.0, "weight3": 1.0},
         "series": ["high", "low", "close"],
     },
-    "WilliamsRIndicator": {
+    "williams_r": {
         "class": WilliamsRIndicator,
         "module": "ta.momentum",
-        "function_names": [],
+        "function_names": "williams_r",
         "parameters": {"lbp": 14},
         "series": ["high", "low", "close"],
     },
@@ -280,21 +277,51 @@ ta_export_signals = {
         "class": KSTIndicator,
         "module": "ta.trend",
         "function_names": "kst",
-        "parameters": {"roc1": 10, "roc2": 15, "roc3": 20, "roc4": 30, "window1": 10, "window2": 10, "window3": 10, "window4": 15, "nsig": 9},
+        "parameters": {
+            "roc1": 10,
+            "roc2": 15,
+            "roc3": 20,
+            "roc4": 30,
+            "window1": 10,
+            "window2": 10,
+            "window3": 10,
+            "window4": 15,
+            "nsig": 9,
+        },
         "series": ["close"],
     },
     "kst_diff": {
         "class": KSTIndicator,
         "module": "ta.trend",
         "function_names": "kst_diff",
-        "parameters": {"roc1": 10, "roc2": 15, "roc3": 20, "roc4": 30, "window1": 10, "window2": 10, "window3": 10, "window4": 15, "nsig": 9},
+        "parameters": {
+            "roc1": 10,
+            "roc2": 15,
+            "roc3": 20,
+            "roc4": 30,
+            "window1": 10,
+            "window2": 10,
+            "window3": 10,
+            "window4": 15,
+            "nsig": 9,
+        },
         "series": ["close"],
     },
     "kst_sig": {
         "class": KSTIndicator,
         "module": "ta.trend",
         "function_names": "kst_sig",
-        "parameters": {"roc1": 10, "roc2": 15, "roc3": 20, "roc4": 30, "window1": 10, "window2": 10, "window3": 10, "window4": 15, "nsig": 9},
+        "parameters": {
+            "roc1": 10,
+            "roc2": 15,
+            "roc3": 20,
+            "roc4": 30,
+            "window1": 10,
+            "window2": 10,
+            "window3": 10,
+            "window4": 15,
+            "nsig": 9,
+        },
         "series": ["close"],
     },
     "macd": {
