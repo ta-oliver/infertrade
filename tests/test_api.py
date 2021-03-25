@@ -52,7 +52,7 @@ def test_get_available_algorithms():
 
 def test_calculation_positions():
     """Checks algorithms calculate positions and returns."""
-    list_of_algos = Api.available_algorithms(filter_by_category="allocation")
+    list_of_algos = Api.available_algorithms(filter_by_category=PandasEnum.ALLOCATION.value)
     for ii_df in test_dfs:
         for jj_algo_name in list_of_algos:
             df_with_allocations = Api.calculate_allocations(ii_df, jj_algo_name, "close")
@@ -60,5 +60,22 @@ def test_calculation_positions():
             df_with_returns = Api.calculate_returns(df_with_allocations)
             isinstance(df_with_returns, pd.DataFrame)
             for ii_value in df_with_returns[PandasEnum.VALUATION.value]:
+                if not isinstance(ii_value, float):
+                    assert ii_value is "NaN"
+
+
+def test_signals_creation():
+    """Checks signal algorithms can create a signal in a Pandas dataframe."""
+    list_of_algos = Api.available_algorithms(filter_by_category=PandasEnum.SIGNAL.value)
+    for ii_df in test_dfs:
+        for jj_algo_name in list_of_algos:
+            df_with_signal = Api.calculate_signal(ii_df, jj_algo_name)
+            assert isinstance(df_with_signal, pd.DataFrame)
+
+            # Signals need to populate columns with name that matches the signal function name.
+            assert jj_algo_name in df_with_signal.columns
+
+            # Signal values need to be floats or NaNs.
+            for ii_value in df_with_signal[jj_algo_name]:
                 if not isinstance(ii_value, float):
                     assert ii_value is "NaN"
