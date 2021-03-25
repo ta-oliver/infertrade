@@ -29,7 +29,7 @@ from infertrade.PandasEnum import PandasEnum
 def talib_adapter(function_mixin: str, function_name: str, **kwargs):
     output_strings = Function(function_mixin).output_names
     column_strings = Function(function_mixin).input_names
-    column_strings = list(column_strings.items())[0][1]  # Get requireed columns from OrderedDict
+    column_strings = list(column_strings.items())[0][1]  # Get required columns from OrderedDict
 
     def func(df: pd.DataFrame) -> pd.DataFrame:
         try:
@@ -47,7 +47,7 @@ def talib_adapter(function_mixin: str, function_name: str, **kwargs):
 
 
 # Hardcoded list of available rules with added metadata.
-ta_lib_export_signals = {
+talib_export_signals = {
     # "aroon_down": {
     #     "class": AroonIndicator,
     #     "function_names": "aroon_down",
@@ -55,6 +55,9 @@ ta_lib_export_signals = {
     #     "series": ["close"]
     # },
 }
+
+talib_export_allocations = {}
+
 talib_export = {
     PandasEnum.SIGNAL.value: talib_export_signals,
     PandasEnum.ALLOCATION.value: talib_export_allocations,
