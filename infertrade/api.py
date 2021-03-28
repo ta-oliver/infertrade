@@ -130,8 +130,15 @@ class Api:
     @staticmethod
     def _get_raw_class(name_of_strategy_or_signal: str) -> callable:
         """Private method to return the raw class - should not be used externally."""
-        info = Api.get_allocation_information()
-        raw_class = info[name_of_strategy_or_signal]["function"]
+        info = Api.get_algorithm_information()
+        try:
+            raw_class = info[name_of_strategy_or_signal]["class"]
+        except KeyError:
+            if name_of_strategy_or_signal in info:
+                raise KeyError("The dictionary lacks the expected 'class' field.")
+            else:
+                raise KeyError("A strategy or signal was requested that could not be found: ",
+                               name_of_strategy_or_signal)
         return raw_class
 
     @staticmethod
@@ -167,4 +174,5 @@ class Api:
         """Calculates the allocations using the supplied strategy."""
         class_of_signal_generator = Api._get_raw_class(name_of_signal)
         df_with_signal = class_of_signal_generator(df)
+        df_with_signal = class_of_signal_generator(deepcopy(df))
         return df_with_signal
