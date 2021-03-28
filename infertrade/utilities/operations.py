@@ -120,8 +120,8 @@ def research_over_price_minus_one(x: Union[np.ndarray, pd.Series], shift: int) -
 
 
 class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
-    def __init__(self):
-        pass
+    def __init__(self, market_to_trade: str = "close"):
+        self.market_to_trade = market_to_trade
 
     def fit(self, X, y=None):
         self.fitted_features_and_target_ = None
@@ -173,7 +173,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
             [
                 ("signal", lag_1, ["signal"]),
                 ("signal_changes", lag_pct, ["signal"]),
-                ("signal_differences", lp_m_lr_l1, ["close", "signal"]),
+                ("signal_differences", lp_m_lr_l1, [self.market_to_trade, "signal"]),
             ]
         )
         self.feature_names = ["signal", "signal_changes", "signal_differences"]
@@ -202,7 +202,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
     def _get_target_array_transformer(self):
         """Use level of price series as target (dependant) variable."""
         percent_change_trans = FunctionTransformer(pct_chg)
-        target = ColumnTransformer([("historical_price_moves", percent_change_trans, ["close"])])
+        target = ColumnTransformer([("historical_price_moves", percent_change_trans, [self.market_to_trade])])
         self.target_name = ["historical_price_moves"]
         return target
 
