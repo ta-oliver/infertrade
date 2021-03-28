@@ -128,10 +128,10 @@ class Api:
         return required_inputs
 
     @staticmethod
-    def _get_raw_class(name_of_strategy: str) -> callable:
+    def _get_raw_class(name_of_strategy_or_signal: str) -> callable:
         """Private method to return the raw class - should not be used externally."""
         info = Api.get_allocation_information()
-        raw_class = info[name_of_strategy]["function"]
+        raw_class = info[name_of_strategy_or_signal]["function"]
         return raw_class
 
     @staticmethod
@@ -159,3 +159,12 @@ class Api:
         df_with_positions = Api.calculate_allocations(df, name_of_strategy, name_of_price_series)
         df_with_returns = ReturnsFromPositions().transform(df_with_positions)
         return df_with_returns
+
+    @staticmethod
+    def calculate_signal(
+        df: pd.DataFrame, name_of_signal: str
+    ) -> pd.DataFrame:
+        """Calculates the allocations using the supplied strategy."""
+        class_of_signal_generator = Api._get_raw_class(name_of_signal)
+        df_with_signal = class_of_signal_generator(df)
+        return df_with_signal
