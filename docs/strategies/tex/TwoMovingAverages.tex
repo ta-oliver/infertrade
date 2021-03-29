@@ -1,0 +1,52 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+\begin{document}
+\logo
+\rulename{Two Moving Averages}
+\tblofcontents
+\ruledescription{This price-only rule takes positions based on two moving averages, and a minimum threshold K. It allocates a positive position when the shorter moving average is above K fraction higher than the other average and vice versa.}
+\ruleparameters
+{Minimum ratio}{0.01}{Threshold difference in averages.}{$\minimumratio$}
+{Short price average length}{2}{Number of days to include in the fast moving average.}{$\averagelengthshort$}
+{Long price average length}{2}{Number of extra days to include in slow moving average.}{$\averagelengthlong$}
+{Maximum allocation}{1.0}{Maximum size of position to take.}{$Z_{max}$}
+\stoptable
+
+\section{Equation}
+
+\begin{equation}
+\bigcontribution(\currenttime, \averagelengthshort, \price) = \frac{1}{\averagelengthshort} \sum_{\dummyiterator=0}^{\averagelengthshort-1} \price(\currenttime - \dummyiterator)\\
+\end{equation}
+
+\begin{equation}
+\bigcontribution(\currenttime, \averagelengthlong, \price) = \frac{1}{\averagelengthlong} \sum_{\dummyiterator=0}^{\averagelengthlong-1} \price(\currenttime - \dummyiterator)\\
+\end{equation}
+
+\begin{equation}
+\bigcontributiontime = \frac{\bigcontributionshort}{\bigcontributionlong} \\
+\end{equation}
+
+\begin{equation}
+\position_\currenttime = 
+\begin{cases} 
+\mbox{$Z_{max}$,} & \mbox{if } \bigcontributiontime > 1 + 2\minimumratio \\ 
+\mbox{$\frac{\bigcontributiontime - 1 - \minimumratio}{\minimumratio}$,} & \mbox{if } 1 + \minimumratio < \bigcontributiontime < 1 + 2\minimumratio \\
+\mbox{0.0,} & \mbox{if } 1/(1 + \minimumratio) < \bigcontributiontime < 1 + \minimumratio \\
+\mbox{$-\frac{1/\bigcontributiontime - 1 - \minimumratio}{\minimumratio}$,} & \mbox{if } 1/(1 + 2\minimumratio) < \bigcontributiontime < 1/(1 + \minimumratio) \\
+\mbox{$-Z_{max}$,} & \mbox{if } \bigcontributiontime < 1/(1 + 2\minimumratio) \\
+\end{cases}
+\end{equation}
+
+\hspace{200mm}
+\\
+\noindent where $\position_\currenttime$ is the portfolio allocation at time $\currenttime$, and $\price = \price(\currenttime)$ is the value of the price series.
+
+\hspace{200mm}
+\hspace{200mm}
+
+\keyterms
+\furtherlinks
+
+\end{document}

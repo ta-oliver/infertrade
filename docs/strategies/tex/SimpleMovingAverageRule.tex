@@ -1,0 +1,18 @@
+\documentclass{article}%
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+%
+\input{common_symbols_and_format.tex}%
+%
+\begin{document}%
+\normalsize%
+\logo%
+\rulename{SimpleMovingAverageRule}%
+\ruledescription{This rule uses differentials between two moving averages to determine trade positioning. The parameters accepted are the integer length of each short average (2 parameters - one for price, the additionalnumber of days for the longer averages (2 parameters)}%
+\ruleparameters{Number of days to include in price short average}{2}{This is the number of time steps in the short term average for price.}{Symbol}{Number of extra days to include in price long average}{5}{This is the number of extra time steps in the long term average for price compared to the short term average (must be longer).}{Symbol}%
+\stoptable%
+\furtherlinks%
+\end{document}

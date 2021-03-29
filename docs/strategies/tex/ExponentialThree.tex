@@ -1,0 +1,44 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+\begin{document}
+\logo
+\rulename{Exponential Trading Rule - Three factor} %Argument is name of rule
+\tblofcontents
+
+\ruledescription{These representations have the position dependent on an exponentially weighted average of the prior values of research and price. The lookback length, $\lookbacklength$, determines how far back the rule looks. The decay rates, $\decaycoefficientone$, $\decaycoefficienttwo$ and $\decaycoefficientthree$, and amplitudes, $\amplitudecoefficientone$, $\amplitudecoefficienttwo$ and $\amplitudecoefficientthree$ coefficients determine the contribution from each exponential. The expression is normalised to be dimensionless by division by the weighting factors and current price.}
+
+\ruleparameters
+{Window size}{10}{This is the number of time steps over which exponential contributions are sourced.}{$\lookbacklength$}
+{Exponential decay rate for price m, \break m $\in \{1,2,3\}$}{0.0}{These are the decay factors that reduce older contributions from the price series.}{$\decaycoefficient_m^{\price}$}
+{Exponential decay rate for research	m, \break m $\in \{1,2,3\}$}{0.0}{These are the decay factors that reduce older contributions from the research series.}{$\decaycoefficient_m^{\research}$}
+{Amplitude of price contribution m, \break $m \in \{1,2,3\}$}{-0.1}{These factors scale the overall contribution from past values of price.}{$\amplitudecoefficient_m^{\price}$}
+{Amplitude of research contribution m, \break $m \in \{1,2,3\}$}{-0.1}{These factors scale the overall contribution from past values of price.}{$\amplitudecoefficient_m^{\research}$}
+\stoptable
+
+\section{Equation}
+
+\begin{equation}
+\contribution^{\price}(\dummyiterator,\dummyiteratortwo) = \sum_{\dummyiteratorthree = 1}^{\dummyiteratortwo} e^{- \frac{ \dummyiterator}{e^{-\decaycoefficient_\dummyiteratorthree^\price}}}
+\end{equation}\\
+\begin{equation}
+\contribution^{\research}(\dummyiterator,\dummyiteratortwo) = \sum_{\dummyiteratorthree = 1}^{\dummyiteratortwo}  e^{- \frac{ \dummyiterator}{e^{-\decaycoefficient_\dummyiteratorthree^\research}}}
+\end{equation}\\
+\begin{equation}
+\bigcontribution_{\dummyiteratortwo \price} = \amplitudecoefficient_m^\price \frac{\sum_{\dummyiterator=0}^{\lookbacklength} \price_{\currenttime - \dummyiterator} \contribution^{\price}(\dummyiterator, \dummyiteratortwo)}{\sum_{\dummyiterator = 0}^{\lookbacklength} \contribution^{\price}(\dummyiterator, \dummyiteratortwo)}
+\end{equation}\\
+\begin{equation}
+\bigcontribution_{\dummyiteratortwo \research} = \amplitudecoefficient_m^\research \frac{\sum_{\dummyiterator=0}^{\lookbacklength} \research_{\currenttime - \dummyiterator} \contribution^{\research}(\dummyiterator, \dummyiteratortwo)}{\sum_{\dummyiterator = 0}^{\lookbacklength} \contribution^{\research}(\dummyiterator, \dummyiteratortwo)} 
+\end{equation}\\
+\begin{equation}
+\position_{\currenttime} = \frac{({\bigcontributionone}_{\price} + {\bigcontributionone}_{\research} + {\bigcontributiontwo}_{\price} + {\bigcontributiontwo}_{\research} + {\bigcontributionthree}_{\price} + {\bigcontributionthree}_{\research})}{\price_{\currenttime}}
+\end{equation}
+\\
+where $\price_\currenttime$ is the price at time $\currenttime$, $\research$ is the value of the research series, $\amplitudecoefficientone$, $\amplitudecoefficienttwo$ and $\amplitudecoefficientthree$ are the amplitude coefficients, $\decaycoefficientone$, $\decaycoefficienttwo$ and $\decaycoefficientthree$  are the decay rate coefficients and $\position$ is the resultant fractional portfolio investment.\\
+Intuitively, the $\contribution$ are the exponential weightings for each historical value in the lookback period, with $\bigcontribution$ the normalised sum of all the contributions, scaled by the amplitude coefficient. The total contributions are then scaled by the current price to give a dimensionless fraction of the portfolio to invest.
+\hspace{200mm}
+\hspace{200mm}
+\keyterms
+\furtherlinks
+\end{document}
