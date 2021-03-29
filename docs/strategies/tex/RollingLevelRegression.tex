@@ -1,0 +1,91 @@
+\documentclass{article}%
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+%
+\input{common_symbols_and_format.tex}%
+\usepackage{tocloft}%
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}%
+%
+\begin{document}%
+\normalsize%
+\logo%
+\rulename{Rolling Level Regression}%
+\tblofcontents%
+\ruledescription{This trading rule recommends portfolio allocation based on the value of rolling error obtained when comparing the historical ground truth prices with their predictions from research. The smaller the error, the greater the size of the recommended allocation. The allocation is scaled by the Kelly Fraction.\\}%
+\howtotrade
+{Given default parameter values, if the asset drift is 0.001 and the error is 0.02 (2\% daily volatility), this rule will take a $0.001 / (0.02)^2  = 2.5$ or 250\% leveraged position.}
+{
+\begin{figure}[H]
+\begin{multicols}{2}
+  \centering
+    \begin{subfigure}{\linewidth}
+        \includegraphics[width=\linewidth]{\graphdir{market.png}}
+        \caption{Market series data}
+        \label{fig:01}
+    \end{subfigure}
+  \par
+  \vspace{5mm}
+  \begin{subfigure}{\linewidth}
+    \includegraphics[width=\linewidth]{\graphdir{research.png}}
+    \caption{Research series data}
+    \label{fig:02}
+  \end{subfigure}
+  \par
+  \begin{subfigure}{\linewidth}
+    \includegraphics[width=\linewidth]{\graphdir{pa(RollingLevelRegression).png}}
+    \caption{ Suggested volume to buy or sell}
+    \label{fig:03}
+  \end{subfigure}
+  \par
+  \vspace{5mm}
+  \begin{subfigure}{\linewidth}
+    \includegraphics[width=\linewidth]{\graphdir{pr(RollingLevelRegression).png}}
+    \caption{Portfolio return}
+    \label{fig:04}
+  \end{subfigure}
+  \end{multicols}
+  \caption{Graphical depiction of the Rolling Level Regression algorithm. 20 Days of trading data is visualized in the graphs (\ref{fig:01}) A line chart showing changes in the market price for multiple trading days.(\ref{fig:02}) A chart displaying the research series data. (\ref{fig:03})Positive values indicate that buying the security by x\%. The negative values mean you are shorting the security by x\% (\ref{fig:04})Chart showing the portfolio return when using the Rolling Level Regression as the trading rule.}
+  \label{fig:cps_graph}
+\end{figure}
+}
+
+\ruleparameters{Kelly fraction}{1.0}{Amplitude weighting. 1.0 is maximum growth if regression is exact. <1.0 scales down positions taken.}{$\kellyfraction$}{Regression length}{50}{This is the number of days used to estimate the regression coefficients.}{$\lookbacklength$}%
+\stoptable 
+
+\section{Equation}
+The following equations describe the rolling level rule:
+
+\begin{equation}
+    \regressionprice_\currenttime= \amplitudecoefficient\research_\currenttime + \constantc 
+\end{equation}
+
+\begin{equation}
+    \position_\currenttime = \kellyfraction \frac{\regressionprice_\currenttime}{ \rmserror_{\regressionprice}^{2}}
+\end{equation}
+
+\hspace{200mm}
+\\
+
+
+where
+
+$\research$: is the value of the research series.
+
+$\regressionprice_\currenttime$: is the predicted price at time $\currenttime$ 
+
+$\rmserror$: is the standard error.
+
+$\kellyfraction$: is the Kelly Fraction.
+
+$\position$: is the resultant fractional portfolio investment.
+
+\hspace{200mm}
+\hspace{200mm}
+
+\assumptions%
+\keyterms%
+\furtherlinks%
+\end{document}
