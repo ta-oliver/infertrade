@@ -648,6 +648,6 @@ ta_export_signals = {
 
 ta_export_allocations = {}
 ta_export = {
-    "signal": ta_export_signals,
+    PandasEnum.SIGNAL.value: ta_export_signals,
     PandasEnum.ALLOCATION.value: ta_export_allocations,
 }
