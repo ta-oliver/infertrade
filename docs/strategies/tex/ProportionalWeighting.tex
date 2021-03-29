@@ -1,0 +1,83 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Logit weighting of research differential}
+\tblofcontents
+
+\ruledescription{
+This rule seeks to always keep a position on, weighted by how attractive the current ratio of the research value to price is. The logit function\footnote{\url{https://en.wikipedia.org/wiki/Logistic_function}} is used to parse the current differential to a score between -1 and +1. A positive bias is used to shift the neutral point.\\}
+
+\howtotrade
+{The percentage of portfolio recommended for security trading depends on the relative value of the research to price. \Figure{\ref{fig:01}} above highlights the difference in levels between price and research. Larger position is taken when the research moves higher than the price. The suggested position is moderated by the strategy amplitude parameter, as seen in \Figure{\ref{fig:03}}. There is a bias setting which determines in percentage, the threshold growth in the research over the price, required to take position.}
+{
+\begin{figure}[H]
+\centering
+    \begin{subfigure}{\linewidth}
+    \resizebox{\width}{\height}{
+        \includegraphics[width=\linewidth]{\graphdir{pw_01.png}}}
+        \caption{Price and research series}
+        \label{fig:01}
+    \end{subfigure}
+
+  \begin{subfigure}{0.49\linewidth}
+    \includegraphics[width=\linewidth]{\graphdir{pw_02.png}}
+    \caption{The research excess and position chart}
+    \label{fig:02}
+  \end{subfigure}
+  \begin{subfigure}{0.49\linewidth}
+    \includegraphics[width=\linewidth]{\graphdir{pw_03.png}}
+    \caption{Portfolio allocation}
+    \label{fig:03}
+  \end{subfigure}
+  \caption{Graphical representation of the logit weighting of research differential algorithm. (\ref{fig:01}) The chart of price and research series for a 100 day period. The differential between the price and research is coloured in grey. (\ref{fig:02}) Graphical depiction of the research excess. Its formula is given as $research\_excess = ((research + 3) / price - 1.0) \times ratio\_scale\_factor$. (\ref{fig:03}) Position spectrum for different amplitude factors, the position is computed using $position = 2 \times (zero\_to\_one(research\_excess) - 0.5) \times amplitude\_factor$.}
+  \label{fig:pw_graph}
+\end{figure}
+}
+
+\ruleparameters
+{Strategy amplitude}{0.5\%}{This parameter scales the maximum and minimum size of position that can be taken.}{$\amplitudecoefficient$}
+{Ratio scale factor}{10.0}{Varies how fast the position taken varies as the difference between research and price varies.}{$\scaleratiofactor$}
+{Long bias}{0.0\%}{An offset for the neutral \% difference between price and research. 0.2 means no position is taken if research series is 20\% higher than the price series. Should be zero if the research series is an unbiased predictor of the price series.}{$\fixedconstant$}
+{Minimum price}{0.01\%}{A fixed minimum value of price.}{$P_{min}$}
+\stoptable
+
+\section{Equation}
+Below are the equations which govern how this specific trading rule calculates a trading position.
+
+\begin{equation}
+\decaycoefficient_\currenttime = \scaleratiofactor (\frac{\research_\currenttime - \fixedconstant}{max(\price_\currenttime, P_{min})} - 1)
+\end{equation}
+\begin{equation}
+\position_\currenttime = \amplitudecoefficient ( \frac{2}{1 + e^{-\decaycoefficient}} - 1 )
+\end{equation}
+\\ % creates some space after equation
+where $\price_\currenttime$ is the price at time $\currenttime$, $\research$ is the value of the research series and $\position$ is the resultant fractional portfolio investment.
+
+\hspace{200mm}
+\hspace{200mm}
+
+
+\begin{Strategy Rationale}
+
+Proportional Weighting is a strategy that seeks to capture smaller deviations from fair value between a price series and another time series - a comparable security or price forecast. If the price series tends to mean revert, then proportional weighting will take increasing positions for larger deviations from fair value.
+
+The advantage of some scaling in for medium positions is that the frequency of small bets may be much more than the big bets.
+
+Compare mean reversion with 100\% in at 10\% cheap, versus 50\% in at 5\% cheap, 100\% in at 10\% cheap. Imagine the market is 10\% cheap 2 times in five years. You will make 20\% from riding the 10\% gains twice if eventually reverts.
+
+If market is 5\% cheap only twice in five years (i.e. it tends to become 10\% cheap if 5\% cheap) then scaling in is worse, because you only gain 15\% (half of what you invested was at 5\% cheap, not 10\% cheap). 50\% * 5\% * 2 + 50\% * 10\% * 2 = 15\%
+
+If however market is 5\% cheap 10 times in five years then scaling in performs better as you make 50\% * 5\% * 10 + 50\% * 10\% * 2 =  35\%.
+
+So scaling in, using strategies like Proportional Weighting, allows you to make money from smaller opportunities, at the expense of less gain for bigger opportunities and a deeper maximum loss (as at the bottom you have lost 5\% more on 50\% of your holdings).
+
+\keyterms
+
+\furtherlinks %The footer
+\end{document}

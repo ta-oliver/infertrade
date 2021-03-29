@@ -1,0 +1,38 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Level Regression} %Argument is name of rule
+\tblofcontents
+
+\ruledescription{A regression-type approach that directly calculates allocation from research level.} %Argument is rule description
+
+
+\ruleparameters%You can include however many arguments (in groups of 4) as you want!
+{Level Coefficient}{0.1}{Multiplier for regression.}{$k_1$}
+{Constant Coefficient}{0.1}{Initial constant for regression.}{$k_2$}
+\stoptable %must be included or Tex engine runs infinitely
+
+\section{Equation}
+Below are the equations which govern how this specific trading rule calculates a trading position.
+
+\begin{equation}
+\position_\currenttime = k_1*R_t+k_2
+\end{equation}
+\\ % creates some space after equation
+with
+
+$\position_\currenttime$ is the portfolio allocation at time $\currenttime$
+
+$R_t$: Research value at time $\currenttime$
+
+$k_1$: level coefficient
+
+$k_2$: static coefficient
+
+\keyterms
+\furtherlinks %The footer
+\end{document}

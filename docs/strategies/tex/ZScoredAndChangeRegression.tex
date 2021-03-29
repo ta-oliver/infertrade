@@ -1,0 +1,23 @@
+\documentclass{article}%
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+%
+\input{common_symbols_and_format.tex}%
+\usepackage{tocloft}%
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}%
+%
+\begin{document}%
+\normalsize%
+\logo%
+\rulename{ZScoredAndChangeRegression}%
+\tableofcontents%
+\ruledescription{This trading rules regresses the 1 day price changes seen historical against the prior day's percentage change of theresearch series and level of research series.}%
+\ruleparameters{One Day Change Coefficient}{0.1}{The coefficient for allocation size versus the prior day fractional change in the research.}{Symbol}{Constant Coefficient}{0.1}{The coefficient for the constant contribution.}{Symbol}{Level Dependence Coefficient}{0.1}{The coefficient for allocation size versus the z scored level of the signal.}{Symbol}%
+\stoptable%
+\assumptions%
+\keyterms%
+\furtherlinks%
+\end{document}

@@ -1,0 +1,50 @@
+\documentclass{article}%
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+%
+\input{common_symbols_and_format.tex}%
+\usepackage{tocloft}%
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}%
+%
+\begin{document}%
+\normalsize%
+\logo%
+\rulename{Static Log Difference Regression}%
+\tblofcontents
+\ruledescription{Regresses the one-day price changes against the lagged  difference of research to price for the specified number of days, using coefficients estimated from the start of the data.}%
+
+\howtotrade{Given default parameter values, if the asset drift is 0.001 and the error is 0.02 (2$\%$ daily volatility), this rule will take a $0.001 / (0.02)^2  = 2.5$ or 250$\%$ position (leveraged).}
+
+\ruleparameters{Kelly Fraction}{0.1}{Amplitude weighting (Kelly Fraction). 1.0 is maximum growth if regression is exact. <1.0 scales down positions taken.}{$\kellyfraction$}{Regression Length}{100}{This is the number of days used to estimate the regression coefficients.}{$\lookbacklength$}%
+\stoptable%
+
+\section{Equation}
+Below are the equations which govern how this trading rule determines a trading position.
+\begin{equation} \label{eq1}
+   \regressionprice_\currenttime =  \amplitudecoefficient  (ln(\price_{\currenttime}) - ln(\research_{\currenttime})) + \constantc,
+\end{equation}
+
+The equation ($\ref{eq1}$) predict the value of the price $\regressionprice_\currenttime$ at time $\currenttime$ using the difference from the logarithm of the price and research values. Using the logarithm function properties, we can rewrite it easily as:
+
+\begin{equation}
+       \regressionprice_\currenttime =  \amplitudecoefficient  ln\left( \frac{\price_{\currenttime}}{\research_{\currenttime}}\right)  + \constantc,
+\end{equation}
+
+Since we are using a static approach the amplitude coefficient $\amplitudecoefficient$ remains constant. In order to calculate the resultant fractional portfolio allocation $\position_{\currenttime}$ we use the Kelly fraction to obtain the maximum results for the long run. 
+
+
+\begin{equation}
+\position_\currenttime = \kellyfraction \frac{\regressionprice_\currenttime}{ \rmserror_{\regressionprice}^{2}}  
+\label{eq2}
+\end{equation}
+
+Additionally, the standard error $\rmserror_{\regressionprice}$ is calculated and included in equation (\ref{eq2}) to normalize the predicted price. 
+
+
+\assumptions%
+\keyterms%
+\furtherlinks%
+\end{document}

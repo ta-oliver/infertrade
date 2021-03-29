@@ -1,0 +1,43 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+\begin{document}
+\logo
+\rulename{Test Rule}
+\ruledescription{This rule uses differentials between four moving averages to determine trade positioning. The parameters accepted are the integer length of each short average (2 parameters - one for price, one for research), the additional number of days for the longer averages (2 parameters - also, one for price, one for research) and 4 coefficients for each average's weighting contribution. The total sum is divided by the current price to calculate a position size.}
+\ruleparameters
+{Short price average length}{2}{Number of days in the short price
+average.}{$\averagelengthshort^{\price}$}
+{Long price average length}{5}{Number of additional days in the longer price average (added to the number in the short price average).}{$\averagelengthlong^{\price}$}
+{Short research average length}{2}{Number of days in the short research average.}{$\averagelengthshort^{\research}$}
+{Long research average length}{5}{Number of additional days in the longer research average (added to the number in the short price average).}{$\averagelengthlong^{\research}$}
+{Amplitude of short price average}{1.0}{Weighting coefficient for the short term average of price.}{$\amplitudecoefficientone^{\price}$}
+{Amplitude of long price average}{1.0}{ Weighting coefficient for the long term average of price.}{$\amplitudecoefficienttwo^{\price}$}
+{Amplitude of short research average}{1.0}{Weighting coefficient for the short term average of research.}{$\amplitudecoefficientone^{\research}$}
+{Amplitude of long research average}{1.0}{Weighting coefficient for the long term average of research.}{$\amplitudecoefficienttwo^{\research}$}
+\stoptable
+
+\section{Equation}
+
+\begin{equation}
+\bigcontribution(\currenttime, \averagelength, \amplitudecoefficient, \genericfunction) = \frac{\amplitudecoefficient}{\averagelength} \sum_{\dummyiterator=0}^{\averagelength-1} \genericfunction(\currenttime - \dummyiterator)\\
+\label{eq1}
+\end{equation}
+
+\begin{equation}
+\position(\currenttime) = \frac{\bigcontribution(\currenttime, \averagelengthshort^{\price}, \amplitudecoefficientone^{\price}, \price)+\bigcontribution(\currenttime, (\averagelengthshort^{\price} + \averagelengthlong^{\price}), \amplitudecoefficienttwo^{\price},\price)+\bigcontribution(\currenttime, \averagelengthshort^{\research}, \amplitudecoefficientone^{\research}, \research)+\bigcontribution(\currenttime, (\averagelengthshort^{\research} + \averagelengthlong^{\research}), \amplitudecoefficienttwo^{\research}, \research)}{\price(\currenttime)} \\
+\label{eq2}
+\end{equation}
+
+\hspace{200mm}
+
+\noindent where $\position_\currenttime$ is the portfolio allocation at time $\currenttime$, $\price = \price(\currenttime)$ is the value of the price series and $\research = \research(\currenttime)$ is the value of the research series.
+
+\hspace{200mm}
+\hspace{200mm}
+
+\keyterms
+\furtherlinks
+
+\end{document}

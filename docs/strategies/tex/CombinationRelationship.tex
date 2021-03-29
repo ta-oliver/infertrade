@@ -1,0 +1,109 @@
+\documentclass{article}%
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+\usepackage{relsize}%
+\usepackage{ragged2e}%
+%
+\input{common_symbols_and_format.tex}%
+\usepackage{tocloft}%
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}%
+%
+\begin{document}%
+\normalsize%
+\logo%
+\rulename{Combination Relationship}%
+\tableofcontents%
+
+\relationshipdescription{
+\justify
+\Centering\textbf{In a combination relationship, the combination of (1) the current value of the signal, (2) recent changes in the value of the signal, and (3) the difference between the signal and the market directly affect future changes in the price:}
+
+\begin{equation}
+\mathlarger{
+    \Delta \price_{\currenttime+1} \propto k_1 \research_t + k_2\left(\frac{\research_t}{\research_{t-1}}-1\right) + k_3\left(\frac{\price_t}{\research_t}-1\right) + c
+    }
+\end{equation}
+\justify where ~$\Delta \price_{t+1}$ represents the future price change, $\research_t$ represents the current value of the research signal at current time $t$, $\price_t$ represents the current value of the market price at current time $t$, $k_1$ $k_2$ $k_3$ are scalars, and $c$ is a constant. This relationship can capture more complex relationships which may be a combination of Level, Change and Difference Relationships. Each of these relationships is expressed in the first three terms of the above equation, each weighted by their importance. To learn more about each of these relationships, find their explanations in the corresponding downloadable PDFs.
+\vspace{1mm}
+\justify
+After finding the relationship which maximises risk adjusted returns, InferTrade runs tests for statistical significance to verify that the relationship gives a predictive edge. A predictive combination relationship can be used to invest depending on the level of the signal, recent percentage changes in the signal, and percentage difference between the market and the signal.
+\vspace{1mm}
+}%
+\ruledescription{
+\justify
+A predictive combination relationship can be reflected in many kinds of rules. InferTrade uses a 120 period (6 months for daily data) rolling regression of the a combination of price-research value relationships against next day's price change as a benchmark. This trading rule recommends taking a position sized as a percentage of the capital you have allocated to trading this particular market.
+\vspace{1mm}
+\justify
+This rule will show higher returns than usual after optimisation if a significant Combination Relationship is present between the price and signal series. The following equation shows how a Combination Regression trading rule calculates position sizing:
+
+\begin{equation}
+\position_\currenttime = \amplitudecoefficientone\research_\currenttime + \amplitudecoefficienttwo\left(\frac{\research_\currenttime}{\research_{\currenttime - 1}} - 1\right) +\amplitudecoefficientthree\left(\frac{\price_\currenttime}{\research_\currenttime}-1\right)+ \epsilon_{\currenttime+1 }
+\label{eq1}
+\end{equation}
+\justify with the error symmetric such that
+\begin{equation}
+E^{model}_{\currenttime}[\Delta \price_{\currenttime+1}] = \amplitudecoefficientone\research_\currenttime + \amplitudecoefficienttwo\left(\frac{\research_\currenttime}{\research_{\currenttime - 1}} - 1\right) +\amplitudecoefficientthree\left(\frac{\price_\currenttime}{\research_\currenttime}-1\right)
+\end{equation}
+\\ % creates some space after equation
+\justify where $\position_\currenttime$ is the recommended strategy allocation at time $\currenttime$, $E^{model}_{\currenttime}[\Delta \price_{\currenttime+1}]$ is the predicted next day percentage price change, $\research_\currenttime$ is the research value at time $\currenttime$, $\price_t$ is the price value at time \currenttime and $k_1$, $k_2$ and $k_3$ are the level, difference  and static coefficients. $\epsilon_\currenttime$ represents the in sample regression error between the model predicted and observed price change for time \currenttime, such that $\epsilon_\currenttime = E^{model}_{\currenttime-1}[\Delta \price_{\currenttime}] - \Delta \price_{\currenttime}$.}
+\vspace{1mm}
+\vspace{1mm}
+\justify To give a suggested portfolio allocation $\position_\currenttime$ for the market, e.g. ``invest 5\% of strategy allocation into the security'', the regression forecast's expected next day \% price move is divided by the square of the Standard Root Mean Squared Percentage Prediction Error $\rmserrorsquared$ in our above regression:
+\vspace{1mm}
+\\
+
+
+
+\vspace{1mm}
+\begin{equation}
+    \position_\currenttime = 
+    \begin{cases}
+    \frac{\Delta \price_{\currenttime+1}}{\rmserrorsquared} & \text{if } \currenttime > L,\\
+    0                                        & \text{otherwise}
+    \end{cases}
+\end{equation}
+
+
+
+\vspace{1mm}
+\justify where $\position_\currenttime$ is the suggested allocation as a percentage of the capital which you have allocated to trading this market at time $\currenttime$.
+
+\justify Worked example for liquid market:  current share price is \$50, regression coefficients are 0.00005 ($5 * 10^-5$) for level and 0.0 for the constant, with \$1,000 allocated to this single-stock strategy.  The current research series - a sentiment index - is +5.0, with a RMS prediction error from the regression of 5\%. In this situation the strategy recipe recommends an investment of $0.00005 * 5.0 / (0.05)^2 = 10\%$ be allocated. So \$1,000 * 10\% = \$100 would be allocated, so we would buy $\frac{\$100}{\$100} = 2$ shares.
+We see from this example the expected gain over the next day is 2.5 basis points (minus trading costs), versus 500 basis points of daily risk, so in practice this kind of strategy is most useful where the signal both has a predictive edge and is stable (auto-correlated) in recommendation over time, so that the `edge' from multiple time steps can compound linearly without incurring additional bid-offer spreads whilst the `risk' aggregates scales with the square-root of time (for random walk).
+
+
+\vspace{1mm}
+\justify (Note that if the magnitude of the error term is smaller than the magnitude of the price change prediction, i.e. $|\rmserror| < |\Delta\price_{\currenttime+1}|$, dividing $\Delta\price_{\currenttime+1}$ by $\rmserrorsquared$ would result in $\position_\currenttime>1$. Limits can then be applied to cap the allocation. E.g. between 0\% and 100\% if short selling is prohibited. In practice it is generally unlikely that in liquid markets a genuine statistical trading signal this strong will be found.)
+
+\\
+\vspace{1mm}
+\fixedruleparameters
+{Regression Length}{120}{This is the number of previous days used to estimate the regression coefficients.}{$\lookbacklength$}%
+\stoptable 
+
+\vspace{1mm}
+\justify For estimating the regression coefficients, a rolling window is used, so that at time t, the
+regression data uses research data from time $\currenttime - 121$ to $\currenttime - 1$ to calculate 120 research changes as the regression’s independent variable. Price data from $\currenttime - 120$ to $\currenttime$ is used to calculate 120 next day price changes as the regression’s dependent variable. 
+\vspace{1mm}
+\justify Note that rule parameters are fixed to their default values for this and any other relationships optimised on simplified mode.
+ %Argument is rule description
+
+
+
+\assumptions%
+\keyterms%
+\furtherlinks%
+
+\appendixinfertrade{
+
+\vspace{1mm}
+
+\regressionanderrorpartone
+
+}
+
+
+\end{document}

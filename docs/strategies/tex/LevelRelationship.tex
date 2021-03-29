@@ -1,0 +1,166 @@
+\documentclass{article}%
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+\usepackage{relsize}%
+\usepackage{ragged2e}%
+\usepackage{amsmath}
+%
+\input{common_symbols_and_format.tex}%
+\usepackage{tocloft}%
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}%
+%
+\begin{document}%
+\normalsize%
+\logo%
+\rulename{Level Relationship}%
+\tableofcontents%
+
+\relationshipdescription{
+\justify
+\Centering\textbf{In a level relationship, the current value of the signal directly affects future changes in price:}
+
+\begin{equation}
+\mathlarger{
+    \Delta \price_{\currenttime+1} \propto k S_\currenttime + c
+    }
+\end{equation}
+\justify where ~$\Delta \price_{\currenttime+1}$ represents the future price change, $S_\currenttime$ represents the current value of the research signal at current time $\currenttime$, $k$ is a scalar, and $c$ is a constant.\\
+
+\justify Intuitively, assuming a positive coefficient for k,  this means that when the signal is high it is good to buy the market, as the price will tend to drift higher. When the signal is low, it is good to sell the market as the price will tend to drift lower.
+\vspace{1mm}
+\justify
+\vspace{1mm}
+\justify
+\Centering An example of a time series that might show a predictive level relationship would be a sentiment index:
+\justify\Centering\textit{positive sentiment --> index value is high --> price goes up because investors are bullish}
+\vspace{1mm}
+
+\justify
+We would typically not expect a signal that is a price forecast to show a predictive level relationship, as a price forecast is typically relative to the current price (a difference relationship). Similarly, a technical positioning indicator as a signal may be more likely to show a change relationship, whereby changes in the value of a signal drive the price, because a stable level of interest may not move the market.
+
+}%
+
+
+\newpage
+
+
+\begin{figure}[h]
+\begin{subfigure}{0.48\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Market_ResearchSeries_120_140.pdf} 
+\caption{Comparison of the research value of the level relationship trading rule and the market price in USD for the first 20 days of trading.}
+\label{fig:01}
+\end{subfigure}	\quad
+\begin{subfigure}{0.48\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Allocation_MarketSeries_120_140.pdf}
+\caption{Suggested allocation per day, this graph shows when and how to invest the total or a fraction of the initial holding, and how the market price is correlated with it.}
+\label{fig:02}
+\end{subfigure}
+
+
+\begin{subfigure}{0.48\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/StrategyReturn_MarketSeries_120_140.pdf} 
+\caption{Comparison of the market price in USD and the returns obtained from the first 20 days of trading, after the 120 days of training the algorithm has been used. In other words, it is the original holding + the returns.}
+\label{fig:03}
+\end{subfigure}
+\quad
+\begin{subfigure}{0.48\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Allocation_ResearchValue_120_140.pdf}
+\caption{Suggested allocation per day and the research value of the level relationship trading rule, the suggested allocation is calculated based on the research value. So, both are correlated as shown in this figure. }
+\label{fig:04}
+\end{subfigure}
+\caption{Graphical description of the level relationship algorithm. (\ref{fig:01}) show the changes in the value of market and research price for multiple trading days.  (\ref{fig:02}) shows the changes in the value of the research price for multiple trading days. (\ref{fig:03}) shows the changes in the value of the market price for multiple trading days and the strategy returns which means the original holding+returns, in this example case the original holding is 500\$. (\ref{fig:04}) The green colour indicates when the stocks value rises while the red colour shows a loss in its value. The green colour indicates when to buy stocks while the red colour shows when to sell.}
+\label{fig:image2}
+\end{figure}
+
+
+\newpage
+\ruledescription{
+\justify
+
+A predictive level relationship could be reflected in many kinds of rules. InferTrade uses a 120 period (6 months for daily data) rolling regression of the signal $\research_\currenttime$ against next day's observed percentage price change $\Delta \price_{\currenttime+1}$ as a benchmark to detect level relationships. This section describes in detail this simple strategy allocation recipe that InferTrade used to detect this relationship, but any kind of rule that takes bigger positions when the signal is higher (assuming k is positive) would generate a predictive edge. We provide the below explanation so that you can replicate the results you have obtained on an independent platform and/or modify further to match your trading and investment needs.
+
+The rolling regression level relationship trading rule recommends taking a position sized as a percentage of the capital you have allocated to trading this particular market and will show higher returns than usual if a significant level relationship is present between the price and signal series.
+\vspace{1mm}
+\justify
+To calculate how much to invest, InferTrade first performs a standard rolling linear regression of the observed daily price changes $\Delta \price_{\currenttime} = \frac{\price_{\currenttime}}{\price_{\currenttime-1}} - 1$ against the previous day's research levels $\research_{\currenttime-1}$ for a rolling window of length $\lookbacklength$. This creates an equation for estimating the future percentage price change to occur from today to tomorrow $\Delta \price_{\currenttime+1}$ using today's research level $\research_{\currenttime}$:
+\\
+
+
+\vspace{1mm}
+\begin{equation}
+\Delta \price_{\currenttime+1} = k_1 \research_\currenttime+k_2 + \epsilon_{\currenttime+1}
+\label{eqn:levelregression}
+\end{equation}
+
+\justify with the error symmetric such that
+
+\begin{equation}
+E^{model}_{\currenttime}[\Delta \price_{\currenttime+1}] = k_1 \research_\currenttime+k_2
+\label{eqn:regressionforecast}
+\end{equation}
+
+
+\vspace{1mm}
+\justify where $E^{model}_{\currenttime}[\Delta \price_{\currenttime+1}]$ is the predicted next day percentage price change, $\research_\currenttime$ is the research value at time $\currenttime$, and $k_1$ and $k_2$ are the level  and static coefficients. $\epsilon_\currenttime$ represents the in sample regression error between the model predicted and observed price change for time \currenttime, such that $\epsilon_\currenttime = E^{model}_{\currenttime-1}[\Delta \price_{\currenttime}] - \Delta \price_{\currenttime}$. 
+
+\vspace{1mm}
+\justify To give a suggested portfolio allocation $\position_\currenttime$ for the market, e.g. ``invest 5\% of strategy allocation into the security'', the regression forecast's expected next day \% price move is divided by the square of the Standard Root Mean Squared Percentage Prediction Error $\rmserrorsquared$ in our above regression:
+\vspace{1mm}
+\\
+
+
+
+\vspace{1mm}
+\begin{equation}
+    \position_\currenttime = 
+    \begin{cases}
+    \frac{\Delta \price_{\currenttime+1}}{\rmserrorsquared} & \text{if } \currenttime > L,\\
+    0                                        & \text{otherwise}
+    \end{cases}
+\end{equation}
+
+
+
+\vspace{1mm}
+\justify where $\position_\currenttime$ is the suggested allocation as a percentage of the capital which you have allocated to trading this market at time $\currenttime$.
+
+\justify Worked example for liquid market:  current share price is \$50, regression coefficients are 0.00005 ($5 * 10^-5$) for level and 0.0 for the constant, with \$1,000 allocated to this single-stock strategy.  The current research series - a sentiment index - is +5.0, with a RMS prediction error from the regression of 5\%. In this situation the strategy recipe recommends an investment of $0.00005 * 5.0 / (0.05)^2 = 10\%$ be allocated. So \$1,000 * 10\% = \$100 would be allocated, so we would buy $\frac{\$100}{\$100} = 2$ shares.
+We see from this example the expected gain over the next day is 2.5 basis points (minus trading costs), versus 500 basis points of daily risk, so in practice this kind of strategy is most useful where the signal both has a predictive edge and is stable (auto-correlated) in recommendation over time, so that the `edge' from multiple time steps can compound linearly without incurring additional bid-offer spreads whilst the `risk' aggregates scales with the square-root of time (for random walk).
+
+
+\vspace{1mm}
+\justify (Note that if the magnitude of the error term is smaller than the magnitude of the price change prediction, i.e. $|\rmserror| < |\Delta\price_{\currenttime+1}|$, dividing $\Delta\price_{\currenttime+1}$ by $\rmserrorsquared$ would result in $\position_\currenttime>1$. Limits can then be applied to cap the allocation. E.g. between 0\% and 100\% if short selling is prohibited. In practice it is generally unlikely that in liquid markets a genuine statistical trading signal this strong will be found.)
+
+\\
+\vspace{1mm}
+\fixedruleparameters
+{Regression Length}{120}{This is the number of previous days used to estimate the regression coefficients.}{$\lookbacklength$}%
+\stoptable 
+
+\vspace{1mm}
+\justify For estimating the regression coefficients, a rolling window is used, so that at time t, the
+regression data uses research data from time $\currenttime - 121$ to $\currenttime - 1$ to calculate 120 research changes as the regression’s independent variable. Price data from $\currenttime - 120$ to $\currenttime$ is used to calculate 120 next day price changes as the regression’s dependent variable. 
+\vspace{1mm}
+\justify Note that rule parameters are fixed to their default values for this and any other relationships optimised on simplified mode.
+
+} %Argument is rule description
+
+
+
+\assumptions%
+\keyterms%
+\furtherlinks%
+
+\appendixinfertrade{
+
+\vspace{1mm}
+
+\regressionanderrorpartone
+
+}
+
+
+\end{document}

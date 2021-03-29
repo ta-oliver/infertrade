@@ -1,0 +1,111 @@
+\documentclass{article}%
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+\usepackage{relsize}%
+\usepackage{ragged2e}%
+%
+\input{common_symbols_and_format.tex}%
+\usepackage{tocloft}%
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}%
+%
+\begin{document}%
+\normalsize%
+\logo%
+\rulename{Difference Relationship}%
+\tableofcontents%
+\relationshipdescription{
+\justify
+\Centering\textbf{In a difference relationship, recent change in the value of the signal directly affects future changes in the price:}
+
+\begin{equation}
+\mathlarger{
+    \Delta \price_{t+1} \propto k \left(\frac{\research_\currenttime}{\price_\currenttime}-1\right)  + c
+    }
+\end{equation}
+\justify where ~$\Delta \price_{\currenttime+1}$ represents the future price change, $\research_\currenttime$ represents the current value of the research signal, $\price_\currenttime$ represents the current price of market, $k$ is a scalar, and $c$ is a constant. The bracketed term calculates the percentage difference between $\price_\currenttime$ and $\research_\currenttime$. Intuitively, this means that when the signal moves above the price, it is good to buy the market, as the price will tend to drift higher. When the signal moves below the price, it is good to sell the market as the price will tend to drift lower.
+\vspace{1mm}
+\justify
+After finding the relationship which maximises risk adjusted returns, InferTrade runs tests for statistical significance to verify that the relationship gives a predictive edge. A predictive difference relationship can be used to when the current percentage gap between the price and the signal is high versus the historical average, and when current percentage gap between the price and the signal is high versus the historical average. If the scalar $k$ is negative, inverting the signal will make this true.
+\vspace{1mm}
+\justify
+\Centering Examples of time series that might show this kind of relationship are price forecasts or fair value models:
+\justify\Centering\textit{analyst or model thinks the security is cheap -> increases price target -> larger percentage difference -> price goes up as investors see value}
+\vspace{1mm}
+\justify
+
+We would typically not expect a signal that is a sentiment index to show a difference relationship, as the index is likely dimensionally inconsistent with the price and of a different scale. However if the share price is very stable versus the index changes then a partial (inefficient) relationship may occur as the level of difference will correlate closely with the absolute level of the signal.
+\vspace{1mm}
+\justify
+Similarly a technical positioning indicator will be unlikely to show a Difference Relationship as the signal and price series are likely dimensionally inconsistent, such that the difference has limited predictive value except where stable price means the change in the gap correlates with the change in the signal level.
+}%
+
+\ruledescription{
+\justify
+A predictive difference relationship can be reflected in many kinds of rules. InferTrade uses a 120 period (6 months for daily data) rolling regression of the percentage gap between the current signal and price against next day's price change as a benchmark. This trading rule recommends taking a position sized as a percentage of the capital you have allocated to trading this particular market.
+\vspace{1mm}
+\justify
+The rolling regression difference relationship trading rule recommends taking a position sized as a percentage of the capital you have allocated to trading this particular market and will show higher returns than usual if a significant difference relationship is present between the price and signal series. The equation given below is used to estimate the future percentage price change  ~$\Delta \price_{\currenttime+1}$ to occur from today to
+tomorrow's price change using difference between today’s research level $\research_\currenttime$ and price level $\price_\currenttime$:
+
+
+\begin{equation}
+\position_\currenttime =  k_1 \left(\frac{\research_\currenttime}{\price_\currenttime}-1\right)+k_2+\epsilon_{\currenttime+1 }
+\end{equation}
+\\ % creates some space after equation
+\justify with the error symmetric such that
+\begin{equation}
+E^{model}_{\currenttime}[\Delta \price_{\currenttime+1}] = k_1 \left(\frac{\research_\currenttime}{\price_\currenttime}-1\right)+k_2
+\label{eqn:regressionforecast}
+\end{equation}
+
+\vspace{1mm}
+\justify where $E^{model}_{\currenttime}[\Delta \price_{\currenttime+1}]$ is the predicted next day percentage price change, $\research_\currenttime$ is the research value at time $\currenttime$, and $k_1$ and $k_2$ are the difference  and static coefficients. $\epsilon_\currenttime$ represents the in sample regression error between the model predicted and observed price change for time \currenttime, such that $\epsilon_\currenttime = E^{model}_{\currenttime-1}[\Delta \price_{\currenttime}] - \Delta \price_{\currenttime}$.}
+\vspace{1mm}
+\justify To give a suggested portfolio allocation $\position_\currenttime$ for the market, e.g. ``invest 5\% of strategy allocation into the security'', the regression forecast's expected next day \% price move is divided by the square of the Standard Root Mean Squared Percentage Prediction Error $\rmserrorsquared$ in our above regression:
+\vspace{1mm}
+\\
+
+
+
+\vspace{1mm}
+\begin{equation}
+    \position_\currenttime = 
+    \begin{cases}
+    \frac{\Delta \price_{\currenttime+1}}{\rmserrorsquared} & \text{if } \currenttime > L,\\
+    0                                        & \text{otherwise}
+    \end{cases}
+\end{equation}
+
+
+
+\vspace{1mm}
+\justify where $\position_\currenttime$ is the suggested allocation as a percentage of the capital which you have allocated to trading this market at time $\currenttime$.
+
+\justify Worked example for liquid market:  current share price is \$50, regression coefficients are 0.00005 ($5 * 10^-5$) for level and 0.0 for the constant, with \$1,000 allocated to this single-stock strategy.  The current research series - a analyst or model perception - is +5.0, with a RMS prediction error from the regression of 5\%. In this situation the strategy recipe recommends an investment of $0.00005 * 5.0 / (0.05)^2 = 10\%$ be allocated. So \$1,000 * 10\% = \$100 would be allocated, so we would buy $\frac{\$100}{\$100} = 2$ shares.
+We see from this example the expected gain over the next day is 2.5 basis points (minus trading costs), versus 500 basis points of daily risk, so in practice this kind of strategy is most useful where the signal both has a predictive edge and is stable (auto-correlated) in recommendation over time, so that the `edge' from multiple time steps can compound linearly without incurring additional bid-offer spreads whilst the `risk' aggregates scales with the square-root of time (for random walk).
+
+
+\vspace{1mm}
+\justify (Note that if the magnitude of the error term is smaller than the magnitude of the price change prediction, i.e. $|\rmserror| < |\Delta\price_{\currenttime+1}|$, dividing $\Delta\price_{\currenttime+1}$ by $\rmserrorsquared$ would result in $\position_\currenttime>1$. Limits can then be applied to cap the allocation. E.g. between 0\% and 100\% if short selling is prohibited. In practice it is generally unlikely that in liquid markets a genuine statistical trading signal this strong will be found.)
+
+\\
+\vspace{1mm}
+\ruleparameters
+{Regression Length}{120}{This is the number of previous days used to estimate the regression coefficients.}{$\lookbacklength$}%
+\stoptable 
+
+\vspace{1mm}
+\justify Note that rule parameters are fixed to their default values for this and any other relationships optimised on simplified mode. For estimating the regression coefficients, a rolling window is used, so that at time t, the regression data uses research data from time t-121 to t-1 to calculate 120 research changes as the regression's independent variable. Price data from t-120 to t is used to calculate 120 next day price changes as the regression's dependent variable. %Argument is rule description
+
+\assumptions%
+\keyterms%
+\furtherlinks%
+\appendixinfertrade{
+
+\vspace{1mm}
+
+\regressionanderrorpartone}
+\end{document}
