@@ -1,0 +1,40 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{textcomp}
+\usepackage{lastpage}
+
+\input{common_symbols_and_format.tex}
+\usepackage{tocloft}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\normalsize
+\logo
+\rulename{DifferenceRegression}
+\tblofcontents
+\ruledescription{This trading rules regresses the 1-day price changes seen historical against the prior day's \% change of the research series.}
+\ruleparameters{Difference Coefficient}{0.1}{Multiplier for regression.}{$k_1$}{Constant Coefficient}{0.1}{Initial constant for regression.}{$k_2$}
+\stoptable
+\section{Equation}
+Below is the equation which governs how this specific trading rule calculates a trading position.
+\begin{equation}
+\position_\currenttime = k_1*(\frac{R_t}{P_{t-1}}-1)+k_2
+\end{equation}
+\\
+where:
+
+$\position_\currenttime$ is the portfolio allocation at time $\currenttime$
+
+$R_t$: Research value at time $\currenttime$
+
+$P_{t-1}$: Price value at time $\currenttime -1$  
+
+$k_1$: Difference coefficient
+
+$k_2$: Constant coefficient
+
+\keyterms
+\furtherlinks
+\end{document}

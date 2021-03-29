@@ -1,0 +1,90 @@
+\documentclass{article}%
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+%
+\input{common_symbols_and_format.tex}%
+\usepackage{tocloft}%
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}%
+%
+\begin{document}%
+\normalsize%
+\logo%
+\rulename{Static Change Regression}%
+\tblofcontents%
+\ruledescription{Regresses the one-day price changes against the lagged level one-day change of the signal for the specified number of days, using coefficients estimated from the start of the data.}%
+\howtotrade
+{Given default parameter values, if the asset drift is 0.01 and the error is 0.05 (5\% daily volatility), this rule will take a $0.01 / (0.05)^2  = 4.0$ or 400\% position (leveraged).}
+{
+\begin{figure}[H]
+\begin{multicols}{2}
+  \centering
+    \begin{subfigure}{\linewidth}
+        \includegraphics[width=\linewidth]{\graphdir{market.png}}
+        \caption{Market series data}
+        \label{fig:01}
+    \end{subfigure}
+  \par
+  \vspace{5mm}
+  \begin{subfigure}{\linewidth}
+    \includegraphics[width=\linewidth]{\graphdir{research.png}}
+    \caption{Research series data}
+    \label{fig:02}
+  \end{subfigure}
+  \par
+  \begin{subfigure}{\linewidth}
+    \includegraphics[width=\linewidth]{\graphdir{pa(StaticChangeRegression).png}}
+    \caption{ Suggested volume to buy or sell}
+    \label{fig:03}
+  \end{subfigure}
+  \par
+  \vspace{5mm}
+  \begin{subfigure}{\linewidth}
+    \includegraphics[width=\linewidth]{\graphdir{pr(StaticChangeRegression).png}}
+    \caption{Portfolio return}
+    \label{fig:04}
+  \end{subfigure}
+  \end{multicols}
+  \caption{Graphical depiction of the Static Change Regression algorithm. 20 Days of trading data is visualized in the graphs (\ref{fig:01}) A line chart showing changes in the market price for multiple trading days.(\ref{fig:02}) A chart displaying the research series data. (\ref{fig:03})Positive values indicate that buying the security by x\%. The negative values mean you are shorting the security by x\% (\ref{fig:04})Chart showing the portfolio return when using the Static Change Regression as the trading rule.}
+  \label{fig:cps_graph}
+\end{figure}
+}
+
+\ruleparameters{Kelly fraction}{1.0}{Amplitude weighting. 1.0 is maximum growth if regression is exact. <1.0 scales down positions taken.}{$\kellyfraction$}{Regression length}{50}{This is the number of days used to estimate the regression coefficients.}{$\lookbacklength$}%
+\stoptable%
+
+\section{Equation}
+Below are the equations which govern how this trading rule determines a trading position.
+
+\begin{equation}
+\regressionprice_\currenttime = \amplitudecoefficient\left(\frac{\research_\currenttime}{\research_{\currenttime - 1}} - 1\right)+\constantc 
+\label{eq1}
+\end{equation}
+
+The equation ($\ref{eq1}$) predicts the value of the price $\regressionprice_\currenttime$ at time $\currenttime$ using the ratio of the research value at time $\currenttime$ at $\research_\currenttime$ and the research value at time $\currenttime-1$. Since we are using a static approach the amplitude coefficient $\amplitudecoefficient$ remains constant. In order to calculate the resultant fractional portfolio allocation $\position_{\currenttime}$ we use the Kelly fraction to obtain the maximum results for the long run. 
+
+\begin{equation}
+\position_\currenttime = \kellyfraction \frac{\regressionprice_\currenttime}{ \rmserror_{\regressionprice}^{2}}  
+\label{eq2}
+\end{equation}
+
+\\
+where
+
+$\research$: is the value of the research series.
+
+$\regressionprice_\currenttime$: is the predicted price at time.$\currenttime$.
+
+$\rmserror_\regressionprice$: is the standard error.
+
+$\kellyfraction$: is the Kelly Fraction.
+
+$\position$: is the resultant fractional portfolio investment.
+
+The standard error $\rmserror_{\regressionprice}$ is calculated and included in equation (\ref{eq2}) to normalize the predicted price. 
+
+\keyterms%
+\furtherlinks%
+\end{document}
