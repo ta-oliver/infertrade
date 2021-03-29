@@ -1,0 +1,73 @@
+\documentclass{article}%
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+\usepackage{relsize}%
+\usepackage{ragged2e}%
+\usepackage{tocloft}
+%
+\input{common_symbols_and_format.tex}%
+\usepackage{tocloft}%
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}%
+%
+\begin{document}
+\normalsize%
+\logo%
+\rulename{Price Trend or Price Reversion Relationship} %Argument is name of rule
+\tableofcontents
+\relationshipdescription{
+\justify
+\Centering\textbf{In a Price Trend or Reversion relationship, the percentage distance between the price and its historical mean directly affects future changes in the price:}
+
+\begin{equation}
+\mathlarger{
+    \Delta P_{t+1} \propto -k \left(\frac{P_t}{\mu_P}-1\right)
+    }
+\end{equation}
+\justify where ~$\Delta P_{t+1}$ represents the future price change, $P_t$ represents the current price of the market you are trading, $\mu_P$ represents the historical mean of the market, and $k$ is a scalar. The bracketed term calculates the percentage difference between $P_t$ and $\mu_P$. Notice that this relationship does not depend on a separate signal series, only on the price history of the market. Intuitively, this relationship can be thought of as a Price Trend or Price Reversion, depending on whether $k$ is positive or negative.
+\vspace{1mm}
+\justify
+\textbf{For negative $k$:} when the price moves above its historical mean, it is good to buy the market, as the price will tend to drift higher. When the price moves below its historical mean, it is good to sell the market as the price will tend to drift lower. This relationship looks to capture momentum style trends.
+\vspace{1mm}
+\justify
+\textbf{For positive $k$:} when the price moves above its historical mean, it is good to sell the market, as the price will tend to revert back down towards towards its average. When the price moves below the its historical mean, it is good to buy the market as the price will tend to revert back up to its average. This relationship looks to exploit cyclical ups-and-downs by buying low and selling high.
+\vspace{1mm}
+\justify
+After finding the relationship which maximises risk adjusted returns, InferTrade runs tests for statistical significance to verify that the relationship gives a predictive edge. A predictive Price Trend relationship can be used to invest when the percentage gap between the price and its historical average is high versus the historical average of this gap, and sell when percentage gap between the price and its historical average is low versus the historical average of this gap. If the scalar \textit{k} is positive, inverting the Price series would make the previous statement hold, as this would become a predictive Price Reversion relationship.
+\vspace{1mm}
+\justify
+It is difficult to identify types of time series likely to show a Price Trend relationship, as any price trending model is likely to be valid for only a temporary period after regressing. Similarly, it is difficult to identify types of time series likely to show a Price Reversion relationship, as markets tend to manifest a Brownian dynamic and typically move further away from their mean over longer periods of time due to changing fundamental factors.
+}%
+
+\ruledescription{
+A Price Trend or Price Reversion relationship can be reflected in many kinds of rules. InferTrade uses a 120 period (6 months for daily data) rolling regression of the percentage gap between the price and its historical mean against next day's price change as a benchmark. \textbf{This trading rule recommends a constant portfolio allocation such that position size as a percentage of portfolio size will always stay the same}. The smaller the error, the greater the size of the recommended allocation. 
+\vspace{1mm}
+\justify
+The allocation is scaled by the Kelly Fraction, a mathematically proven formula for determining optimal bet sizing. This rule will show higher returns than usual after optimisation if a significant price trend or price reversion relationship is present between the price its historical mean. The following equation shows how a Change Regression trading rule calculates a position sizing:
+
+\begin{equation}
+\position_\currenttime = \varphi \fixedconstant
+\end{equation}
+\\ % creates some space after equation
+where $\position_\currenttime$ is the portfolio allocation at time $\currenttime$, $\varphi$ is the Kelly fraction and $\fixedconstant$ is a fixed constant.
+\vspace{1mm}
+\justify
+\noindent The risk for the rule is that the market is not range bound, but trends to a high or low value. In these conditions constant position size will under-perform on a risk adjusted basis, as it held less and less securities when the price was rising and/or bought more and more securities as the price continued to fall - both would under-perform holding a fixed number of securities.\\
+
+\noindent If the position allocation is negative then risk-adjusted performance will be the other way around (momentum following), as a -50\% allocation to shares will increase the number of short securities as the market falls. This would be very profitable if the market trends (e.g. share heads to bankruptcy), but will under-perform a constant short if the market see-saws in price and/or is range bound.\\
+
+\noindent The rule is also useful as a benchmark as rules with sticky allocations (that tend to invest a similar \% over consecutive days), will tend to perform well in range trading conditions even if they are not predictive of the market. Subsequently a good trading strategy should derive returns in excess of constant position size as well as outperforming its underlying market.\\
+} %Argument is rule description
+
+{
+\ruleparameters%You can include however many arguments (in groups of 4) as you want!
+{Constant Position Size}{0.5}{This is the fraction of the portfolio's value to invest in the position, before scaling by the Kelly Factor. Valid values range from 0 to 1.}{$\fixedconstant$}
+{Amplitude}{0.1}{Amplitude weighting (Kelly Fraction). 1.0 is maximum growth if regression is exact. <1.0 scales down positions taken.}{$\varphi$}
+\stoptable %must be included or Tex engine runs infinitely
+
+\keyterms
+\furtherlinks %The footer
+\end{document}
+

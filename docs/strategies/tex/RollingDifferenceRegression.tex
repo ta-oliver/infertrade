@@ -1,0 +1,98 @@
+\documentclass{article}%
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+%
+\input{common_symbols_and_format.tex}%
+\usepackage{tocloft}%
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}%
+%
+\begin{document}%
+\normalsize%
+\logo%
+\rulename{Rolling Difference Regression}%
+\tableofcontents%
+
+
+\newpage
+
+
+
+\ruledescription{Regresses the one-day price changes against the \% gap between the research value and the price value. Assuming the regression gives a positive relationship the strategy takes bigger positions when the research is higher than the price series.}%
+
+\howtotrade
+{In order to trade with the rules InferTrade provides, we calculate allocations for each day. We then allocate that fraction of our total portfolio value (cash and securities) to the market we are trading - to do this we buy or sell securities to reach the target allocation.}%
+{
+\begin{figure}[H]
+\begin{multicols}{2}
+  \centering
+    \begin{subfigure}{\linewidth}
+        \includegraphics[width=\linewidth]{\graphdir{market.png}}
+        \caption{Market series data}
+        \label{fig:01}
+    \end{subfigure}
+  \par
+  \vspace{5mm}
+  \begin{subfigure}{\linewidth}
+    \includegraphics[width=\linewidth]{\graphdir{research.png}}
+    \caption{Research series data}
+    \label{fig:02}
+  \end{subfigure}
+  \par
+  \begin{subfigure}{\linewidth}
+    \includegraphics[width=\linewidth]{\graphdir{pa(RollingDifferenceRegression).png}}
+    \caption{ Suggested volume to buy or sell}
+    \label{fig:03}
+  \end{subfigure}
+  \par
+  \vspace{5mm}
+  \begin{subfigure}{\linewidth}
+    \includegraphics[width=\linewidth]{\graphdir{pr(RollingDifferenceRegression).png}}
+    \caption{Portfolio return}
+    \label{fig:04}
+  \end{subfigure}
+  \end{multicols}
+  \caption{Graphical depiction of the Rolling Difference Regression algorithm. 20 Days of trading data is visualized in the graphs (\ref{fig:01}) A line chart showing changes in the market price for multiple trading days.(\ref{fig:02}) A chart displaying the research series data. (\ref{fig:03})Positive values indicate that buying the security by x\%. The negative values mean you are shorting the security by x\% (\ref{fig:04})Chart showing the portfolio return when using the Rolling Difference Regression as the trading rule.}
+  \label{fig:cps_graph}
+\end{figure}
+}
+
+\ruleparameters{Kelly Fraction}{0.1}{Amplitude weighting. 1.0 is maximum growth if regression is exact. <1.0 scales down positions taken.}{Symbol}{Regression Length}{50}{This is the number of days used to estimate the regression coefficients.}{Symbol}%
+\stoptable
+
+\section{Equation}
+The following equations describe the rolling level rule:
+
+\begin{equation}
+    \regressionprice_\currenttime= \amplitudecoefficient(\research_\currenttime-P_\currenttime) + \constantc 
+\end{equation}
+
+\begin{equation}
+    \position_\currenttime = \kellyfraction \frac{\regressionprice_\currenttime}{ \rmserror_{\regressionprice}^{2}}
+\end{equation}
+
+\hspace{200mm}
+\\
+
+
+where
+
+$\research_\currenttime$: is the value of the research series.
+
+$\regressionprice_\currenttime$: is the predicted price at time $\currenttime$ 
+
+$\rmserror_\regressionprice$: is the standard error.
+
+$\kellyfraction$: is the Kelly Fraction.
+
+$\position$: is the resultant fractional portfolio investment.
+
+\hspace{200mm}
+\hspace{200mm}
+
+\assumptions%
+\keyterms%
+\furtherlinks%
+\end{document}

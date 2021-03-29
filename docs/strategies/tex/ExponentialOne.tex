@@ -1,0 +1,47 @@
+﻿﻿\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+\begin{document}
+\logo
+\rulename{Exponential Trading Rule - One factor} %Argument is name of rule
+\tblofcontents
+\ruledescription{These representations have the position dependent on an exponentially weighted average of the prior values of research and price. The lookback length, $\lookbacklength$, determines how far back the rule looks. The decay rate, $\decaycoefficient$, and amplitude, $\amplitudecoefficient$, coefficients determine the contribution from each exponential. The expression is normalised to be dimensionless by division by the weighting factors and current price.}
+
+\ruleparameters
+{Window size}{10}{This is the number of time steps over which exponential contributions are sourced.}{$\lookbacklength$}
+{Exponential decay rate for price}{0.0}{This is the decay factor for contributions from the price series.}{$\decaycoefficient^{\price}$}
+{Exponential decay rate for research}{0.0}{This is the decay factor for contributions from the research series.}{$\decaycoefficient^{\research}$}
+{Amplitude of price contribution}{-0.1}{This factor scales the overall contribution from past values of price.}{$\amplitudecoefficient^{\price}$}
+{Amplitude of research contribution}{0.1}{This factor scales the overall contribution from past values of research.}{$\amplitudecoefficient^{\research}$}
+\stoptable
+
+\section{Equation}
+
+\begin{equation}
+\contribution_{\dummyiterator}^{\price} = e^{-\frac{\dummyiterator}{e^{-\decaycoefficient^\price}}} \\
+\end{equation}
+\begin{equation}
+\contribution_{\dummyiterator}^{\research} = e^{-\frac{\dummyiterator}{e^{-\decaycoefficient^\research}}} \\
+\end{equation}
+\begin{equation}
+\bigcontribution_\price = \amplitudecoefficient^\price \frac{\sum_{\dummyiterator}^{\lookbacklength} \price_{\currenttime - \dummyiterator} \lambda_{\dummyiterator}^{\price}}{\sum_{\dummyiterator = 0}^{\lookbacklength} \lambda_{\dummyiterator}^{\price}} \\
+\end{equation}
+\begin{equation}
+\bigcontribution_\research = \amplitudecoefficient^\research \frac{\sum_{\dummyiterator}^{\lookbacklength} \research_{\currenttime - \dummyiterator} \lambda_{\dummyiterator}^{\research}}{\sum_{\dummyiterator = 0}^{\lookbacklength} \lambda_{\dummyiterator}^{\research}} \\
+\end{equation}
+\begin{equation}
+\position_\currenttime = (\bigcontribution_\price+ \bigcontribution_\research)/\price_\currenttime \\
+\end{equation}
+
+\hspace{200mm}
+
+\noindent where $\price_\currenttime$ is the price at time $\currenttime$, $\research$ is the value of the research series, $\amplitudecoefficient$ are the amplitude coefficients, $\decaycoefficient$ are the decay rate coefficients and $\position$ is the resultant fractional portfolio investment.
+
+\hspace{200mm}
+\hspace{200mm}
+
+\keyterms
+\furtherlinks
+
+\end{document}

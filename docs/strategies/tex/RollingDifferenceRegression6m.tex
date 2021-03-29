@@ -1,0 +1,23 @@
+\documentclass{article}%
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+%
+\input{common_symbols_and_format.tex}%
+\usepackage{tocloft}%
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}%
+%
+\begin{document}%
+\normalsize%
+\logo%
+\rulename{Rolling Difference 6 Month Regression}%
+\tableofcontents%
+\ruledescription{Regresses the one-day price changes against the \% gap between the research value and the price value. Assuming the regression gives a positive relationship the strategy takes bigger positions when the research is higher than the price series.}%
+\ruleparameters{Amplitude}{0.1}{Amplitude weighting (Kelly Fraction). 1.0 is maximum growth if regression is exact. <1.0 scales down positions taken.}{Symbol}%
+\stoptable%
+\assumptions%
+\keyterms%
+\furtherlinks%
+\end{document}
