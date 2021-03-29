@@ -37,11 +37,11 @@ def ta_adaptor(indicator_mixin: Type[IndicatorMixin], function_name: str, **kwar
     column_strings = []
     parameter_strings = []
 
-    for i in range(len(indicator_parameters)):
-        if list(indicator_parameters.items())[i][0] in allowed_keys:
-            column_strings.append(list(indicator_parameters.items())[i][0])
-        elif list(indicator_parameters.items())[i][0] != "self":
-            parameter_strings.append(list(indicator_parameters.items())[i][0])
+    for ii_parameter_index in range(len(indicator_parameters)):
+        if list(indicator_parameters.items())[ii_parameter_index][0] in allowed_keys:
+            column_strings.append(list(indicator_parameters.items())[ii_parameter_index][0])
+        elif list(indicator_parameters.items())[ii_parameter_index][0] != "self":
+            parameter_strings.append(list(indicator_parameters.items())[ii_parameter_index][0])
 
     def func(df: pd.DataFrame) -> pd.DataFrame:
         """Inner function to create a Pandas -> Pandas interface."""
