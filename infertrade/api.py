@@ -173,6 +173,5 @@ class Api:
     ) -> pd.DataFrame:
         """Calculates the allocations using the supplied strategy."""
         class_of_signal_generator = Api._get_raw_class(name_of_signal)
-        df_with_signal = class_of_signal_generator(df)
         df_with_signal = class_of_signal_generator(deepcopy(df))
         return df_with_signal
