@@ -22,6 +22,6 @@ from infertrade.algos.community.signals import normalised_close, scikit_signal_f
 
 # A dictionary providing the list of community signals and trading strategies.
 infertrade_export = {
-    "signal": infertrade_export_signals,
+    PandasEnum.SIGNAL.value: infertrade_export_signals,
     PandasEnum.ALLOCATION.value: infertrade_export_allocations,
 }
