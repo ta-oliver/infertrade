@@ -57,7 +57,7 @@ def ta_adaptor(indicator_mixin: Type[IndicatorMixin], function_name: str, **kwar
 # Hardcoded list of available rules with added metadata.
 ta_export_signals = {
     "awesome_oscillator": {
-        "class": AwesomeOscillatorIndicator,
+        "function": AwesomeOscillatorIndicator,
         "module": "ta.momentum",
         "function_names": "awesome_oscillator",
         "parameters": {"window1": 5, "window2": 34},
