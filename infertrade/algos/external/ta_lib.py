@@ -21,9 +21,7 @@ Created date: 16/03/2021
 
 import pandas as pd
 import talib
-from talib._ta_lib import MA_Type
 from talib.abstract import Function
-from talib._ta_lib import *
 
 from infertrade.PandasEnum import PandasEnum
 
