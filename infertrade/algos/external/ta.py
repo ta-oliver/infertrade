@@ -67,20 +67,6 @@ def ta_adaptor(indicator_mixin: Type[IndicatorMixin], function_name: str, **kwar
     return func
 
 
-def awesome_oscillator_indicator_callable(df: pd.DataFrame, **kwargs):
-    """Wraps awesome oscillator."""
-    instance_of_aoi = AwesomeOscillatorIndicator(high=df["high"], low=df["low"], **kwargs)
-    df["signal"] = instance_of_aoi.awesome_oscillator()
-    return df
-
-
-def kama_indicator_callable(df: pd.DataFrame, **kwargs):
-    """Wraps Kama Indicator."""
-    instance_of_kama = KAMAIndicator(close=df["close"].iloc[:], **kwargs)
-    df["signal"] = instance_of_kama.kama()
-    return df
-
-
 # Hardcoded list of available rules with added metadata.
 
 ta_export_signals = {
