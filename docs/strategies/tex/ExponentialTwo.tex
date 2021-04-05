@@ -1,0 +1,51 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+\begin{document}
+\logo
+\rulename{Exponential Trading Rule - Two factor}
+
+\tblofcontents
+
+\ruledescription{These representations have the position dependent on an exponentially weighted average of the prior values of research and price. The lookback length, $\lookbacklength$, determines how far back the rule looks. The decay rates, $\decaycoefficientone$ and $\decaycoefficienttwo$, and amplitudes, $\amplitudecoefficientone$ and $\amplitudecoefficienttwo$, coefficients determine the contribution from each exponential. The expression is normalised to be dimensionless by division by the weighting factors and current price.}
+
+\ruleparameters
+{Window size}{10}{This is the number of time steps over which exponential contributions are sourced.}{$\lookbacklength$}
+{$1^{st}$ Exponential decay rate for price}{0.0}{This is the $1^{st}$ decay factor that reduces older contributions from the price series.}{$\decaycoefficientone^{\price}$}
+{$1^{st}$ Exponential decay rate for research}{0.0}{This is the $1^{st}$ decay factor that reduces older contributions from the research series.}{$\decaycoefficientone^{\research}$}
+{Amplitude of price $1^{st}$ contribution}{-0.1}{This factor scales the $1^{st}$ contribution from past values of price.}{$\amplitudecoefficientone^{\price}$}
+{Amplitude of research $1^{st}$ contribution}{0.1}{This factor scales the $1^{st}$ contribution from past values of research.}{$\amplitudecoefficientone^{\research}$}
+{$2^{nd}$ Exponential decay rate for price}{0.0}{This is the $2^{nd}$ decay factor that reduces older contributions from the price series.}{$\decaycoefficienttwo^{\price}$}
+{$2^{nd}$ Exponential decay rate for research}{0.0}{This is the $2^{nd}$ decay factor that reduces older contributions from the research series.}{$\decaycoefficienttwo^{\research}$}
+{Amplitude of $2^{nd}$ price contribution}{-0.1}{This factor scales the $2^{nd}$ contribution from past values of price.}{$\amplitudecoefficienttwo^{\price}$}
+{Amplitude of $2^{nd}$ research contribution}{0.1}{This factor scales the $2^{nd}$ contribution from past values of research.}{$\amplitudecoefficienttwo^{\research}$}
+\stoptable
+
+\section{Equation}
+
+\begin{equation}
+\contribution^{\price}(\dummyiterator,\dummyiteratortwo) = \sum_{\dummyiteratorthree = 1}^{\dummyiteratortwo} e^{- \frac{ \dummyiterator}{e^{-\decaycoefficient_\dummyiteratorthree^\price}}}
+\end{equation}
+\begin{equation}
+\contribution^{\research}(\dummyiterator,\dummyiteratortwo) = \sum_{\dummyiteratorthree = 1}^{\dummyiteratortwo} e^{- \frac{ \dummyiterator}{e^{-\decaycoefficient_\dummyiteratorthree^\research}}}
+\end{equation}
+\begin{equation}
+{\bigcontribution}_{\dummyiteratortwo \price} = \amplitudecoefficient_{\dummyiteratortwo}^{\price} \frac{\sum_{\dummyiterator=0}^{\lookbacklength} \price_{\currenttime - \dummyiterator} \contribution^{\price}(\dummyiterator, \dummyiteratortwo)}{\sum_{\dummyiterator = 0}^{\lookbacklength} \contribution^{\price}(\dummyiterator, \dummyiteratortwo)} \\
+\end{equation}
+\begin{equation}
+\bigcontribution_{\dummyiteratortwo  \research} = \amplitudecoefficient_{\dummyiteratortwo}^{\research} \frac{\sum_{\dummyiterator=0}^{\lookbacklength} \research_{\currenttime - \dummyiterator} \contribution^{\research}(\dummyiterator, \dummyiteratortwo)}{\sum_{\dummyiterator = 0}^{\lookbacklength} \contribution^{\research}(\dummyiterator, \dummyiteratortwo)} \\
+\end{equation}
+\begin{equation}
+\position_{\currenttime} = ({\bigcontributionone}_{\price} + {\bigcontributionone}_{\research} + {\bigcontributiontwo}_{\price} + {\bigcontributiontwo}_{\research})/{\price}_{\currenttime} \\
+\end{equation}
+\hspace{200mm}
+
+\noindent where $\price_\currenttime$ is the price at time $\currenttime$, $\research$ is the value of the research series, $\amplitudecoefficientone$ and $\amplitudecoefficienttwo$ are the amplitude coefficients, $\decaycoefficientone$ and $\decaycoefficienttwo$ are the decay rate coefficients and $\position$ is the resultant fractional portfolio investment.\\
+Intuitively, the $\contribution$ are the exponential weightings for each historical value in the lookback period, with $\bigcontribution$ the normalised sum of all the contributions, scaled by the amplitude coefficient. The total contributions are then scaled by the current price to give a dimensionless fraction of the portfolio to invest.
+\hspace{200mm}
+\hspace{200mm}
+
+\keyterms
+\furtherlinks
+\end{document}

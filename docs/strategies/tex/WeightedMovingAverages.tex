@@ -1,0 +1,78 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Weighted Moving Averages}
+\tblofcontents
+\ruledescription{
+This trading rule is a linear combination of two moving averages: the average of the market price and the average of the research values. The four parameters accepted are the length of each average and the coefficients for each average's weighting contribution. The total sum is divided by the current price to calculate a (dimensionless) portfolio allocation to take. \\
+
+\noindent Due to the linear summation this rule is only valid when either i) the research data represents a price target or ii) one of the coefficients (price or research) is zero.\\}
+
+\howtotrade{
+The value of a portfolio is determined by the volume of cash and security value it contains. This rule suggests the percentage of the portfolio that should be invested in the market being traded. When the percentage held is less than the recommended amount, it recommends buying securities. When the recommended allocation is less than the percentage currently held it recommends selling securities. To trade using this strategy you need to adjust each day to the target allocation suggested by rule. A summary of the weighted moving average rule is shown in \Figure{\ref{fig:wma_graph}} below.}
+{
+\begin{figure}[H]
+\centering
+    \begin{subfigure}{0.49\linewidth}
+        \includegraphics[width=\linewidth]{\graphdir{../rule_graphs/wma_01.png}}
+        \caption{Price and research series}
+        \label{fig:01}
+    \end{subfigure}
+  \begin{subfigure}{0.49\linewidth}
+    \includegraphics[width=\linewidth]{\graphdir{../rule_graphs/wma_02.png}}
+    \caption{Moving averages of price and research}
+    \label{fig:02}
+  \end{subfigure}
+
+  \begin{subfigure}{0.49\linewidth}
+    \includegraphics[width=\linewidth]{\graphdir{../rule_graphs/wma_03.png}}
+    \caption{Weighted moving averages of price and research}
+    \label{fig:03}
+  \end{subfigure}
+  \begin{subfigure}{0.49\linewidth}
+    \includegraphics[width=\linewidth]{\graphdir{../rule_graphs/wma_04.png}}
+    \caption{Portfolio allocation}
+    \label{fig:04}
+  \end{subfigure}
+  \caption{Graphical description of the weighted moving averages algorithm. (\ref{fig:01}) The price and research series for a 100 day period. (\ref{fig:02}) Moving averages for price and research series with a window size of 10. (\ref{fig:03}) The weighted moving averages of price and research are shown in the chart as $price\_total$ and $research\_total$, respectively. They are computed as $price\_total = 0.6 \times avg\_price$ and $research\_total = 0.6 \times avg\_research$.  (\ref{fig:04}) The prescribed positions derived from $position = (price\_total + research\_total) / price$.}
+  \label{fig:wma_graph}
+\end{figure}
+}
+\ruleparameters
+{Price average length}{2}{Number of days in the price average.}{$\averagelength^{\price}$}
+{Research average length}{2}{Number of days in the research average.}{$\averagelength^{\research}$}
+{Amplitude of price average}{1.0}{Weighting coefficient for the average of price.}{$\amplitudecoefficient^{\price}$}
+{Amplitude of research average}{1.0}{Weighting coefficient for the average of research.}{$\amplitudecoefficient^{\research}$}
+\stoptable
+
+\section{Equation}
+
+
+To mathematically describe the WMA trading rule. We can define a function ($\bigcontribution$) that contain the information of the \textit{Price average length}, \textit{Research average length}, \textit{Amplitude of price average} and the \textit{Amplitude of research average}. These parameters  have been described in Section 3. 
+\begin{equation} \label{eq:bigcontribution}
+\bigcontribution(\currenttime, \averagelength, \amplitudecoefficient, \genericfunction) = \frac{\amplitudecoefficient}{\averagelength} \sum_{\dummyiterator=0}^{\averagelength-1} \genericfunction(\currenttime - \dummyiterator)
+\end{equation}
+ The equation (\ref{eq:bigcontribution}) calculate a weighted average of the price accordingly to a generic function $\genericfunction$. The sum contribution of the equation (\ref{eq:bigcontribution}) using the research and price parameters described in Section 3 divided by the actual price series $p(t)$ give us the portfolio allocation at time $t$.
+ 
+ 
+
+\begin{equation}
+\position(\currenttime) = \frac{\bigcontribution(\currenttime, \averagelength^{\price}, \amplitudecoefficient^{\price}, \price)+\bigcontribution(\currenttime, \averagelength^{\research}, \amplitudecoefficient^{\research}, \research)}{\price(\currenttime)}
+\end{equation}
+\\ % creates some space after equation
+Here, the new parameter $\position_\currenttime$ is the portfolio allocation at time $\currenttime$, $\price = \price(\currenttime)$ is the value of the price series and $\research = \research(\currenttime)$ is the value of the research series.
+
+\hspace{200mm}
+\hspace{200mm}
+
+\keyterms
+
+\furtherlinks %The footer
+
+\end{document}

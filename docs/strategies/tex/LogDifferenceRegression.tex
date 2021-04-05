@@ -1,0 +1,23 @@
+\documentclass{article}%
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+%
+\input{common_symbols_and_format.tex}%
+\usepackage{tocloft}%
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}%
+%
+\begin{document}%
+\normalsize%
+\logo%
+\rulename{LogDifferenceRegression}%
+\tableofcontents%
+\ruledescription{This trading rules regresses the 1-day price changes seen historical against the prior day's percentage change of the research series.}%
+\ruleparameters{Constant Coefficient}{0.1}{The coefficient for the constant contribution.}{Symbol}{Difference Coefficient}{0.1}{The coefficient for dependence on the gap between the signal series and the price series.}{Symbol}%
+\stoptable%
+\assumptions%
+\keyterms%
+\furtherlinks%
+\end{document}

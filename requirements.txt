@@ -1,6 +1,7 @@
-pandas==1.1.5
-numpy==1.19.5
+pandas==1.2.3
+numpy==1.20.1
 ta==0.7.0
 scikit-learn==0.23.1
-matplotlib
-typing_extensions
+matplotlib==3.3.4
+typing_extensions==3.7.4.3
+TA-Lib

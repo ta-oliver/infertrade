@@ -1,0 +1,74 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Constant Position Size} %Argument is name of rule
+\tblofcontents
+
+\ruledescription{The constant position size rule holds a constant allocation at all times. This does not mean a constant number of securities, as a portfolio must be adjusted to maintain constant target exposures. It can be used to represent a fixed allocation portfolio strategy.} %Argument is rule description
+
+\howtotrade
+{The value of a portfolio is determined by the volume of cash and security value it contains. For a constant position size of 50\%, in a given trading day, if the security has appreciated, then half of the gain is sold to obtain cash. This will shore up the cash value to the same level with the security holding. This is represented in \Figure{\ref{fig:03}} above. The constant position rule suggests the volume of securities to sell when the value of securities has gone up, or the amount of cash to use in purchasing equities when the value of securities is lower. This maintains the constant allocation of 50{\%}, as seen in \Figure{\ref{fig:04}}.}
+{
+\begin{figure}[H]
+\begin{multicols}{2}
+  \centering
+    \begin{subfigure}{\linewidth}
+        \includegraphics[width=\linewidth]{\graphdir{cps_01.png}}
+        \caption{Stock price series}
+        \label{fig:01}
+    \end{subfigure}
+  \par
+  \begin{subfigure}{\linewidth}
+    \includegraphics[width=\linewidth]{\graphdir{cps_02.png}}
+    \caption{Suggested volume of stocks to buy or sell}
+    \label{fig:02}
+  \end{subfigure}
+  \par
+  \begin{subfigure}{\linewidth}
+    \includegraphics[width=\linewidth]{\graphdir{cps_03.png}}
+    \caption{Cash and stock values in a portfolio}
+    \label{fig:03}
+  \end{subfigure}
+  \par
+  \begin{subfigure}{\linewidth}
+    \includegraphics[width=\linewidth]{\graphdir{cps_04.png}}
+    \caption{Portfolio allocation to stocks}
+    \label{fig:04}
+  \end{subfigure}
+  \end{multicols}
+  \caption{Graphical depiction of the constant position size algorithm. (\ref{fig:01}) A line chart showing changes in the value of stocks for multiple trading days. The green colour indicates when the stocks value rises while the red colour shows a loss in its value. (\ref{fig:02}) A chart displaying the volume of stocks to buy or sell to maintain a constant allocation of 50\%. The green colour indicates when to buy stocks while the red colour shows when to sell. (\ref{fig:03}) Chart showing the changes in stock value and cash level when a constant position is maintained.  (\ref{fig:04}) The graph showing position size for different trading days.}
+  \label{fig:cps_graph}
+\end{figure}
+}
+
+\ruleparameters%You can include however many arguments (in groups of 4) as you want!
+{Constant Position Size}{0.5}{This is the fraction of the portfolio's value to invest in the position. Valid values range from 0 to 1.}{$\fixedconstant$}
+\stoptable %must be included or Tex engine runs infinitely
+
+\section{Equation}
+Below are the equations which govern how this specific trading rule calculates a trading position.
+
+\begin{equation}
+\position_\currenttime = \fixedconstant
+\end{equation}
+\\ % creates some space after equation
+where $\position_\currenttime$ is the portfolio allocation at time $\currenttime$ and $\fixedconstant$ is a fixed constant.
+
+\hspace{200mm}
+\hspace{200mm}
+
+\ruleperformance{Constant position size, with a positive allocation setting, is a rule suited to markets that are range bound. As the market goes up in price the rule sells securities. As the market falls it buys more of them. This means if a market oscillates in level, the rule is selling high and buying low, which (if bid offers are zero) will be profitable.\\
+
+\noindent The risk for the rule is that the market is not range bound, but trends to a high or low value. In these conditions constant position size will under-perform on a risk adjusted basis, as it held less and less securities when the price was rising and/or bought more and more securities as the price continued to fall - both would under-perform holding a fixed number of securities.\\
+
+\noindent If the position allocation is negative then risk-adjusted performance will be the other way around (momentum following), as a -50\% allocation to shares will increase the number of short securities as the market falls. This would be very profitable if the market trends (e.g. share heads to bankruptcy), but will under-perform a constant short if the market see-saws in price and/or is range bound.\\
+
+\noindent The rule is also useful as a benchmark as rules with sticky allocations (that tend to invest a similar \% over consecutive days), will tend to perform well in range trading conditions even if they are not predictive of the market. Subsequently a good trading strategy should derive returns in excess of constant position size as well as outperforming its underlying market.\\}
+
+\keyterms
+\furtherlinks %The footer
+\end{document}
