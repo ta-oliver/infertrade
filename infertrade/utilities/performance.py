@@ -232,6 +232,10 @@ def calculate_portfolio_performance_python(
             securities_bought_today = -last_securities_after_transaction
             cash_flow_today = 0.0
             last_securities_after_transaction = 0.0
+        else:
+            # We do not have a valid price or position, so we do not trade.
+            securities_bought_today = 0.0
+            cash_flow_today = 0.0
 
         if not skip_checks:
             if security_bankrupt:

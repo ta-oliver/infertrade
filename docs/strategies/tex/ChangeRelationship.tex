@@ -23,22 +23,44 @@
 
 \begin{equation}
 \mathlarger{
-    \Delta \price_{\currenttimet+1} \propto k \Delta S_t + c
+    \Delta P_{t+1} \propto k \Delta S_t + c
     }
 \end{equation}
-\justify where ~$\Delta \price_{t+1}$ represents the future percentage price change, $\Delta S_t$ represents the previous percentage change in the research signal at current time $t$, $k$ is a scalar, and $c$ is a constant. 
-\justify Intuitively, assuming a positive coefficient for k,  this means that when the signal is high it is good to buy the market, as the price will tend to drift higher. When the signal is low, it is good to sell the market as the price will tend to drift lower.\par
+\justify where ~$\Delta P_{t+1}$ represents the future percentage price change, $\Delta S_t$ represents the previous percentage change in the research signal at current time $t$, $k$ is a scalar, and $c$ is a constant. Intuitively, this means that when the signal moves higher, it is good to buy the market, as the price will tend to drift higher. When the signal moves lower, it is good to sell the market as the price will tend to drift lower.\par
 \vspace{1mm}
 \justify
-\Centering An example of a time series that might show a predictive change relationship would be interest rate:
+After finding the relationship which maximises risk adjusted returns, InferTrade runs tests for statistical significance to verify that the relationship gives a predictive edge. A predictive change relationship can be used to invest when the last change in the signal is high versus the historical average, and sell if the change is negative or low versus the historical average. If the scalar $k$ is negative, inverting the signal will make this true.
+\vspace{1mm}
+\justify
+\Centering An example of a time series that might show a predictive change relationship is an interest rate time series:
 \justify\Centering\textit{interest rate falls -> recent change in interest rate is high -> price of the S&P 500 goes up because investors are allocating capital towards higher return generating assets}
 \vspace{1mm}
 \justify
+
 We could also see a change component to price forecasts or fair value models if an analyst or model is updated infrequently, as a recent positive change could indicate incorporation of fresh news or information. However if the market price has moved stably then the new information may already be fully incorporated in the price.
 \vspace{1mm}
 \justify
 Similarly, a technical positioning indicator as a signal may be more likely to show a change relationship, whereby changes in the value of a signal drive the price, because a stable level of interest may not move the market. We would typically not expect a signal that is a price forecast to show a predictive change relationship, as a price forecast is typically relative to the current price (a difference relationship).
-}%
+}
+\begin{figure}[H]
+\begin{subfigure}{0.48\textwidth}
+\centering
+    \includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Market_ResearchSeries_360_380.pdf}
+    \caption{Comparison of the research value and the market price in USD for 240 days of trading.}
+    \label{fig:20Days-Market_Research}
+\end{subfigure}\quad
+\begin{subfigure}{0.48\textwidth}
+\centering
+    \includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Market_ResearchValue_360_380.pdf}
+    \caption{Comparison of the market price in USD and the research value obtained for 240 days of trading.}
+    \label{fig:20Days-Market_Research}
+\end{subfigure}
+
+    \caption{Data calculated for 240 days of training after the algorithm has been done. Research value, market and research series are shown.}
+    \label{fig:20Days}
+\end{figure}
+
+\newpage
 \ruledescription{
 \justify
 
@@ -49,57 +71,46 @@ This rule will show higher returns than usual after optimisation if a significan
 
 \begin{equation}
 \position_\currenttime = 
-k_{1}\left(\frac{\research_t}{\research_{t-1}}-1\right)+k_2 + \epsilon_{\currenttime+1}
+k_{1}\left(\frac{R_t}{R_{t-1}}-1\right)+k_2 
+\label{eq:Suggested_Allocation}
 \end{equation}
 \\ % creates some space after equation
-where $\position_\currenttime$ is the recommended strategy allocation at time $\currenttime$, $\research_t$ is the research value at time $\currenttime$, $k_1$ is the change coefficient and $k_2$ is the static coefficient. The bracketed term calculates the percentage change in the value of the research signal from time $t$ to $t-1$.
-} 
-
-\justify with the error symmetric such that 
-
+where $\position_\currenttime$ is the recommended strategy allocation at time $\currenttime$, $R_t$ is the Research value at time $\currenttime$, $k_1$ is the change coefficient and $k_2$ is the static coefficient. The bracketed term calculates the percentage change in the value of the research signal from time $t$ to $t-1$.
+} %Argument is rule description
 \begin{equation}
-E^{model}_{\currenttime}[\Delta \price_\currenttime+1] =k_{1}\left(\frac{\research_t}{\research_{t-1}}-1\right)+k_2 
-\label{eqn:regressionforecast}
-\end{equation}%Argument is rule description
-\justify where $E^{model}_{\currenttime}[\Delta \price_{\currenttime+1}]$ is the predicted next day percentage price change, $\research_\currenttime$ is the research value at time $\currenttime$, and $k_1$ and $k_2$ are the change  and static coefficients. $\epsilon_\currenttime$ represents the in sample regression error between the model predicted and observed price change for time \currenttime, such that $\epsilon_{\currenttime+1}= E^{model}_{\currenttime-1}[\Delta \price_{\currenttime}] - \Delta \price_{\currenttime}$.
-\vspace{1mm}
-\justify To give a suggested portfolio allocation $\position_\currenttime$ for the market, e.g. ``invest 5\% of strategy allocation into the security'', the regression forecast's expected next day \% price move is divided by the square of the Standard Root Mean Squared Percentage Prediction Error $\rmserrorsquared$ in our above regression:
-\vspace{1mm}
-\\
-
-
-
-\vspace{1mm}
-\begin{equation}
-    \position_\currenttime = 
-    \begin{cases}
-    \frac{\Delta \price_{\currenttime+1}}{\rmserrorsquared} & \text{if } \currenttime > L,\\
-    0                                        & \text{otherwise}
-    \end{cases}
+    \position_{\currenttime} = \frac{\Delta P_{t+1}}{ \rmserror^{2}_{\regressionprice}}
 \end{equation}
 
+ % creates some space after equation
+
+\justify where $\Delta P_{t+1}$ represents the future percentage price change and $\rmserror_\regressionprice$ is the standard root mean squared error of the regression in predicting the fractional price change within the 120 day window. This means if the regression was accurate (error was low) larger position allocations are recommended.
 
 
-\vspace{1mm}
-\justify where $\position_\currenttime$ is the suggested allocation as a percentage of the capital which you have allocated to trading this market at time $\currenttime$.
-\justify Worked example for liquid market:  current share price is \$50, regression coefficients are 0.00005 for change and 0.0 for the constant, with \$1,000 allocated to this single-stock strategy.  The current research series - the interest rate - is +5, with a RMS prediction error from the regression of 5\%. In this situation the strategy recipe recommends an investment of $0.00005 * 5 / (0.05)^2 = 10\%$ be allocated. So \$1,000 * 10\% = \$100 would be allocated, so we would buy $\frac{\$100}{\$100} = 2$ shares.
-We see from this example the expected gain over the next day is 2.5 basis points (minus trading costs), versus 500 basis points of daily risk, so in practice this kind of strategy is most useful where the signal and price both has a predictive edge and is stable (auto-correlated) in recommendation over time, so that the `edge' from multiple time steps can compound linearly without incurring additional bid-offer spreads whilst the `risk' aggregates scales with the square-root of time (for random walk).
+\begin{figure}[H]
+ \begin{subfigure}{0.48\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Allocation_MarketSeries_360_380.pdf}
+\caption{Suggested allocation per day, this graph shows when and how to invest the total or a fraction of the initial holding, and how the market price is correlated with it.}
+\label{fig:02}
+\end{subfigure}
+\quad
+\begin{subfigure}{0.48\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Allocation_ResearchValue_360_380.pdf}
+\caption{Suggested allocation per day and the research value of the change relationship trading rule, the suggested allocation is calculated based on the research value. So, both are correlated as shown in this figure. }
+\label{fig:04}
+\end{subfigure}
+%\caption{As this is a predictive Level Relationship, it can roughly be seen that when the Research Value is high, the Market tends to subsequently rise and vice-versa}
+\end{figure}
+\justify  It is very interesting to observe that the suggested allocation calculated by equation (\ref{eq:Suggested_Allocation}) is correlated with the market price.
 
-
-\vspace{1mm}
-\justify (Note that if the magnitude of the error term is smaller than the magnitude of the price change prediction, i.e. $|\rmserror| < |\Delta\price_{\currenttime+1}|$, dividing $\Delta\price_{\currenttime+1}$ by $\rmserrorsquared$ would result in $\position_\currenttime>1$. Limits can then be applied to cap the allocation. E.g. between 0\% and 100\% if short selling is prohibited. In practice it is generally unlikely that in liquid markets a genuine statistical trading signal this strong will be found.)
-
-\vspace{1mm}
+ \newpage
 \ruleparameters
 {Regression Length}{120}{This is the number of previous days used to estimate the regression coefficients.}{$\lookbacklength$}%
 \stoptable 
 
 \vspace{1mm}
 \justify Note that rule parameters are fixed to their default values for this and any other relationships optimised on simplified mode. For estimating the regression coefficients, a rolling window is used, so that at time t, the regression data uses research data from time t-121 to t-1 to calculate 120 research changes as the regression's independent variable. Price data from t-120 to t is used to calculate 120 next day price changes as the regression's dependent variable. %Argument is rule description
+
 \assumptions%
 \keyterms%
 \furtherlinks%
-\appendixinfertrade{
-\vspace{1mm}
-\regressionanderrorpartone}
 \end{document}
