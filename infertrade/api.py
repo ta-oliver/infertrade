@@ -128,18 +128,21 @@ class Api:
         return required_inputs
 
     @staticmethod
-    def _get_raw_class(name_of_strategy_or_signal: str) -> callable:
-        """Private method to return the raw class - should not be used externally."""
+    def _get_raw_callable(name_of_strategy_or_signal: str) -> callable:
+        """Private method to return the raw function - should not be used externally."""
         info = Api.get_algorithm_information()
+        callable_fields = ['function', 'class']
         try:
-            raw_class = info[name_of_strategy_or_signal]["class"]
+            callable_key = next(key for key in callable_fields
+                                if key in info[name_of_strategy_or_signal])
+            raw_callable = info[name_of_strategy_or_signal][callable_key]
+        except StopIteration:
+            raise KeyError("The dictionary has no recognised callable ("
+                           + ','.join(callable_fields) + ") fields.")
         except KeyError:
-            if name_of_strategy_or_signal in info:
-                raise KeyError("The dictionary lacks the expected 'class' field.")
-            else:
-                raise KeyError("A strategy or signal was requested that could not be found: ",
-                               name_of_strategy_or_signal)
-        return raw_class
+            raise KeyError("A strategy or signal was requested that could not be found: ",
+                           name_of_strategy_or_signal)
+        return raw_callable
 
     @staticmethod
     def calculate_allocations(
@@ -148,8 +151,8 @@ class Api:
         """Calculates the allocations using the supplied strategy."""
         if name_of_price_series is not "price":
             df[PandasEnum.MID.value] = df[name_of_price_series]
-        class_of_rule = Api._get_raw_class(name_of_strategy)
-        df_with_positions = class_of_rule(df)
+        rule_function = Api._get_raw_callable(name_of_strategy)
+        df_with_positions = rule_function(df)
         return df_with_positions
 
     @staticmethod
@@ -172,6 +175,6 @@ class Api:
         df: pd.DataFrame, name_of_signal: str
     ) -> pd.DataFrame:
         """Calculates the allocations using the supplied strategy."""
-        class_of_signal_generator = Api._get_raw_class(name_of_signal)
+        class_of_signal_generator = Api._get_raw_callable(name_of_signal)
         df_with_signal = class_of_signal_generator(deepcopy(df))
         return df_with_signal

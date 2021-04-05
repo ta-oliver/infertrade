@@ -47,34 +47,24 @@ We would typically not expect a signal that is a price forecast to show a predic
 \newpage
 
 
-\begin{figure}[h]
+
+\begin{figure}[H]
 \begin{subfigure}{0.48\textwidth}
-\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Market_ResearchSeries_120_140.pdf} 
-\caption{Comparison of the research value of the level relationship trading rule and the market price in USD for the first 20 days of trading.}
-\label{fig:01}
-\end{subfigure}	\quad
+\centering
+    \includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Market_ResearchSeries_360_380.pdf}
+    \caption{Comparison of the research value and the market price in USD for 240 days of trading.}
+    \label{fig:20Days-Market_Research}
+\end{subfigure}\quad
 \begin{subfigure}{0.48\textwidth}
-\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Allocation_MarketSeries_120_140.pdf}
-\caption{Suggested allocation per day, this graph shows when and how to invest the total or a fraction of the initial holding, and how the market price is correlated with it.}
-\label{fig:02}
+\centering
+    \includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/StrategyReturn_MarketSeries_360_380.pdf}
+    \caption{Comparison of the market price in USD and the re-turns obtained from the first 20 days of trading.}
+    \label{fig:20Days-Market_Research}
 \end{subfigure}
 
-
-\begin{subfigure}{0.48\textwidth}
-\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/StrategyReturn_MarketSeries_120_140.pdf} 
-\caption{Comparison of the market price in USD and the returns obtained from the first 20 days of trading, after the 120 days of training the algorithm has been used. In other words, it is the original holding + the returns.}
-\label{fig:03}
-\end{subfigure}
-\quad
-\begin{subfigure}{0.48\textwidth}
-\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Allocation_ResearchValue_120_140.pdf}
-\caption{Suggested allocation per day and the research value of the level relationship trading rule, the suggested allocation is calculated based on the research value. So, both are correlated as shown in this figure. }
-\label{fig:04}
-\end{subfigure}
-\caption{Graphical description of the level relationship algorithm. (\ref{fig:01}) show the changes in the value of market and research price for multiple trading days.  (\ref{fig:02}) shows the changes in the value of the research price for multiple trading days. (\ref{fig:03}) shows the changes in the value of the market price for multiple trading days and the strategy returns which means the original holding+returns, in this example case the original holding is 500\$. (\ref{fig:04}) The green colour indicates when the stocks value rises while the red colour shows a loss in its value. The green colour indicates when to buy stocks while the red colour shows when to sell.}
-\label{fig:image2}
+    \caption{Data calculated for 240 days of training after the algorithm has been done. Strategy returns, market series and research value are shown.}
+    \label{fig:20Days}
 \end{figure}
-
 
 \newpage
 \ruledescription{
@@ -119,7 +109,7 @@ E^{model}_{\currenttime}[\Delta \price_{\currenttime+1}] = k_1 \research_\curren
     \begin{cases}
     \frac{\Delta \price_{\currenttime+1}}{\rmserrorsquared} & \text{if } \currenttime > L,\\
     0                                        & \text{otherwise}
-    \end{cases}
+    \end{cases}\label{eq:Suggested_Allocation}
 \end{equation}
 
 
@@ -127,12 +117,29 @@ E^{model}_{\currenttime}[\Delta \price_{\currenttime+1}] = k_1 \research_\curren
 \vspace{1mm}
 \justify where $\position_\currenttime$ is the suggested allocation as a percentage of the capital which you have allocated to trading this market at time $\currenttime$.
 
-\justify Worked example for liquid market:  current share price is \$50, regression coefficients are 0.00005 ($5 * 10^-5$) for level and 0.0 for the constant, with \$1,000 allocated to this single-stock strategy.  The current research series - a sentiment index - is +5.0, with a RMS prediction error from the regression of 5\%. In this situation the strategy recipe recommends an investment of $0.00005 * 5.0 / (0.05)^2 = 10\%$ be allocated. So \$1,000 * 10\% = \$100 would be allocated, so we would buy $\frac{\$100}{\$100} = 2$ shares.
+\justify Worked example for liquid market:  current share price is \$50, regression coefficients are 0.00005 ($5\times 10^{-5}$) for level and 0.0 for the constant, with \$1,000 allocated to this single-stock strategy.  The current research series - a sentiment index - is +5.0, with a RMS prediction error from the regression of 5\%. In this situation the strategy recipe recommends an investment of $0.00005  5.0 / (0.05)^2 = 10\%$ be allocated. So \$1,000 * 10\% = \$100 would be allocated, so we would buy $\frac{\$100}{\$100} = 2$ shares.
 We see from this example the expected gain over the next day is 2.5 basis points (minus trading costs), versus 500 basis points of daily risk, so in practice this kind of strategy is most useful where the signal both has a predictive edge and is stable (auto-correlated) in recommendation over time, so that the `edge' from multiple time steps can compound linearly without incurring additional bid-offer spreads whilst the `risk' aggregates scales with the square-root of time (for random walk).
 
 
 \vspace{1mm}
 \justify (Note that if the magnitude of the error term is smaller than the magnitude of the price change prediction, i.e. $|\rmserror| < |\Delta\price_{\currenttime+1}|$, dividing $\Delta\price_{\currenttime+1}$ by $\rmserrorsquared$ would result in $\position_\currenttime>1$. Limits can then be applied to cap the allocation. E.g. between 0\% and 100\% if short selling is prohibited. In practice it is generally unlikely that in liquid markets a genuine statistical trading signal this strong will be found.)
+
+
+\begin{figure}[H]
+ \begin{subfigure}{0.48\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Allocation_MarketSeries_360_380.pdf}
+\caption{Suggested allocation per day, this graph shows when and how to invest the total or a fraction of the initial holding, and how the market price is correlated with it.}
+\label{fig:02}
+\end{subfigure}
+\quad
+\begin{subfigure}{0.48\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Allocation_ResearchValue_360_380.pdf}
+\caption{Suggested allocation per day and the research value of the level relationship trading rule, the suggested allocation is calculated based on the research value. So, both are correlated as shown in this figure. }
+\label{fig:04}
+\end{subfigure}
+\caption{As this is a predictive Level Relationship, it can roughly be seen that when the Research Value is high, the Market tends to subsequently rise and vice-versa}
+\end{figure}
+\justify  It is very interesting to observe that the suggested allocation calculated by equation (\ref{eq:Suggested_Allocation}) is correlated with the market price.
 
 \\
 \vspace{1mm}
@@ -143,14 +150,15 @@ We see from this example the expected gain over the next day is 2.5 basis points
 \vspace{1mm}
 \justify For estimating the regression coefficients, a rolling window is used, so that at time t, the
 regression data uses research data from time $\currenttime - 121$ to $\currenttime - 1$ to calculate 120 research changes as the regression’s independent variable. Price data from $\currenttime - 120$ to $\currenttime$ is used to calculate 120 next day price changes as the regression’s dependent variable. 
+
 \vspace{1mm}
 \justify Note that rule parameters are fixed to their default values for this and any other relationships optimised on simplified mode.
-
 } %Argument is rule description
 
 
 
 \assumptions%
+\newpage
 \keyterms%
 \furtherlinks%
 
@@ -164,3 +172,27 @@ regression data uses research data from time $\currenttime - 121$ to $\currentti
 
 
 \end{document}
+
+\begin{figure}[h]
+\begin{subfigure}{0.48\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Market_ResearchSeries_120_140.pdf} 
+\caption{Comparison of the research value of the level relationship trading rule and the market price in USD for the first 20 days of trading.}
+\label{fig:01}
+\end{subfigure}	\quad
+\begin{subfigure}{0.48\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/StrategyReturn_MarketSeries_120_140.pdf} 
+\caption{Comparison of the market price in USD and the returns obtained from the first 20 days of trading, after the 120 days of training the algorithm has been used. In other words, it is the original holding + the returns.}
+\label{fig:03}
+\end{subfigure}
+\begin{subfigure}{0.48\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Allocation_MarketSeries_120_140.pdf}
+\caption{Suggested allocation per day, this graph shows when and how to invest the total or a fraction of the initial holding, and how the market price is correlated with it.}
+\label{fig:02}
+\end{subfigure}
+\quad
+\begin{subfigure}{0.48\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Allocation_ResearchValue_120_140.pdf}
+\caption{Suggested allocation per day and the research value of the level relationship trading rule, the suggested allocation is calculated based on the research value. So, both are correlated as shown in this figure. }
+\label{fig:04}
+\end{subfigure}
+\end{figure}

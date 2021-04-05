@@ -77,31 +77,31 @@ plt.show()
 
 ```python
 from infertrade.algos.community import normalised_close, scikit_signal_factory
-from infertrade.data import fake_market_data_4_years
+from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 signal_transformer = scikit_signal_factory(normalised_close)
-signal_transformer.fit_transform(fake_market_data_4_years)
+signal_transformer.fit_transform(simulated_market_data_4_years_gen())
 ```
 
 ### Usage with TA
 
 ```python
 from infertrade.algos.community import scikit_signal_factory
-from infertrade.data import fake_market_data_4_years
+from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 from infertrade.algos import ta_adaptor
 from ta.trend import AroonIndicator
 adapted_aroon = ta_adaptor(AroonIndicator, "aroon_down", window=1)
 signal_transformer = scikit_signal_factory(adapted_aroon)
-signal_transformer.fit_transform(fake_market_data_4_years)
+signal_transformer.fit_transform(simulated_market_data_4_years_gen())
 ```
 
 ### Calculate positions with simple position function
 
 ```python
 from infertrade.algos.community import cps, scikit_allocation_factory
-from infertrade.data import fake_market_data_4_years
+from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
 position_transformer = scikit_allocation_factory(cps)
-position_transformer.fit_transform(fake_market_data_4_years)
+position_transformer.fit_transform(simulated_market_data_4_years_gen())
 # TODO add example with parameters
 ```
 
@@ -109,9 +109,8 @@ position_transformer.fit_transform(fake_market_data_4_years)
 
 ```python
 from infertrade.algos.community import scikit_signal_factory
-from infertrade.data import fake_market_data_4_years
-from infertrade.utilities.operations import PositionsFromPricePrediction,
-    PricePredictionFromSignalRegression
+from infertrade.data.simulate_data import simulated_market_data_4_years_gen
+from infertrade.utilities.operations import PositionsFromPricePrediction, PricePredictionFromSignalRegression
 from sklearn.pipeline import make_pipeline
 from infertrade.algos import ta_adaptor
 from ta.trend import AroonIndicator
@@ -123,7 +122,7 @@ pipeline = make_pipeline(scikit_signal_factory(adapted_aroon),
                          PositionsFromPricePrediction()
                          )
 
-pipeline.fit_transform(fake_market_data_4_years)
+pipeline.fit_transform(simulated_market_data_4_years_gen())
 ```
 
 ### Creating simulated data for testing
