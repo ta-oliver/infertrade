@@ -87,7 +87,10 @@ def test_signals_creation():
 
             # Otherwise we expect to parse successfully.
             df_with_signal = Api.calculate_signal(ii_df, jj_algo_name)
-            assert isinstance(df_with_signal, pd.DataFrame)
+            if not isinstance(df_with_signal, pd.DataFrame):
+                print(df_with_signal)
+                print("Type was: ", type(df_with_signal))
+                raise TypeError("Bad output format.")
 
             # Signal algorithms should be adding new columns with float, int or NaN data.
             new_columns = False

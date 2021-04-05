@@ -25,7 +25,7 @@ from typing import List, Union
 from copy import deepcopy
 import pandas as pd
 
-from infertrade.algos import algorithm_functions
+from infertrade.algos import algorithm_functions, ta_adaptor
 from infertrade.utilities.operations import ReturnsFromPositions
 from infertrade.PandasEnum import PandasEnum
 
@@ -77,8 +77,8 @@ class Api:
 
     @staticmethod
     def algorithm_categories() -> List[str]:
-        """Returns the list of supported packages."""
-        return [PandasEnum.ALLOCATION.value, "signal"]
+        """Returns the list of algorithm types."""
+        return [PandasEnum.ALLOCATION.value, PandasEnum.SIGNAL.value]
 
     @staticmethod
     def available_algorithms(
@@ -142,7 +142,20 @@ class Api:
         except KeyError:
             raise KeyError("A strategy or signal was requested that could not be found: ",
                            name_of_strategy_or_signal)
-        return raw_callable
+
+        if callable_key is "function":
+            # We will not amend.
+            callable_func = raw_callable
+        else:
+            # Is a class, so we need to adapt, so we call the adaptor.
+            package_of_algo = Api.determine_package_of_algorithm(name_of_strategy_or_signal)
+            function_name = info[name_of_strategy_or_signal]["function_names"]
+            if package_of_algo is "ta":
+                callable_func = ta_adaptor(raw_callable, function_name)
+            else:
+                raise NotImplementedError("An adapter for this class type has not yet been created.")
+
+        return callable_func
 
     @staticmethod
     def calculate_allocations(
@@ -175,6 +188,7 @@ class Api:
         df: pd.DataFrame, name_of_signal: str
     ) -> pd.DataFrame:
         """Calculates the allocations using the supplied strategy."""
-        class_of_signal_generator = Api._get_raw_callable(name_of_signal)
-        df_with_signal = class_of_signal_generator(deepcopy(df))
+        class_of_signal_generator = Api()._get_raw_callable(name_of_signal)
+        original_df = deepcopy(df)
+        df_with_signal = class_of_signal_generator(original_df)
         return df_with_signal
