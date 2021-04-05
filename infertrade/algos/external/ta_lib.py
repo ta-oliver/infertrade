@@ -20,8 +20,10 @@ Created date: 16/03/2021
 """
 
 import pandas as pd
+import talib
+from talib._ta_lib import MA_Type
 from talib.abstract import Function
-
+from talib._ta_lib import *
 
 from infertrade.PandasEnum import PandasEnum
 
@@ -46,14 +48,21 @@ def talib_adapter(function_mixin: str, function_name: str, **kwargs):
     return func
 
 
+def sma_func(df: pd.DataFrame) -> pd.DataFrame:
+    """Simple moving average."""
+    output = talib.SMA(df["close"])
+    df["signal"] = output
+    return df
+
+
 # Hardcoded list of available rules with added metadata.
 talib_export_signals = {
-    # "aroon_down": {
-    #     "class": AroonIndicator,
-    #     "function_names": "aroon_down",
-    #     "parameters": {"window": 10},
-    #     "series": ["close"]
-    # },
+    "SMA": {
+        "function": sma_func,
+        "function_names": ["SMA"],
+        "parameters": {},
+        "series": ["close"]
+    },
 }
 
 talib_export_allocations = {}

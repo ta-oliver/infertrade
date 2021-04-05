@@ -20,8 +20,9 @@ Created date: 19th March 2021
 """
 
 from infertrade.api import Api
+import pandas as pd
 
-name_of_ta_lib_package = "ta_lib"
+name_of_ta_lib_package = "ta-lib"
 
 
 def test_ta_lib_in_package_list():
@@ -35,3 +36,11 @@ def test_get_ta_lib_rules():
     available_talib_algos = Api().available_algorithms(filter_by_package=name_of_ta_lib_package)
     # Check there are some algorithms.
     assert available_talib_algos
+
+
+def test_specific_rule():
+    """Checks using SMA."""
+    from infertrade.data.simulate_data import simulated_market_data_4_years_gen
+    data = simulated_market_data_4_years_gen()
+    sma_signal = Api.calculate_signal(data, "SMA")
+    assert isinstance(sma_signal, pd.DataFrame)
