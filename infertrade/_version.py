@@ -15,8 +15,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-Created by: Joshua Mason
-Created date: 12/03/2021
+Created by: InferStat Ltd
+Created date: 12th March 2021
 """
 
-__version__ = "0.0.15"
+__version__ = "0.0.16"
