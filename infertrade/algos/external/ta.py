@@ -78,7 +78,7 @@ ta_export_signals = {
         "series": ["high", "low"],
     },
     "kama": {
-        "function": ta_adaptor(KAMAIndicator, "kama"),  # Set as example of functional format. Can be replaced by class.
+        "class": KAMAIndicator,
         "module": "ta.momentum",
         "function_names": "kama",
         "parameters": {"window": 10, "pow1": 2, "pow2": 30},
