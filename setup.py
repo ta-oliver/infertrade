@@ -96,7 +96,7 @@ setup(
     install_requires=package_requirements,
     extras_require={"dev": dev_requirements},
     tests_require=["pytest"],
-    python_requires=">=3.7.0",
+    python_requires=">=3.7.0,<3.8.0",
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
         "Development Status :: 2 - Pre-Alpha",
