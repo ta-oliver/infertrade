@@ -43,9 +43,9 @@ def diff_log(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
 def lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
     """Lag (shift) series by desired number of periods."""
     x = x.astype("float64")
-    l = np.roll(x, shift=shift, axis=0)
-    l[:shift, :] = np.nan
-    return l
+    lagged_array = np.roll(x, shift=shift, axis=0)
+    lagged_array[:shift, :] = np.nan
+    return lagged_array
 
 
 def dl_lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
