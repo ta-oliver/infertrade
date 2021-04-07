@@ -5,7 +5,7 @@
     [Python Download](https://www.python.org/)
  
 - Add Path to Environment Variables
-!alt
+
   GUI Tutorial to add path: https://geek-university.com/python/add-python-to-the-windows-path/
  
 - Install PIP package manager 
