@@ -5,7 +5,7 @@
 
 
 
-# How to Install Infertrade Package for [`Microsoft Windows 10`](https://www.microsoft.com/en-in/software-download/windows10).
+# How to Install Infertrade Package for Microsoft Windows 10.
 
 
  
@@ -18,41 +18,42 @@
  ![alt-text](https://github.com/ta-oliver/infertrade/blob/main/docs/images/3edit_environment_variables.jpg)
  ![alt-text](https://github.com/ta-oliver/infertrade/blob/main/docs/images/4add_path.jpg)
  
-- Install [`pip`](https://pip.pypa.io/en/stable/) Package Manager 
+- Install [`pip`](https://pip.pypa.io/en/stable/) package manager. 
  
   - Download file from  `cmd prompt`:
   ```
   curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
   ```
-  - Alternative method: [download](https://bootstrap.pypa.io/get-pip.py) using web browser
+  - Alternative method: [download](https://bootstrap.pypa.io/get-pip.py) using web browser.
   
-  - Navigate to directory in `cmd prompt` and run following command
+  - Navigate to directory using `cmd prompt` and run following command.
   ```
   py get-pip.py
   ```
-- Add Path to Environment Variables for [`pip`](https://pip.pypa.io/en/stable/) Package Manager using `cmd prompt`.
+- Add Path to Environment Variables for [`pip`](https://pip.pypa.io/en/stable/) package manager using `cmd prompt`.
 ```
 setx PATH “%PATH%;C:\Python37\Scripts”
 ```
-- Install [`TA-Lib`](https://www.ta-lib.org/) for windows
-    - Download `whl` file from [whl download](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib)
-    - Run `install` command in `cmd prompt`.
+- Install [`TA-Lib`](https://www.ta-lib.org/) technical analysis package for windows.
+    - Download [whl](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib) file for your version of [`python`](https://www.python.org/).
+    - Run [`pip`](https://pip.pypa.io/en/stable/) install command in `cmd prompt`.
         ```
         pip install TA_Lib-0.4.17-cp37-cp37m-win_amd64.whl
         ```
-    - Replace `cp37` with correct [`python`]((https://www.python.org/)) version in above command.
+    - Replace `cp37` with correct [`python`](https://www.python.org/) version an `win_amd64` with your architecture in above command.
  
-- Install [`infertrade`](https://github.com/ta-oliver/infertrade) package with [`pip`](https://pip.pypa.io/en/stable/) command in `cmd prompt`.
+- Install [`infertrade`](https://github.com/ta-oliver/infertrade) package using [`pip`](https://pip.pypa.io/en/stable/) command in `cmd prompt`.
  ```
  pip install infertrade
  ```
-- Script should run without errors, it will install dependencies as well.
+- Installation should run without errors, it should install all dependencies required.
  
-- Ensure all dependencies installed by running the following command.
+- Ensure all dependencies are installed by running.
  ```
  pip list
  ```
-- Testing using [`pytest`](https://pytest.org/en/stable/)
+## Testing using PyTest
+
   - Navigate to [`infertrade-main/tests`](https://github.com/ta-oliver/infertrade/tree/main/tests) directory using `cmd prompt`  and run [`pytest`](https://pytest.org/en/stable/) command.
   ```
   pytest
@@ -75,7 +76,7 @@ setx PATH “%PATH%;C:\Python37\Scripts”
  ```
  cd infertrade
  ```
-- Run setup file.
+- Run [`setup`](https://github.com/ta-oliver/infertrade/blob/main/setup.py) file.
  ```
  python setup.py install
  ```
