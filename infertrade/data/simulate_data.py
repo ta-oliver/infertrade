@@ -34,7 +34,7 @@ def simulated_market_data_4_years_gen():
     turnover = [100_000 + 10_000 * np.random.random() for _ in range(1000)]
     volume = [10_000 + 1000 * np.random.random() for _ in range(1000)]
     return pd.DataFrame(
-        {"open": open, "close": close, "high": high, "low": low, "last": last, "turnover": turnover, "volume": volume, "end_of_period_price": close}
+        {"open": open, "close": close, "high": high, "low": low, "last": last, "turnover": turnover, "volume": volume}
     )
 
 
