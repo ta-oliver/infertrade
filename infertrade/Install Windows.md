@@ -47,7 +47,10 @@ setx PATH “%PATH%;C:\Python37\Scripts”
  ```
  pip list
  ```
-- Open the infertrade package with your favorite code editor and run test files to confirm everything is running in order.
+- Run tests using pytest in infertrade-main/tests directory.
+ ```
+ pytest test_filename.py
+ ```
  
 ## Alternative Installation Method from source.
  
