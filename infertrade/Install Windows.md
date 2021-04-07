@@ -9,9 +9,9 @@
 
 
  
-- Install [`Python 3.7.x`](https://www.python.org/)
+- Install [`Python 3.7.x`](https://www.python.org/).
  
-- Add Path to Environment Variables
+- Add Path to Environment Variables.
 
  ![alt-text](https://github.com/ta-oliver/infertrade/blob/main/docs/images/run_dialog_box.jpg)
  ![alt-text](https://github.com/ta-oliver/infertrade/blob/main/docs/images/2%20environment_variables.jpg)
@@ -40,15 +40,15 @@ setx PATH “%PATH%;C:\Python37\Scripts”
         ```
         pip install TA_Lib-0.4.17-cp37-cp37m-win_amd64.whl
         ```
-    - Replace `cp37` with correct [`python`](https://www.python.org/) version an `win_amd64` with your architecture in above command.
+    - Replace `cp37` with correct [`python`](https://www.python.org/) version and `win_amd64` with your system architecture in above command.
  
 - Install [`infertrade`](https://github.com/ta-oliver/infertrade) package using [`pip`](https://pip.pypa.io/en/stable/) command in `cmd prompt`.
  ```
  pip install infertrade
  ```
-- Installation should run without errors, it should install all dependencies required.
+- Installation should run without errors, it should install all [`dependencies`](https://github.com/ta-oliver/infertrade/blob/holderfolyf-patch-1/requirements.txt) required.
  
-- Ensure all dependencies are installed by running.
+- Ensure all [`dependencies`](https://github.com/ta-oliver/infertrade/blob/holderfolyf-patch-1/requirements.txt) are installed by running.
  ```
  pip list
  ```
@@ -70,8 +70,8 @@ setx PATH “%PATH%;C:\Python37\Scripts”
   ```
   git clone https://github.com/ta-oliver/infertrade.git
   ```
-  - Alternative method: [clone](https://github.com/ta-oliver/infertrade/tree/main) source from website
-- Change directory to [`infertrade`](https://github.com/ta-oliver/infertrade)
+  - Alternative method: [clone](https://github.com/ta-oliver/infertrade/tree/main) source from website.
+- Change directory to [`infertrade`](https://github.com/ta-oliver/infertrade).
  
  ```
  cd infertrade
@@ -84,4 +84,4 @@ setx PATH “%PATH%;C:\Python37\Scripts”
  ```
  py setup.py install
  ```
-- Installation should complete successfully without errors
+- Installation should complete successfully without errors.
