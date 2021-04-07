@@ -39,7 +39,7 @@ setx PATH “%PATH%;C:\Python37\Scripts”
  
 - Install infertrade package with pip install command.
  ```
- pip install infretrade
+ pip install infertrade
  ```
 - Script should run without errors, it will install dependencies as well.
  
@@ -69,4 +69,3 @@ OR
  py setup.py install
  ```
 - Installation should complete successfully without errors
-
