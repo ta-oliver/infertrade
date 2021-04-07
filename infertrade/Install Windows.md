@@ -5,7 +5,7 @@
 
 
 
-# How to Install Infertrade Package from scratch for windows.
+# How to Install Infertrade Package for [`Microsoft Windows 10`](https://www.microsoft.com/en-in/software-download/windows10).
 
 
  
@@ -18,7 +18,7 @@
  ![alt-text](https://github.com/ta-oliver/infertrade/blob/main/docs/images/3edit_environment_variables.jpg)
  ![alt-text](https://github.com/ta-oliver/infertrade/blob/main/docs/images/4add_path.jpg)
  
-- Install `pip` Package Manager 
+- Install [`pip`](https://pip.pypa.io/en/stable/) Package Manager 
  
   - Download file from  `cmd prompt`:
   ```
@@ -30,7 +30,7 @@
   ```
   py get-pip.py
   ```
-- Add Path to Environment Variables for `pip` Package Manager using `cmd prompt`.
+- Add Path to Environment Variables for [`pip`](https://pip.pypa.io/en/stable/) Package Manager using `cmd prompt`.
 ```
 setx PATH “%PATH%;C:\Python37\Scripts”
 ```
@@ -40,9 +40,9 @@ setx PATH “%PATH%;C:\Python37\Scripts”
         ```
         pip install TA_Lib-0.4.17-cp37-cp37m-win_amd64.whl
         ```
-    - Replace `cp37` with correct python version in above command.
+    - Replace `cp37` with correct [`python`]((https://www.python.org/)) version in above command.
  
-- Install [`infertrade`](https://github.com/ta-oliver/infertrade) package with `pip install` command in `cmd prompt`.
+- Install [`infertrade`](https://github.com/ta-oliver/infertrade) package with [`pip`](https://pip.pypa.io/en/stable/) command in `cmd prompt`.
  ```
  pip install infertrade
  ```
@@ -79,7 +79,7 @@ setx PATH “%PATH%;C:\Python37\Scripts”
  ```
  python setup.py install
  ```
-OR
+- Alternate command:
  ```
  py setup.py install
  ```
