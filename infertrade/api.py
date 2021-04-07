@@ -159,10 +159,10 @@ class Api:
 
     @staticmethod
     def calculate_allocations(
-        df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = "price"
+        df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = PandasEnum.MID.value
     ) -> pd.DataFrame:
         """Calculates the allocations using the supplied strategy."""
-        if name_of_price_series is not "price":
+        if name_of_price_series is not PandasEnum.MID.value:
             df[PandasEnum.MID.value] = df[name_of_price_series]
         rule_function = Api._get_raw_callable(name_of_strategy)
         df_with_positions = rule_function(df)
@@ -176,7 +176,7 @@ class Api:
 
     @staticmethod
     def calculate_allocations_and_returns(
-        df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = "price"
+        df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = PandasEnum.MID.value
     ) -> pd.DataFrame:
         """Calculates the returns using the supplied strategy."""
         df_with_positions = Api.calculate_allocations(df, name_of_strategy, name_of_price_series)
