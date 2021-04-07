@@ -1,54 +1,56 @@
 **How to Install Infertrade Package from scratch for windows.**
 
-Install Python 3.7.x from https://www.python.org/
+- Install Python 3.7.x 
 
-Add Path to Environment Variables
+    [Python Download](https://www.python.org/)
 
+- Add Path to Environment Variables
+- 
   GUI Tutorial to add path: https://geek-university.com/python/add-python-to-the-windows-path/
 
-Install PIP package manager 
+- Install PIP package manager 
 
-  Download file from shell/cmd:
+  - Download file from shell/cmd:
   ```
   curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
   ```
-  Alternatively download from browser
+  - Alternatively download from browser
   ```
   https://bootstrap.pypa.io/get-pip.py
   ```
-  Navigate to directory in cmd and run following command
+  - Navigate to directory in cmd and run following command
   ```
   py get-pip.py
   ```
-Add Path to Environment Variables for pip package manager.
+- Add Path to Environment Variables for pip package manager.
 ```
 setx PATH “%PATH%;C:\Python37\Scripts”
 ```
 
-Install infertrade package with pip install command.
+- Install infertrade package with pip install command.
 ```
 pip install infretrade
 ```
-Script should run without errors, it will install dependencies aswell.
+- Script should run without errors, it will install dependencies aswell.
 
-Ensure all dependencies installed by running the following command.
+- Ensure all dependencies installed by running the following command.
 ```
-> pip list
+pip list
 ```
-Open infertrade package with your favorite code editor and run test files to confirm everything is running in order.
+- Open infertrade package with your favorite code editor and run test files to confirm everything is running in order.
 
-Alternative Installation Method from source.
+## Alternative Installation Method from source.
 
-Clone Repo
+- Clone Repo
 ```
 git clone https://github.com/ta-oliver/infertrade.git
 ```
-Change director to infer trade
+- Change director to infer trade
 
 ```
 cd infertrade
 ```
-Run setup file.
+- Run setup file.
 ```
 python setup.py install
 ```
@@ -56,8 +58,5 @@ OR
 ```
 py setup.py install
 ```
-Installation should complete succefully without errors
-
-
-
+- Installation should complete succefully without errors
 
