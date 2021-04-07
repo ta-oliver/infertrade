@@ -11,7 +11,7 @@
  ![alt-text](https://github.com/ta-oliver/infertrade/blob/main/docs/images/3edit_environment_variables.jpg)
  ![alt-text](https://github.com/ta-oliver/infertrade/blob/main/docs/images/4add_path.jpg)
  
-- Install PIP package manager 
+- Install PIP Package Manager 
  
   - Download file from shell/cmd:
   ```
@@ -25,7 +25,7 @@
   ```
   py get-pip.py
   ```
-- Add Path to Environment Variables for pip package manager.
+- Add Path to Environment Variables for PIP Package Manager.
 ```
 setx PATH “%PATH%;C:\Python37\Scripts”
 ```
