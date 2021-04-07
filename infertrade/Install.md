@@ -6,7 +6,10 @@
  
 - Add Path to Environment Variables
 
-  GUI Tutorial to add path: https://geek-university.com/python/add-python-to-the-windows-path/
+ ![alt-text](https://github.com/ta-oliver/infertrade/blob/holderfolyf-patch-1/docs/image/run_dialog_box.jpg)
+ ![alt-text](https://github.com/ta-oliver/infertrade/blob/holderfolyf-patch-1/docs/image/2%20environment_variables.jpg)
+ ![alt-text](https://github.com/ta-oliver/infertrade/blob/holderfolyf-patch-1/docs/image/3edit_environment_variables.jpg)
+ ![alt-text](https://github.com/ta-oliver/infertrade/blob/holderfolyf-patch-1/docs/image/4add_path.jpg)
  
 - Install PIP package manager 
  
