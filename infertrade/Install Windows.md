@@ -29,6 +29,13 @@
 ```
 setx PATH “%PATH%;C:\Python37\Scripts”
 ```
+- Install TA-Lib for windows
+    - Download whl file from [whl download](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib)
+    - Run install command in cmd.
+        ```
+        pip install TA_Lib-0.4.17-cp37-cp37m-win_amd64.whl
+        ```
+    - Replace cp37 with correct python version in above command
  
 - Install infertrade package with pip install command.
 ```
