@@ -47,7 +47,7 @@ setx PATH “%PATH%;C:\Python37\Scripts”
  ```
  pip list
  ```
-- Run tests using pytest in infertrade-main/tests directory.
+- Run tests using Pytest. Navigate to infertrade-main/tests directory in Command prompt and enter following command. Replace `test_filename` with the correct filename.
  ```
  pytest test_filename.py
  ```
