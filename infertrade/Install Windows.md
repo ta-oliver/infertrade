@@ -1,8 +1,15 @@
-**How to Install Infertrade Package from scratch for windows.**
+<p align="center">
+  <img src="https://www.infertrade.com/static/media/InferTradeLogo.5c2cc437.svg" alt="InferTrade"/>
+</p>
+
+
+
+
+# How to Install Infertrade Package from scratch for windows.
+
+
  
-- Install Python 3.7.x 
- 
-    [Python Download](https://www.python.org/)
+- Install [`Python 3.7.x`](https://www.python.org/)
  
 - Add Path to Environment Variables
 
@@ -11,7 +18,7 @@
  ![alt-text](https://github.com/ta-oliver/infertrade/blob/main/docs/images/3edit_environment_variables.jpg)
  ![alt-text](https://github.com/ta-oliver/infertrade/blob/main/docs/images/4add_path.jpg)
  
-- Install PIP Package Manager 
+- Install `pip` Package Manager 
  
   - Download file from  `cmd prompt`:
   ```
@@ -23,19 +30,19 @@
   ```
   py get-pip.py
   ```
-- Add Path to Environment Variables for PIP Package Manager using `cmd prompt`.
+- Add Path to Environment Variables for `pip` Package Manager using `cmd prompt`.
 ```
 setx PATH “%PATH%;C:\Python37\Scripts”
 ```
-- Install TA-Lib for windows
-    - Download whl file from [whl download](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib)
-    - Run install command in `cmd prompt`.
+- Install [`TA-Lib`](https://www.ta-lib.org/) for windows
+    - Download `whl` file from [whl download](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib)
+    - Run `install` command in `cmd prompt`.
         ```
         pip install TA_Lib-0.4.17-cp37-cp37m-win_amd64.whl
         ```
-    - Replace cp37 with correct python version in above command.
+    - Replace `cp37` with correct python version in above command.
  
-- Install infertrade package with pip install command in `cmd prompt`.
+- Install [`infertrade`](https://github.com/ta-oliver/infertrade) package with `pip install` command in `cmd prompt`.
  ```
  pip install infertrade
  ```
@@ -45,12 +52,12 @@ setx PATH “%PATH%;C:\Python37\Scripts”
  ```
  pip list
  ```
-- Testing using Pytest
-  - Navigate to infertrade-main/tests directory using `cmd prompt`  and run `pytest` command.
+- Testing using [`pytest`](https://pytest.org/en/stable/)
+  - Navigate to [`infertrade-main/tests`](https://github.com/ta-oliver/infertrade/tree/main/tests) directory using `cmd prompt`  and run [`pytest`](https://pytest.org/en/stable/) command.
   ```
   pytest
   ```
-  - To run specific tests add filename after `pytest` command. Replace `test_filename.py` with your required filename.
+  - To run specific tests add filename after [`pytest`](https://pytest.org/en/stable/) command. Replace `test_filename.py` with your required filename.
   ```
   pytest test_filename.py
   ```
@@ -63,7 +70,7 @@ setx PATH “%PATH%;C:\Python37\Scripts”
   git clone https://github.com/ta-oliver/infertrade.git
   ```
   - Alternative method: [clone](https://github.com/ta-oliver/infertrade/tree/main) source from website
-- Change directory to infertrade
+- Change directory to [`infertrade`](https://github.com/ta-oliver/infertrade)
  
  ```
  cd infertrade
