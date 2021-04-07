@@ -120,7 +120,7 @@ def research_over_price_minus_one(x: Union[np.ndarray, pd.Series], shift: int) -
 
 
 class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
-    def __init__(self, market_to_trade: str = "end_of_period_price"):
+    def __init__(self, market_to_trade: str = PandasEnum.MID.value):
         self.market_to_trade = market_to_trade
 
     def fit(self, X, y=None):
