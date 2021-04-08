@@ -3,7 +3,6 @@
 set -e
 
 # Make sure we are using up to date Python 3.7
-sem-version python 3.7
 sudo apt-get install python3.7-tk -y
 sudo apt-get install --only-upgrade python3.7-tk -y
 
