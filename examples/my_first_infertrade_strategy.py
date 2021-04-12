@@ -32,5 +32,5 @@ if __name__ == "__main__":
     my_dataframe_without_allocations = my_dataframe.rename(columns={"LBMA/GOLD usd (pm)": "price", "Date": "date"})
     my_dataframe_with_allocations = buy_on_small_rises(my_dataframe_without_allocations)
     my_dataframe_with_returns = calculate_portfolio_performance_python(my_dataframe_with_allocations)
-    my_dataframe_with_returns.plot(x="date", y=["allocation", "portfolio_returns"])
+    my_dataframe_with_returns.plot(x="date", y=["allocation", "portfolio_return"])
     plt.show()
