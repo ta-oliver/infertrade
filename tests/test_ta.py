@@ -35,4 +35,3 @@ def test_get_ta_rules():
     available_ta_algos = Api().available_algorithms(filter_by_package=name_of_ta_package)
     # Check there are some algorithms.
     assert available_ta_algos
-

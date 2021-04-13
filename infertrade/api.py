@@ -131,17 +131,14 @@ class Api:
     def _get_raw_callable(name_of_strategy_or_signal: str) -> callable:
         """Private method to return the raw function - should not be used externally."""
         info = Api.get_algorithm_information()
-        callable_fields = ['function', 'class']
+        callable_fields = ["function", "class"]
         try:
-            callable_key = next(key for key in callable_fields
-                                if key in info[name_of_strategy_or_signal])
+            callable_key = next(key for key in callable_fields if key in info[name_of_strategy_or_signal])
             raw_callable = info[name_of_strategy_or_signal][callable_key]
         except StopIteration:
-            raise KeyError("The dictionary has no recognised callable ("
-                           + ','.join(callable_fields) + ") fields.")
+            raise KeyError("The dictionary has no recognised callable (" + ",".join(callable_fields) + ") fields.")
         except KeyError:
-            raise KeyError("A strategy or signal was requested that could not be found: ",
-                           name_of_strategy_or_signal)
+            raise KeyError("A strategy or signal was requested that could not be found: ", name_of_strategy_or_signal)
 
         if callable_key is "function":
             # We will not amend.
@@ -184,9 +181,7 @@ class Api:
         return df_with_returns
 
     @staticmethod
-    def calculate_signal(
-        df: pd.DataFrame, name_of_signal: str
-    ) -> pd.DataFrame:
+    def calculate_signal(df: pd.DataFrame, name_of_signal: str) -> pd.DataFrame:
         """Calculates the allocations using the supplied strategy."""
         class_of_signal_generator = Api()._get_raw_callable(name_of_signal)
         original_df = deepcopy(df)
