@@ -50,6 +50,8 @@ If you would like to contribute to the package, e.g. to add support for an addit
 
 Please note the project requires Python 3.7 or higher due to dependent libraries used.
 
+See [Windows](https://github.com/ta-oliver/infertrade/blob/main/docs/Install%20Windows.md) or [Linux](https://github.com/ta-oliver/infertrade/blob/main/docs/Install%20Ubuntu%20Linux.md) guides for installation details.
+
 
 ### My First InferTrade Rule
 

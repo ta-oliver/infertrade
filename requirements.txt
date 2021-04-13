@@ -1,7 +1,7 @@
-pandas==1.2.3
-numpy==1.20.1
-ta==0.7.0
-scikit-learn==0.23.1
-matplotlib==3.3.4
-typing_extensions==3.7.4.3
-TA-Lib
+pandas>=1.2.3
+numpy>=1.20.1
+ta>=0.7.0
+scikit-learn>=0.23.1
+matplotlib>=3.3.4
+typing_extensions>=3.7.4.3
+TA-Lib>=0.4.19
