@@ -77,8 +77,8 @@ class Api:
 
     @staticmethod
     def algorithm_categories() -> List[str]:
-        """Returns the list of supported packages."""
-        return [PandasEnum.ALLOCATION.value, "signal"]
+        """Returns the list of algorithm types."""
+        return [PandasEnum.ALLOCATION.value, PandasEnum.SIGNAL.value]
 
     @staticmethod
     def available_algorithms(
