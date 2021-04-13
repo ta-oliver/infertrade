@@ -16,7 +16,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.pipeline import make_pipeline, FeatureUnion
 from sklearn.preprocessing import FunctionTransformer, Binarizer
 from infertrade.utilities.performance import calculate_portfolio_performance_python
-from infertrade.PandasEnum import PandasEnum
+from infertrade.PandasEnum import PandasEnum, create_price_column_from_synonym
 
 
 def pct_chg(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
@@ -43,9 +43,9 @@ def diff_log(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
 def lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
     """Lag (shift) series by desired number of periods."""
     x = x.astype("float64")
-    l = np.roll(x, shift=shift, axis=0)
-    l[:shift, :] = np.nan
-    return l
+    lagged_array = np.roll(x, shift=shift, axis=0)
+    lagged_array[:shift, :] = np.nan
+    return lagged_array
 
 
 def dl_lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
@@ -120,15 +120,26 @@ def research_over_price_minus_one(x: Union[np.ndarray, pd.Series], shift: int) -
 
 
 class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
-    def __init__(self, market_to_trade: str = "close"):
+
+    """Class for creating price predictions from signal values."""
+
+    def __init__(self, market_to_trade: str = None):
+        """We create by determining one input column as being the price to target."""
+        if not market_to_trade:
+            # We default to "price" as the target.
+            market_to_trade = PandasEnum.MID.value
         self.market_to_trade = market_to_trade
 
-    def fit(self, X, y=None):
+    def fit(self, X: np.array, y=None):
         self.fitted_features_and_target_ = None
         return self
 
     def transform(self, X, y=None):
+        """We transform a signal input to a price prediction."""
         X_ = deepcopy(X)
+
+        create_price_column_from_synonym(X_)
+
         regression_period = 120
         forecast_period = min(regression_period, len(X_))
         prediction_indices = self._get_model_prediction_indices(len(X_), regression_period, forecast_period)
@@ -195,7 +206,6 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
         """Get features matrix and target array. TODO -  more description helpful."""
         features = self._get_features_matrix_transformer()
         target = self._get_target_array_transformer()
-
         feat_tar = FeatureUnion(transformer_list=[("features", features), ("target", target)])
         self.fitted_features_and_target_ = feat_tar.fit(X)
 
