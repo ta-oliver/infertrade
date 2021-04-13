@@ -6,6 +6,9 @@ set -e
 sudo apt-get install python3.7-tk -y
 sudo apt-get install --only-upgrade python3.7-tk -y
 
+# Install wheel for ta-lib installation dependency
+pip install wheel
+
 # Install ta-lib requirements
 wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
 tar -xzf ta-lib-0.4.0-src.tar.gz
