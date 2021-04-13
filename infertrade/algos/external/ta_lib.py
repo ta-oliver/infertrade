@@ -55,12 +55,7 @@ def sma_func(df: pd.DataFrame) -> pd.DataFrame:
 
 # Hardcoded list of available rules with added metadata.
 talib_export_signals = {
-    "SMA": {
-        "function": sma_func,
-        "function_names": ["SMA"],
-        "parameters": {},
-        "series": ["close"]
-    },
+    "SMA": {"function": sma_func, "function_names": ["SMA"], "parameters": {}, "series": ["close"]},
 }
 
 talib_export_allocations = {}
