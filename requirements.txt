@@ -4,4 +4,4 @@ ta>=0.7.0
 scikit-learn>=0.23.1
 matplotlib>=3.3.4
 typing_extensions>=3.7.4.3
-TA-Lib>=0.4.19
+# TA-Lib>=0.4.19     Remove until can make optional, as creates complexity for new users.
