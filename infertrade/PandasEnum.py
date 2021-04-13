@@ -80,12 +80,15 @@ def create_price_column_from_synonym(df_potentially_missing_price_column: pd.Dat
         successfully_updated = False
         for ii_synonym in PandasEnum.PRICE_SYNONYMS.value:
             if ii_synonym in df_potentially_missing_price_column.columns:
-                df_potentially_missing_price_column[PandasEnum.MID.value] = \
-                    df_potentially_missing_price_column[ii_synonym]
+                df_potentially_missing_price_column[PandasEnum.MID.value] = df_potentially_missing_price_column[
+                    ii_synonym
+                ]
                 successfully_updated = True
                 break
 
         if not successfully_updated:
-            raise KeyError("Price column is missing - cannot perform transform. Needs one of these present: ",
-                           PandasEnum.MID.value,
-                           PandasEnum.CLOSE.value)
+            raise KeyError(
+                "Price column is missing - cannot perform transform. Needs one of these present: ",
+                PandasEnum.MID.value,
+                PandasEnum.CLOSE.value,
+            )
