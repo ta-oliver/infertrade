@@ -83,6 +83,9 @@ ta_export_signals = {
         "function_names": "kama",
         "parameters": {"window": 10, "pow1": 2, "pow2": 30},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L80",
+        "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/momentum.py#L282",
+        "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.KAMAIndicator"
     },
     "ppo": {
         "class": PercentagePriceOscillator,
