@@ -67,7 +67,7 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
 
 
 infertrade_export_allocations = {
-    "fifty_fifty": {"function": fifty_fifty, "parameters": {}, "series": []},
+    "fifty_fifty": {"function": fifty_fifty, "parameters": {}, "series": [], "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/community/allocations.py#L28"},
     "buy_and_hold": {"function": buy_and_hold, "parameters": {}, "series": []},
     "constant_allocation_size": {
         "function": constant_allocation_size,
