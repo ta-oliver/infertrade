@@ -760,7 +760,7 @@ ta_export_signals = {
         "series": ["close"],
         "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L684",
         "original_code_url": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.others.DailyReturnIndicator",
-        #"original_documentation": "",
+        "original_documentation": "",
     },
 }
 
