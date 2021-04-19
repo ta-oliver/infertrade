@@ -1,0 +1,217 @@
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{tikz}
+\usepackage{titlesec}
+\usepackage{subcaption}
+\usepackage[margin=1in]{geometry}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{url}
+
+\newcommand{\position}{z}
+\newcommand{\research}{r}
+\newcommand{\price}{p}
+\newcommand{\observed}{o}
+\newcommand{\regressionprice}{y}
+\newcommand{\currenttime}{t}
+\newcommand{\constantc}{c}
+\newcommand{\minimumratio}{K}
+\newcommand{\lookbacklength}{L}
+\newcommand{\dummytime}{\tau}
+\newcommand{\dummyiterator}{n}
+\newcommand{\dummyiteratortwo}{m}
+\newcommand{\dummyiteratorthree}{l}
+\newcommand{\decaycoefficient}{\phi}
+\newcommand{\decaycoefficientone}{\decaycoefficient_{1}}
+\newcommand{\decaycoefficienttwo}{\decaycoefficient_{2}}
+\newcommand{\decaycoefficientthree}{\decaycoefficient_{3}}
+\newcommand{\numberofcoefficients}{\Phi}
+\newcommand{\fixedconstant}{\Omega}
+\newcommand{\amplitudecoefficient}{\kappa}
+\newcommand{\amplitudecoefficientone}{\amplitudecoefficient_{1}}
+\newcommand{\amplitudecoefficienttwo}{\amplitudecoefficient_{2}}
+\newcommand{\amplitudecoefficientthree}{\amplitudecoefficient_{3}}
+\newcommand{\horizon}{h}
+\newcommand{\contribution}{\lambda}
+\newcommand{\contributionone}{\contribution_{1}}
+\newcommand{\contributiontwo}{\contribution_{2}}
+\newcommand{\bigcontribution}{\Lambda}
+\newcommand{\bigcontributionone}{\bigcontribution_{1}}
+\newcommand{\bigcontributiontwo}{\bigcontribution_{2}}
+\newcommand{\bigcontributionthree}{\bigcontribution_{3}}
+\newcommand{\bigcontributionshort}{\bigcontribution(\currenttime, \averagelengthshort, \price)}
+\newcommand{\bigcontributionlong}{\bigcontribution(\currenttime, \averagelengthlong, \price)}
+\newcommand{\bigcontributiontime}{\bigcontribution_\currenttime}
+\newcommand{\averagelength}{L}
+\newcommand{\averagelengthshort}{\averagelength_{1}}
+\newcommand{\averagelengthlong}{\averagelength_{2}}
+\newcommand{\kellyfraction}{F}
+\newcommand{\rmserrorsquared}{\varepsilon^{{2}}_{rms_{\currenttime}}}
+\newcommand{\rmserror}{\varepsilon_{rms_{\currenttime}}}
+\newcommand{\amplitudecoefficientshort}{\amplitudecoefficientone}
+\newcommand{\amplitudecoefficientlong}{\amplitudecoefficienttwo}
+\newcommand{\genericfunction}{\zeta}
+\newcommand{\scaleratiofactor}{\psi}
+\newcommand{\Figure}[1]{Figure #1}
+\newcommand{\tblofcontents}{\tableofcontents \pagebreak}
+\newcommand{\portfolio}{V}
+
+\titleformat*{\section}{\huge\bfseries}
+
+\newcommand{\logo}
+[0]
+{\begin{figure}\centering\scalebox{0.25}{\includegraphics{logo.png}}\end{figure}}
+\newcommand{\rulename}[1]
+{\section*{Predictive Relationship: #1}}
+\newcommand{\ruledescription}[1]{\hspace{200mm}\section{Trading Strategy Description}#1}
+\newcommand{\relationshipdescription}[1]{\hspace{200mm}\section{Relationship Description}#1}
+
+%Tried to make recursive function. Table lines are buggy
+\makeatletter
+\newcommand{\ruleparameters}{\section{Rule Parameters}
+Below is a table summarizing the parameters specific to this trading rule.
+\begin{center}
+\begin{tabular}{|m{9em}| m{3em}| m{15em}| m{3em}|}
+\hline
+Parameter Name & Default Value &  Description & Symbol
+\@tablefilli
+}
+
+\newcommand{\fixedruleparameters}{\section{Fixed Strategy Parameters}
+Below is a table summarizing the parameters specific to this trading rule.
+\begin{center}
+\begin{tabular}{|m{9em}| m{3em}| m{15em}| m{3em}|}
+\hline
+Parameter Name & Default Value &  Description & Symbol
+\@tablefilli
+}
+\newcommand\@tablefilli{\@ifnextchar\stoptable{\@tablesend}{\@tablefillii}}
+\newcommand\@tablefillii[4]{%
+  \@tablefilliii{#1}{#2}{#3}{#4}
+  \@tablefilli % restart the recursion
+}
+\newcommand\@tablefilliii[4]{%
+  \\ \hline
+  #1 & #2 & #3 & #4
+}
+\newcommand\@tablesend[1]{% The argument is \stoptable
+  \\ \hline
+  \end{tabular}
+  \end{center}}
+\makeatother
+
+
+\newcommand{\furtherlinks}[0]{
+\hspace{200mm}
+\hspace{200mm}
+\section*{Further Links}
+\begin{enumerate}
+    \item InferTrade: \url{https://www.infertrade.com}
+    \item Privacy Policy/Legal notice: \url{https://www.infertrade.com/privacy-policy}
+    \item InferStat Ltd: \url{https://www.inferstat.com}
+\end{enumerate}
+}
+
+
+\newcommand{\appendixinfertrade}[0]{
+    \hspace{200mm}
+    \hspace{200mm}
+    \section*{Appendix}
+}
+
+
+\newcommand{\regressionanderrorpartone}{
+    \subsection*{Calculating Regression Error}
+    \vspace{1mm}
+    \justify This PDF omits any explanation of how the regression coefficients $k_1$ and $k_2$ are calculated as we are using a standard regression for calculation of both the coefficients and standard error. For InferTrade we used the open source \textit{sklearn} Python library. The same can be achieved in Microsoft Excel by using the \textit{FORECAST.LINEAR} function.
+
+    \vspace{1mm}
+    \justify As a worked illustration of the error calculation, assume that InferTrade predicted that a security would increase in price by $0.1\%$ between yesterday and today, and the price actually decreased by $4.9\%$. In this example, $\Delta \price_{\currenttime} = +0.1\%$, and $\Delta\observed_{\currenttime} = -4.9\%$, giving $\Delta P_{\currenttime} - \Delta\price_{\currenttime} = 0.1\% - 4.9\% = -5\% = -0.05$. This value is then squared to give $(\Delta\price_{\currenttime} - \Delta\observed_{\currenttime})^{2} = (-0.05)^2 = 0.0025$. To obtain $\rmserrorsquared$ for day $\currenttime$, this calculation is repeated for every day from day $i = \currenttime-L$ to day $i = \currenttime$, with values summed before dividing by the regression length $\lookbacklength$.
+
+}
+
+\newcommand{\regressionanderrorparttwo}{
+    \vspace{1mm}
+
+
+\begin{equation}
+\Delta \price_{\currenttime+1} = k_1 \research_\currenttime+k_2 + \epsilon_{\currenttime+1}
+\tag{\ref{eqn:levelregression} }
+\end{equation}
+
+ As $\lookbacklength = 120$ for all simplified mode relationships, this is the same as squaring the root-mean-square of the previous 120 prediction errors .
+    \vspace{1mm}
+
+    \justify This section can be skipped or skimmed by those comfortable with implementing a standard rolling linear regression and a standard rolling error. As seen previously, InferTrade uses a standard linear regression over a historical rolling window of length $\lookbacklength$ to construct an estimator for daily price changes in the form:
+    
+
+    
+    \vspace{1mm}
+    \justify \textbf{NB} For the first $L$ days, $\Delta\price_{\currenttime+1}$ calculates the in-sample prediction, meaning that the one regression model is calculated over the first $L$ data points and used for predictions on each of these days. For any subsequent days, $\Delta\price_{\currenttime+1}$ calculates the out-of-sample prediction, meaning that a new regression model is fit for each trailing window. 
+    
+    \vspace{1mm}
+    \justify While $\Delta\price_{\currenttime+1}$ is the regression estimator used to predict future price changes with an observed error $\epsilon_\currenttime$, the regression itself is calculated using the actual observed price changes $\Delta\observed_\currenttime$. The standard root-mean-squared error factor, which scales the suggested allocation on day $\currenttime$, is squared to obtain $\rmserrorsquared$ and is calculated in percentage terms as follows:
+    
+    \\ % creates some space after equation
+    \vspace{1mm}
+    \begin{equation}
+        \rmserrorsquared = 
+        \begin{cases}
+        \frac{1}{\lookbacklength} \mathlarger{\sum}_{i=\currenttime-L}^{\currenttime}(\Delta \price_{i} - \Delta \observed_{i})^{2} & \text{if } \currenttime > L,\\
+        0 & \text{otherwise}
+        \end{cases}
+    \end{equation}
+    \vspace{1mm}
+    \justify
+    
+    
+    \justify where $\Delta\price_{i}$ and $\Delta\observed_{i}$ are the predicted and observed percentage price changes from day $i-1$ to day $i$, and $\lookbacklength$ is the regression length. 
+    
+    \\ % creates some space after equation
+    \vspace{1mm}
+    \justify For example, assume that InferTrade predicted that a security would increase in price by $0.1\%$ between yesterday and today, and the price actually decreased by $4.9\%$. In this example, $\Delta \price_{\currenttime} = +0.1\%$, and $\Delta\observed_{\currenttime} = -4.9\%$, giving $\Delta P_{\currenttime} - \Delta\price_{\currenttime} = 0.1\% - 4.9\% = -5\% = -0.05$. This value is then squared to give $(\Delta\price_{\currenttime} - \Delta\observed_{\currenttime})^{2} = (-0.05)^2 = 0.0025$. To obtain $\rmserrorsquared$ for day $\currenttime$, this calculation is repeated for every day from day $i = \currenttime-L$ to day $i = \currenttime$, with values summed before dividing by the regression length $\lookbacklength$. As $\lookbacklength = 120$ for all simplified mode relationships, this is the same as squaring the root-mean-square of the previous 120 prediction errors .
+    \vspace{1mm}
+    \justify Note that if the magnitude $|\rmserror| < 1$, dividing by $\rmserrorsquared$ increases the suggested allocation. This has the effect of suggesting higher allocations when the rolling error is small, thereby providing some adjustment for risk arising from volatility in the regression estimate. If, in the example above, InferTrade predicts that tomorrow's price will increase by $0.1\%$, and the root-mean-square of the previous 120 errors $(\Delta\price_{i} - \Delta\observed_{i})$ is found to be $5\%$, then $\rmserrorsquared = 0.05^2 = 0.0025$, and the suggested allocation $\position_\currenttime$ will be scaled by factor of $\frac{1}{0.0025} = 400$, giving
+    
+    \\ % creates some space after equation
+    \vspace{1mm}
+    \begin{equation}
+    \position_\currenttime = \frac{E[\Delta \price_{\currenttime+1}]}{\rmserrorsquared} = \frac{0.001}{0.0025} = 0.4 = 40 \%
+    \end{equation}
+    
+    \vspace{1mm}
+    \justify $E[\Delta\price_{\currenttime+1}]$ should be read as "The Expected Value of $\Delta\price_{\currenttime+1}$" and signifies that the actual price change $\Delta o_{\currenttime+1}$ is likely to deviate from $\Delta\price_{\currenttime+1}$ with prediction error $\epsilon_{\currenttime+1}$.
+}
+
+
+\newcommand{\howtotrade}[2]{
+\section{How to Trade}
+In order to trade with the rules InferTrade provides, we calculate allocations for each day. We then allocate that fraction of our total portfolio value (cash and securities) to the market we are trading - to do this we buy or sell securities to reach the target allocation.
+#2
+\subsection*{How Allocation Determines Trade Size}
+The allocation is the fractional amount of the portfolios value used to determine the size of the trading position. For example, if the allocation for Microsoft (MSFT) shares is 50\%, and we have \$100, we invest \$50 so that the value of held stock is the same as the value of held cash.
+\subsection*{Rule Specific Trading Details}
+#1}
+\newcommand{\graphdir}[1]{../rule_graphs/#1}
+\newcommand{\ruleperformance}[1]{
+\section{Rule Performance Considerations}
+#1
+}
+\newcommand{\assumptions}[0]{}
+\newcommand{\keyterms}{
+\section{Glossary}
+\begin{itemize}
+    \item \textbf{Bullish:} Positive outlook on the market. Expectation of positive returns.
+    \item \textbf{Bearish:} Negative outlook on the market. Expectation of negative returns.
+    \item \textbf{Allocation:} The allocation is the fractional amount of the portfolios value used to determine the size of the trading position.
+    \item \textbf{Parameter:} Value used by the trading rule in the calculation for trading position
+    \item \textbf{Trading Rule:} Strategy to determine when to buy, hold or sell a position.
+\end{itemize}
+}
+

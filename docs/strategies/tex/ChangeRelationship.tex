@@ -1,0 +1,116 @@
+\documentclass{article}%
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+\usepackage{relsize}%
+\usepackage{ragged2e}%
+%
+\input{common_symbols_and_format.tex}%
+\usepackage{tocloft}%
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}%
+%
+\begin{document}%
+\normalsize%
+\logo%
+\rulename{Change Relationship}%
+\tableofcontents%
+
+\relationshipdescription{
+\justify
+\Centering\textbf{In a change relationship, recent changes in the current value of the signal directly affects future changes in the price:}
+
+\begin{equation}
+\mathlarger{
+    \Delta P_{t+1} \propto k \Delta S_t + c
+    }
+\end{equation}
+\justify where ~$\Delta P_{t+1}$ represents the future percentage price change, $\Delta S_t$ represents the previous percentage change in the research signal at current time $t$, $k$ is a scalar, and $c$ is a constant. Intuitively, this means that when the signal moves higher, it is good to buy the market, as the price will tend to drift higher. When the signal moves lower, it is good to sell the market as the price will tend to drift lower.\par
+\vspace{1mm}
+\justify
+After finding the relationship which maximises risk adjusted returns, InferTrade runs tests for statistical significance to verify that the relationship gives a predictive edge. A predictive change relationship can be used to invest when the last change in the signal is high versus the historical average, and sell if the change is negative or low versus the historical average. If the scalar $k$ is negative, inverting the signal will make this true.
+\vspace{1mm}
+\justify
+\Centering An example of a time series that might show a predictive change relationship is an interest rate time series:
+\justify\Centering\textit{interest rate falls -> recent change in interest rate is high -> price of the S&P 500 goes up because investors are allocating capital towards higher return generating assets}
+\vspace{1mm}
+\justify
+
+We could also see a change component to price forecasts or fair value models if an analyst or model is updated infrequently, as a recent positive change could indicate incorporation of fresh news or information. However if the market price has moved stably then the new information may already be fully incorporated in the price.
+\vspace{1mm}
+\justify
+Similarly, a technical positioning indicator as a signal may be more likely to show a change relationship, whereby changes in the value of a signal drive the price, because a stable level of interest may not move the market. We would typically not expect a signal that is a price forecast to show a predictive change relationship, as a price forecast is typically relative to the current price (a difference relationship).
+}
+\begin{figure}[H]
+\begin{subfigure}{0.48\textwidth}
+\centering
+    \includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Market_ResearchSeries_360_380.pdf}
+    \caption{Comparison of the research value and the market price in USD for 240 days of trading.}
+    \label{fig:20Days-Market_Research}
+\end{subfigure}\quad
+\begin{subfigure}{0.48\textwidth}
+\centering
+    \includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Market_ResearchValue_360_380.pdf}
+    \caption{Comparison of the market price in USD and the research value obtained for 240 days of trading.}
+    \label{fig:20Days-Market_Research}
+\end{subfigure}
+
+    \caption{Data calculated for 240 days of training after the algorithm has been done. Research value, market and research series are shown.}
+    \label{fig:20Days}
+\end{figure}
+
+\newpage
+\ruledescription{
+\justify
+
+A predictive change relationship can be reflected in many kinds of rules. InferTrade uses a 120 period (6 months for daily data) rolling regression of the percentage change in the signal from the prior day against next day's price change as a benchmark. This trading rule recommends taking a position sized as a percentage of the capital you have allocated to trading this particular market.
+\vspace{1mm}
+\justify
+This rule will show higher returns than usual after optimisation if a significant change relationship is present between the price and signal series. The following equation shows how a change regression trading rule calculates a position sizing:
+
+\begin{equation}
+\position_\currenttime = 
+k_{1}\left(\frac{R_t}{R_{t-1}}-1\right)+k_2 
+\label{eq:Suggested_Allocation}
+\end{equation}
+\\ % creates some space after equation
+where $\position_\currenttime$ is the recommended strategy allocation at time $\currenttime$, $R_t$ is the Research value at time $\currenttime$, $k_1$ is the change coefficient and $k_2$ is the static coefficient. The bracketed term calculates the percentage change in the value of the research signal from time $t$ to $t-1$.
+} %Argument is rule description
+\begin{equation}
+    \position_{\currenttime} = \frac{\Delta P_{t+1}}{ \rmserror^{2}_{\regressionprice}}
+\end{equation}
+
+ % creates some space after equation
+
+\justify where $\Delta P_{t+1}$ represents the future percentage price change and $\rmserror_\regressionprice$ is the standard root mean squared error of the regression in predicting the fractional price change within the 120 day window. This means if the regression was accurate (error was low) larger position allocations are recommended.
+
+
+\begin{figure}[H]
+ \begin{subfigure}{0.48\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Allocation_MarketSeries_360_380.pdf}
+\caption{Suggested allocation per day, this graph shows when and how to invest the total or a fraction of the initial holding, and how the market price is correlated with it.}
+\label{fig:02}
+\end{subfigure}
+\quad
+\begin{subfigure}{0.48\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Allocation_ResearchValue_360_380.pdf}
+\caption{Suggested allocation per day and the research value of the change relationship trading rule, the suggested allocation is calculated based on the research value. So, both are correlated as shown in this figure. }
+\label{fig:04}
+\end{subfigure}
+%\caption{As this is a predictive Level Relationship, it can roughly be seen that when the Research Value is high, the Market tends to subsequently rise and vice-versa}
+\end{figure}
+\justify  It is very interesting to observe that the suggested allocation calculated by equation (\ref{eq:Suggested_Allocation}) is correlated with the market price.
+
+ \newpage
+\ruleparameters
+{Regression Length}{120}{This is the number of previous days used to estimate the regression coefficients.}{$\lookbacklength$}%
+\stoptable 
+
+\vspace{1mm}
+\justify Note that rule parameters are fixed to their default values for this and any other relationships optimised on simplified mode. For estimating the regression coefficients, a rolling window is used, so that at time t, the regression data uses research data from time t-121 to t-1 to calculate 120 research changes as the regression's independent variable. Price data from t-120 to t is used to calculate 120 next day price changes as the regression's dependent variable. %Argument is rule description
+
+\assumptions%
+\keyterms%
+\furtherlinks%
+\end{document}

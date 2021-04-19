@@ -20,7 +20,7 @@ Created: 11th March 2021
 """
 
 from typing import Optional
-from infertrade.PandasEnum import PandasEnum
+from infertrade.PandasEnum import PandasEnum, create_price_column_from_synonym
 
 import numpy as np
 import pandas as pd
@@ -49,6 +49,7 @@ def calculate_portfolio_performance_python(
     day_of_return_to_calculate = df_with_positions.shape[0]
 
     # Set up price, returns and cumulative total.
+    create_price_column_from_synonym(df_with_positions)
     price_list = list(df_with_positions[PandasEnum.MID.value])
     returns_list = []
     cumulative_portfolio_return = 1.0
@@ -232,6 +233,10 @@ def calculate_portfolio_performance_python(
             securities_bought_today = -last_securities_after_transaction
             cash_flow_today = 0.0
             last_securities_after_transaction = 0.0
+        else:
+            # We do not have a valid price or position, so we do not trade.
+            securities_bought_today = 0.0
+            cash_flow_today = 0.0
 
         if not skip_checks:
             if security_bankrupt:

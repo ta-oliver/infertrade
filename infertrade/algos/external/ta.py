@@ -29,24 +29,37 @@ from typing_extensions import Type
 
 from infertrade.PandasEnum import PandasEnum
 
+# Hardcoded settings
+DEFAULT_VALUE_FOR_MISSING_DEFAULTS = 10
+
 
 def ta_adaptor(indicator_mixin: Type[IndicatorMixin], function_name: str, **kwargs) -> callable:
     """Wraps strategies from ta to make them compatible with infertrade's interface."""
     indicator_parameters = inspect.signature(indicator_mixin.__init__).parameters
     allowed_keys = ["close", "open", "high", "low", "volume"]
     column_strings = []
-    parameter_strings = []
+    parameter_strings = {}
 
-    for i in range(len(indicator_parameters)):
-        if list(indicator_parameters.items())[i][0] in allowed_keys:
-            column_strings.append(list(indicator_parameters.items())[i][0])
-        elif list(indicator_parameters.items())[i][0] != "self":
-            parameter_strings.append(list(indicator_parameters.items())[i][0])
+    for ii_parameter_index in range(len(indicator_parameters)):
+        if list(indicator_parameters.items())[ii_parameter_index][0] in allowed_keys:
+            # This is an input column that needs to be mapped to a Pandas Series.
+            column_strings.append(list(indicator_parameters.items())[ii_parameter_index][0])
+        elif list(indicator_parameters.items())[ii_parameter_index][0] != "self":
+            # This is parameter that needs to mapped to a default value.
+            name_of_parameter = list(indicator_parameters.items())[ii_parameter_index][0]
+            default_value_of_parameter = list(indicator_parameters.items())[ii_parameter_index][1].default
+            if not isinstance(default_value_of_parameter, (float, int)):
+                # Where empty we set to 10.
+                default_value_of_parameter = DEFAULT_VALUE_FOR_MISSING_DEFAULTS
+            parameter_strings.update({name_of_parameter: default_value_of_parameter})
+
+    # We override with any supplied arguments.
+    parameter_strings.update(kwargs)
 
     def func(df: pd.DataFrame) -> pd.DataFrame:
         """Inner function to create a Pandas -> Pandas interface."""
         column_inputs = {column_name: df[column_name] for column_name in column_strings}
-        indicator = indicator_mixin(**column_inputs, **kwargs)
+        indicator = indicator_mixin(**column_inputs, **parameter_strings)
         indicator_callable = getattr(indicator, function_name)
         df[PandasEnum.SIGNAL.value] = indicator_callable()
         return df
@@ -55,6 +68,7 @@ def ta_adaptor(indicator_mixin: Type[IndicatorMixin], function_name: str, **kwar
 
 
 # Hardcoded list of available rules with added metadata.
+
 ta_export_signals = {
     "awesome_oscillator": {
         "class": AwesomeOscillatorIndicator,
@@ -328,7 +342,17 @@ ta_export_signals = {
         "class": KSTIndicator,
         "module": "ta.trend",
         "function_names": "kst",
-        "parameters": {"roc1": 10, "roc2": 15, "roc3": 20, "roc4": 30, "window1": 10, "window2": 10, "window3": 10, "window4": 15, "nsig": 9},
+        "parameters": {
+            "roc1": 10,
+            "roc2": 15,
+            "roc3": 20,
+            "roc4": 30,
+            "window1": 10,
+            "window2": 10,
+            "window3": 10,
+            "window4": 15,
+            "nsig": 9,
+        },
         "series": ["close"],
         "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L290",
         "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/trend.py#L432",
@@ -338,7 +362,17 @@ ta_export_signals = {
         "class": KSTIndicator,
         "module": "ta.trend",
         "function_names": "kst_diff",
-        "parameters": {"roc1": 10, "roc2": 15, "roc3": 20, "roc4": 30, "window1": 10, "window2": 10, "window3": 10, "window4": 15, "nsig": 9},
+        "parameters": {
+            "roc1": 10,
+            "roc2": 15,
+            "roc3": 20,
+            "roc4": 30,
+            "window1": 10,
+            "window2": 10,
+            "window3": 10,
+            "window4": 15,
+            "nsig": 9,
+        },
         "series": ["close"],
         "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L307",
     },
@@ -346,7 +380,17 @@ ta_export_signals = {
         "class": KSTIndicator,
         "module": "ta.trend",
         "function_names": "kst_sig",
-        "parameters": {"roc1": 10, "roc2": 15, "roc3": 20, "roc4": 30, "window1": 10, "window2": 10, "window3": 10, "window4": 15, "nsig": 9},
+        "parameters": {
+            "roc1": 10,
+            "roc2": 15,
+            "roc3": 20,
+            "roc4": 30,
+            "window1": 10,
+            "window2": 10,
+            "window3": 10,
+            "window4": 15,
+            "nsig": 9,
+        },
         "series": ["close"],
         "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L324",
     },
@@ -766,6 +810,6 @@ ta_export_signals = {
 
 ta_export_allocations = {}
 ta_export = {
-    "signal": ta_export_signals,
+    PandasEnum.SIGNAL.value: ta_export_signals,
     PandasEnum.ALLOCATION.value: ta_export_allocations,
 }

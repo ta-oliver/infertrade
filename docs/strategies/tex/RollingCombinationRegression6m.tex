@@ -1,0 +1,23 @@
+\documentclass{article}%
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+%
+\input{common_symbols_and_format.tex}%
+\usepackage{tocloft}%
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}%
+%
+\begin{document}%
+\normalsize%
+\logo%
+\rulename{Rolling Combination 6 Month Regression}%
+\tableofcontents%
+\ruledescription{Regresses the one-day price changes against the prior day's change in the research signal and the level of the research signal for 120 days.}%
+\ruleparameters{Amplitude}{0.1}{Amplitude weighting (Kelly Fraction). 1.0 is maximum growth if regression is exact. <1.0 scales down positions taken.}{Symbol}%
+\stoptable%
+\assumptions%
+\keyterms%
+\furtherlinks%
+\end{document}

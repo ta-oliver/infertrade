@@ -21,6 +21,8 @@ Created date: 17th March 2021
 
 from enum import Enum
 
+import pandas as pd
+
 
 class PandasEnum(Enum):
 
@@ -52,6 +54,13 @@ class PandasEnum(Enum):
     VALUATION = "portfolio_return"
     BID_OFFER_SPREAD = "bid_offer_spread"
 
+    # Price synonyms
+    CLOSE = "close"  # alternative name for mid at period end.
+    ADJUSTED_CLOSE = "adjusted close"
+    ADJ_CLOSE = "adj close"
+    ADJ_DOT_CLOSE = "adj. close"
+    PRICE_SYNONYMS = [CLOSE, ADJUSTED_CLOSE, ADJ_CLOSE, ADJ_DOT_CLOSE]
+
     # Diagnostic string labels
     PERIOD_START_CASH = "period_start_cash"
     PERIOD_START_SECURITIES = "period_start_securities"
@@ -63,3 +72,23 @@ class PandasEnum(Enum):
     TRADING_SKIPPED = "trading_skipped"
     SECURITIES_BOUGHT = "security_purchases"
     CASH_INCREASE = "cash_flow"
+
+
+def create_price_column_from_synonym(df_potentially_missing_price_column: pd.DataFrame):
+    """If the price column is missing then we will look for the "close" instead and copy those values."""
+    if PandasEnum.MID.value not in df_potentially_missing_price_column.columns:
+        successfully_updated = False
+        for ii_synonym in PandasEnum.PRICE_SYNONYMS.value:
+            if ii_synonym in df_potentially_missing_price_column.columns:
+                df_potentially_missing_price_column[PandasEnum.MID.value] = df_potentially_missing_price_column[
+                    ii_synonym
+                ]
+                successfully_updated = True
+                break
+
+        if not successfully_updated:
+            raise KeyError(
+                "Price column is missing - cannot perform transform. Needs one of these present: ",
+                PandasEnum.MID.value,
+                PandasEnum.CLOSE.value,
+            )

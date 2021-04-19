@@ -20,6 +20,7 @@ Created date: 11/03/2021
 """
 
 import pandas as pd
+import numpy as np
 from sklearn.preprocessing import FunctionTransformer
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
@@ -65,7 +66,7 @@ infertrade_export_signals = {
 
 
 def test_NormalisedCloseTransformer():
-    # nct = NormalisedCloseTransformer()
+    """nct = NormalisedCloseTransformer()"""
     nct = scikit_signal_factory(normalised_close)
     X = nct.fit_transform(simulated_market_data_4_years_gen)
-    print(X)
+    assert isinstance(X, np.array)

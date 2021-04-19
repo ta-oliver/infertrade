@@ -20,6 +20,7 @@ Created date: 25th March 2021
 """
 
 import pandas as pd
+import pytest
 
 from infertrade.PandasEnum import PandasEnum
 from infertrade.api import Api
@@ -71,8 +72,25 @@ def test_signals_creation():
         for jj_algo_name in list_of_algos:
             original_columns = ii_df.columns
 
+            # We check if the test series has the columns needed for the rule to calculate.
+            required_columns = Api.required_inputs_for_algorithm(jj_algo_name)
+            all_present = True
+            for ii_requirement in required_columns:
+                if ii_requirement not in ii_df.columns:
+                    all_present = False
+
+            # If columns are missing, we anticipate a KeyError will trigger.
+            if not all_present:
+                with pytest.raises(KeyError):
+                    Api.calculate_signal(ii_df, jj_algo_name)
+                return True
+
+            # Otherwise we expect to parse successfully.
             df_with_signal = Api.calculate_signal(ii_df, jj_algo_name)
-            assert isinstance(df_with_signal, pd.DataFrame)
+            if not isinstance(df_with_signal, pd.DataFrame):
+                print(df_with_signal)
+                print("Type was: ", type(df_with_signal))
+                raise TypeError("Bad output format.")
 
             # Signal algorithms should be adding new columns with float, int or NaN data.
             new_columns = False
