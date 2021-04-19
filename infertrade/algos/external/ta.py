@@ -76,6 +76,7 @@ ta_export_signals = {
         "function_names": "awesome_oscillator",
         "parameters": {"window1": 5, "window2": 34},
         "series": ["high", "low"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L73",
     },
     "kama": {
         "class": KAMAIndicator,
@@ -83,6 +84,9 @@ ta_export_signals = {
         "function_names": "kama",
         "parameters": {"window": 10, "pow1": 2, "pow2": 30},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L80",
+        "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/momentum.py#L282",
+        "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.KAMAIndicator",
     },
     "ppo": {
         "class": PercentagePriceOscillator,
@@ -90,6 +94,9 @@ ta_export_signals = {
         "function_names": "ppo",
         "parameters": {"window_slow": 26, "window_fast": 12, "window_sign": 9},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L87",
+        "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/momentum.py#L620",
+        "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.PercentagePriceOscillator",
     },
     "ppo_hist": {
         "class": PercentagePriceOscillator,
@@ -97,6 +104,7 @@ ta_export_signals = {
         "function_names": "ppo_hist",
         "parameters": {"window_slow": 26, "window_fast": 12, "window_sign": 9},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L94",
     },
     "ppo_signal": {
         "class": PercentagePriceOscillator,
@@ -104,6 +112,7 @@ ta_export_signals = {
         "function_names": "ppo_signal",
         "parameters": {"window_slow": 26, "window_fast": 12, "window_sign": 9},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L101",
     },
     "pvo": {
         "class": PercentageVolumeOscillator,
@@ -111,6 +120,9 @@ ta_export_signals = {
         "function_names": "pvo",
         "parameters": {"window_slow": 26, "window_fast": 12, "window_sign": 9},
         "series": ["volume"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L108",
+        "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/momentum.py#L693",
+        "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.PercentageVolumeOscillator",
     },
     "pvo_hist": {
         "class": PercentageVolumeOscillator,
@@ -118,6 +130,7 @@ ta_export_signals = {
         "function_names": "pvo_hist",
         "parameters": {"window_slow": 26, "window_fast": 12, "window_sign": 9},
         "series": ["volume"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L115",
     },
     "pvo_signal": {
         "class": PercentageVolumeOscillator,
@@ -125,6 +138,7 @@ ta_export_signals = {
         "function_names": "pvo_signal",
         "parameters": {"window_slow": 26, "window_fast": 12, "window_sign": 9},
         "series": ["volume"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L122",
     },
     "roc": {
         "class": ROCIndicator,
@@ -132,6 +146,9 @@ ta_export_signals = {
         "function_names": "roc",
         "parameters": {"window": 12},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L129",
+        "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/momentum.py#L360",
+        "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.ROCIndicator",
     },
     "rsi": {
         "class": RSIIndicator,
@@ -139,6 +156,9 @@ ta_export_signals = {
         "function_names": "rsi",
         "parameters": {"window": 14},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L136",
+        "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/momentum.py#L14",
+        "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.RSIIndicato",
     },
     "stochrsi": {
         "class": StochRSIIndicator,
@@ -146,6 +166,9 @@ ta_export_signals = {
         "function_names": "stochrsi",
         "parameters": {"window": 14, "smooth1": 3, "smooth2": 3},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L143",
+        "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/momentum.py#L547",
+        "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.StochRSIIndicator",
     },
     "stochrsi_d": {
         "class": StochRSIIndicator,
@@ -153,6 +176,7 @@ ta_export_signals = {
         "function_names": "stochrsi_d",
         "parameters": {"window": 14, "smooth1": 3, "smooth2": 3},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L150",
     },
     "stochrsi_k": {
         "class": StochRSIIndicator,
@@ -160,6 +184,7 @@ ta_export_signals = {
         "function_names": "stochrsi_k",
         "parameters": {"window": 14, "smooth1": 3, "smooth2": 3},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L157",
     },
     "stoch": {
         "class": StochasticOscillator,
@@ -167,6 +192,7 @@ ta_export_signals = {
         "function_names": "stoch",
         "parameters": {"window": 14, "smooth_window": 3},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L164",
     },
     "stoch_signal": {
         "class": StochasticOscillator,
@@ -174,6 +200,7 @@ ta_export_signals = {
         "function_names": "stoch_signal",
         "parameters": {"window": 14, "smooth_window": 3},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L171",
     },
     "tsi": {
         "class": TSIIndicator,
@@ -181,6 +208,9 @@ ta_export_signals = {
         "function_names": "tsi",
         "parameters": {"window_slow": 25, "window_fast": 13},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L178",
+        "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/momentum.py#L63",
+        "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.TSIIndicator",
     },
     "ultimate_oscillator": {
         "class": UltimateOscillator,
@@ -188,6 +218,7 @@ ta_export_signals = {
         "function_names": "ultimate_oscillator",
         "parameters": {"window1": 7, "window2": 14, "window3": 28, "weight1": 4.0, "weight2": 2.0, "weight3": 1.0},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L185",
     },
     "williams_r": {
         "class": WilliamsRIndicator,
@@ -195,6 +226,7 @@ ta_export_signals = {
         "function_names": "williams_r",
         "parameters": {"lbp": 14},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L192",
     },
     "adx": {
         "class": ADXIndicator,
@@ -202,6 +234,7 @@ ta_export_signals = {
         "function_names": "adx",
         "parameters": {"window": 14},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L199",
     },
     "adx_neg": {
         "class": ADXIndicator,
@@ -209,6 +242,7 @@ ta_export_signals = {
         "function_names": "adx_neg",
         "parameters": {"window": 14},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L206",
     },
     "adx_pos": {
         "class": ADXIndicator,
@@ -216,6 +250,7 @@ ta_export_signals = {
         "function_names": "adx_pos",
         "parameters": {"window": 14},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L213",
     },
     "aroon_down": {
         "class": AroonIndicator,
@@ -223,6 +258,7 @@ ta_export_signals = {
         "function_names": "aroon_down",
         "parameters": {"window": 25},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L220",
     },
     "aroon_indicator": {
         "class": AroonIndicator,
@@ -230,6 +266,9 @@ ta_export_signals = {
         "function_names": "aroon_indicator",
         "parameters": {"window": 25},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L227",
+        "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/trend.py#L14",
+        "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.AroonIndicator",
     },
     "aroon_up": {
         "class": AroonIndicator,
@@ -237,6 +276,7 @@ ta_export_signals = {
         "function_names": "aroon_up",
         "parameters": {"window": 25},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L234",
     },
     "cci": {
         "class": CCIIndicator,
@@ -244,6 +284,7 @@ ta_export_signals = {
         "function_names": "cci",
         "parameters": {"window": 20, "constant": 0.015},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L241",
     },
     "dpo": {
         "class": DPOIndicator,
@@ -251,6 +292,9 @@ ta_export_signals = {
         "function_names": "dpo",
         "parameters": {"window": 20},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L248",
+        "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/trend.py#L568",
+        "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.DPOIndicator",
     },
     "ema_indicator": {
         "class": EMAIndicator,
@@ -258,6 +302,9 @@ ta_export_signals = {
         "function_names": "ema_indicator",
         "parameters": {"window": 14},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L255",
+        "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/trend.py#L150",
+        "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.EMAIndicator",
     },
     "ichimoku_a": {
         "class": IchimokuIndicator,
@@ -265,6 +312,7 @@ ta_export_signals = {
         "function_names": "ichimoku_a",
         "parameters": {"window1": 9, "window2": 26, "window3": 52},
         "series": ["high", "low"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L262",
     },
     "ichimoku_b": {
         "class": IchimokuIndicator,
@@ -272,6 +320,7 @@ ta_export_signals = {
         "function_names": "ichimoku_b",
         "parameters": {"window1": 9, "window2": 26, "window3": 52},
         "series": ["high", "low"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L269",
     },
     "ichimoku_base_line": {
         "class": IchimokuIndicator,
@@ -279,6 +328,7 @@ ta_export_signals = {
         "function_names": "ichimoku_base_line",
         "parameters": {"window1": 9, "window2": 26, "window3": 52},
         "series": ["high", "low"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L276",
     },
     "ichimoku_conversion_line": {
         "class": IchimokuIndicator,
@@ -286,6 +336,7 @@ ta_export_signals = {
         "function_names": "ichimoku_conversion_line",
         "parameters": {"window1": 9, "window2": 26, "window3": 52},
         "series": ["high", "low"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L283",
     },
     "kst": {
         "class": KSTIndicator,
@@ -303,6 +354,9 @@ ta_export_signals = {
             "nsig": 9,
         },
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L290",
+        "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/trend.py#L432",
+        "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.kst",
     },
     "kst_diff": {
         "class": KSTIndicator,
@@ -320,6 +374,7 @@ ta_export_signals = {
             "nsig": 9,
         },
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L307",
     },
     "kst_sig": {
         "class": KSTIndicator,
@@ -337,6 +392,7 @@ ta_export_signals = {
             "nsig": 9,
         },
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L324",
     },
     "macd": {
         "class": MACD,
@@ -344,6 +400,9 @@ ta_export_signals = {
         "function_names": "macd",
         "parameters": {"window_slow": 26, "window_fast": 12, "window_sign": 9},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L341",
+        "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/trend.py#L76",
+        "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.MACD",
     },
     "macd_diff": {
         "class": MACD,
@@ -351,6 +410,7 @@ ta_export_signals = {
         "function_names": "macd_diff",
         "parameters": {"window_slow": 26, "window_fast": 12, "window_sign": 9},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L348",
     },
     "macd_signal": {
         "class": MACD,
@@ -358,6 +418,7 @@ ta_export_signals = {
         "function_names": "macd_signal",
         "parameters": {"window_slow": 26, "window_fast": 12, "window_sign": 9},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L355",
     },
     "mass_index": {
         "class": MassIndex,
@@ -365,6 +426,7 @@ ta_export_signals = {
         "function_names": "mass_index",
         "parameters": {"window_fast": 9, "window_slow": 25},
         "series": ["high", "low"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L362",
     },
     "psar": {
         "class": PSARIndicator,
@@ -372,6 +434,7 @@ ta_export_signals = {
         "function_names": "psar",
         "parameters": {"step": 0.02, "max_step": 0.2},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L369",
     },
     "psar_down": {
         "class": PSARIndicator,
@@ -379,6 +442,7 @@ ta_export_signals = {
         "function_names": "psar_down",
         "parameters": {"step": 0.02, "max_step": 0.2},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L376",
     },
     "psar_down_indicator": {
         "class": PSARIndicator,
@@ -386,6 +450,7 @@ ta_export_signals = {
         "function_names": "psar_down_indicator",
         "parameters": {"step": 0.02, "max_step": 0.2},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L383",
     },
     "psar_up": {
         "class": PSARIndicator,
@@ -393,6 +458,7 @@ ta_export_signals = {
         "function_names": "psar_up",
         "parameters": {"step": 0.02, "max_step": 0.2},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L390",
     },
     "psar_up_indicator": {
         "class": PSARIndicator,
@@ -400,6 +466,7 @@ ta_export_signals = {
         "function_names": "psar_up_indicator",
         "parameters": {"step": 0.02, "max_step": 0.2},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L397",
     },
     "sma_indicator": {
         "class": SMAIndicator,
@@ -407,6 +474,9 @@ ta_export_signals = {
         "function_names": "sma_indicator",
         "parameters": {"window": 20},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L404",
+        "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/trend.py#L174",
+        "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.SMAIndicator",
     },
     "stc": {
         "class": STCIndicator,
@@ -414,6 +484,7 @@ ta_export_signals = {
         "function_names": "stc",
         "parameters": {"window_slow": 50, "window_fast": 23, "cycle": 10, "smooth1": 3, "smooth2": 3},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L411",
     },
     "trix": {
         "class": TRIXIndicator,
@@ -421,6 +492,9 @@ ta_export_signals = {
         "function_names": "trix",
         "parameters": {"window": 15},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L418",
+        "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/trend.py#L241",
+        "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.TRIXIndicator",
     },
     "vortex_indicator_diff": {
         "class": VortexIndicator,
@@ -428,6 +502,7 @@ ta_export_signals = {
         "function_names": "vortex_indicator_diff",
         "parameters": {"window": 14},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L425",
     },
     "vortex_indicator_neg": {
         "class": VortexIndicator,
@@ -435,6 +510,7 @@ ta_export_signals = {
         "function_names": "vortex_indicator_neg",
         "parameters": {"window": 14},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L432",
     },
     "vortex_indicator_pos": {
         "class": VortexIndicator,
@@ -442,6 +518,7 @@ ta_export_signals = {
         "function_names": "vortex_indicator_pos",
         "parameters": {"window": 14},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L439",
     },
     "wma": {
         "class": WMAIndicator,
@@ -449,6 +526,7 @@ ta_export_signals = {
         "function_names": "wma",
         "parameters": {"window": 9},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L446",
     },
     "average_true_range": {
         "class": AverageTrueRange,
@@ -456,6 +534,7 @@ ta_export_signals = {
         "function_names": "average_true_range",
         "parameters": {"window": 14},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L453"
     },
     "bollinger_hband": {
         "class": BollingerBands,
@@ -463,6 +542,7 @@ ta_export_signals = {
         "function_names": "bollinger_hband",
         "parameters": {"window": 20, "window_dev": 2},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L460",
     },
     "bollinger_hband_indicator": {
         "class": BollingerBands,
@@ -470,6 +550,7 @@ ta_export_signals = {
         "function_names": "bollinger_hband_indicator",
         "parameters": {"window": 20, "window_dev": 2},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L467",
     },
     "bollinger_lband": {
         "class": BollingerBands,
@@ -477,6 +558,7 @@ ta_export_signals = {
         "function_names": "bollinger_lband",
         "parameters": {"window": 20, "window_dev": 2},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L474",
     },
     "bollinger_lband_indicator": {
         "class": BollingerBands,
@@ -484,6 +566,7 @@ ta_export_signals = {
         "function_names": "bollinger_lband_indicator",
         "parameters": {"window": 20, "window_dev": 2},
         "series": ["close"],
+        "infertrade_permalink_url":"https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L481",
     },
     "bollinger_mavg": {
         "class": BollingerBands,
@@ -491,6 +574,9 @@ ta_export_signals = {
         "function_names": "bollinger_mavg",
         "parameters": {"window": 20, "window_dev": 2},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L488",
+        "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/volatility.py#L67",
+        "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.volatility.BollingerBands.bollinger_mavg",
     },
     "bollinger_pband": {
         "class": BollingerBands,
@@ -498,6 +584,7 @@ ta_export_signals = {
         "function_names": "bollinger_pband",
         "parameters": {"window": 20, "window_dev": 2},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L495",
     },
     "bollinger_wband": {
         "class": BollingerBands,
@@ -505,6 +592,7 @@ ta_export_signals = {
         "function_names": "bollinger_wband",
         "parameters": {"window": 20, "window_dev": 2},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L502",
     },
     "donchian_channel_hband": {
         "class": DonchianChannel,
@@ -512,6 +600,7 @@ ta_export_signals = {
         "function_names": "donchian_channel_hband",
         "parameters": {"window": 20, "offset": 0},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L509",
     },
     "donchian_channel_lband": {
         "class": DonchianChannel,
@@ -519,6 +608,7 @@ ta_export_signals = {
         "function_names": "donchian_channel_lband",
         "parameters": {"window": 20, "offset": 0},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L516",
     },
     "donchian_channel_mband": {
         "class": DonchianChannel,
@@ -526,6 +616,7 @@ ta_export_signals = {
         "function_names": "donchian_channel_mband",
         "parameters": {"window": 20, "offset": 0},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L523",
     },
     "donchian_channel_pband": {
         "class": DonchianChannel,
@@ -533,6 +624,7 @@ ta_export_signals = {
         "function_names": "donchian_channel_pband",
         "parameters": {"window": 20, "offset": 0},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L530",
     },
     "donchian_channel_wband": {
         "class": DonchianChannel,
@@ -540,6 +632,7 @@ ta_export_signals = {
         "function_names": "donchian_channel_wband",
         "parameters": {"window": 20, "offset": 0},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L537",
     },
     "keltner_channel_hband": {
         "class": KeltnerChannel,
@@ -547,6 +640,7 @@ ta_export_signals = {
         "function_names": "keltner_channel_hband",
         "parameters": {"window": 20, "window_atr": 10},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L544",
     },
     "keltner_channel_hband_indicator": {
         "class": KeltnerChannel,
@@ -554,6 +648,7 @@ ta_export_signals = {
         "function_names": "keltner_channel_hband_indicator",
         "parameters": {"window": 20, "window_atr": 10},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L551",
     },
     "keltner_channel_lband": {
         "class": KeltnerChannel,
@@ -561,6 +656,7 @@ ta_export_signals = {
         "function_names": "keltner_channel_lband",
         "parameters": {"window": 20, "window_atr": 10},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L558",
     },
     "keltner_channel_lband_indicator": {
         "class": KeltnerChannel,
@@ -568,6 +664,7 @@ ta_export_signals = {
         "function_names": "keltner_channel_lband_indicator",
         "parameters": {"window": 20, "window_atr": 10},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L565",
     },
     "keltner_channel_mband": {
         "class": KeltnerChannel,
@@ -575,6 +672,7 @@ ta_export_signals = {
         "function_names": "keltner_channel_mband",
         "parameters": {"window": 20, "window_atr": 10},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L572",
     },
     "keltner_channel_pband": {
         "class": KeltnerChannel,
@@ -582,6 +680,7 @@ ta_export_signals = {
         "function_names": "keltner_channel_pband",
         "parameters": {"window": 20, "window_atr": 10},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L579",
     },
     "keltner_channel_wband": {
         "class": KeltnerChannel,
@@ -589,6 +688,7 @@ ta_export_signals = {
         "function_names": "keltner_channel_wband",
         "parameters": {"window": 20, "window_atr": 10},
         "series": ["high", "low", "close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L586",
     },
     "ulcer_index": {
         "class": UlcerIndex,
@@ -596,6 +696,9 @@ ta_export_signals = {
         "function_names": "ulcer_index",
         "parameters": {"window": 14},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L593",
+        "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/volatility.py#L428",
+        "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.volatility.UlcerIndex",
     },
     "acc_dist_index": {
         "class": AccDistIndexIndicator,
@@ -603,6 +706,7 @@ ta_export_signals = {
         "function_names": "acc_dist_index",
         "parameters": {},
         "series": ["high", "low", "close", "volume"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L600",
     },
     "chaikin_money_flow": {
         "class": ChaikinMoneyFlowIndicator,
@@ -610,6 +714,7 @@ ta_export_signals = {
         "function_names": "chaikin_money_flow",
         "parameters": {"window": 20},
         "series": ["high", "low", "close", "volume"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L607",
     },
     "ease_of_movement": {
         "class": EaseOfMovementIndicator,
@@ -617,6 +722,7 @@ ta_export_signals = {
         "function_names": "ease_of_movement",
         "parameters": {"window": 14},
         "series": ["high", "low", "volume"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L614",
     },
     "sma_ease_of_movement": {
         "class": EaseOfMovementIndicator,
@@ -624,6 +730,7 @@ ta_export_signals = {
         "function_names": "sma_ease_of_movement",
         "parameters": {"window": 14},
         "series": ["high", "low", "volume"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L621",
     },
     "force_index": {
         "class": ForceIndexIndicator,
@@ -631,6 +738,7 @@ ta_export_signals = {
         "function_names": "force_index",
         "parameters": {"window": 13},
         "series": ["close", "volume"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L628",
     },
     "money_flow_index": {
         "class": MFIIndicator,
@@ -638,6 +746,7 @@ ta_export_signals = {
         "function_names": "money_flow_index",
         "parameters": {"window": 14},
         "series": ["high", "low", "close", "volume"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L635",
     },
     "negative_volume_index": {
         "class": NegativeVolumeIndexIndicator,
@@ -645,6 +754,7 @@ ta_export_signals = {
         "function_names": "negative_volume_index",
         "parameters": {},
         "series": ["close", "volume"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L642",
     },
     "on_balance_volume": {
         "class": OnBalanceVolumeIndicator,
@@ -652,6 +762,7 @@ ta_export_signals = {
         "function_names": "on_balance_volume",
         "parameters": {},
         "series": ["close", "volume"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L649",
     },
     "volume_price_trend": {
         "class": VolumePriceTrendIndicator,
@@ -659,6 +770,7 @@ ta_export_signals = {
         "function_names": "volume_price_trend",
         "parameters": {},
         "series": ["close", "volume"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L656",
     },
     "volume_weighted_average_price": {
         "class": VolumeWeightedAveragePrice,
@@ -666,6 +778,7 @@ ta_export_signals = {
         "function_names": "volume_weighted_average_price",
         "parameters": {"window": 14},
         "series": ["high", "low", "close", "volume"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L663",
     },
     "cumulative_return": {
         "class": CumulativeReturnIndicator,
@@ -673,6 +786,7 @@ ta_export_signals = {
         "function_names": "cumulative_return",
         "parameters": {},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L670",
     },
     "daily_log_return": {
         "class": DailyLogReturnIndicator,
@@ -680,6 +794,7 @@ ta_export_signals = {
         "function_names": "daily_log_return",
         "parameters": {},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L677",
     },
     "daily_return": {
         "class": DailyReturnIndicator,
@@ -687,6 +802,9 @@ ta_export_signals = {
         "function_names": "daily_return",
         "parameters": {},
         "series": ["close"],
+        "infertrade_permalink_url": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L684",
+        "original_code_url": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.others.DailyReturnIndicator",
+        "original_documentation": "",
     },
 }
 
