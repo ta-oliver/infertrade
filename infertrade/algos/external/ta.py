@@ -89,7 +89,7 @@ ta_export_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L80",
             "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/momentum.py#L282",
-            "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.KAMAIndicator",
+            "docs_link": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.KAMAIndicator",
         },
     },
     "ppo": {
@@ -101,7 +101,7 @@ ta_export_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L87",
             "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/momentum.py#L620",
-            "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.PercentagePriceOscillator",
+            "docs_link": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.PercentagePriceOscillator",
         },
     },
     "ppo_hist": {
@@ -133,7 +133,7 @@ ta_export_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L108",
             "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/momentum.py#L693",
-            "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.PercentageVolumeOscillator",
+            "docs_link": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.PercentageVolumeOscillator",
         },
     },
     "pvo_hist": {
@@ -165,7 +165,7 @@ ta_export_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L129",
             "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/momentum.py#L360",
-            "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.ROCIndicator",
+            "docs_link": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.ROCIndicator",
         },
     },
     "rsi": {
@@ -177,7 +177,7 @@ ta_export_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L136",
             "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/momentum.py#L14",
-            "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.RSIIndicato",
+            "docs_link": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.RSIIndicato",
         },
     },
     "stochrsi": {
@@ -189,7 +189,7 @@ ta_export_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L143",
             "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/momentum.py#L547",
-            "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.StochRSIIndicator",
+            "docs_link": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.StochRSIIndicator",
         },
     },
     "stochrsi_d": {
@@ -241,7 +241,7 @@ ta_export_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L178",
             "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/momentum.py#L63",
-            "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.TSIIndicator",
+            "docs_link": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.momentum.TSIIndicator",
         },
     },
     "ultimate_oscillator": {
@@ -313,7 +313,7 @@ ta_export_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L227",
             "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/trend.py#L14",
-            "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.AroonIndicator",
+            "docs_link": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.AroonIndicator",
         },
     },
     "aroon_up": {
@@ -345,7 +345,7 @@ ta_export_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L248",
             "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/trend.py#L568",
-            "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.DPOIndicator",
+            "docs_link": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.DPOIndicator",
         },
     },
     "ema_indicator": {
@@ -357,7 +357,7 @@ ta_export_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L255",
             "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/trend.py#L150",
-            "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.EMAIndicator",
+            "docs_link": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.EMAIndicator",
         },
     },
     "ichimoku_a": {
@@ -419,7 +419,7 @@ ta_export_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L290",
             "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/trend.py#L432",
-            "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.kst",
+            "docs_link": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.kst",
         },
     },
     "kst_diff": {
@@ -471,7 +471,7 @@ ta_export_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L341",
             "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/trend.py#L76",
-            "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.MACD",
+            "docs_link": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.MACD",
         },
     },
     "macd_diff": {
@@ -563,7 +563,7 @@ ta_export_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L404",
             "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/trend.py#L174",
-            "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.SMAIndicator",
+            "docs_link": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.SMAIndicator",
         },
     },
     "stc": {
@@ -585,7 +585,7 @@ ta_export_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L418",
             "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/trend.py#L241",
-            "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.TRIXIndicator",
+            "docs_link": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.trend.TRIXIndicator",
         },
     },
     "vortex_indicator_diff": {
@@ -687,7 +687,7 @@ ta_export_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L488",
             "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/volatility.py#L67",
-            "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.volatility.BollingerBands.bollinger_mavg",
+            "docs_link": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.volatility.BollingerBands.bollinger_mavg",
         },
     },
     "bollinger_pband": {
@@ -839,7 +839,7 @@ ta_export_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d607a3a0c41465e87dd3926263fa5904ce9538d2/infertrade/algos/external/ta.py#L593",
             "original_code_url": "https://github.com/bukosabino/ta/blob/84ced26e07cb676d1033703dfd81e1ee81285b07/ta/volatility.py#L428",
-            "original_documentation": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.volatility.UlcerIndex",
+            "docs_link": "https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#ta.volatility.UlcerIndex",
         },
     },
     "acc_dist_index": {
