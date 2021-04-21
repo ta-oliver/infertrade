@@ -55,12 +55,29 @@ def scikit_signal_factory(signal_function: callable):
 
 
 infertrade_export_signals = {
-    "normalised_close": {"function": normalised_close, "parameters": {}, "series": ["close"]},
-    "high_low_diff": {"function": high_low_diff, "parameters": {}, "series": ["high", "low"]},
+    "normalised_close": {
+        "function": normalised_close,
+        "parameters": {},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L28"
+        },
+    },
+    "high_low_diff": {
+        "function": high_low_diff,
+        "parameters": {},
+        "series": ["high", "low"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L39"
+        },
+    },
     "high_low_diff_scaled": {
         "function": high_low_diff_scaled,
         "parameters": {"amplitude": 1.0},
         "series": ["high", "low"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L45"
+        },
     },
 }
 

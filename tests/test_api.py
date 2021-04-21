@@ -28,78 +28,89 @@ from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
 api_instance = Api()
 test_dfs = [simulated_market_data_4_years_gen(), simulated_market_data_4_years_gen()]
+available_algorithms = Api.available_algorithms()
+available_allocation_algorithms = Api.available_algorithms(filter_by_category=PandasEnum.ALLOCATION.value)
+available_signal_algorithms = Api.available_algorithms(filter_by_category=PandasEnum.SIGNAL.value)
 
 
-def test_get_available_algorithms():
+@pytest.mark.parametrize("algorithm", available_algorithms)
+def test_get_available_algorithms(algorithm):
     """Checks can get algorithm list and that returned algorithms can supply all expected properties."""
-    list_of_algos = Api.available_algorithms()
-    assert isinstance(list_of_algos, list)
-    for ii_algo_name in list_of_algos:
-        assert isinstance(ii_algo_name, str)
-        assert Api.return_algorithm_category(ii_algo_name) in Api.algorithm_categories()
-        assert Api.determine_package_of_algorithm(ii_algo_name) in Api.available_packages()
+    assert isinstance(algorithm, str)
+    assert Api.return_algorithm_category(algorithm) in Api.algorithm_categories()
+    assert Api.determine_package_of_algorithm(algorithm) in Api.available_packages()
 
-        inputs = Api.required_inputs_for_algorithm(ii_algo_name)
-        assert isinstance(inputs, list)
-        for ii_required_input in inputs:
-            assert isinstance(ii_required_input, str)
+    inputs = Api.required_inputs_for_algorithm(algorithm)
+    assert isinstance(inputs, list)
+    for ii_required_input in inputs:
+        assert isinstance(ii_required_input, str)
 
-        params = Api.required_parameters_for_algorithm(ii_algo_name)
-        assert isinstance(params, dict)
-        for ii_param_name in params:
-            assert isinstance(ii_param_name, str)
-            assert isinstance(params[ii_param_name], (int, float))
+    params = Api.required_parameters_for_algorithm(algorithm)
+    assert isinstance(params, dict)
+    for ii_param_name in params:
+        assert isinstance(ii_param_name, str)
+        assert isinstance(params[ii_param_name], (int, float))
 
 
-def test_calculation_positions():
+@pytest.mark.parametrize("algorithm", available_algorithms)
+def test_representations(algorithm):
+    """Checks that representations can be retrieved."""
+    representations = Api.get_available_representations(algorithm)
+    assert isinstance(representations, list)
+    assert "github_permalink" in representations
+    for ii_representation in representations:
+        assert isinstance(ii_representation, str)
+
+
+@pytest.mark.parametrize("test_df", test_dfs)
+@pytest.mark.parametrize("allocation_algorithm", available_allocation_algorithms)
+def test_calculation_positions(test_df, allocation_algorithm):
     """Checks algorithms calculate positions and returns."""
-    list_of_algos = Api.available_algorithms(filter_by_category=PandasEnum.ALLOCATION.value)
-    for ii_df in test_dfs:
-        for jj_algo_name in list_of_algos:
-            df_with_allocations = Api.calculate_allocations(ii_df, jj_algo_name, "close")
-            isinstance(df_with_allocations, pd.DataFrame)
-            df_with_returns = Api.calculate_returns(df_with_allocations)
-            isinstance(df_with_returns, pd.DataFrame)
-            for ii_value in df_with_returns[PandasEnum.VALUATION.value]:
-                if not isinstance(ii_value, float):
+    df_with_allocations = Api.calculate_allocations(test_df, allocation_algorithm, "close")
+    assert isinstance(df_with_allocations, pd.DataFrame)
+    assert "allocation" in df_with_allocations.columns
+    df_with_returns = Api.calculate_returns(df_with_allocations)
+    assert isinstance(df_with_returns, pd.DataFrame)
+    for ii_value in df_with_returns[PandasEnum.VALUATION.value]:
+        if not isinstance(ii_value, float):
+            assert ii_value is "NaN"
+
+
+@pytest.mark.parametrize("test_df", test_dfs)
+@pytest.mark.parametrize("signal_algorithm", available_signal_algorithms)
+def test_signals_creation(test_df, signal_algorithm):
+    """Checks signal algorithms can create a signal in a Pandas dataframe."""
+
+    original_columns = test_df.columns
+
+    # We check if the test series has the columns needed for the rule to calculate.
+    required_columns = Api.required_inputs_for_algorithm(signal_algorithm)
+    all_present = True
+    for ii_requirement in required_columns:
+        if ii_requirement not in test_df.columns:
+            all_present = False
+
+    # If columns are missing, we anticipate a KeyError will trigger.
+    if not all_present:
+        with pytest.raises(KeyError):
+            Api.calculate_signal(test_df, signal_algorithm)
+        return True
+
+    # Otherwise we expect to parse successfully.
+    df_with_signal = Api.calculate_signal(test_df, signal_algorithm)
+    if not isinstance(df_with_signal, pd.DataFrame):
+        print(df_with_signal)
+        print("Type was: ", type(df_with_signal))
+        raise TypeError("Bad output format.")
+
+    # Signal algorithms should be adding new columns with float, int or NaN data.
+    new_columns = False
+    for ii_column_name in df_with_signal:
+        if ii_column_name not in original_columns:
+            new_columns = True
+            for ii_value in df_with_signal[ii_column_name]:
+                if not isinstance(ii_value, (float, int)):
                     assert ii_value is "NaN"
 
-
-def test_signals_creation():
-    """Checks signal algorithms can create a signal in a Pandas dataframe."""
-    list_of_algos = Api.available_algorithms(filter_by_category=PandasEnum.SIGNAL.value)
-    for ii_df in test_dfs:
-        for jj_algo_name in list_of_algos:
-            original_columns = ii_df.columns
-
-            # We check if the test series has the columns needed for the rule to calculate.
-            required_columns = Api.required_inputs_for_algorithm(jj_algo_name)
-            all_present = True
-            for ii_requirement in required_columns:
-                if ii_requirement not in ii_df.columns:
-                    all_present = False
-
-            # If columns are missing, we anticipate a KeyError will trigger.
-            if not all_present:
-                with pytest.raises(KeyError):
-                    Api.calculate_signal(ii_df, jj_algo_name)
-                return True
-
-            # Otherwise we expect to parse successfully.
-            df_with_signal = Api.calculate_signal(ii_df, jj_algo_name)
-            if not isinstance(df_with_signal, pd.DataFrame):
-                print(df_with_signal)
-                print("Type was: ", type(df_with_signal))
-                raise TypeError("Bad output format.")
-
-            # Signal algorithms should be adding new columns with float, int or NaN data.
-            new_columns = False
-            for ii_column_name in df_with_signal:
-                if ii_column_name not in original_columns:
-                    new_columns = True
-                    for ii_value in df_with_signal[ii_column_name]:
-                        if not isinstance(ii_value, (float, int)):
-                            assert ii_value is "NaN"
-
-            # At least one new column should have been added.
-            assert new_columns
+    # At least one new column should have been added.
+    assert new_columns
