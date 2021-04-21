@@ -80,7 +80,6 @@ def test_transformers():
             assert pytest.approx(df0["forecast_price_change"][ii_index]) == df["forecast_price_change"][ii_index]
 
 
-
 def test_regression():
     """Check regression"""
     simulated_market_data = simulated_market_data_4_years_gen()
