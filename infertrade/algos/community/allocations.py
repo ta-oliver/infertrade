@@ -27,19 +27,13 @@ from infertrade.PandasEnum import PandasEnum
 
 def fifty_fifty(dataframe) -> pd.DataFrame:
     """Allocates 50% of strategy budget to asset, 50% to cash."""
-    dataframe[PandasEnum.ALLOCATION.value] = 0.5
+    dataframe["allocation"] = 0.5
     return dataframe
 
 
 def buy_and_hold(dataframe) -> pd.DataFrame:
     """Allocates 100% of strategy budget to asset, holding to end of period (or security bankruptcy)."""
     dataframe[PandasEnum.ALLOCATION.value] = 1.0
-    return dataframe
-
-
-def buy_and_hold(dataframe) -> pd.DataFrame:
-    """Allocates 100% of strategy budget to asset, holding to end of period (or security bankruptcy)."""
-    dataframe["position"] = 1.0
     return dataframe
 
 
@@ -67,17 +61,37 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
 
 
 infertrade_export_allocations = {
-    "fifty_fifty": {"function": fifty_fifty, "parameters": {}, "series": []},
-    "buy_and_hold": {"function": buy_and_hold, "parameters": {}, "series": []},
+    "fifty_fifty": {
+        "function": fifty_fifty,
+        "parameters": {},
+        "series": [],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/allocations.py#L28"
+        },
+    },
+    "buy_and_hold": {
+        "function": buy_and_hold,
+        "parameters": {},
+        "series": [],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/allocations.py#L34"
+        },
+    },
     "constant_allocation_size": {
         "function": constant_allocation_size,
         "parameters": {"fixed_allocation_size": 1.0},
         "series": [],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/allocations.py#L46"
+        },
     },
     "high_low_difference": {
         "function": high_low_difference,
         "parameters": {"scale": 1.0, "constant": 0.0},
         "series": ["high", "low"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/allocations.py#L57"
+        },
     },
 }
 

@@ -20,6 +20,7 @@ Created date: 11/03/2021
 """
 
 import pandas as pd
+import pytest
 from sklearn.pipeline import make_pipeline
 from ta.momentum import AwesomeOscillatorIndicator
 from ta.trend import AroonIndicator
@@ -67,9 +68,17 @@ def test_transformers():
     df_with_positions = pos_from_price.fit_transform(df)
     predictions_from_positions = PricePredictionFromPositions()
     df0 = predictions_from_positions.fit_transform(df_with_positions)
-    df0 = df0.round()
-    df = df_with_positions.round()
-    assert list(df["forecast_price_change"]) == list(df0["forecast_price_change"])
+
+    # Check all forecasts reconcile.
+    for ii_index in df0.index:
+        assert pytest.approx(df0["forecast_price_change"][ii_index]) == df["forecast_price_change"][ii_index]
+
+    # Check fails when different.
+    df0["forecast_price_change"][3] = 0.564
+    with pytest.raises(AssertionError):
+        for ii_index in df0.index:
+            assert pytest.approx(df0["forecast_price_change"][ii_index]) == df["forecast_price_change"][ii_index]
+
 
 
 def test_regression():
