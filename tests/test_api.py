@@ -19,9 +19,11 @@ Created by: Thomas Oliver
 Created date: 25th March 2021
 """
 
+# External imports
 import pandas as pd
 import pytest
 
+# Internal imports
 from infertrade.PandasEnum import PandasEnum
 from infertrade.api import Api
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen

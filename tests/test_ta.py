@@ -19,6 +19,7 @@ Created by: Thomas Oliver
 Created date: 19th March 2021
 """
 
+# InferTrade imports
 from infertrade.api import Api
 
 name_of_ta_package = "ta"
