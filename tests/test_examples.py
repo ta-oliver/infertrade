@@ -19,12 +19,16 @@ Created by: Joshua Mason
 Created date: 11/03/2021
 """
 
+# External imports
 import pandas as pd
 import pytest
 from sklearn.pipeline import make_pipeline
+
+# Ta package dependencies
 from ta.momentum import AwesomeOscillatorIndicator
 from ta.trend import AroonIndicator
 
+# Internal imports
 from infertrade.algos import ta_adaptor
 from infertrade.algos.community import normalised_close
 from infertrade.algos.community import scikit_signal_factory
