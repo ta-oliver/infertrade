@@ -60,6 +60,34 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
     return dataframe
 
 
+def weighted_moving_averages(
+    dataframe: pd.DataFrame,
+    avg_price_coeff: float = 1.0,
+    avg_research_coeff: float = 1.0,
+    avg_price_length: int = 2,
+    avg_research_length: int = 2,
+) -> pd.Series:
+    """This rule uses weightings of two moving averages to determine trade positioning. The
+    parameters accepted are the integer lengths of each average (2 parameters - one for price, one for
+    research) and two coefficients for each average's weighting contribution. The total sum is divided by the
+     current price to calculate a position size."""
+
+    #split out the price/research df here
+    price = dataframe['price']
+    research = dataframe['research']
+
+    avg_price = price.rolling(window=avg_price_length).mean()
+    avg_research = research.rolling(window=avg_research_length).mean()
+
+    price_total = avg_price_coeff * avg_price
+    research_total = avg_research_coeff * avg_research
+
+    position = (price_total + research_total) / price.values
+    dataframe.position = position
+
+    return dataframe
+
+
 infertrade_export_allocations = {
     "fifty_fifty": {
         "function": fifty_fifty,
@@ -91,6 +119,19 @@ infertrade_export_allocations = {
         "series": ["high", "low"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/allocations.py#L57"
+        },
+    },
+    "weightedMovingAverages": {
+        "function": weighted_moving_averages,
+        "parameters": {
+            "avg_price_coeff": 1.0,
+            "avg_research_coeff": 1.0,
+            "avg_price_length": 2,
+            "avg_research_length": 2
+        },
+        "series": ["price", "research"],
+        "available_representation_types": {
+            "github_permalink": "" #TODO: add this after initial commit
         },
     },
 }
