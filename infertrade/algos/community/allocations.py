@@ -70,9 +70,12 @@ def weighted_moving_averages(
     """
     This rule uses weightings of two moving averages to determine trade positioning.
 
-    The parameters accepted are the integer lengths of each average (2 parameters - one for price, one for research)
-    and two coefficients for each average's weighting contribution. The total sum is divided by the current price to
-    calculate a position size.
+    The parameters accepted are the integer lengths of each average (2 parameters - one for price, one for the research
+    signal) and two coefficients for each average's weighting contribution. The total sum is divided by the current
+    price to calculate a position size.
+
+    This strategy is suitable where the dimensionality of the signal/research series is the same as the dimensionality
+    of the price series, e.g. where the signal is a price forecast or fair value estimate of the market or security.
 
     parameters:
     avg_price_coeff: price contribution scalar multiple.
@@ -82,8 +85,8 @@ def weighted_moving_averages(
     """
 
     # Splits out the price/research df to individual pandas Series.
-    price = dataframe['price']
-    research = dataframe['research']
+    price = dataframe[PandasEnum.MID.value]
+    research = dataframe[PandasEnum.SIGNAL.value]
 
     # Calculates the averages.
     avg_price = price.rolling(window=avg_price_length).mean()
@@ -94,8 +97,9 @@ def weighted_moving_averages(
     research_total = avg_research_coeff * avg_research
 
     # Sums the contributions and normalises by the level of the price.
+    # N.B. as summing, this approach assumes that research signal is of same dimensionality as the price.
     position = (price_total + research_total) / price.values
-    dataframe.position = position
+    dataframe[PandasEnum.ALLOCATION.value] = position
 
     return dataframe
 
@@ -141,9 +145,9 @@ infertrade_export_allocations = {
             "avg_price_length": 2,
             "avg_research_length": 2
         },
-        "series": ["price", "research"],
+        "series": ["signal"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/0862fd5f0b50cfab19c844c76cebd1b8306acac9/infertrade/algos/community/allocations.py#L63"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/0862fd5f0b50cfab19c844c76cebd1b8306acac9/infertrade/algos/community/allocations.py#L63"  # TODO - update with latest version.
         },
     },
 }

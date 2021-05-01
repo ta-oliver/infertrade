@@ -33,7 +33,7 @@ def simulated_market_data_4_years_gen():
     low = open * [1 - 0.1 * (np.random.random()) for _ in range(1000)]
     close = (high + low) / 2
     last = close
-    research = [1 + 0.1 * (np.random.random()) for _ in range(1000)]
+    signal = [1 + 0.1 * (np.random.random()) for _ in range(1000)]
     turnover = [100_000 + 10_000 * np.random.random() for _ in range(1000)]
     volume = [10_000 + 1000 * np.random.random() for _ in range(1000)]
     return pd.DataFrame(
@@ -43,7 +43,7 @@ def simulated_market_data_4_years_gen():
             "high": high,
             "low": low,
             "last": last,
-            "research": research,
+            "signal": signal,
             "turnover": turnover,
             "volume": volume
         }
