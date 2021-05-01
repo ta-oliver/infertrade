@@ -66,22 +66,34 @@ def weighted_moving_averages(
     avg_research_coeff: float = 1.0,
     avg_price_length: int = 2,
     avg_research_length: int = 2,
-) -> pd.Series:
-    """This rule uses weightings of two moving averages to determine trade positioning. The
-    parameters accepted are the integer lengths of each average (2 parameters - one for price, one for
-    research) and two coefficients for each average's weighting contribution. The total sum is divided by the
-     current price to calculate a position size."""
+) -> pd.DataFrame:
+    """
+    This rule uses weightings of two moving averages to determine trade positioning.
 
-    #split out the price/research df here
+    The parameters accepted are the integer lengths of each average (2 parameters - one for price, one for research)
+    and two coefficients for each average's weighting contribution. The total sum is divided by the current price to
+    calculate a position size.
+
+    parameters:
+    avg_price_coeff: price contribution scalar multiple.
+    avg_research_coeff: research or signal contribution scalar multiple.
+    avg_price_length: determines length of average of price series.
+    avg_research_length: determines length of average of research series.
+    """
+
+    # Splits out the price/research df to individual pandas Series.
     price = dataframe['price']
     research = dataframe['research']
 
+    # Calculates the averages.
     avg_price = price.rolling(window=avg_price_length).mean()
     avg_research = research.rolling(window=avg_research_length).mean()
 
+    # Weights each average by the scalar coefficients.
     price_total = avg_price_coeff * avg_price
     research_total = avg_research_coeff * avg_research
 
+    # Sums the contributions and normalises by the level of the price.
     position = (price_total + research_total) / price.values
     dataframe.position = position
 
@@ -131,7 +143,7 @@ infertrade_export_allocations = {
         },
         "series": ["price", "research"],
         "available_representation_types": {
-            "github_permalink": "" #TODO: add this after initial commit
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/0862fd5f0b50cfab19c844c76cebd1b8306acac9/infertrade/algos/community/allocations.py#L63"
         },
     },
 }
