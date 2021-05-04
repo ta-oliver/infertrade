@@ -1,37 +1,42 @@
+"""
+Example SMA crossover trading rule InferTrade API.
+Author: Siddique Patel
+Creation date: 11th March 2021
+"""
 import pandas as pd
 import matplotlib.pyplot as plt
-from infertrade.utilities.performance import calculate_portfolio_performance_python
 import numpy as np
 from infertrade.api import Api
-#import talib
-#from talib.abstract import Function
 
 
 
-def sma_crossover_strategy(df: pd.DataFrame, fast, slow) -> pd.DataFrame:
-    df["ShortSMA"] = df["price"].rolling(window = fast, min_periods = fast).mean()
-    df["LongSMA"] = df["price"].rolling(window = slow, min_periods = slow).mean()
-    df = df.dropna()
-    df['Signal'] = 0.0
-    df['Signal'] = np.where(df["ShortSMA"] > df["LongSMA"], 1.0, 0.0)
-    df["allocation"] = 0.0
-    df["allocation"][df["Signal"] > 0] = 1.0
-    df = df.drop(columns=["ShortSMA", "LongSMA", "Signal"])
-    df = df.reset_index(drop=True)
 
-    return df
+def sma_crossover_strategy(dataframe: pd.DataFrame, fast: int = 0, slow: int = 0) -> pd.DataFrame:
+    """ A Simple Moving Average crossover strategy Crossover Strategy, buys when """
+    price = dataframe["price"]
+    fast_sma = price.rolling(window = fast, min_periods = fast).mean()
+    slow_sma = price.rolling(window = slow, min_periods = slow).mean()
+    allocation = np.where(fast_sma  > slow_sma, 1.0, 0.0)
+    dataframe["allocation"] = allocation
 
+    return dataframe
 
-df = pd.read_csv("LBMA_Gold.csv")
+# Input Data in Pandas DataFrame using CSV file
+my_dataframe = pd.read_csv("LBMA_Gold.csv")
 
-df = df.rename(columns={"Date": "date", "LBMA/GOLD usd (pm)": "price"})
+# Rename Columns
+my_dataframe_without_allocations = my_dataframe.rename(columns={"Date": "date", "LBMA/GOLD usd (pm)": "price"})
 
-df = sma_crossover_strategy(df, 20, 50)
+# Compute allocations based on strategy, input timeperiod for fast and slow moving averages
+my_dataframe_with_allocations = sma_crossover_strategy(my_dataframe_without_allocations, 20, 50)
 
-returns = Api.calculate_returns(df)
+# Compute performance of strategy 
+my_dataframe_with_returns = Api.calculate_returns(my_dataframe_with_allocations)
 
-returns.plot(x="date", y=["allocation", "portfolio_return"])
+# Plot Performance of strategy
+my_dataframe_with_returns.plot(x="date", y=["allocation", "portfolio_return"])
 
+# Show Plots
 plt.show()
 
 
