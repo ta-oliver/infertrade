@@ -137,7 +137,7 @@ infertrade_export_allocations = {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/allocations.py#L57"
         },
     },
-    "weightedMovingAverages": {
+    "weighted_moving_averages": {
         "function": weighted_moving_averages,
         "parameters": {
             "avg_price_coeff": 1.0,
