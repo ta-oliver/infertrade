@@ -59,6 +59,20 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
     dataframe[PandasEnum.ALLOCATION.value] = (dataframe["high"] - dataframe["low"]) * scale + constant
     return dataframe
 
+def sma_crossover_strategy(dataframe: pd.DataFrame,
+    fast: int = 0,
+    slow: int = 0) -> pd.DataFrame:
+    """ A Simple Moving Average crossover strategy Crossover Strategy, buys when """
+    # set price to dataframe price column
+    price = dataframe["price"]
+    # Compute Fast and Slow SMA 
+    fast_sma = price.rolling(window = fast, min_periods = fast).mean()
+    slow_sma = price.rolling(window = slow, min_periods = slow).mean()
+    position = np.where(fast_sma  > slow_sma, 1.0, 0.0)
+    dataframe.position = position
+
+    return dataframe
+
 
 infertrade_export_allocations = {
     "fifty_fifty": {
@@ -85,12 +99,24 @@ infertrade_export_allocations = {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/allocations.py#L46"
         },
     },
+    
     "high_low_difference": {
         "function": high_low_difference,
         "parameters": {"scale": 1.0, "constant": 0.0},
         "series": ["high", "low"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/allocations.py#L57"
+        },
+    },
+    "smaCrossoverStrategy": {
+        "function": sma_crossover_strategy,
+        "parameters": {
+            "fast": 0,
+            "slow": 0,
+        },
+        "series": ["price"],
+        "available_representation_types": {
+            "github_permalink": "" #TODO: add this after initial commit
         },
     },
 }
