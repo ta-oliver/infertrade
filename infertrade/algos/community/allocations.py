@@ -99,7 +99,6 @@ infertrade_export_allocations = {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/allocations.py#L46"
         },
     },
-    
     "high_low_difference": {
         "function": high_low_difference,
         "parameters": {"scale": 1.0, "constant": 0.0},
