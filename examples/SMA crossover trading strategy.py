@@ -12,7 +12,7 @@ from infertrade.api import Api
 
 
 def sma_crossover_strategy(dataframe: pd.DataFrame, fast: int = 0, slow: int = 0) -> pd.DataFrame:
-    """ A Simple Moving Average crossover strategy Crossover Strategy, buys when """
+    """ A Simple Moving Average crossover strategy Crossover Strategy, buys when fast sma line cuts above slows sma line"""
     price = dataframe["price"]
     fast_sma = price.rolling(window = fast, min_periods = fast).mean()
     slow_sma = price.rolling(window = slow, min_periods = slow).mean()
