@@ -19,20 +19,6 @@ sudo apt install python3.7
  ```
  sudo apt install python3-pip
  ```
-
-- Install [`TA-Lib`](https://www.ta-lib.org/) technical analysis package for Linux.
-    ```
-    sem-version python 3.7
-    wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
-    tar -xzf ta-lib-0.4.0-src.tar.gz
-    cd ta-lib/
-    ./configure --prefix=/usr
-    make
-    sudo make install
-    cd ..
-    pip3 install -r requirements.txt
-    pip3 install -r requirements-dev.txt
-    ```
  
 - Install [`infertrade`](https://github.com/ta-oliver/infertrade) package using [`pip`](https://pip.pypa.io/en/stable/) command in `terminal`.
  ```

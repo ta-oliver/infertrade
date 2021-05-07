@@ -12,7 +12,7 @@ The [`infertrade`](https://github.com/ta-oliver/infertrade) package seeks to ach
 
 - Gateway to data science: classes that allow rules created for the infertrade simple interface to be used with [`scikit-learn`](https://github.com/scikit-learn/scikit-learn) functionality for prediction and calibration. (fit, transform, predict, pipelines, gridsearch) and [`scikit-learn`](https://github.com/scikit-learn/scikit-learn) compatible libraries, like [`feature-engine`](https://github.com/solegalli/feature_engine).
 
-- The best open source trading strategies: wrapping functionality to allow strategies from any open source Python libraries with compatible licences, such as [`ta`](https://github.com/bukosabino/ta) and [`ta-lib`](https://github.com/mrjbq7/ta-lib) to be used with the `infertrade` interface.
+- The best open source trading strategies: wrapping functionality to allow strategies from any open source Python libraries with compatible licences, such as [`ta`](https://github.com/bukosabino/ta) to be used with the `infertrade` interface.
 
 The project is licenced under the [Apache 2.0](https://choosealicense.com/licenses/apache-2.0/) licence.  
 
@@ -99,10 +99,11 @@ signal_transformer.fit_transform(simulated_market_data_4_years_gen())
 ### Calculate positions with simple position function
 
 ```python
-from infertrade.algos.community import cps, scikit_allocation_factory
+from infertrade.algos.community.allocations import constant_allocation_size
+from infertrade.algos.community import scikit_allocation_factory
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
-position_transformer = scikit_allocation_factory(cps)
+position_transformer = scikit_allocation_factory(constant_allocation_size)
 position_transformer.fit_transform(simulated_market_data_4_years_gen())
 # TODO add example with parameters
 ```

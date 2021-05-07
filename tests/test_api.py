@@ -114,5 +114,7 @@ def test_signals_creation(test_df, signal_algorithm):
                 if not isinstance(ii_value, (float, int)):
                     assert ii_value is "NaN"
 
-    # At least one new column should have been added.
-    assert new_columns
+    # At least one new column should have been added. Otherwise output is overriding input columns.
+    if not new_columns:
+        raise AssertionError("No new columns were created by the signal function: ", df_with_signal.columns,
+                             " versus original of ", original_columns)

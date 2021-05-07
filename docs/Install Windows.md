@@ -34,14 +34,7 @@
 ```
 setx PATH “%PATH%;C:\Python37\Scripts”
 ```
-- Install [`TA-Lib`](https://www.ta-lib.org/) technical analysis package for windows.
-    - Download [whl](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib) file for your version of [`python`](https://www.python.org/).
-    - Run [`pip`](https://pip.pypa.io/en/stable/) install command in `cmd prompt`.
-        ```
-        pip install TA_Lib-0.4.17-cp37-cp37m-win_amd64.whl
-        ```
-    - Replace `cp37` with correct [`python`](https://www.python.org/) version and `win_amd64` with your system architecture in above command.
- 
+
 - Install [`infertrade`](https://github.com/ta-oliver/infertrade) package using [`pip`](https://pip.pypa.io/en/stable/) command in `cmd prompt`.
  ```
  pip install infertrade
