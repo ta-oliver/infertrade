@@ -25,13 +25,6 @@ import matplotlib.pyplot as plt
 from infertrade.utilities.performance import calculate_portfolio_performance_python
 
 
-def my_first_infertrade_rule(df: pd.DataFrame) -> pd.DataFrame:
-    """Example rule using Pandas filtering to buy only when market had a 5% increase since prior period."""
-    df["allocation"] = 0.0
-    df.loc[df["price"].pct_change() > 0.05, "allocation"] = 0.5
-    return df
-
-
 def buy_on_small_rises(df: pd.DataFrame) -> pd.DataFrame:
     """A rules that buys when the market rose between 2% and 10% from previous close."""
     df["allocation"] = 0.0

@@ -27,13 +27,6 @@ from infertrade.utilities.operations import ReturnsFromPositions
 from sklearn.pipeline import make_pipeline
 
 
-def my_first_infertrade_rule(df: pd.DataFrame) -> pd.DataFrame:
-    """Simple example rule."""
-    df["allocation"] = 0.0
-    df.loc[df["price"].pct_change() > 0.05, "allocation"] = 0.5
-    return df
-
-
 def buy_on_small_rises(df: pd.DataFrame) -> pd.DataFrame:
     """A rules that buys when the market rose between 2% and 10% from previous close."""
     df["allocation"] = 0.0
