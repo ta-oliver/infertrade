@@ -318,5 +318,6 @@ class ReturnsFromPositions(TransformerMixin, BaseEstimator):
     def transform(self, X: pd.DataFrame, y=None):
         """Converts positions into the cumulative portfolio return."""
         X_ = deepcopy(X)
-        X_[PandasEnum.VALUATION.value] = calculate_portfolio_performance_python(X)[PandasEnum.VALUATION.value]
+        Y = deepcopy(X)
+        X_[PandasEnum.VALUATION.value] = calculate_portfolio_performance_python(Y)[PandasEnum.VALUATION.value]
         return X_
