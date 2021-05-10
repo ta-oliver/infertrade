@@ -22,6 +22,7 @@ Creation date: 11th March 2021
 from pathlib import Path
 import pandas as pd
 
+from examples.my_first_infertrade_strategy import buy_on_small_rises
 from infertrade.algos.community import scikit_allocation_factory
 from infertrade.utilities.operations import ReturnsFromPositions
 from sklearn.pipeline import make_pipeline
@@ -31,7 +32,7 @@ def test_example_ways_to_use_infertrade():
     """
     Import Gold prices and apply the buy_on_small_rises algorithm and plot.
 
-    OOS style, with and without pipelines.
+    Example shows different approaches, with and without pipelines.
     """
     lbma_gold_location = Path(Path(__file__).absolute().parent, "LBMA_Gold.csv")
     my_dataframe = pd.read_csv(lbma_gold_location)
@@ -40,14 +41,15 @@ def test_example_ways_to_use_infertrade():
     buy_on_small_rises_rule = scikit_allocation_factory(buy_on_small_rises)
     returns_calc = ReturnsFromPositions()
 
-    # Two stage version
+    # Example approach 1 - two stage version
     my_dataframe_with_allocations = buy_on_small_rises_rule.transform(my_dataframe_without_allocations)
     my_dataframe_with_returns = returns_calc.transform(my_dataframe_with_allocations)
 
-    # Pipeline version
+    # Example approach 2 - pipeline version
     rule_plus_returns = make_pipeline(buy_on_small_rises_rule, returns_calc)
     my_dataframe_with_returns_2 = rule_plus_returns.fit_transform(my_dataframe_without_allocations)
 
+    # We verify both give the same results.
     comparison = (my_dataframe_with_returns == my_dataframe_with_returns_2)
     comparison[pd.isnull(my_dataframe_with_returns) & pd.isnull(my_dataframe_with_returns_2)] = True
     assert comparison.values.all()
