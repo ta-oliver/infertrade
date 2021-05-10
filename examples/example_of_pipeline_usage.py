@@ -1,5 +1,5 @@
 """
-Example calibration to market data.
+Example of pipeline usage.
 
 Copyright 2021 InferStat Ltd
 
@@ -27,29 +27,13 @@ from infertrade.utilities.operations import ReturnsFromPositions
 from sklearn.pipeline import make_pipeline
 
 
-def my_first_infertrade_rule(df: pd.DataFrame) -> pd.DataFrame:
-    """Simple example rule."""
-    df["allocation"] = 0.0
-    df["allocation"][df["price"].pct_change() > 0.05] = 0.5
-    return df
-
-
-def buy_on_small_rises(df: pd.DataFrame) -> pd.DataFrame:
-    """A rules that buys when the market rose between 2% and 10% from previous close."""
-    df["allocation"] = 0.0
-    df["allocation"][df["price"].pct_change(50) >= 0.02] = 0.25
-    df["allocation"][df["price"].pct_change(50) >= 0.05] = 0.5
-    df["allocation"][df["price"].pct_change(50) >= 0.10] = 0.0
-    return df
-
-
-def test_example_ways_to_use_infertrade_2():
+def test_example_ways_to_use_infertrade():
     """
-    Example 2 - Import Gold prices and apply the buy_on_small_rises algorithm and plot.
+    Import Gold prices and apply the buy_on_small_rises algorithm and plot.
 
     OOS style, with and without pipelines.
     """
-    lbma_gold_location = Path("..", "example_scripts", "LBMA_Gold.csv")
+    lbma_gold_location = Path(Path(__file__).absolute().parent, "LBMA_Gold.csv")
     my_dataframe = pd.read_csv(lbma_gold_location)
     my_dataframe_without_allocations = my_dataframe.rename(columns={"LBMA/GOLD usd (pm)": "price", "Date": "date"})
 
@@ -62,13 +46,15 @@ def test_example_ways_to_use_infertrade_2():
 
     # Pipeline version
     rule_plus_returns = make_pipeline(buy_on_small_rises_rule, returns_calc)
-    my_dataframe_with_returns_2 = rule_plus_returns(my_dataframe_without_allocations)
+    my_dataframe_with_returns_2 = rule_plus_returns.fit_transform(my_dataframe_without_allocations)
 
-    assert (my_dataframe_with_returns == my_dataframe_with_returns_2).all()
+    comparison = (my_dataframe_with_returns == my_dataframe_with_returns_2)
+    comparison[pd.isnull(my_dataframe_with_returns) & pd.isnull(my_dataframe_with_returns_2)] = True
+    assert comparison.values.all()
 
     # my_dataframe_with_returns.plot(x="date", y=["allocation", "portfolio_returns"])
     # plt.show()
 
 
 if __name__ == "__main__":
-    test_example_ways_to_use_infertrade_2()
+    test_example_ways_to_use_infertrade()
