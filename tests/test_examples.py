@@ -144,7 +144,7 @@ def test_readme_example_four():
 
 def test_pipeline_approach_matches_two_stage():
     """Checks reconciliation of different approaches, with and without pipelines."""
-    lbma_gold_location = Path(Path(__file__).absolute().parent, "LBMA_Gold.csv")
+    lbma_gold_location = Path(Path(__file__).absolute().parent.parent, "examples", "LBMA_Gold.csv")
     my_dataframe = pd.read_csv(lbma_gold_location)
     my_dataframe_without_allocations = my_dataframe.rename(columns={"LBMA/GOLD usd (pm)": "price", "Date": "date"})
 
