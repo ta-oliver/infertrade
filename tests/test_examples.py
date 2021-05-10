@@ -130,7 +130,6 @@ def test_readme_example_three():
     pipeline = make_pipeline(
         scikit_signal_factory(normalised_close), PricePredictionFromSignalRegression(), PositionsFromPricePrediction()
     )
-
     pipeline.fit_transform(simulated_market_data_4_years_gen())
 
 
@@ -144,11 +143,7 @@ def test_readme_example_four():
 
 
 def test_pipeline_approach_matches_two_stage():
-    """
-    Import Gold prices and apply the buy_on_small_rises algorithm and plot.
-
-    Example shows different approaches, with and without pipelines.
-    """
+    """Checks reconciliation of different approaches, with and without pipelines."""
     lbma_gold_location = Path(Path(__file__).absolute().parent, "LBMA_Gold.csv")
     my_dataframe = pd.read_csv(lbma_gold_location)
     my_dataframe_without_allocations = my_dataframe.rename(columns={"LBMA/GOLD usd (pm)": "price", "Date": "date"})
