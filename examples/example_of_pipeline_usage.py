@@ -1,5 +1,5 @@
 """
-Example calibration to market data.
+Example of pipeline usage.
 
 Copyright 2021 InferStat Ltd
 
@@ -27,18 +27,9 @@ from infertrade.utilities.operations import ReturnsFromPositions
 from sklearn.pipeline import make_pipeline
 
 
-def buy_on_small_rises(df: pd.DataFrame) -> pd.DataFrame:
-    """A rules that buys when the market rose between 2% and 10% from previous close."""
-    df["allocation"] = 0.0
-    df.loc[df["price"].pct_change(50) >= 0.02, "allocation"] = 0.25
-    df.loc[df["price"].pct_change(50) >= 0.05, "allocation"] = 0.5
-    df.loc[df["price"].pct_change(50) >= 0.10, "allocation"] = 0.0
-    return df
-
-
-def test_example_ways_to_use_infertrade_2():
+def test_example_ways_to_use_infertrade():
     """
-    Example 2 - Import Gold prices and apply the buy_on_small_rises algorithm and plot.
+    Example 2 - import Gold prices and apply the buy_on_small_rises algorithm and plot.
 
     OOS style, with and without pipelines.
     """
@@ -66,4 +57,4 @@ def test_example_ways_to_use_infertrade_2():
 
 
 if __name__ == "__main__":
-    test_example_ways_to_use_infertrade_2()
+    test_example_ways_to_use_infertrade()

@@ -1,9 +1,24 @@
 """
 Utility code for operations such as converting positions to price predictions and vice versa.
 
+Copyright 2021 InferStat Ltd
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
 Created by: Joshua Mason
 Created date: 11/03/2021
 """
+
 from copy import deepcopy
 from typing import List, Union
 
@@ -317,7 +332,7 @@ class ReturnsFromPositions(TransformerMixin, BaseEstimator):
 
     def transform(self, X: pd.DataFrame, y=None):
         """Converts positions into the cumulative portfolio return."""
-        X_ = deepcopy(X)
-        Y = deepcopy(X)
-        X_[PandasEnum.VALUATION.value] = calculate_portfolio_performance_python(Y)[PandasEnum.VALUATION.value]
-        return X_
+        X_1 = deepcopy(X)
+        X_2 = deepcopy(X)
+        X_1[PandasEnum.VALUATION.value] = calculate_portfolio_performance_python(X_2)[PandasEnum.VALUATION.value]
+        return X_1
