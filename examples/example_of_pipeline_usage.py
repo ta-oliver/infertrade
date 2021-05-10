@@ -29,7 +29,7 @@ from sklearn.pipeline import make_pipeline
 
 def test_example_ways_to_use_infertrade():
     """
-    Example 2 - import Gold prices and apply the buy_on_small_rises algorithm and plot.
+    Import Gold prices and apply the buy_on_small_rises algorithm and plot.
 
     OOS style, with and without pipelines.
     """
