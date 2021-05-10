@@ -20,6 +20,8 @@ Created date: 11/03/2021
 """
 
 # External imports
+from pathlib import Path
+
 import pandas as pd
 import pytest
 from sklearn.pipeline import make_pipeline
@@ -29,13 +31,15 @@ from ta.momentum import AwesomeOscillatorIndicator
 from ta.trend import AroonIndicator
 
 # Internal imports
+from examples.my_first_infertrade_strategy import buy_on_small_rises
 from infertrade.algos import ta_adaptor
-from infertrade.algos.community import normalised_close
+from infertrade.algos.community import normalised_close, scikit_allocation_factory
 from infertrade.algos.community import scikit_signal_factory
 from infertrade.algos.community.allocations import constant_allocation_size, scikit_allocation_factory
 from infertrade.base import get_signal_calc
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
-from infertrade.utilities.operations import PositionsFromPricePrediction, PricePredictionFromSignalRegression
+from infertrade.utilities.operations import PositionsFromPricePrediction, PricePredictionFromSignalRegression, \
+    ReturnsFromPositions
 from infertrade.utilities.operations import PricePredictionFromPositions
 
 
@@ -137,3 +141,30 @@ def test_readme_example_four():
         scikit_signal_factory(adapted_aroon), PricePredictionFromSignalRegression(), PositionsFromPricePrediction()
     )
     pipeline.fit_transform(simulated_market_data_4_years_gen())
+
+
+def test_pipeline_approach_matches_two_stage():
+    """
+    Import Gold prices and apply the buy_on_small_rises algorithm and plot.
+
+    Example shows different approaches, with and without pipelines.
+    """
+    lbma_gold_location = Path(Path(__file__).absolute().parent, "LBMA_Gold.csv")
+    my_dataframe = pd.read_csv(lbma_gold_location)
+    my_dataframe_without_allocations = my_dataframe.rename(columns={"LBMA/GOLD usd (pm)": "price", "Date": "date"})
+
+    buy_on_small_rises_rule = scikit_allocation_factory(buy_on_small_rises)
+    returns_calc = ReturnsFromPositions()
+
+    # Example approach 1 - two stage version
+    my_dataframe_with_allocations = buy_on_small_rises_rule.transform(my_dataframe_without_allocations)
+    my_dataframe_with_returns = returns_calc.transform(my_dataframe_with_allocations)
+
+    # Example approach 2 - pipeline version
+    rule_plus_returns = make_pipeline(buy_on_small_rises_rule, returns_calc)
+    my_dataframe_with_returns_2 = rule_plus_returns.fit_transform(my_dataframe_without_allocations)
+
+    # We verify both give the same results.
+    comparison = (my_dataframe_with_returns == my_dataframe_with_returns_2)
+    comparison[pd.isnull(my_dataframe_with_returns) & pd.isnull(my_dataframe_with_returns_2)] = True
+    assert comparison.values.all()
