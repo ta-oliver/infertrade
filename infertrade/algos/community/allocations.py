@@ -62,7 +62,7 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
 def sma_crossover_strategy(dataframe: pd.DataFrame,
     fast: int = 0,
     slow: int = 0) -> pd.DataFrame:
-    """ A Simple Moving Average crossover strategy Crossover Strategy, buys when """
+    """ A Simple Moving Average crossover strategy, buys when short-term SMA crosses over a long-term SMA. A moving average crossover is often referred to as a golden cross or death cross. """
     # set price to dataframe price column
     price = dataframe["price"]
     # Compute Fast and Slow SMA 
