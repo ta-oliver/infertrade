@@ -27,7 +27,7 @@ import pandas as pd
 class PandasEnum(Enum):
 
     """
-    Provides the strings for special column names that InferTrade uses in identify pandas dataframe contents.
+    Provides the strings for special column names that InferTrade uses in identifying pandas dataframe contents.
 
     These strings should not be used for other purposes.
 
@@ -35,8 +35,7 @@ class PandasEnum(Enum):
     MID - this is the mid price used to calculate performance.
 
     ALLOCATION - the fraction of the overall portfolio the strategy wants to invest in the market. May differ from the
-     amount
-     invested where the strategy requires minimum deviations to trigger position adjustment.
+     amount invested where the strategy requires minimum deviations to trigger position adjustment.
 
     VALUATION - the value of strategy, after running a hypothetical rule implementing the strategy. 1.0 = 100% means no
      profit or loss. 0.9 = 90%, means a -10% cumulative loss. 1.1 = 110% means a 10% overall cumulative gain.
