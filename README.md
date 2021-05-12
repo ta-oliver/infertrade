@@ -75,7 +75,7 @@ plt.show()
 
 ### Basic usage with community functions
 
-"Community" functions are those declared in this repository, not retrieved from an external package. They are all exposed at `infertrade.example_one.algos.community`. 
+"Community" functions are those declared in this repository, not retrieved from an external package. They are all exposed at `infertrade.algos.community`.
 
 ```python
 from infertrade.algos.community import normalised_close, scikit_signal_factory
