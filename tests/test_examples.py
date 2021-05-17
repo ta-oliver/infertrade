@@ -161,5 +161,9 @@ def test_pipeline_approach_matches_two_stage():
 
     # We verify both give the same results.
     comparison = (my_dataframe_with_returns == my_dataframe_with_returns_2)
-    comparison[pd.isnull(my_dataframe_with_returns) & pd.isnull(my_dataframe_with_returns_2)] = True
+    try:
+        comparison[pd.isnull(my_dataframe_with_returns) & pd.isnull(my_dataframe_with_returns_2)] = True
+    except AttributeError:
+        print("If you have a version of Pandas prior to 1.2.4 you may see an AttributeError - check your environment"
+              " matches the InferTrade package requirements.")
     assert comparison.values.all()
