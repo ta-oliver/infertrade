@@ -151,7 +151,7 @@ infertrade_export_allocations = {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/allocations.py#L57"
         },
     },
-    "smaCrossoverStrategy": {
+    "sma_crossover_strategy": {
         "function": sma_crossover_strategy,
         "parameters": {
             "fast": 0,
