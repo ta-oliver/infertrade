@@ -19,4 +19,4 @@ Created by: InferStat Ltd
 Created date: 12th March 2021
 """
 
-__version__ = "0.0.27"
+__version__ = "0.0.31"

@@ -100,7 +100,7 @@ def weighted_moving_averages(
 
     # Splits out the price/research df to individual pandas Series.
     price = dataframe[PandasEnum.MID.value]
-    research = dataframe[PandasEnum.SIGNAL.value]
+    research = dataframe["research"]
 
     # Calculates the averages.
     avg_price = price.rolling(window=avg_price_length).mean()
@@ -170,7 +170,7 @@ infertrade_export_allocations = {
             "avg_price_length": 2,
             "avg_research_length": 2
         },
-        "series": ["signal"],
+        "series": ["research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/0862fd5f0b50cfab19c844c76cebd1b8306acac9/infertrade/algos/community/allocations.py#L63"  # TODO - update with latest version.
         },

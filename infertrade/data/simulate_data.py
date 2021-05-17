@@ -33,7 +33,7 @@ def simulated_market_data_4_years_gen():
     low = open * [1 - 0.1 * (np.random.random()) for _ in range(1000)]
     close = (high + low) / 2
     last = close
-    signal = [1 + 0.1 * (np.random.random()) for _ in range(1000)]
+    research = [1 + 0.1 * (np.random.random()) for _ in range(1000)]
     turnover = [100_000 + 10_000 * np.random.random() for _ in range(1000)]
     volume = [10_000 + 1000 * np.random.random() for _ in range(1000)]
     return pd.DataFrame(
@@ -43,7 +43,7 @@ def simulated_market_data_4_years_gen():
             "high": high,
             "low": low,
             "last": last,
-            "signal": signal,
+            "research": research,
             "turnover": turnover,
             "volume": volume
         }
@@ -56,4 +56,4 @@ def simulated_correlated_equities_4_years_gen():
     independent_asset = np.cumprod([1 + 0.02 * (np.random.random() - np.random.random()) for _ in range(1000)])
     asset_2 = asset_1 * independent_asset
 
-    return pd.DataFrame({PandasEnum.PRICE.value: asset_1, PandasEnum.SIGNAL.value: asset_2,})
+    return pd.DataFrame({PandasEnum.MID.value: asset_1, PandasEnum.SIGNAL.value: asset_2,})

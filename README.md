@@ -75,7 +75,7 @@ plt.show()
 
 ### Basic usage with community functions
 
-"Community" functions are those declared in this repository, not retrieved from an external package. They are all exposed at `infertrade.example_one.algos.community`. 
+"Community" functions are those declared in this repository, not retrieved from an external package. They are all exposed at `infertrade.algos.community`.
 
 ```python
 from infertrade.algos.community import normalised_close, scikit_signal_factory
@@ -99,10 +99,11 @@ signal_transformer.fit_transform(simulated_market_data_4_years_gen())
 ### Calculate positions with simple position function
 
 ```python
-from infertrade.algos.community import cps, scikit_allocation_factory
+from infertrade.algos.community.allocations import constant_allocation_size
+from infertrade.algos.community import scikit_allocation_factory
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
-position_transformer = scikit_allocation_factory(cps)
+position_transformer = scikit_allocation_factory(constant_allocation_size)
 position_transformer.fit_transform(simulated_market_data_4_years_gen())
 # TODO add example with parameters
 ```

@@ -204,13 +204,20 @@ class Api:
     def return_representations(
         name_of_algorithm: str, representation_or_list_of_representations: Union[str, List[str]] = None
     ) -> dict:
-        """Returns the representations (e.g. URLs of relevant documentation."""
+        """Returns the representations (e.g. URLs of relevant documentation)."""
+
+        dict_of_properties = Api.get_algorithm_information()
+        try:
+            representations = dict_of_properties[name_of_algorithm]["available_representation_types"]
+        except KeyError:
+            raise NotImplementedError("The requested algorithm does not have any representations: ", name_of_algorithm)
 
         if not representation_or_list_of_representations:
-            representation_or_list_of_representations = Api.get_available_representations()
+            representation_or_list_of_representations = Api.get_available_representations(name_of_algorithm)
 
-        dict_of_properties = Api.get_algorithm_information(name_of_algorithm)
-        representations = dict_of_properties[name_of_algorithm]["available_representation_types"]
+        if isinstance(representation_or_list_of_representations, str):
+            representation_or_list_of_representations = [representation_or_list_of_representations]
+
         if isinstance(representation_or_list_of_representations, list):
             representation_dict = {}
             for ii_entry in representation_or_list_of_representations:
@@ -218,13 +225,6 @@ class Api:
                     representation_dict.update({ii_entry: representations[ii_entry]})
                 else:
                     raise NameError("Could not find this representation: ", ii_entry)
-        elif isinstance(representation_or_list_of_representations, str):
-            try:
-                representation_dict = dict_of_properties[name_of_algorithm]["available_representation_types"][
-                    representation_or_list_of_representations
-                ]
-            except KeyError:
-                raise NameError("Could not find this representation: ", representation_or_list_of_representations)
         else:
             raise TypeError("Input type not supported: ", representation_or_list_of_representations)
 
