@@ -111,7 +111,7 @@ infertrade_export_allocations = {
         "parameters": {},
         "series": [],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/allocations.py#L28"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blobl/b2cf85c28ed574b8c246ab31125a9a5d51a8c43e/allocations.py#L28"
         },
     },
     "buy_and_hold": {
@@ -119,7 +119,7 @@ infertrade_export_allocations = {
         "parameters": {},
         "series": [],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/allocations.py#L34"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blobl/b2cf85c28ed574b8c246ab31125a9a5d51a8c43e/allocations.py#L34"
         },
     },
     "constant_allocation_size": {
@@ -127,7 +127,7 @@ infertrade_export_allocations = {
         "parameters": {"fixed_allocation_size": 1.0},
         "series": [],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/allocations.py#L46"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blobl/b2cf85c28ed574b8c246ab31125a9a5d51a8c43e/allocations.py#L40"
         },
     },
     "high_low_difference": {
@@ -135,7 +135,7 @@ infertrade_export_allocations = {
         "parameters": {"scale": 1.0, "constant": 0.0},
         "series": ["high", "low"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/allocations.py#L57"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blobl/b2cf85c28ed574b8c246ab31125a9a5d51a8c43e/allocations.py#L51"
         },
     },
     "weighted_moving_averages": {
@@ -148,7 +148,7 @@ infertrade_export_allocations = {
         },
         "series": ["research"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/0862fd5f0b50cfab19c844c76cebd1b8306acac9/infertrade/algos/community/allocations.py#L63"  # TODO - update with latest version.
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blobl/b2cf85c28ed574b8c246ab31125a9a5d51a8c43e/allocations.py#L64"
         },
     },
 }
