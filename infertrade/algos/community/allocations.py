@@ -24,7 +24,7 @@ from sklearn.preprocessing import FunctionTransformer
 from infertrade.PandasEnum import PandasEnum
 
 
-def fifty_fifty(dataframe: pd.DataFrame) -> pd.DataFrame:
+def fifty_fifty(dataframe) -> pd.DataFrame:
     """Allocates 50% of strategy budget to asset, 50% to cash."""
     dataframe["allocation"] = 0.5
     return dataframe
