@@ -66,7 +66,7 @@ def sma_crossover_strategy(dataframe: pd.DataFrame,
     # Set price to dataframe price column
     price = dataframe["price"]
 
-    # Compute Fast and Slow SMA 
+    # Compute Fast and Slow SMA
     fast_sma = price.rolling(window=fast, min_periods=fast).mean()
     slow_sma = price.rolling(window=slow, min_periods=slow).mean()
     position = np.where(fast_sma > slow_sma, 1.0, 0.0)
@@ -159,7 +159,7 @@ infertrade_export_allocations = {
         },
         "series": ["price"],
         "available_representation_types": {
-            "github_permalink": ""  # TODO: add this after initial commit
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/87185ebadc654b50e1bcfdb9a19f31c263ed7d53/infertrade/algos/community/allocations.py#L62"
         },
     },
     "weighted_moving_averages": {
@@ -172,8 +172,7 @@ infertrade_export_allocations = {
         },
         "series": ["research"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/0862fd5f0b50cfab19c844c76cebd1b8306acac9/infertrade/algos/community/allocations.py#L63"
-            # TODO - update with latest version.
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/87185ebadc654b50e1bcfdb9a19f31c263ed7d53/infertrade/algos/community/allocations.py#L77"
         },
     },
 }
