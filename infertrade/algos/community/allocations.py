@@ -25,13 +25,13 @@ from sklearn.preprocessing import FunctionTransformer
 from infertrade.PandasEnum import PandasEnum
 
 
-def fifty_fifty(dataframe) -> pd.DataFrame:
+def fifty_fifty(dataframe: pd.DataFrame) -> pd.DataFrame:
     """Allocates 50% of strategy budget to asset, 50% to cash."""
-    dataframe["allocation"] = 0.5
+    dataframe[PandasEnum.ALLOCATION.value] = 0.5
     return dataframe
 
 
-def buy_and_hold(dataframe) -> pd.DataFrame:
+def buy_and_hold(dataframe: pd.DataFrame) -> pd.DataFrame:
     """Allocates 100% of strategy budget to asset, holding to end of period (or security bankruptcy)."""
     dataframe[PandasEnum.ALLOCATION.value] = 1.0
     return dataframe
@@ -39,10 +39,10 @@ def buy_and_hold(dataframe) -> pd.DataFrame:
 
 def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: float = 1.0) -> pd.DataFrame:
     """
-    Returns a constant allocation, controlled by the constant_position_size parameter.
+    Returns a constant allocation, controlled by the fixed_allocation_size parameter.
 
     parameters:
-    constant_allocation_size: determines allocation size.
+    fixed_allocation_size: determines allocation size.
     """
     dataframe[PandasEnum.ALLOCATION.value] = fixed_allocation_size
     return dataframe
@@ -51,10 +51,11 @@ def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: flo
 def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: float = 0.0) -> pd.DataFrame:
     """
     Returns an allocation based on the difference in high and low values. This has been added as an
-    example with multiple series and parameters
+    example with multiple series and parameters.
 
     parameters:
     scale: determines amplitude factor.
+    constant: scalar value added to the allocation size.
     """
     dataframe[PandasEnum.ALLOCATION.value] = (dataframe["high"] - dataframe["low"]) * scale + constant
     return dataframe
@@ -71,8 +72,8 @@ def weighted_moving_averages(
     This rule uses weightings of two moving averages to determine trade positioning.
 
     The parameters accepted are the integer lengths of each average (2 parameters - one for price, one for the research
-    signal) and two coefficients for each average's weighting contribution. The total sum is divided by the current
-    price to calculate a position size.
+    signal) and two corresponding coefficients that determine each average's weighting contribution. The total sum is
+    divided by the current price to calculate a position size.
 
     This strategy is suitable where the dimensionality of the signal/research series is the same as the dimensionality
     of the price series, e.g. where the signal is a price forecast or fair value estimate of the market or security.
