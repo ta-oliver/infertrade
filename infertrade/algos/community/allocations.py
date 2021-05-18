@@ -18,8 +18,7 @@ limitations under the License.
 Created by: Joshua Mason
 Created date: 11/03/2021
 """
-
-
+import numpy as np
 import pandas as pd
 from sklearn.preprocessing import FunctionTransformer
 from infertrade.PandasEnum import PandasEnum
@@ -60,12 +59,27 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
     return dataframe
 
 
+def sma_crossover_strategy(dataframe: pd.DataFrame,
+                           fast: int = 0,
+                           slow: int = 0) -> pd.DataFrame:
+    """A Simple Moving Average crossover strategy, buys when short-term SMA crosses over a long-term SMA."""
+    # Set price to dataframe price column
+    price = dataframe["price"]
+
+    # Compute Fast and Slow SMA
+    fast_sma = price.rolling(window=fast, min_periods=fast).mean()
+    slow_sma = price.rolling(window=slow, min_periods=slow).mean()
+    position = np.where(fast_sma > slow_sma, 1.0, 0.0)
+    dataframe[PandasEnum.ALLOCATION.value] = position
+    return dataframe
+
+
 def weighted_moving_averages(
-    dataframe: pd.DataFrame,
-    avg_price_coeff: float = 1.0,
-    avg_research_coeff: float = 1.0,
-    avg_price_length: int = 2,
-    avg_research_length: int = 2,
+        dataframe: pd.DataFrame,
+        avg_price_coeff: float = 1.0,
+        avg_research_coeff: float = 1.0,
+        avg_price_length: int = 2,
+        avg_research_length: int = 2,
 ) -> pd.DataFrame:
     """
     This rule uses weightings of two moving averages to determine trade positioning.
@@ -137,6 +151,17 @@ infertrade_export_allocations = {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/allocations.py#L57"
         },
     },
+    "sma_crossover_strategy": {
+        "function": sma_crossover_strategy,
+        "parameters": {
+            "fast": 0,
+            "slow": 0,
+        },
+        "series": ["price"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/87185ebadc654b50e1bcfdb9a19f31c263ed7d53/infertrade/algos/community/allocations.py#L62"
+        },
+    },
     "weighted_moving_averages": {
         "function": weighted_moving_averages,
         "parameters": {
@@ -147,7 +172,7 @@ infertrade_export_allocations = {
         },
         "series": ["research"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/0862fd5f0b50cfab19c844c76cebd1b8306acac9/infertrade/algos/community/allocations.py#L63"  # TODO - update with latest version.
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/87185ebadc654b50e1bcfdb9a19f31c263ed7d53/infertrade/algos/community/allocations.py#L77"
         },
     },
 }
