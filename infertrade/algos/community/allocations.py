@@ -30,7 +30,7 @@ def fifty_fifty(dataframe) -> pd.DataFrame:
     return dataframe
 
 
-def buy_and_hold(dataframe) -> pd.DataFrame:
+def buy_and_hold(dataframe: pd.DataFrame) -> pd.DataFrame:
     """Allocates 100% of strategy budget to asset, holding to end of period (or security bankruptcy)."""
     dataframe[PandasEnum.ALLOCATION.value] = 1.0
     return dataframe
@@ -38,10 +38,10 @@ def buy_and_hold(dataframe) -> pd.DataFrame:
 
 def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: float = 1.0) -> pd.DataFrame:
     """
-    Returns a constant allocation, controlled by the constant_position_size parameter.
+    Returns a constant allocation, controlled by the fixed_allocation_size parameter.
 
     parameters:
-    constant_allocation_size: determines allocation size.
+    fixed_allocation_size: determines allocation size.
     """
     dataframe[PandasEnum.ALLOCATION.value] = fixed_allocation_size
     return dataframe
@@ -50,10 +50,11 @@ def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: flo
 def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: float = 0.0) -> pd.DataFrame:
     """
     Returns an allocation based on the difference in high and low values. This has been added as an
-    example with multiple series and parameters
+    example with multiple series and parameters.
 
     parameters:
     scale: determines amplitude factor.
+    constant: scalar value added to the allocation size.
     """
     dataframe[PandasEnum.ALLOCATION.value] = (dataframe["high"] - dataframe["low"]) * scale + constant
     return dataframe
@@ -85,8 +86,8 @@ def weighted_moving_averages(
     This rule uses weightings of two moving averages to determine trade positioning.
 
     The parameters accepted are the integer lengths of each average (2 parameters - one for price, one for the research
-    signal) and two coefficients for each average's weighting contribution. The total sum is divided by the current
-    price to calculate a position size.
+    signal) and two corresponding coefficients that determine each average's weighting contribution. The total sum is
+    divided by the current price to calculate a position size.
 
     This strategy is suitable where the dimensionality of the signal/research series is the same as the dimensionality
     of the price series, e.g. where the signal is a price forecast or fair value estimate of the market or security.
@@ -124,7 +125,7 @@ infertrade_export_allocations = {
         "parameters": {},
         "series": [],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/allocations.py#L28"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b2cf85c28ed574b8c246ab31125a9a5d51a8c43e/infertrade/algos/community/allocations.py#L28"
         },
     },
     "buy_and_hold": {
@@ -132,7 +133,7 @@ infertrade_export_allocations = {
         "parameters": {},
         "series": [],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/allocations.py#L34"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b2cf85c28ed574b8c246ab31125a9a5d51a8c43e/infertrade/algos/community/allocations.py#L34"
         },
     },
     "constant_allocation_size": {
@@ -140,7 +141,7 @@ infertrade_export_allocations = {
         "parameters": {"fixed_allocation_size": 1.0},
         "series": [],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/allocations.py#L46"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b2cf85c28ed574b8c246ab31125a9a5d51a8c43e/infertrade/algos/community/allocations.py#L40"
         },
     },
     "high_low_difference": {
@@ -148,7 +149,7 @@ infertrade_export_allocations = {
         "parameters": {"scale": 1.0, "constant": 0.0},
         "series": ["high", "low"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/allocations.py#L57"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b2cf85c28ed574b8c246ab31125a9a5d51a8c43e/infertrade/algos/community/allocations.py#L51"
         },
     },
     "sma_crossover_strategy": {
@@ -172,7 +173,7 @@ infertrade_export_allocations = {
         },
         "series": ["research"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/87185ebadc654b50e1bcfdb9a19f31c263ed7d53/infertrade/algos/community/allocations.py#L77"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b2cf85c28ed574b8c246ab31125a9a5d51a8c43e/infertrade/algos/community/allocations.py#L64"
         },
     },
 }
