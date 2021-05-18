@@ -27,7 +27,7 @@ from infertrade.PandasEnum import PandasEnum
 
 def fifty_fifty(dataframe: pd.DataFrame) -> pd.DataFrame:
     """Allocates 50% of strategy budget to asset, 50% to cash."""
-    dataframe[PandasEnum.ALLOCATION.value] = 0.5
+    dataframe["allocation"] = 0.5
     return dataframe
 
 
