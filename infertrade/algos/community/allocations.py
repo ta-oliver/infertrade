@@ -36,6 +36,46 @@ def buy_and_hold(dataframe: pd.DataFrame) -> pd.DataFrame:
     return dataframe
 
 
+def chande_kroll_crossover_strategy(
+        dataframe: pd.DataFrame,
+        allow_short_selling: bool = False
+        ) -> pd.DataFrame:
+    """
+    This simple all-or-nothing rule:
+    (1) allocates 100% of the portofolio to a long position on the asset when the price of the asset is above both the
+    Chande Kroll stop long line and Chande Kroll stop short line, and
+    (2) according to the value set for the allow_short_selling parameter, either allocates 0% of the portofiolio to
+    the asset or allocates 100% of the portfolio to a short position on the asset when the price of the asset is below
+    both the Chande Kroll stop long line and the Chande Kroll stop short line.
+
+    parameters:
+    allow_short_selling: allow taking short positions on the portfolio.
+    """
+    # Calculate the Chande Kroll lines, which will be added to the DataFrame as columns named "chande_kroll_long" and
+    # "chande_kroll_short".
+    import infertrade.algos.community.signals
+    import copy
+    dataframe = infertrade.algos.community.signals.chande_kroll(dataframe)
+
+    # Allocate positions according to the Chande Kroll lines
+    is_price_above_lines = (
+            (dataframe["price"] > dataframe["chande_kroll_long"]) &
+            (dataframe["price"] > dataframe["chande_kroll_short"])
+            )
+    is_price_below_lines = (
+            (dataframe["price"] < dataframe["chande_kroll_long"]) &
+            (dataframe["price"] < dataframe["chande_kroll_short"])
+            )
+
+    dataframe.loc[is_price_above_lines, PandasEnum.ALLOCATION.value] = 1.0
+    dataframe.loc[is_price_below_lines, PandasEnum.ALLOCATION.value] = -1.0 if allow_short_selling else 0.0
+
+    # Delete the columns with the Chande Kroll indicators before returning
+    dataframe.drop(columns=["chande_kroll_long", "chande_kroll_short"], inplace=True)
+
+    return dataframe
+
+
 def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: float = 1.0) -> pd.DataFrame:
     """
     Returns a constant allocation, controlled by the fixed_allocation_size parameter.
@@ -134,6 +174,14 @@ infertrade_export_allocations = {
         "series": [],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b2cf85c28ed574b8c246ab31125a9a5d51a8c43e/infertrade/algos/community/allocations.py#L34"
+        },
+    },
+    "chande_kroll_crossover_strategy": {
+        "function": chande_kroll_crossover_strategy,
+        "parameters": {"allow_short_selling": False},
+        "series": [],
+        "available_representation_types": {
+            "github_permalink": "" # TODO XXX add permalink
         },
     },
     "constant_allocation_size": {
