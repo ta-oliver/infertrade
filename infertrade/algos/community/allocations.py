@@ -182,10 +182,10 @@ infertrade_export_allocations = {
     },
     "chande_kroll_crossover_strategy": {
         "function": chande_kroll_crossover_strategy,
-        "parameters": {"allow_short_selling": False},
+        "parameters": {},
         "series": [],
         "available_representation_types": {
-            "github_permalink": "" # TODO XXX add permalink
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/df1f6f058b38e0ff9ab1250bb43ffb220b3a4725/infertrade/algos/community/allocations.py#L39"
         },
     },
     "constant_allocation_size": {

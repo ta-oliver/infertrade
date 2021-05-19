@@ -131,7 +131,7 @@ infertrade_export_signals = {
         "parameters": {"average_true_range_periods": 10, "average_true_range_multiplier": 1.0, "stop_periods": 9},
         "series": ["high", "low"],
         "available_representation_types": {
-            "github_permalink": "" # TODO XXX add permalink
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/df1f6f058b38e0ff9ab1250bb43ffb220b3a4725/infertrade/algos/community/signals.py#L55"
         },
     },
 }
