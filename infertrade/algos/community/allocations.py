@@ -46,9 +46,6 @@ def chande_kroll_crossover_strategy(
     (2) according to the value set for the allow_short_selling parameter, either allocates 0% of the portofiolio to
     the asset or allocates 100% of the portfolio to a short position on the asset when the price of the asset is below
     both the Chande Kroll stop long line and the Chande Kroll stop short line.
-
-    parameters:
-    allow_short_selling: allow taking short positions on the portfolio.
     """
     # Calculate the Chande Kroll lines, which will be added to the DataFrame as columns named "chande_kroll_long" and
     # "chande_kroll_short".
