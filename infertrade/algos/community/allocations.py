@@ -22,7 +22,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import FunctionTransformer
 from infertrade.PandasEnum import PandasEnum
-
+import infertrade.algos.community.signals
 
 def fifty_fifty(dataframe) -> pd.DataFrame:
     """Allocates 50% of strategy budget to asset, 50% to cash."""
@@ -53,8 +53,6 @@ def chande_kroll_crossover_strategy(
     """
     # Calculate the Chande Kroll lines, which will be added to the DataFrame as columns named "chande_kroll_long" and
     # "chande_kroll_short".
-    import infertrade.algos.community.signals
-    import copy
     dataframe = infertrade.algos.community.signals.chande_kroll(dataframe)
 
     # Allocate positions according to the Chande Kroll lines
