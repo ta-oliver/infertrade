@@ -101,7 +101,14 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
 def sma_crossover_strategy(dataframe: pd.DataFrame,
                            fast: int = 0,
                            slow: int = 0) -> pd.DataFrame:
-    """A Simple Moving Average crossover strategy, buys when short-term SMA crosses over a long-term SMA."""
+    """
+    A Simple Moving Average crossover strategy, buys when short-term SMA crosses over a long-term SMA.
+
+    parameters:
+    fast: determines the number of periods to be included in the short-term SMA.
+    slow: determines the number of periods to be included in the long-term SMA.
+    """
+
     # Set price to dataframe price column
     price = dataframe["price"]
 
