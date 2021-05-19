@@ -58,8 +58,11 @@ def chande_kroll(
         average_true_range_multiplier: float = 1.0,
         stop_periods: int = 9
         ) -> pd.DataFrame:
-    # TODO XXX change description
-    """Example signal based on high-low range times scalar."""
+    """
+    Calculates signals for the Chande-Kroll stop.
+    
+    See here: https://www.tradingview.com/support/solutions/43000589105-chande-kroll-stop
+    """
 
     # Calculate the maximum and minum prices that the asset attained in the last
     # average_true_range_periods periods
