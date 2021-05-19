@@ -38,7 +38,6 @@ def buy_and_hold(dataframe: pd.DataFrame) -> pd.DataFrame:
 
 def chande_kroll_crossover_strategy(
         dataframe: pd.DataFrame,
-        allow_short_selling: bool = False
         ) -> pd.DataFrame:
     """
     This simple all-or-nothing rule:
@@ -66,7 +65,7 @@ def chande_kroll_crossover_strategy(
             )
 
     dataframe.loc[is_price_above_lines, PandasEnum.ALLOCATION.value] = 1.0
-    dataframe.loc[is_price_below_lines, PandasEnum.ALLOCATION.value] = -1.0 if allow_short_selling else 0.0
+    dataframe.loc[is_price_below_lines, PandasEnum.ALLOCATION.value] = -1.0
 
     # Delete the columns with the Chande Kroll indicators before returning
     dataframe.drop(columns=["chande_kroll_long", "chande_kroll_short"], inplace=True)
