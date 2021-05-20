@@ -120,60 +120,60 @@ def test_signals_creation(test_df, signal_algorithm):
                              " versus original of ", original_columns)
 
 
-def test_return_representations():
-    """Checks whether the Api.return_representations method returns expected values and errors out correctly"""
+@pytest.mark.parametrize("algorithm", available_algorithms)
+def test_return_representations(algorithm):
+    """Checks whether the Api.return_representations method returns expected values"""
+
+    # Obtain some information needed for the following tests
+    dict_of_properties = Api.get_algorithm_information()
+
+    # Check if the function returns every representation when none is specified
+    returned_representations = Api.return_representations(algorithm)
+    if not isinstance(returned_representations, dict):
+        raise AssertionError(
+                "return_representations() should have returned a dictionary but returned a",
+                type(returned_representations)
+                )
+    for representation in dict_of_properties[algorithm]["available_representation_types"]:
+        assert (
+                returned_representations[representation]
+                == dict_of_properties[algorithm]["available_representation_types"][representation]
+                )
+
+    # Check if the if the function returns the correct representation when given a string
+    for representation in dict_of_properties[algorithm]["available_representation_types"]:
+        returned_representations = Api.return_representations(algorithm, representation)
+        if not isinstance(returned_representations, dict):
+            raise AssertionError(
+                    "return_representations() should have returned a dictionary but returned a",
+                    type(returned_representations)
+                    )
+        assert (
+                returned_representations[representation]
+                == dict_of_properties[algorithm]["available_representation_types"][representation]
+                )
+
+    # Check if the function returns the correct representations when given a list
+    algorithm_representations = list(
+            dict_of_properties[algorithm]["available_representation_types"].keys()
+            )
+    returned_representations = Api.return_representations(algorithm, algorithm_representations)
+    if not isinstance(returned_representations, dict):
+        raise AssertionError(
+                "return_representations() should have returned a dictionary but returned a",
+                type(returned_representations)
+                )
+    for representation in algorithm_representations:
+        assert (
+                returned_representations[representation]
+                == dict_of_properties[algorithm]["available_representation_types"][representation]
+                )
+
+def test_return_representations_failures():
+    """Checks whether the Api.return_representations method errors out correctly"""
 
     # Check if the function errors out on unknown algorithm.
     with pytest.raises(NotImplementedError):
         Api.return_representations("")
     with pytest.raises(NotImplementedError):
         Api.return_representations("Unknown")
-
-    # Obtain some information needed for the following tests
-    dict_of_properties = Api.get_algorithm_information()
-    algorithms = dict_of_properties.keys()
-
-    # Check if the function returns every representation when none is specified
-    for algorithm in algorithms:
-        returned_representations = Api.return_representations(algorithm)
-        if not isinstance(returned_representations, dict):
-            raise AssertionError(
-                    "return_representations() should have returned a dictionary but returned a",
-                    type(returned_representations)
-                    )
-        for representation in dict_of_properties[algorithm]["available_representation_types"]:
-            assert (
-                    returned_representations[representation]
-                    == dict_of_properties[algorithm]["available_representation_types"][representation]
-                    )
-
-    # Check if the if the function returns the correct representation when given a string
-    for algorithm in algorithms:
-        for representation in dict_of_properties[algorithm]["available_representation_types"]:
-            returned_representations = Api.return_representations(algorithm, representation)
-            if not isinstance(returned_representations, dict):
-                raise AssertionError(
-                        "return_representations() should have returned a dictionary but returned a",
-                        type(returned_representations)
-                        )
-            assert (
-                    returned_representations[representation]
-                    == dict_of_properties[algorithm]["available_representation_types"][representation]
-                    )
-
-    # Check if the function returns the correct representations when given a list
-    for algorithm in algorithms:
-        algorithm_representations = list(
-                dict_of_properties[algorithm]["available_representation_types"].keys()
-                )
-        returned_representations = Api.return_representations(algorithm, algorithm_representations)
-        if not isinstance(returned_representations, dict):
-            raise AssertionError(
-                    "return_representations() should have returned a dictionary but returned a",
-                    type(returned_representations)
-                    )
-        for representation in algorithm_representations:
-            assert (
-                    returned_representations[representation]
-                    == dict_of_properties[algorithm]["available_representation_types"][representation]
-                    )
