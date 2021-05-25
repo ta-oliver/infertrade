@@ -17,9 +17,9 @@ sys.path.insert(0, os.path.abspath('../../infertrade/'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'Infertrade'
-copyright = '2021, Furqan Hashim'
-author = 'Furqan Hashim'
+project = 'InferTrade'
+copyright = '2021, InferStat Ltd'
+author = 'InferStat'
 
 # The full version, including alpha/beta/rc tags
 release = '0.0.1'
