@@ -70,7 +70,7 @@ instance/
 
 # Sphinx documentation
 docs/_build/
-documentation
+documentation/
 !documentation/infertrade.pdf
 
 
