@@ -1,2 +1,3 @@
 pytest==6.2.2
 sphinx==4.0.2
+pdftex==1.0.0
