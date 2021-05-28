@@ -17,7 +17,8 @@ limitations under the License.
 """
 
 from infertrade.PandasEnum import PandasEnum
-from infertrade.algos.community.allocations import scikit_allocation_factory, infertrade_export_allocations
+from infertrade.algos.community.allocations import infertrade_export_allocations
+from infertrade.utilities.operations import scikit_allocation_factory
 from infertrade.algos.community.signals import normalised_close, scikit_signal_factory, infertrade_export_signals
 
 # A dictionary providing the list of community signals and trading strategies.

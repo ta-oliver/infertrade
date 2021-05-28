@@ -20,53 +20,22 @@ Created date: 11/03/2021
 """
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import FunctionTransformer
 from infertrade.PandasEnum import PandasEnum
 import infertrade.algos.community.signals
 
 
-def add_allocation_options(allocation_function: callable) -> callable:
-    def function_with_options(*args, **kwargs) -> pd.DataFrame:
-        allocation_upper_limit = allocation_lower_limit = None
-        if 'allocation_upper_limit' in kwargs:
-            allocation_upper_limit = kwargs.pop('allocation_upper_limit')
-            if not isinstance(allocation_upper_limit, (int, float)):
-                raise TypeError('allocation_upper_limit, if assigned, must be an int or a float.')
-        if 'allocation_lower_limit' in kwargs:
-            allocation_lower_limit = kwargs.pop('allocation_lower_limit')
-            if not isinstance(allocation_lower_limit, (int, float)):
-                raise TypeError('allocation_lower_limit, if assigned, must be an int or a float.')
-        dataframe = allocation_function(*args, **kwargs)
-        if allocation_upper_limit:
-            dataframe.loc[
-                    dataframe[PandasEnum.ALLOCATION.value]
-                    > allocation_upper_limit, PandasEnum.ALLOCATION.value
-                    ] = allocation_upper_limit
-        if allocation_lower_limit:
-            dataframe.loc[
-                    dataframe[PandasEnum.ALLOCATION.value]
-                    <
-                    allocation_lower_limit, PandasEnum.ALLOCATION.value
-                    ] = allocation_lower_limit
-        return dataframe
-    return function_with_options
-
-
-@add_allocation_options
 def fifty_fifty(dataframe) -> pd.DataFrame:
     """Allocates 50% of strategy budget to asset, 50% to cash."""
     dataframe["allocation"] = 0.5
     return dataframe
 
 
-@add_allocation_options
 def buy_and_hold(dataframe: pd.DataFrame) -> pd.DataFrame:
     """Allocates 100% of strategy budget to asset, holding to end of period (or security bankruptcy)."""
     dataframe[PandasEnum.ALLOCATION.value] = 1.0
     return dataframe
 
 
-@add_allocation_options
 def chande_kroll_crossover_strategy(
         dataframe: pd.DataFrame,
         ) -> pd.DataFrame:
@@ -101,7 +70,6 @@ def chande_kroll_crossover_strategy(
     return dataframe
 
 
-@add_allocation_options
 def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: float = 1.0) -> pd.DataFrame:
     """
     Returns a constant allocation, controlled by the fixed_allocation_size parameter.
@@ -113,7 +81,6 @@ def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: flo
     return dataframe
 
 
-@add_allocation_options
 def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: float = 0.0) -> pd.DataFrame:
     """
     Returns an allocation based on the difference in high and low values. This has been added as an
@@ -127,7 +94,6 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
     return dataframe
 
 
-@add_allocation_options
 def sma_crossover_strategy(dataframe: pd.DataFrame,
                            fast: int = 0,
                            slow: int = 0) -> pd.DataFrame:
@@ -150,7 +116,6 @@ def sma_crossover_strategy(dataframe: pd.DataFrame,
     return dataframe
 
 
-@add_allocation_options
 def weighted_moving_averages(
         dataframe: pd.DataFrame,
         avg_price_coeff: float = 1.0,
@@ -191,7 +156,6 @@ def weighted_moving_averages(
     # N.B. as summing, this approach assumes that research signal is of same dimensionality as the price.
     position = (price_total + research_total) / price.values
     dataframe[PandasEnum.ALLOCATION.value] = position
-
     return dataframe
 
 
@@ -261,8 +225,3 @@ infertrade_export_allocations = {
         },
     },
 }
-
-
-def scikit_allocation_factory(allocation_function: callable) -> FunctionTransformer:
-    """This creates a SciKit Learn compatible Transformer embedding the position calculation."""
-    return FunctionTransformer(allocation_function)

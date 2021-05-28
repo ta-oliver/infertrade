@@ -25,7 +25,7 @@ from infertrade.PandasEnum import PandasEnum
 from infertrade.algos.community.allocations import fifty_fifty
 from infertrade.api import Api
 from infertrade.data.simulate_data import simulated_correlated_equities_4_years_gen
-from infertrade.algos.community.allocations import add_allocation_options
+from infertrade.utilities.operations import add_allocation_options
 
 
 def test_min_and_max_allocation():
@@ -34,11 +34,11 @@ def test_min_and_max_allocation():
     allocations = Api.calculate_allocations(df, "fifty_fifty", PandasEnum.MID.value)
     assert isinstance(allocations, pd.DataFrame)
 
-    for ii_item in allocations["allocations"]:
+    for ii_item in allocations["allocation"]:
         assert ii_item > 0.25
 
     calculated_allocations = fifty_fifty(df)
-    for ii_item in calculated_allocations:
+    for ii_item in calculated_allocations["allocation"]:
         assert ii_item > 0.25
 
     # Now constrain it.
