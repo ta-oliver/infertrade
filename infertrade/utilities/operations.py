@@ -37,17 +37,19 @@ from infertrade.PandasEnum import PandasEnum, create_price_column_from_synonym
 
 def pct_chg(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
     """Percentage change between the current and a prior element."""
-    x = x.astype("float64")
-
-    if isinstance(x, pd.DataFrame):
-        pc = x.pct_change().values.reshape(-1, 1)
+    if not isinstance(x, (pd.DataFrame, pd.Series, np.ndarray)):
+        raise TypeError("must be Pandas Series, DataFrame or numpy ndarray, not {}")
     else:
-        x = np.reshape(x, (-1,))
-        x_df = pd.Series(x, name="x")
-        pc = x_df.pct_change().values.reshape(-1, 1)
+        x = x.astype("float64")
+
+        if isinstance(x, pd.DataFrame):
+            pc = x.pct_change().values.reshape(-1, 1)
+        else:
+            x = np.reshape(x, (-1,))
+            x_df = pd.Series(x, name="x")
+            pc = x_df.pct_change().values.reshape(-1, 1)
 
     return pc
-
 
 def diff_log(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
     """Differencing and log transformation between the current and a prior element."""
