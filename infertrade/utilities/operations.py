@@ -338,31 +338,22 @@ class ReturnsFromPositions(TransformerMixin, BaseEstimator):
         return X_1
 
 
-def add_allocation_options(allocation_function: callable) -> callable:
-    def function_with_options(*args, **kwargs) -> pd.DataFrame:
-        allocation_upper_limit = allocation_lower_limit = None
-        if 'allocation_upper_limit' in kwargs:
-            allocation_upper_limit = kwargs.pop('allocation_upper_limit')
-            if not isinstance(allocation_upper_limit, (int, float)):
-                raise TypeError('allocation_upper_limit, if assigned, must be an int or a float.')
-        if 'allocation_lower_limit' in kwargs:
-            allocation_lower_limit = kwargs.pop('allocation_lower_limit')
-            if not isinstance(allocation_lower_limit, (int, float)):
-                raise TypeError('allocation_lower_limit, if assigned, must be an int or a float.')
-        dataframe = allocation_function(*args, **kwargs)
-        if allocation_upper_limit:
+def limit_allocation(allocation_lower_limit: Union[int, float], allocation_upper_limit: Union[int, float]) -> callable:
+    def wrapper(allocation_function: callable) -> callable:
+        def limited_function(*args, **kwargs) -> pd.DataFrame:
+            dataframe = allocation_function(*args, **kwargs)
             dataframe.loc[
                     dataframe[PandasEnum.ALLOCATION.value]
                     > allocation_upper_limit, PandasEnum.ALLOCATION.value
                     ] = allocation_upper_limit
-        if allocation_lower_limit:
             dataframe.loc[
                     dataframe[PandasEnum.ALLOCATION.value]
                     <
                     allocation_lower_limit, PandasEnum.ALLOCATION.value
                     ] = allocation_lower_limit
-        return dataframe
-    return function_with_options
+            return dataframe
+        return limited_function
+    return wrapper
 
 
 def scikit_allocation_factory(allocation_function: callable) -> FunctionTransformer:
