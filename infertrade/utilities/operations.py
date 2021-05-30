@@ -339,6 +339,23 @@ class ReturnsFromPositions(TransformerMixin, BaseEstimator):
 
 
 def limit_allocation(allocation_lower_limit: Union[int, float], allocation_upper_limit: Union[int, float]) -> callable:
+    """
+    This function is intended to be used as a decorator that can be applied to functions that calculate
+    allocation values.
+    This decorator takes two parameters: the first one is the lower limit for allocation values, and the second
+    is the upper limit for allocation values. Values that are below the lower limit or above the upper limit are
+    simply replaced by the lower and upper limits, respectively.
+
+    params:
+    allocation_lower_limit: the lower limit for allocation values.
+    allocation_upper_limit: the upper limit for allocation values.
+
+    Example usage:
+    @limit_allocation(0, 2.5)
+    def myfunction(df: pandas.DataFrame) -> pandas.DataFrame:
+        return some_allocation_strategy(df)
+    """
+
     def wrapper(allocation_function: callable) -> callable:
         def limited_function(*args, **kwargs) -> pd.DataFrame:
             dataframe = allocation_function(*args, **kwargs)
