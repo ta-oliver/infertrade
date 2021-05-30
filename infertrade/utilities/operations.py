@@ -356,6 +356,12 @@ def limit_allocation(allocation_lower_limit: Union[int, float], allocation_upper
         return some_allocation_strategy(df)
     """
 
+    if allocation_lower_limit > allocation_upper_limit:
+        raise ValueError(
+                'The lower limit for allocation values should not be greater than the upper limit for'
+                ' allocation values.'
+                )
+
     def wrapper(allocation_function: callable) -> callable:
         def limited_function(*args, **kwargs) -> pd.DataFrame:
             dataframe = allocation_function(*args, **kwargs)
