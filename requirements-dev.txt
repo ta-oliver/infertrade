@@ -1,4 +1,4 @@
 pytest==6.2.2
-sphinx==4.0.2
+sphinx==3.5.4
 pdftex==1.0.0
 myst-parser==0.14.0
