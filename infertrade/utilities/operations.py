@@ -51,6 +51,7 @@ def pct_chg(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
 
     return pc
 
+
 def diff_log(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
     """Differencing and log transformation between the current and a prior element."""
     if not isinstance(x, (pd.Series, np.ndarray)):
@@ -146,7 +147,6 @@ def research_over_price_minus_one(x: Union[np.ndarray, pd.Series], shift: int) -
 
 
 class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
-
     """Class for creating price predictions from signal values."""
 
     def __init__(self, market_to_trade: str = None):
@@ -217,7 +217,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
         return features
 
     def _get_features_matrix_target_array(
-        self, input_time_series: pd.DataFrame
+            self, input_time_series: pd.DataFrame
     ) -> [pd.Series, pd.Series]:  # TODO - argument hints please.
         """Returns the target array features."""
         feat_tar_arr = self.fitted_features_and_target_.transform(input_time_series)
@@ -281,7 +281,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
                 ind_pred_end = series_length
 
             indices_for_prediction.append(
-                {"model_idx": range(ind_start, ind_end), "prediction_idx": range(ind_pred_start, ind_pred_end),}
+                {"model_idx": range(ind_start, ind_end), "prediction_idx": range(ind_pred_start, ind_pred_end), }
             )
 
         return indices_for_prediction
