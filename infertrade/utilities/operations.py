@@ -38,7 +38,7 @@ from infertrade.PandasEnum import PandasEnum, create_price_column_from_synonym
 def pct_chg(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
     """Percentage change between the current and a prior element."""
     if not isinstance(x, (pd.DataFrame, pd.Series, np.ndarray)):
-        raise TypeError("must be Pandas Series, DataFrame or numpy ndarray, not {}")
+        raise TypeError("must be Pandas Series, DataFrame or numpy ndarray")
     else:
         x = x.astype("float64")
 
@@ -53,6 +53,8 @@ def pct_chg(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
 
 def diff_log(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
     """Differencing and log transformation between the current and a prior element."""
+    if not isinstance(x, (pd.Series, np.ndarray)):
+        raise TypeError("must be Pandas Series, DataFrame or numpy ndarray")
     x = x.astype("float64")
     dl = np.diff(np.log(x), n=1, prepend=np.nan, axis=0)
     return dl
@@ -60,9 +62,15 @@ def diff_log(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
 
 def lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
     """Lag (shift) series by desired number of periods."""
+    """Differencing and log transformation between the current and a prior element."""
+    if not isinstance(x, (pd.Series, np.ndarray)):
+        raise TypeError("must be Pandas Series, DataFrame or numpy ndarray")
     x = x.astype("float64")
     lagged_array = np.roll(x, shift=shift, axis=0)
-    lagged_array[:shift, :] = np.nan
+    if lagged_array.ndim > 1:
+        lagged_array[:shift, :] = np.nan
+    else:
+        lagged_array[:shift, ] = np.nan
     return lagged_array
 
 
