@@ -20,9 +20,9 @@ Created date: 11/03/2021
 """
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import FunctionTransformer
 from infertrade.PandasEnum import PandasEnum
 import infertrade.algos.community.signals
+
 
 def fifty_fifty(dataframe) -> pd.DataFrame:
     """Allocates 50% of strategy budget to asset, 50% to cash."""
@@ -156,7 +156,6 @@ def weighted_moving_averages(
     # N.B. as summing, this approach assumes that research signal is of same dimensionality as the price.
     position = (price_total + research_total) / price.values
     dataframe[PandasEnum.ALLOCATION.value] = position
-
     return dataframe
 
 
@@ -226,8 +225,3 @@ infertrade_export_allocations = {
         },
     },
 }
-
-
-def scikit_allocation_factory(allocation_function: callable) -> FunctionTransformer:
-    """This creates a SciKit Learn compatible Transformer embedding the position calculation."""
-    return FunctionTransformer(allocation_function)
