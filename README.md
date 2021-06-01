@@ -100,7 +100,7 @@ signal_transformer.fit_transform(simulated_market_data_4_years_gen())
 
 ```python
 from infertrade.algos.community.allocations import constant_allocation_size
-from infertrade.algos.community import scikit_allocation_factory
+from infertrade.utilities.operations import scikit_allocation_factory
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
 position_transformer = scikit_allocation_factory(constant_allocation_size)
