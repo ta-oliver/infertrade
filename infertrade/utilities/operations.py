@@ -337,3 +337,8 @@ class ReturnsFromPositions(TransformerMixin, BaseEstimator):
         X_2 = deepcopy(X)
         X_1[PandasEnum.VALUATION.value] = calculate_portfolio_performance_python(X_2)[PandasEnum.VALUATION.value]
         return X_1
+
+
+def scikit_allocation_factory(allocation_function: callable) -> FunctionTransformer:
+    """This creates a SciKit Learn compatible Transformer embedding the position calculation."""
+    return FunctionTransformer(allocation_function)
