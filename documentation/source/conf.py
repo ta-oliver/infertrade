@@ -12,6 +12,8 @@
 #
 import os
 import sys
+from infertrade import _version
+
 sys.path.insert(0, os.path.abspath('../../infertrade/'))
 # -- Project information -----------------------------------------------------
 
@@ -20,7 +22,7 @@ copyright = '2021, InferStat Ltd'
 author = 'InferStat'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = _version.__version__
 
 
 # -- General configuration ---------------------------------------------------
