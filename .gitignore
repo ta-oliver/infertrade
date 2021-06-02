@@ -71,8 +71,8 @@ instance/
 # Sphinx documentation
 docs/_build/
 documentation/build/
-documentation/build/_static/
-documentation/build/_templates/
+documentation/source/_static/
+documentation/source/_templates/
 documentation/DS_Store
 documentation/source/DS_Store
 
