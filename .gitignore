@@ -73,8 +73,8 @@ docs/_build/
 documentation/build/
 documentation/build/_static/
 documentation/build/_templates/
-documentation/.DS_Store
-documentation/source/.DS_Store
+documentation/DS_Store
+documentation/source/DS_Store
 
 # PyBuilder
 target/
