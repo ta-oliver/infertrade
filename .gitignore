@@ -72,7 +72,14 @@ instance/
 docs/_build/
 documentation/*
 !documentation/infertrade.pdf
-
+!documnetation/make.bat
+!documentation/Makefile
+!documentation/source/conf.py
+!documentation/source/index.rst
+!documentation/source/modules.rst
+!documentation/source/utilites.rst
+!documentation/source/README.md
+!documentation/source/CONTRIBUTING.md
 
 # PyBuilder
 target/
