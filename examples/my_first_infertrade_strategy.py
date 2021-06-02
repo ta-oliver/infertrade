@@ -1,5 +1,3 @@
-# Copyright 2021 InferStat Ltd
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -14,6 +12,8 @@
 #
 # Author: Thomas Oliver
 # Creation date: 11th March 2021
+# Copyright 2021 InferStat Ltd
+
 
 """
 Example calculations of returns using InferTrade functions.
