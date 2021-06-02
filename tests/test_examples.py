@@ -1,22 +1,23 @@
+#
+# Copyright 2021 InferStat Ltd
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Created by: Joshua Mason
+# Created date: 11/03/2021
+
 """
 Unit tests for examples.
-
-Copyright 2021 InferStat Ltd
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-Created by: Joshua Mason
-Created date: 11/03/2021
 """
 
 # External imports
@@ -35,7 +36,7 @@ from examples.my_first_infertrade_strategy import buy_on_small_rises
 from infertrade.algos import ta_adaptor
 from infertrade.algos.community import normalised_close, scikit_allocation_factory
 from infertrade.algos.community import scikit_signal_factory
-from infertrade.algos.community.allocations import constant_allocation_size, scikit_allocation_factory
+from infertrade.algos.community.allocations import constant_allocation_size
 from infertrade.base import get_signal_calc
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 from infertrade.utilities.operations import PositionsFromPricePrediction, PricePredictionFromSignalRegression, \

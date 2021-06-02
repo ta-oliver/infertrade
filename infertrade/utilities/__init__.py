@@ -1,10 +1,3 @@
-
-"""
-Utilties directory for functions that uses the infertrade interface.
-"""
-
-# Copyright 2021 InferStat Ltd
-
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -17,6 +10,10 @@ Utilties directory for functions that uses the infertrade interface.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Copyright 2021 InferStat Ltd
 # Created by: Thomas Oliver
 # Created date: 16th March 2021
 
+"""
+Utilties directory for functions that uses the InferTrade interface.
+"""
