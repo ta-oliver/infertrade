@@ -460,7 +460,7 @@ class ReturnsFromPositions(TransformerMixin, BaseEstimator):
         pass
 
     def fit(self, X, y=None):
-        # Not used.
+        """This method is not used."""
         return self
 
     def transform(self, X: pd.DataFrame, y=None):
