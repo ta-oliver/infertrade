@@ -207,13 +207,21 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
 
     """This class creates price predictions from signal values.
 
-    Args:
+    Attributes:
         market_to_trade: The name of the column which contains the historical prices.
 
     """
 
     def __init__(self, market_to_trade: str = None):
-        # We create by determining one input column as being the price to target.
+        """Construction method for class PricePredictionFromPositions.
+
+        Args:
+            market_to_trade: The name of the column which contains the historical prices.
+
+        Returns:
+            None
+
+        """
         if not market_to_trade:
             # We default to "price" as the target.
             market_to_trade = PandasEnum.MID.value
@@ -359,14 +367,18 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
 
 
 class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
-    """This class calculates the positions to take assuming Kelly Criterion.
-
-    Args:
-        None
-
-    """
+    """This class calculates the positions to take assuming Kelly Criterion."""
 
     def __init__(self):
+        """Construction method for class PositionsFromPricePrediction.
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        """
         pass
 
     def fit(self, X, y=None):
@@ -393,18 +405,19 @@ class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
 
 
 class PricePredictionFromPositions(TransformerMixin, BaseEstimator):
-    """ This class converts positions into implicit price predictions based on the Kelly Criterion and an assumed volatility.
-
-    Args:
-        None
-
-    Returns:
-        A pandas.DataFrame object
-
-    """
+    """ This class converts positions into implicit price predictions based on the Kelly Criterion and an assumed volatility."""
 
     def __init__(self):
-        # Trivial creation method.
+        """Construction method for class PricePredictionFromPositions.
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        """
+
         pass
 
     def fit(self, X, y=None):
@@ -432,15 +445,18 @@ class PricePredictionFromPositions(TransformerMixin, BaseEstimator):
 
 
 class ReturnsFromPositions(TransformerMixin, BaseEstimator):
-    """This class calculates returns from positions.
-
-    Args:
-        None
-
-    """
+    """This class calculates returns from positions."""
 
     def __init__(self):
-        # Trivial creation method.
+        """Construction method for class ReturnsFromPositions.
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        """
         pass
 
     def fit(self, X, y=None):
@@ -451,7 +467,12 @@ class ReturnsFromPositions(TransformerMixin, BaseEstimator):
         """This method converts positions into the cumulative portfolio return.
 
         Args:
-            X: A pandas.DataFrame object"""
+            X: A pandas.DataFrame object
+
+        Returns:
+            A pandas.DataFrame object
+
+                """
         X_1 = deepcopy(X)
         X_2 = deepcopy(X)
         X_1[PandasEnum.VALUATION.value] = calculate_portfolio_performance_python(X_2)[PandasEnum.VALUATION.value]
