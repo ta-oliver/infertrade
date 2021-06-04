@@ -18,6 +18,7 @@
 This submodule includes facilities for operations such as converting positions to price predictions and vice versa.
 """
 
+
 from copy import deepcopy
 from typing import List, Union
 
