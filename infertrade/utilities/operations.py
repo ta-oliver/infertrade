@@ -382,6 +382,7 @@ class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
         pass
 
     def fit(self, X, y=None):
+        """This method is not used."""
         return self
 
     def transform(self, X, y=None):
@@ -404,7 +405,7 @@ class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
 
 
 class PricePredictionFromPositions(TransformerMixin, BaseEstimator):
-    """ This class converts positions into implicit price predictions based on the Kelly Criterion and an assumed volatility."""
+    """This class converts positions into implicit price predictions based on the Kelly Criterion and an assumed volatility."""
 
     def __init__(self):
         """Construction method for class PricePredictionFromPositions.
@@ -420,7 +421,7 @@ class PricePredictionFromPositions(TransformerMixin, BaseEstimator):
         pass
 
     def fit(self, X, y=None):
-        # Not used.
+        """This method is not used."""
         return self
 
     def transform(self, X: pd.DataFrame, y=None):
