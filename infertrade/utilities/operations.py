@@ -42,7 +42,7 @@ def pct_chg(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
 
     Returns:
         A numpy.ndarray with the results
-        
+
     """
     x = x.astype("float64")
 
@@ -394,7 +394,6 @@ class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
             A pandas.DataFrame object
 
         """
-        
         X_ = deepcopy(X)
         volatility = 0.1
         kelly_fraction = 1.0
