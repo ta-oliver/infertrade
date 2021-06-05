@@ -183,12 +183,12 @@ def level_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     # Calculate price forecast for last research value
     if std_price > 0.0 and std_signal > 0.0:
         last_research = [[dataframe[PandasEnum.SIGNAL.value].iloc[-1]]]
-        last_forecast_price = rolling_regression_model.predict(last_research)
+        last_forecast_price = rolling_regression_model.predict(last_research)[0]
         value_to_update = kelly_fraction * (last_forecast_price / volatility ** 2)
     else:
         value_to_update = 0.0
 
-    dataframe.iloc[-1, dataframe.columns.get_loc(PandasEnum.ALLOCATION.value)] = value_to_update[0]
+    dataframe.iloc[-1, dataframe.columns.get_loc(PandasEnum.ALLOCATION.value)] = value_to_update
 
     return dataframe
 
