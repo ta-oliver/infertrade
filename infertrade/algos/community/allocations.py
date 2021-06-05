@@ -143,8 +143,8 @@ def level_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
                     " for the data sample: ",
                     std_signal,
                 )
-                rule_recommended_allocation = 0.0
-                volatility = 1.0
+            rule_recommended_allocation = 0.0
+            volatility = 1.0
         else:
             # Assuming no bad inputs we calculate the recommended allocation.
             rolling_regression_model = LinearRegression().fit(
