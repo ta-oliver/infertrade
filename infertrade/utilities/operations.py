@@ -39,9 +39,11 @@ def pct_chg(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
     if not isinstance(x, (pd.DataFrame, pd.Series, np.ndarray)):
         raise TypeError("must be Pandas Series, DataFrame or numpy ndarray")
     
-    else:
-        x = x.astype("float64")
+    x = x.astype("float64")
 
+    if isinstance(x, pd.DataFrame):
+        pc = x.pct_change().values.reshape(-1, 1)
+    else:
         x = np.reshape(x, (-1,))
         x_df = pd.Series(x, name="x")
         pc = x_df.pct_change().values.reshape(-1, 1)
