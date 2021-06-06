@@ -36,25 +36,23 @@ from infertrade.PandasEnum import PandasEnum, create_price_column_from_synonym
 
 def pct_chg(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
     """Percentage change between the current and a prior element."""
-    if not isinstance(x, (pd.Series, np.ndarray)):
-        raise TypeError("must be Pandas Series or numpy ndarray")
+    if not isinstance(x, (pd.DataFrame, pd.Series, np.ndarray)):
+        raise TypeError("must be Pandas Series, DataFrame or numpy ndarray")
+    
     else:
         x = x.astype("float64")
 
-        if isinstance(x, pd.DataFrame):
-            pc = x.pct_change().values.reshape(-1, 1)
-        else:
-            x = np.reshape(x, (-1,))
-            x_df = pd.Series(x, name="x")
-            pc = x_df.pct_change().values.reshape(-1, 1)
+        x = np.reshape(x, (-1,))
+        x_df = pd.Series(x, name="x")
+        pc = x_df.pct_change().values.reshape(-1, 1)
 
     return pc
 
 
 def diff_log(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
     """Differencing and log transformation between the current and a prior element."""
-    if not isinstance(x, (pd.Series, np.ndarray)):
-        raise TypeError("must be Pandas Series or numpy ndarray")
+    if not isinstance(x, (pd.DataFrame, pd.Series, np.ndarray)):
+        raise TypeError("must be Pandas Series, DataFrame or numpy ndarray")
     x = x.astype("float64")
     dl = np.diff(np.log(x), n=1, prepend=np.nan, axis=0)
     return dl
@@ -63,7 +61,7 @@ def diff_log(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
 def lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
     """Lag (shift) series by desired number of periods."""
     if not isinstance(x, (pd.DataFrame, pd.Series, np.ndarray)):
-        raise TypeError("must be Pandas Series or numpy ndarray")
+        raise TypeError("must be Pandas Series, DataFrame or numpy ndarray")
     x = x.astype("float64")
     lagged_array = np.roll(x, shift=shift, axis=0)
     if lagged_array.ndim > 1:
