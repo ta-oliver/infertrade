@@ -12,9 +12,9 @@
 #
 import os
 import sys
-from infertrade import _version
 
 sys.path.insert(0, os.path.abspath('../../infertrade/'))
+import _version
 # -- Project information -----------------------------------------------------
 
 project = 'InferTrade'
