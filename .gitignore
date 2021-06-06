@@ -70,6 +70,9 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+documentation/*
+!documentation/infertrade.pdf
+
 
 # PyBuilder
 target/
