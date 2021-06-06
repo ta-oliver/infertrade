@@ -39,6 +39,6 @@ Utilties directory for functions that uses the infertrade interface.
 # Created date: 16th March 2021
 
 """
-Utilties directory for functions that uses the InferTrade interface.
+Utilities directory for functions that uses the InferTrade interface.
 """
 >>>>>>> 7f1f828e3147889379cd5aa0ce8a036a62391974

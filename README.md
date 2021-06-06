@@ -6,7 +6,7 @@
 
 [`infertrade`](https://github.com/ta-oliver/infertrade) is an open source trading and investment strategy library designed for accessibility and compatibility.
 
-The [`infertrade`](https://github.com/ta-oliver/infertrade) package seeks to achieve four objectives:
+The [`infertrade`](https://github.com/ta-oliver/infertrade) package seeks to achieve three objectives:
 
 - Simplicity: a simple [`pandas`](https://github.com/pandas-dev/pandas) to [`pandas`](https://github.com/pandas-dev/pandas) interface that those experienced in trading but new to Python can easily use.
 
