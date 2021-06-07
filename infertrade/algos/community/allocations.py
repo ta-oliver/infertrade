@@ -96,6 +96,7 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
     dataframe[PandasEnum.ALLOCATION.value] = (dataframe["high"] - dataframe["low"]) * scale + constant
     return dataframe
 
+
 def level_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     # observations:
     # does not return a new copy of the df, just alters the original df
@@ -105,22 +106,30 @@ def level_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     # does not change NaNs/infinite to 0 after lag/pct_chg (except for for the first time step/period)
     # is not able to calculate out_of_sample_erro
 
-    dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:,'research_1']
-
     regression_period = 120
     minimum_length_to_calculate = regression_period + 1
-    forecast_period = 100
-    kelly_fraction = 1.0
-
     if len(dataframe[PandasEnum.MID.value]) < minimum_length_to_calculate:
         dataframe[PandasEnum.ALLOCATION.value] = 0.0
         return dataframe
 
-    signal_lagged = infertrade.utilities.operations.lag(np.reshape(dataframe[PandasEnum.SIGNAL.value].values,(-1,1)), shift=1)
+    calculate_level_relationship(dataframe, regression_period)
+
+    return dataframe
+
+
+def calculate_level_relationship(dataframe: pd.DataFrame, regression_period: int, kelly_fraction: float = 1.0):
+    """Calculates allocations for level relationship."""
+    dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, 'research_1']
+    forecast_period = 100
+    signal_lagged = infertrade.utilities.operations.lag(np.reshape(dataframe[PandasEnum.SIGNAL.value].values, (-1, 1)),
+                                                        shift=1)
     signal_lagged[0] = [0.0]
     price_pct_chg = infertrade.utilities.operations.pct_chg(dataframe[PandasEnum.MID.value])
     price_pct_chg[0] = [0.0]
-    prediction_indices = infertrade.utilities.operations.PricePredictionFromSignalRegression._get_model_prediction_indices(series_length=len(signal_lagged), reg_period=regression_period, forecast_period=forecast_period)
+
+    # Refactor to make original method static.
+    prediction_indices = infertrade.utilities.operations.PricePredictionFromSignalRegression._get_model_prediction_indices(
+        series_length=len(signal_lagged), reg_period=regression_period, forecast_period=forecast_period)
 
     if not len(prediction_indices) > 0:
         raise IndexError("Unexpected error: Prediction indices are zero in length.")
@@ -187,10 +196,7 @@ def level_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
         value_to_update = kelly_fraction * (last_forecast_price / volatility ** 2)
     else:
         value_to_update = 0.0
-
     dataframe.iloc[-1, dataframe.columns.get_loc(PandasEnum.ALLOCATION.value)] = value_to_update
-
-    return dataframe
 
 
 def sma_crossover_strategy(dataframe: pd.DataFrame,
