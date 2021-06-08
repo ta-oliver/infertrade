@@ -72,6 +72,84 @@ def chande_kroll_crossover_strategy(
 
     return dataframe
 
+def change_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
+    # observations:
+    # does not return a new copy of the df, just alters the original df
+    # does not check for NaNs/infinite in input
+    # does not calculate bid-ask spread
+    # does not fill NaNs
+    # does not change NaNs/infinite to 0 after lag/pct_chg (except for for the first time step/period)
+    # is not able to calculate out_of_sample_erro
+
+    regression_period = 120
+    minimum_length_to_calculate = regression_period + 1
+    if len(dataframe[PandasEnum.MID.value]) < minimum_length_to_calculate:
+        dataframe[PandasEnum.ALLOCATION.value] = 0.0
+        return dataframe
+
+    calculate_change_relationship(dataframe, regression_period)
+
+    return dataframe
+
+
+def calculate_change_relationship(dataframe: pd.DataFrame, regression_period: int, kelly_fraction: float = 1.0):
+    """Calculates allocations for change relationship."""
+    dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, 'research_1']
+    forecast_period = 100
+    signal_lagged = infertrade.utilities.operations.lag(np.reshape(dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values, (-1, 1)),
+                                                        shift=1)
+    signal_lagged_pct_change = infertrade.utilities.operations.pct_chg(signal_lagged)
+    signal_lagged_pct_change[0] = [0.0]
+    signal_lagged_pct_change[1] = [0.0]
+    last_feature_row = signal_lagged_pct_change[-1:]
+    signal_lagged_pct_change = signal_lagged_pct_change[:-1]
+    price_pct_chg = infertrade.utilities.operations.pct_chg(dataframe[PandasEnum.MID.value])
+    price_pct_chg[0] = [0.0]
+
+    calculate_regression_with_kelly_optimum(dataframe, feature_matrix=signal_lagged_pct_change, last_feature_row=last_feature_row, target_array=price_pct_chg, regression_period=regression_period, forecast_period=forecast_period, kelly_fraction=kelly_fraction)
+
+
+def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
+    # observations:
+    # does not return a new copy of the df, just alters the original df
+    # does not check for NaNs/infinite in input
+    # does not calculate bid-ask spread
+    # does not fill NaNs
+    # does not change NaNs/infinite to 0 after lag/pct_chg (except for for the first time step/period)
+    # is not able to calculate out_of_sample_erro
+
+    regression_period = 120
+    minimum_length_to_calculate = regression_period + 1
+    if len(dataframe[PandasEnum.MID.value]) < minimum_length_to_calculate:
+        dataframe[PandasEnum.ALLOCATION.value] = 0.0
+        return dataframe
+
+    calculate_combination_relationship(dataframe, regression_period)
+
+    return dataframe
+
+
+def calculate_combination_relationship(dataframe: pd.DataFrame, regression_period: int, kelly_fraction: float = 1.0):
+    """Calculates allocations for combination relationship."""
+    dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, 'research_1']
+    forecast_period = 100
+    signal_lagged = infertrade.utilities.operations.lag(np.reshape(dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values, (-1, 1)),
+                                                        shift=1)
+    signal_lagged[0] = [0.0]
+    signal_lagged_pct_change = infertrade.utilities.operations.pct_chg(signal_lagged)
+    signal_lagged_pct_change[0] = [0.0]
+    signal_lagged_pct_change[1] = [0.0]
+    signal_differenced = infertrade.utilities.operations.research_over_price_minus_one(np.column_stack((dataframe[PandasEnum.MID.value].append(pd.Series([0])).values, dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values)),
+                                                        shift=1)
+    signal_differenced[0] = [0.0]
+    intermediate_matrix = np.column_stack((signal_lagged, signal_lagged_pct_change, signal_differenced))
+    last_feature_row = intermediate_matrix[-1:]
+    intermediate_matrix = intermediate_matrix[:-1]
+    price_pct_chg = infertrade.utilities.operations.pct_chg(dataframe[PandasEnum.MID.value])
+    price_pct_chg[0] = [0.0]
+
+    calculate_regression_with_kelly_optimum(dataframe, feature_matrix=intermediate_matrix, last_feature_row=last_feature_row, target_array=price_pct_chg, regression_period=regression_period, forecast_period=forecast_period, kelly_fraction=kelly_fraction)
+
 
 def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: float = 1.0) -> pd.DataFrame:
     """
@@ -82,6 +160,43 @@ def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: flo
     """
     dataframe[PandasEnum.ALLOCATION.value] = fixed_allocation_size
     return dataframe
+
+
+def difference_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
+    # observations:
+    # does not return a new copy of the df, just alters the original df
+    # does not check for NaNs/infinite in input
+    # does not calculate bid-ask spread
+    # does not fill NaNs
+    # does not change NaNs/infinite to 0 after lag/pct_chg (except for for the first time step/period)
+    # is not able to calculate out_of_sample_erro
+
+    regression_period = 120
+    minimum_length_to_calculate = regression_period + 1
+    if len(dataframe[PandasEnum.MID.value]) < minimum_length_to_calculate:
+        dataframe[PandasEnum.ALLOCATION.value] = 0.0
+        return dataframe
+
+    calculate_difference_relationship(dataframe, regression_period)
+
+    return dataframe
+
+
+def calculate_difference_relationship(dataframe: pd.DataFrame, regression_period: int, kelly_fraction: float = 1.0):
+    """Calculates allocations for difference relationship."""
+    dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, 'research_1']
+    forecast_period = 100
+    import code
+    code.interact(local=locals())
+    signal_differenced = infertrade.utilities.operations.research_over_price_minus_one(np.column_stack((dataframe[PandasEnum.MID.value].append(pd.Series([0])).values, dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values)),
+                                                        shift=1)
+    signal_differenced[0] = [0.0]
+    last_feature_row = signal_differenced[-1:]
+    signal_differenced = signal_differenced[:-1]
+    price_pct_chg = infertrade.utilities.operations.pct_chg(dataframe[PandasEnum.MID.value])
+    price_pct_chg[0] = [0.0]
+
+    calculate_regression_with_kelly_optimum(dataframe, feature_matrix=signal_differenced, last_feature_row=last_feature_row, target_array=price_pct_chg, regression_period=regression_period, forecast_period=forecast_period, kelly_fraction=kelly_fraction)
 
 
 def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: float = 0.0) -> pd.DataFrame:
@@ -121,15 +236,22 @@ def calculate_level_relationship(dataframe: pd.DataFrame, regression_period: int
     """Calculates allocations for level relationship."""
     dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, 'research_1']
     forecast_period = 100
-    signal_lagged = infertrade.utilities.operations.lag(np.reshape(dataframe[PandasEnum.SIGNAL.value].values, (-1, 1)),
-                                                        shift=1)
+    signal_lagged = infertrade.utilities.operations.lag(np.reshape(dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values, (-1, 1)),
+                                                        shift=1) # revert back to manually calculating last row? doing it manually seems awkward, doing it this way seems wasteful, altering the the lag (or other) function seems hacky
     signal_lagged[0] = [0.0]
+    last_feature_row = signal_lagged[-1:]
+    signal_lagged = signal_lagged[:-1]
     price_pct_chg = infertrade.utilities.operations.pct_chg(dataframe[PandasEnum.MID.value])
     price_pct_chg[0] = [0.0]
 
+    calculate_regression_with_kelly_optimum(dataframe, feature_matrix=signal_lagged, last_feature_row=last_feature_row, target_array=price_pct_chg, regression_period=regression_period, forecast_period=forecast_period, kelly_fraction=kelly_fraction)
+
+
+def calculate_regression_with_kelly_optimum(dataframe: pd.DataFrame, feature_matrix: pd.Series, last_feature_row: np.ndarray, target_array: pd.Series, regression_period: int, forecast_period: int, kelly_fraction: float = 1.0):
+
     # Refactor to make original method static.
     prediction_indices = infertrade.utilities.operations.PricePredictionFromSignalRegression._get_model_prediction_indices(
-        series_length=len(signal_lagged), reg_period=regression_period, forecast_period=forecast_period)
+        series_length=len(feature_matrix), reg_period=regression_period, forecast_period=forecast_period)
 
     if not len(prediction_indices) > 0:
         raise IndexError("Unexpected error: Prediction indices are zero in length.")
@@ -137,8 +259,8 @@ def calculate_level_relationship(dataframe: pd.DataFrame, regression_period: int
     for ii_day in range(len(prediction_indices)):
         model_idx = prediction_indices[ii_day]['model_idx']
         prediction_idx = prediction_indices[ii_day]['prediction_idx']
-        regression_period_signal = signal_lagged[model_idx, :]
-        regression_period_price_change = price_pct_chg[model_idx]
+        regression_period_signal = feature_matrix[model_idx, :]
+        regression_period_price_change = target_array[model_idx]
 
         std_price = np.std(regression_period_price_change)
         std_signal = np.std(regression_period_signal)
@@ -168,7 +290,7 @@ def calculate_level_relationship(dataframe: pd.DataFrame, regression_period: int
 
             # Predictions
             forecast_distance = 1
-            current_research = signal_lagged[prediction_idx, :]
+            current_research = feature_matrix[prediction_idx, :]
             forecast_price_change = rolling_regression_model.predict(current_research)
 
             # Calculate drift and volatility
@@ -191,7 +313,8 @@ def calculate_level_relationship(dataframe: pd.DataFrame, regression_period: int
 
     # Calculate price forecast for last research value
     if std_price > 0.0 and std_signal > 0.0:
-        last_research = [[dataframe[PandasEnum.SIGNAL.value].iloc[-1]]]
+        #last_research = [[dataframe[PandasEnum.SIGNAL.value].iloc[-1]]]
+        last_research = last_feature_row
         last_forecast_price = rolling_regression_model.predict(last_research)[0]
         value_to_update = kelly_fraction * (last_forecast_price / volatility ** 2)
     else:
