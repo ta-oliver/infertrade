@@ -30,7 +30,7 @@ release = _version.__version__
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.napoleon', 'myst_parser', 'sphinx.ext.imgconverter'
+extensions = ['sphinx.ext.napoleon', 'myst_parser'
 ]
 napoleon_google_docstring = False
 
