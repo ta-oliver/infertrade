@@ -1,4 +1,6 @@
-![image](https://www.infertrade.com/static/media/InferTradeLogo.5c2cc437.svg)
+<p align="center">
+  <img src="https://www.infertrade.com/static/media/InferTradeLogo.5c2cc437.svg" alt="InferTrade"/>
+</p>
 
 # InferTrade
 
