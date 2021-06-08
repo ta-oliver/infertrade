@@ -10,6 +10,7 @@ Welcome to the InferTrade package documentation
    :maxdepth: 2
    :caption: Contents:
 
+   logo
    README
    modules
 
@@ -19,3 +20,6 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+
