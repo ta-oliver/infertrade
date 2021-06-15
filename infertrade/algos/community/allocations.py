@@ -307,7 +307,7 @@ infertrade_export_allocations = {
         },
         "series": ["research"],
         "available_representation_types": {
-            "github_permalink": "" # TODO: Add after changes are committed
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L161"
         },
     },
     "difference_regression": {
@@ -318,7 +318,7 @@ infertrade_export_allocations = {
         },
         "series": ["price", "research"],
         "available_representation_types": {
-            "github_permalink": "" # TODO: Add after changes are committed
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L178"
         },
     },
     "level_regression": {
@@ -329,7 +329,7 @@ infertrade_export_allocations = {
         },
         "series": ["research"],
         "available_representation_types": {
-            "github_permalink": "" # TODO: Add after changes are committed
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L197"
         },
     },
     "level_and_change_regression": {
@@ -341,7 +341,7 @@ infertrade_export_allocations = {
         },
         "series": ["research"],
         "available_representation_types": {
-            "github_permalink": "" # TODO: Add after changes are committed
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L215"
         },
     },
 }
