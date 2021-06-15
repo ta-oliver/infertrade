@@ -15,7 +15,7 @@
 # Copyright 2021 InferStat Ltd
 
 """
-Utility code for operations such as converting positions to price predictions and vice versa.
+This submodule includes facilities for operations such as converting positions to price predictions and vice versa.
 """
 
 
@@ -35,7 +35,15 @@ from infertrade.PandasEnum import PandasEnum, create_price_column_from_synonym
 
 
 def pct_chg(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
-    """Percentage change between the current and a prior element."""
+    """Percentage change between the current and a prior element.
+
+    Args:
+        x: A numpy.ndarray or pandas.Series object
+
+    Returns:
+        A numpy.ndarray with the results
+
+    """
     x = x.astype("float64")
 
     if isinstance(x, pd.DataFrame):
@@ -49,14 +57,31 @@ def pct_chg(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
 
 
 def diff_log(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
-    """Differencing and log transformation between the current and a prior element."""
+    """Differencing and log transformation between the current and a prior element.
+
+    Args:
+        x: A numpy.ndarray or pandas.Series object
+
+    Returns:
+        A numpy.ndarray with the results
+
+    """
     x = x.astype("float64")
     dl = np.diff(np.log(x), n=1, prepend=np.nan, axis=0)
     return dl
 
 
 def lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
-    """Lag (shift) series by desired number of periods."""
+    """Lag (shift) series by desired number of periods.
+
+    Args:
+        x: A numpy.ndarray or pandas.Series object
+        shift: The number of periods by which to shift the input time series
+
+    Returns:
+        A numpy.ndarray with the results
+
+    """
     x = x.astype("float64")
     lagged_array = np.roll(x, shift=shift, axis=0)
     lagged_array[:shift, :] = np.nan
@@ -64,7 +89,16 @@ def lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
 
 
 def dl_lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
-    """Differencing and log transformation of lagged series."""
+    """Differencing and log transformation of lagged series.
+
+    Args:
+        x: A numpy.ndarray or pandas.Series object
+        shift: The number of periods by which to shift the input time series
+
+    Returns:
+        A numpy.ndarray with the results
+
+    """
     x = x.astype("float64")
 
     dl_trans = FunctionTransformer(diff_log)
@@ -77,7 +111,15 @@ def dl_lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
 
 
 def zero_one_dl(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
-    """Returns ones for positive values of "diff-log" series, and zeros for negative values."""
+    """Returns ones for positive values of "diff-log" series, and zeros for negative values.
+
+    Args:
+        x: A numpy.ndarray or pandas.Series object
+
+    Returns:
+        A numpy.ndarray with the results
+
+    """
     x = x.astype("float64")
 
     dl_trans = FunctionTransformer(diff_log)
@@ -90,7 +132,16 @@ def zero_one_dl(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
 
 
 def moving_average(x: Union[np.ndarray, pd.Series], window: int) -> np.ndarray:
-    """Calculate moving average of series for desired number of periods (window)."""
+    """Calculate moving average of series for desired number of periods (window).
+
+    Args:
+        x: A numpy.ndarray or pandas.Series object
+        window: The number of periods to be included in the moving average.
+
+    Returns:
+        A numpy.ndarray with the results
+
+    """
     x = np.array(x)
     x = x.astype("float64")
 
@@ -101,7 +152,16 @@ def moving_average(x: Union[np.ndarray, pd.Series], window: int) -> np.ndarray:
 
 
 def log_price_minus_log_research(x: Union[np.ndarray, pd.Series], shift: int) -> np.ndarray:
-    """Difference of two lagged log series."""
+    """Difference of two lagged log series.
+
+    Args:
+        x: A numpy.ndarray or pandas.Series object with exactly two columns
+        shift: The number of periods by which the lag both series
+
+    Returns:
+        A numpy.ndarray with the results
+
+    """
     x = np.array(x)
     x = x.astype("float64")
 
@@ -118,7 +178,16 @@ def log_price_minus_log_research(x: Union[np.ndarray, pd.Series], shift: int) ->
 
 
 def research_over_price_minus_one(x: Union[np.ndarray, pd.Series], shift: int) -> np.ndarray:
-    """Difference of two lagged log series."""
+    """Difference of two lagged log series.
+
+    Args:
+        x: A numpy.ndarray or pandas.Series object with exactly two columns
+        shift: The number of periods by which the lag both series
+
+    Returns:
+        A numpy.ndarray with the results
+
+    """
     x = np.array(x)
     x = x.astype("float64")
 
@@ -136,10 +205,23 @@ def research_over_price_minus_one(x: Union[np.ndarray, pd.Series], shift: int) -
 
 class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
 
-    """Class for creating price predictions from signal values."""
+    """This class creates price predictions from signal values.
+
+    Attributes:
+        market_to_trade: The name of the column which contains the historical prices.
+
+    """
 
     def __init__(self, market_to_trade: str = None):
-        """We create by determining one input column as being the price to target."""
+        """Construction method for class PricePredictionFromPositions.
+
+        Args:
+            market_to_trade: The name of the column which contains the historical prices.
+
+        Returns:
+            None
+
+        """
         if not market_to_trade:
             # We default to "price" as the target.
             market_to_trade = PandasEnum.MID.value
@@ -149,8 +231,16 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
         self.fitted_features_and_target_ = None
         return self
 
-    def transform(self, X, y=None):
-        """We transform a signal input to a price prediction."""
+    def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
+        """This method transforms a signal input to a price prediction.
+
+        Args:
+            X: A pandas.DataFrame object
+
+        Returns:
+            A pandas.DataFrame object
+
+        """
         X_ = deepcopy(X)
 
         create_price_column_from_synonym(X_)
@@ -183,7 +273,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
             X_[PandasEnum.FORECAST_PRICE_CHANGE.value].shift(-1)
         return X_
 
-    def _get_features_matrix_transformer(self):
+    def _get_features_matrix_transformer(self):  # TODO - argument hints please.
         """
         1. Percent change of research series as predictor.
         2. Research series level as predictor.
@@ -207,7 +297,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
 
     def _get_features_matrix_target_array(
         self, input_time_series: pd.DataFrame
-    ) -> [pd.Series, pd.Series]:  # TODO - argument hints please.
+    ) -> [pd.Series, pd.Series]:  # TODO - are these argument hints correct?
         """Returns the target array features."""
         feat_tar_arr = self.fitted_features_and_target_.transform(input_time_series)
         feat_tar_arr = np.nan_to_num(feat_tar_arr, nan=0.0, posinf=0.0, neginf=0.0)
@@ -277,15 +367,35 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
 
 
 class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
+
     """This class calculates the positions to take assuming Kelly Criterion."""
 
     def __init__(self):
+        """Construction method for class PositionsFromPricePrediction.
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        """
         pass
 
     def fit(self, X, y=None):
+        """This method is not used."""
         return self
 
-    def transform(self, X, y=None):
+    def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
+        """This method calculates the positions to be taken based on the forecast price, assuming the Kelly Criterion.
+
+        Args:
+            X: A pandas.DataFrame object
+
+        Returns:
+            A pandas.DataFrame object
+
+        """
         X_ = deepcopy(X)
         volatility = 0.1
         kelly_fraction = 1.0
@@ -296,20 +406,36 @@ class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
 
 
 class PricePredictionFromPositions(TransformerMixin, BaseEstimator):
-    """
-    This converts positions into implicit price predictions based on the Kelly Criterion and an assumed volatility.
-    """
+    """This class converts positions into implicit price predictions based on the Kelly Criterion and an assumed volatility."""
 
     def __init__(self):
-        """Trivial creation method."""
+        """Construction method for class PricePredictionFromPositions.
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        """
+
         pass
 
     def fit(self, X, y=None):
-        """Not used."""
+        """This method is not used."""
         return self
 
-    def transform(self, X: pd.DataFrame, y=None):
-        """Converts allocations into the forecast one-day price changes."""
+    def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
+        """This method converts allocations into the forecast one-day price changes.
+
+        Args:
+            X: A pandas.DataFrame object
+
+        Returns:
+            A pandas.DataFrame object
+
+        """
+
         X_ = deepcopy(X)
         volatility = 0.1
         kelly_fraction = 1.0
@@ -320,18 +446,34 @@ class PricePredictionFromPositions(TransformerMixin, BaseEstimator):
 
 
 class ReturnsFromPositions(TransformerMixin, BaseEstimator):
-    """This calculate returns from positions."""
+    """This class calculates returns from positions."""
 
     def __init__(self):
-        """Trivial creation method."""
+        """Construction method for class ReturnsFromPositions.
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        """
         pass
 
     def fit(self, X, y=None):
-        """Not used."""
+        """This method is not used."""
         return self
 
-    def transform(self, X: pd.DataFrame, y=None):
-        """Converts positions into the cumulative portfolio return."""
+    def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
+        """This method converts positions into the cumulative portfolio return.
+
+        Args:
+            X: A pandas.DataFrame object
+
+        Returns:
+            A pandas.DataFrame object
+
+                """
         X_1 = deepcopy(X)
         X_2 = deepcopy(X)
         X_1[PandasEnum.VALUATION.value] = calculate_portfolio_performance_python(X_2)[PandasEnum.VALUATION.value]
@@ -339,5 +481,13 @@ class ReturnsFromPositions(TransformerMixin, BaseEstimator):
 
 
 def scikit_allocation_factory(allocation_function: callable) -> FunctionTransformer:
-    """This creates a SciKit Learn compatible Transformer embedding the position calculation."""
+    """This function creates a SciKit Learn compatible Transformer embedding the position calculation.
+
+    Args:
+        allocation_function: A function to be turned into a sklearn.preprocessing.FunctionTransformer
+
+    Returns:
+        A sklearn.preprocessing.FunctionTransformer
+
+    """
     return FunctionTransformer(allocation_function)
