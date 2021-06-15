@@ -10,9 +10,14 @@ Welcome to the InferTrade package documentation
    :maxdepth: 2
    :caption: Contents:
 
-   logo
    README
    modules
+   infertrade
+   algos
+   algos.community
+   algos.external
+   data
+   utilities
 
 Indices and tables
 ==================
