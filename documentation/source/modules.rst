@@ -1,7 +1,7 @@
-utilities
-=========
+data
+====
 
 .. toctree::
    :maxdepth: 4
 
-   utilities
+   data
