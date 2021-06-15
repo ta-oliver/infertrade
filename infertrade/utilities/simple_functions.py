@@ -1,9 +1,3 @@
-"""
-Simple functions used across the package.
-"""
-
-# Copyright 2021 InferStat Ltd
-
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -18,7 +12,11 @@ Simple functions used across the package.
 
 # Author: Thomas Oliver
 # Created: 18th March 2021
+# Copyright 2021 InferStat Ltd
 
+"""
+Simple functions used across the package.
+"""
 
 
 def add_package(dictionary: dict, string_label: str) -> dict:
