@@ -125,6 +125,9 @@ venv.bak/
 # mkdocs documentation
 /site
 
+# Apple/iOS files
+*.DS_Store
+
 # mypy
 .mypy_cache/
 .dmypy.json
@@ -136,6 +139,7 @@ dmypy.json
 *.iml
 
 *.xml
+
 
 get-pip.py
 
