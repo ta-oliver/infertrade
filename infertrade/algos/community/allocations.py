@@ -161,24 +161,24 @@ def weighted_moving_averages(
 def change_regression(
         dataframe: pd.DataFrame,
         change_coefficient: float = 0.1,
-        constant_coefficient: float = 0.1,
+        change_constant: float = 0.1,
 ) -> pd.DataFrame:
     """
     This is a regression-type approach that directly calculates allocation from change in the research level.
 
     parameters:
     change_coefficient: The coefficient for allocation size versus the prior day fractional change in the research.
-    constant_coefficient: The coefficient for the constant contribution.
+    change_constant: The coefficient for the constant contribution.
     """
     research = dataframe["research"]
-    position = ((research / research.shift(1) - 1) * change_coefficient + constant_coefficient)
+    position = ((research / research.shift(1) - 1) * change_coefficient + change_constant)
     dataframe[PandasEnum.ALLOCATION.value] = position
     return dataframe
 
 def difference_regression(
         dataframe: pd.DataFrame,
         difference_coefficient: float = 0.1,
-        constant_coefficient: float = 0.1,
+        difference_constant: float = 0.1,
 ) -> pd.DataFrame:
     """
     This trading rules regresses the 1-day price changes seen historical against the prior day's % change
@@ -186,29 +186,29 @@ def difference_regression(
 
     parameters:
     difference_coefficient: The coefficient for dependence on the log gap between the signal series and the price series.
-    constant_coefficient: The coefficient for the constant contribution.
+    difference_constant: The coefficient for the constant contribution.
     """
     research = dataframe["research"]
     price = dataframe["price"]
-    position = ((research / price - 1) * difference_coefficient + constant_coefficient)
+    position = ((research / price - 1) * difference_coefficient + difference_constant)
     dataframe[PandasEnum.ALLOCATION.value] = position
     return dataframe
 
 def level_regression(
         dataframe: pd.DataFrame,
         level_coefficient: float = 0.1,
-        constant_coefficient: float = 0.1,
+        level_constant: float = 0.1,
 ) -> pd.DataFrame:
     """
     This is a regression-type approach that directly calculates allocation from research level.
 
     parameters:
     level_coefficient: The coefficient for allocation size versus the level of the signal.
-    constant_coefficient: The coefficient for the constant contribution.
+    level_constant: The coefficient for the constant contribution.
     """
 
     research = dataframe["research"]
-    position = (research * level_coefficient + constant_coefficient)
+    position = (research * level_coefficient + level_constant)
     dataframe[PandasEnum.ALLOCATION.value] = position
     return dataframe
 
@@ -216,7 +216,7 @@ def level_and_change_regression(
         dataframe: pd.DataFrame,
         level_coefficient: float = 0.1,
         change_coefficient: float = 0.1,
-        constant_coefficient: float = 0.1,
+        level_and_change_constant: float = 0.1,
 ) -> pd.DataFrame:
     """
     This trading rules regresses the 1-day price changes seen historical against the prior day's % change of the
@@ -225,11 +225,11 @@ def level_and_change_regression(
     parameters:
     level_coefficient: The coefficient for allocation size versus the level of the signal.
     change_coefficient: The coefficient for allocation size versus the prior day fractional change in the research.
-    constant_coefficient: The coefficient for the constant contribution.
+    level_and_change_constant: The coefficient for the constant contribution.
     """
 
     research = dataframe["research"]
-    position = (research * level_coefficient + (research / research.shift(1) - 1) * change_coefficient + constant_coefficient)
+    position = (research * level_coefficient + (research / research.shift(1) - 1) * change_coefficient + level_and_change_constant)
     dataframe[PandasEnum.ALLOCATION.value] = position
     return dataframe
 
@@ -303,7 +303,7 @@ infertrade_export_allocations = {
         "function": change_regression,
         "parameters": {
             "change_coefficient": 0.1,
-            "constant_coefficient": 0.1,
+            "change_constant": 0.1,
         },
         "series": ["research"],
         "available_representation_types": {
@@ -314,7 +314,7 @@ infertrade_export_allocations = {
         "function": difference_regression,
         "parameters": {
             "difference_coefficient": 0.1,
-            "constant_coefficient": 0.1,
+            "difference_constant": 0.1,
         },
         "series": ["price", "research"],
         "available_representation_types": {
@@ -325,7 +325,7 @@ infertrade_export_allocations = {
         "function": level_regression,
         "parameters": {
             "level_coefficient": 0.1,
-            "constant_coefficient": 0.1,
+            "level_constant": 0.1,
         },
         "series": ["research"],
         "available_representation_types": {
@@ -337,7 +337,7 @@ infertrade_export_allocations = {
         "parameters": {
             "level_coefficient": 0.1,
             "change_coefficient": 0.1,
-            "constant_coefficient": 0.1,
+            "level_and_change_constant": 0.1,
         },
         "series": ["research"],
         "available_representation_types": {
