@@ -231,7 +231,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
         self.fitted_features_and_target_ = None
         return self
 
-    def transform(self, X, y=None):
+    def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
         """This method transforms a signal input to a price prediction.
 
         Args:
@@ -273,7 +273,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
             X_[PandasEnum.FORECAST_PRICE_CHANGE.value].shift(-1)
         return X_
 
-    def _get_features_matrix_transformer(self):
+    def _get_features_matrix_transformer(self):  # TODO - argument hints please.
         """
         1. Percent change of research series as predictor.
         2. Research series level as predictor.
@@ -297,7 +297,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
 
     def _get_features_matrix_target_array(
         self, input_time_series: pd.DataFrame
-    ) -> [pd.Series, pd.Series]:  # TODO - argument hints please.
+    ) -> [pd.Series, pd.Series]:  # TODO - are these argument hints correct?
         """Returns the target array features."""
         feat_tar_arr = self.fitted_features_and_target_.transform(input_time_series)
         feat_tar_arr = np.nan_to_num(feat_tar_arr, nan=0.0, posinf=0.0, neginf=0.0)
@@ -367,6 +367,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
 
 
 class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
+
     """This class calculates the positions to take assuming Kelly Criterion."""
 
     def __init__(self):
@@ -385,7 +386,7 @@ class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
         """This method is not used."""
         return self
 
-    def transform(self, X, y=None):
+    def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
         """This method calculates the positions to be taken based on the forecast price, assuming the Kelly Criterion.
 
         Args:
@@ -424,7 +425,7 @@ class PricePredictionFromPositions(TransformerMixin, BaseEstimator):
         """This method is not used."""
         return self
 
-    def transform(self, X: pd.DataFrame, y=None):
+    def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
         """This method converts allocations into the forecast one-day price changes.
 
         Args:
@@ -463,7 +464,7 @@ class ReturnsFromPositions(TransformerMixin, BaseEstimator):
         """This method is not used."""
         return self
 
-    def transform(self, X: pd.DataFrame, y=None):
+    def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
         """This method converts positions into the cumulative portfolio return.
 
         Args:
