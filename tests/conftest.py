@@ -22,7 +22,7 @@ Top level configuration for testing.
 import pandas as pd
 import pytest
 
-from infertrade.data.simulate_data import simulated_market_data_4_years_gen
+from infertrade.data.simulate_data import *
 
 
 @pytest.fixture()
@@ -31,3 +31,8 @@ def test_market_data_4_years() -> pd.DataFrame:
     return simulated_market_data_4_years_gen()
 
 
+
+@pytest.fixture()
+def test_correlated_equities_4_years() -> pd.DataFrame:
+    """Creates a small amount of simulated market data for testing."""
+    return simulated_correlated_equities_4_years_gen()
