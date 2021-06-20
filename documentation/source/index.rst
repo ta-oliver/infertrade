@@ -11,20 +11,11 @@ Welcome to the InferTrade package documentation
    :caption: Contents:
 
    README
-   modules
    infertrade
    algos
-   algos.community
-   algos.external
    data
    utilities
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 
 
 
