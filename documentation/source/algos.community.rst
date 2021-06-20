@@ -1,9 +1,6 @@
 algos.community package
 =======================
 
-Submodules
-----------
-
 algos.community.allocations module
 ----------------------------------
 
