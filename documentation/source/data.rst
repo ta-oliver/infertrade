@@ -1,8 +1,5 @@
-data package
+Data
 ============
-
-Submodules
-----------
 
 data.simulate\_data module
 --------------------------
