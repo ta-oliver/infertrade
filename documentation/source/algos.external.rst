@@ -1,9 +1,6 @@
 algos.external package
 ======================
 
-Submodules
-----------
-
 algos.external.ta module
 ------------------------
 
