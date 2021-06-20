@@ -1,8 +1,5 @@
-algos package
+Algos
 =============
-
-Subpackages
------------
 
 .. toctree::
    :maxdepth: 4
