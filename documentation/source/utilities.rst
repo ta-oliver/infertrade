@@ -1,8 +1,5 @@
-utilities package
+Utilities
 =================
-
-Submodules
-----------
 
 utilities.operations module
 ---------------------------
