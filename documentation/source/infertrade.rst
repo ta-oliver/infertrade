@@ -1,18 +1,9 @@
-infertrade package
+Infertrade Package
 ==================
-
-Subpackages
------------
 
 .. toctree::
    :maxdepth: 4
 
-   infertrade.algos
-   infertrade.data
-   infertrade.utilities
-
-Submodules
-----------
 
 infertrade.PandasEnum module
 ----------------------------
