@@ -75,6 +75,13 @@ def test_calculation_positions(test_df, allocation_algorithm):
     for ii_value in df_with_returns[PandasEnum.VALUATION.value]:
         if not isinstance(ii_value, float):
             assert ii_value is "NaN"
+    
+    # We check calculate positions and returns both in a single function
+    df_with_allocations_and_returns = Api.calculate_allocations_and_returns(test_df, allocation_algorithm, "close")
+    assert isinstance(df_with_allocations_and_returns, pd.DataFrame)
+    for ii_value in df_with_allocations_and_returns[PandasEnum.VALUATION.value]:
+        if not isinstance(ii_value, float):
+            assert ii_value is "NaN"
 
 
 @pytest.mark.parametrize("test_df", test_dfs)
