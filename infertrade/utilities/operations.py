@@ -151,6 +151,28 @@ def moving_average(x: Union[np.ndarray, pd.Series], window: int) -> np.ndarray:
     return ma_np
 
 
+def weighted_moving_average(x: Union[np.ndarray, pd.Series], window: int) -> np.ndarray:
+    """Calculate weighted moving average of series for desired number of periods (window).
+
+    Args:
+        x: A numpy.ndarray or pandas.Series object
+        window: The number of periods to be included in the moving average.
+
+    Returns:
+        A numpy.ndarray with the results
+
+    """
+    x = np.array(x)
+    x = x.astype("float64")
+
+    x_pd = pd.DataFrame(x, columns=["x"])
+    weights = np.arange(1, window+1)
+    weights /= weights.sum()
+    wma = x_pd["x"].rolling(window=window).apply(lambda a: a.mul(weights).sum())
+    wma_np = np.reshape(wma.values, (-1, 1))
+    return wma_np
+
+
 def log_price_minus_log_research(x: Union[np.ndarray, pd.Series], shift: int) -> np.ndarray:
     """Difference of two lagged log series.
 
