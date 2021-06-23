@@ -47,7 +47,10 @@ setx PATH “%PATH%;C:\Python37\Scripts”
  pip install infertrade
  ```
 - Installation should run without errors, it should install all [`dependencies`](https://github.com/ta-oliver/infertrade/blob/holderfolyf-patch-1/requirements.txt) required.
- 
+- For advanced users, add [`TA-Lib`](https://www.ta-lib.org/) to the installation.
+```
+pip3 install infertrade[ta-lib]
+```
 - Ensure all [`dependencies`](https://github.com/ta-oliver/infertrade/blob/holderfolyf-patch-1/requirements.txt) are installed by running.
  ```
  pip list

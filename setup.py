@@ -80,6 +80,7 @@ def get_version(filename: str = "_version.py") -> str:
 # Get a list of packages as defined in file
 package_requirements = get_pkg_list("requirements.txt")
 dev_requirements = get_pkg_list("requirements-dev.txt")
+ta_requirements = get_pkg_list("requirements-ta.txt")
 
 # Setting up basic parameters of infertrade library
 setup(
@@ -94,7 +95,7 @@ setup(
     author_email="support@infertrade.com",
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     install_requires=package_requirements,
-    extras_require={"dev": dev_requirements},
+    extras_require={"dev": dev_requirements, "ta-lib": ta_requirements},
     tests_require=["pytest"],
     python_requires=">=3.7.0,<3.8.0",
     classifiers=[
