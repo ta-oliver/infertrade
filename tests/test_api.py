@@ -67,6 +67,8 @@ def test_representations(algorithm):
 @pytest.mark.parametrize("allocation_algorithm", available_allocation_algorithms)
 def test_calculation_positions(test_df, allocation_algorithm):
     """Checks algorithms calculate positions and returns."""
+
+    # We check for split calculations.
     df_with_allocations = Api.calculate_allocations(test_df, allocation_algorithm, "close")
     assert isinstance(df_with_allocations, pd.DataFrame)
     assert "allocation" in df_with_allocations.columns
@@ -76,12 +78,15 @@ def test_calculation_positions(test_df, allocation_algorithm):
         if not isinstance(ii_value, float):
             assert ii_value is "NaN"
     
-    # We check calculate positions and returns both in a single function
+    # We check for combined calculations.
     df_with_allocations_and_returns = Api.calculate_allocations_and_returns(test_df, allocation_algorithm, "close")
     assert isinstance(df_with_allocations_and_returns, pd.DataFrame)
     for ii_value in df_with_allocations_and_returns[PandasEnum.VALUATION.value]:
         if not isinstance(ii_value, float):
             assert ii_value is "NaN"
+    
+    # We check if values from split calculations and combined calculations are equal.
+    assert pd.Series.equals(df_with_returns[PandasEnum.VALUATION.value], df_with_allocations_and_returns[PandasEnum.VALUATION.value])
 
 
 @pytest.mark.parametrize("test_df", test_dfs)
