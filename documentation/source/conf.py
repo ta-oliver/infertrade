@@ -17,6 +17,7 @@ sys.path.insert(0, os.path.abspath('../../'))
 sys.path.insert(0, os.path.abspath('../../infertrade/'))
 
 import _version
+
 # -- Project information -----------------------------------------------------
 
 project = 'InferTrade'
@@ -26,16 +27,16 @@ author = 'InferStat'
 # The full version, including alpha/beta/rc tags
 release = _version.__version__
 
-
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.napoleon', 'myst_parser'
-]
+extensions = ['sphinx.ext.napoleon', 'sphinx_autodoc_typehints', 'myst_parser', 'sphinx.ext.autodoc',
+              'enum_tools.autoenum',
+              'sphinx.ext.viewcode']
 napoleon_google_docstring = False
-
+napoleon_use_param = True
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -47,7 +48,6 @@ source_suffix = ['.rst', '.md']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
-
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -63,7 +63,7 @@ html_static_path = ['_static']
 
 # -- Options for LaTeX output ---------------------------------------------
 latex_elements = {
-	'extraclassoptions': 'openany,oneside'
+    'extraclassoptions': 'openany,oneside'
 }
 
 latex_logo = '../images/infertrade_logo.png'
