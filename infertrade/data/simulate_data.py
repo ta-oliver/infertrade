@@ -44,7 +44,7 @@ def simulated_market_data_4_years_gen():
             "last": last,
             "research": research,
             "turnover": turnover,
-            "volume": volume
+            "volume": volume,
         }
     )
 
@@ -55,4 +55,4 @@ def simulated_correlated_equities_4_years_gen():
     independent_asset = np.cumprod([1 + 0.02 * (np.random.random() - np.random.random()) for _ in range(1000)])
     asset_2 = asset_1 * independent_asset
 
-    return pd.DataFrame({PandasEnum.MID.value: asset_1, PandasEnum.SIGNAL.value: asset_2,})
+    return pd.DataFrame({PandasEnum.MID.value: asset_1, PandasEnum.SIGNAL.value: asset_2})
