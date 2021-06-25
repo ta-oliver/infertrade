@@ -397,7 +397,7 @@ def check_if_should_skip_return_calculation(
     day_of_return_to_calculate: int,
     show_absolute_bankruptcies: bool,
     bankrupt: bool = False,
-) -> Tuple[bool, str, float]:
+) -> Tuple[bool, float, bool]:
     """This function checks if we should skip the returns calculation for the requested day."""
     # We decide if we should skip trying to calculate this day. Reasons to skip include:
     # * portfolio already bankrupt;
