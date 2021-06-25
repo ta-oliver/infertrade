@@ -526,7 +526,7 @@ def portfolio_index(
         else:
             # If not a full sale we need to calculate how many securities to sell.
             security_adjustment_perc = _calculate_security_adjustment_perc(
-                target_allocation_perc, post_fee_security_perc, current_bid_offer_spread_percent,
+                target_allocation_perc, post_fee_security_perc, current_bid_offer_spread_percent
             )
             securities_to_buy_or_sell = portfolio_value_after_fee_usd * security_adjustment_perc / spot_price_usd
         securities_after_transaction = securities_to_buy_or_sell + number_of_securities_held_volume
@@ -569,7 +569,7 @@ def portfolio_index(
 
 
 def _calculate_security_adjustment_perc(
-    target_allocation_perc: float, post_fee_security_perc: float, current_bid_offer_spread_perc: float,
+    target_allocation_perc: float, post_fee_security_perc: float, current_bid_offer_spread_perc: float
 ) -> float:
     difference_in_target_allocation_and_post_fee_portfolio_value_perc = target_allocation_perc - post_fee_security_perc
     bid_offer_adjustment = current_bid_offer_spread_perc / 2 * target_allocation_perc
