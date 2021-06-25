@@ -19,7 +19,7 @@ Performance calculation using the InferTrade interface.
 """
 
 
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 from infertrade.PandasEnum import PandasEnum, create_price_column_from_synonym
 
 import numpy as np
@@ -34,7 +34,7 @@ def calculate_portfolio_performance_python(
     daily_spread_percent_override: float = 0.0,
     minimum_allocation_change_to_adjust: float = 0.0,
     detailed_output: bool = True,
-):
+) -> pd.DataFrame:
     """This is the main vanilla Python calculation of portfolio performance."""
     # We check the positions and inputs if skip_checks is not enabled.
     if not skip_checks:
@@ -341,7 +341,7 @@ def calculate_allocation_from_cash(
     return start_of_period_allocation
 
 
-def _get_percentage_bid_offer(df_with_positions, day, daily_spread_percent_override):
+def _get_percentage_bid_offer(df_with_positions, day, daily_spread_percent_override) -> float:
     """Defines the daily spread used in computation."""
     if daily_spread_percent_override is not None:
         daily_spread_percentage = daily_spread_percent_override
@@ -397,7 +397,7 @@ def check_if_should_skip_return_calculation(
     day_of_return_to_calculate: int,
     show_absolute_bankruptcies: bool,
     bankrupt: bool = False,
-) -> Tuple[bool, float, bool]:
+) -> Tuple[bool, Union[float, str], bool]:
     """This function checks if we should skip the returns calculation for the requested day."""
     # We decide if we should skip trying to calculate this day. Reasons to skip include:
     # * portfolio already bankrupt;
