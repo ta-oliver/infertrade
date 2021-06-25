@@ -129,7 +129,7 @@ def zero_one_dl(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
     )
     zero_one = zero_one_pipe.fit_transform(x)
     return zero_one
-    
+
 
 def log_price_minus_log_research(x: Union[np.ndarray, pd.Series], shift: int) -> np.ndarray:
     """Difference of two lagged log series.
@@ -275,9 +275,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
         self.feature_names = ["signal", "signal_changes", "signal_differences"]
         return features
 
-    def _get_features_matrix_target_array(
-        self, input_time_series: pd.DataFrame
-    ) -> Tuple[pd.Series, pd.Series]:  
+    def _get_features_matrix_target_array(self, input_time_series: pd.DataFrame) -> Tuple[pd.Series, pd.Series]:
         """Returns the target array features."""
         feat_tar_arr = self.fitted_features_and_target_.transform(input_time_series)
         feat_tar_arr = np.nan_to_num(feat_tar_arr, nan=0.0, posinf=0.0, neginf=0.0)
@@ -340,7 +338,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
                 ind_pred_end = series_length
 
             indices_for_prediction.append(
-                {"model_idx": range(ind_start, ind_end), "prediction_idx": range(ind_pred_start, ind_pred_end),}
+                {"model_idx": range(ind_start, ind_end), "prediction_idx": range(ind_pred_start, ind_pred_end)}
             )
 
         return indices_for_prediction
