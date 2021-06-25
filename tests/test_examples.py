@@ -39,8 +39,11 @@ from infertrade.algos.community import scikit_signal_factory
 from infertrade.algos.community.allocations import constant_allocation_size
 from infertrade.base import get_signal_calc
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
-from infertrade.utilities.operations import PositionsFromPricePrediction, PricePredictionFromSignalRegression, \
-    ReturnsFromPositions
+from infertrade.utilities.operations import (
+    PositionsFromPricePrediction,
+    PricePredictionFromSignalRegression,
+    ReturnsFromPositions,
+)
 from infertrade.utilities.operations import PricePredictionFromPositions
 
 
@@ -101,7 +104,7 @@ def test_regression():
 def test_pipeline_signal_to_position():
     """Checks we can use a signal in conjunction with a rule to calculate a position."""
     signal_to_positions = make_pipeline(
-        scikit_signal_factory(normalised_close,), PricePredictionFromSignalRegression(), PositionsFromPricePrediction()
+        scikit_signal_factory(normalised_close), PricePredictionFromSignalRegression(), PositionsFromPricePrediction()
     )
     df = signal_to_positions.fit_transform(simulated_market_data_4_years_gen())
     assert isinstance(df, pd.DataFrame)
@@ -161,10 +164,12 @@ def test_pipeline_approach_matches_two_stage():
     my_dataframe_with_returns_2 = rule_plus_returns.fit_transform(my_dataframe_without_allocations)
 
     # We verify both give the same results.
-    comparison = (my_dataframe_with_returns == my_dataframe_with_returns_2)
+    comparison = my_dataframe_with_returns == my_dataframe_with_returns_2
     try:
         comparison[pd.isnull(my_dataframe_with_returns) & pd.isnull(my_dataframe_with_returns_2)] = True
     except AttributeError:
-        print("If you have a version of Pandas prior to 1.2.4 you may see an AttributeError - check your environment"
-              " matches the InferTrade package requirements.")
+        print(
+            "If you have a version of Pandas prior to 1.2.4 you may see an AttributeError - check your environment"
+            " matches the InferTrade package requirements."
+        )
     assert comparison.values.all()
