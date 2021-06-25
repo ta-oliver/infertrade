@@ -19,7 +19,7 @@ Performance calculation using the InferTrade interface.
 """
 
 
-from typing import Optional
+from typing import Optional, Tuple, Union
 from infertrade.PandasEnum import PandasEnum, create_price_column_from_synonym
 
 import numpy as np
@@ -34,7 +34,7 @@ def calculate_portfolio_performance_python(
     daily_spread_percent_override: float = 0.0,
     minimum_allocation_change_to_adjust: float = 0.0,
     detailed_output: bool = True,
-):
+) -> pd.DataFrame:
     """This is the main vanilla Python calculation of portfolio performance."""
     # We check the positions and inputs if skip_checks is not enabled.
     if not skip_checks:
@@ -341,7 +341,7 @@ def calculate_allocation_from_cash(
     return start_of_period_allocation
 
 
-def _get_percentage_bid_offer(df_with_positions, day, daily_spread_percent_override):
+def _get_percentage_bid_offer(df_with_positions, day, daily_spread_percent_override) -> float:
     """Defines the daily spread used in computation."""
     if daily_spread_percent_override is not None:
         daily_spread_percentage = daily_spread_percent_override
@@ -397,7 +397,7 @@ def check_if_should_skip_return_calculation(
     day_of_return_to_calculate: int,
     show_absolute_bankruptcies: bool,
     bankrupt: bool = False,
-) -> (bool, float):
+) -> Tuple[bool, Union[float, str], bool]:
     """This function checks if we should skip the returns calculation for the requested day."""
     # We decide if we should skip trying to calculate this day. Reasons to skip include:
     # * portfolio already bankrupt;
@@ -467,7 +467,7 @@ def portfolio_index(
     last_securities_volume: float,
     last_cash_after_trade_usd: float,
     show_working: bool = False,
-) -> (float, float, float):
+) -> Tuple[float, float, float]:
     """A function for calculating the cumulative return of the portfolio."""
     # We initially verify inputs
     for ii_arg in [
@@ -526,7 +526,7 @@ def portfolio_index(
         else:
             # If not a full sale we need to calculate how many securities to sell.
             security_adjustment_perc = _calculate_security_adjustment_perc(
-                target_allocation_perc, post_fee_security_perc, current_bid_offer_spread_percent,
+                target_allocation_perc, post_fee_security_perc, current_bid_offer_spread_percent
             )
             securities_to_buy_or_sell = portfolio_value_after_fee_usd * security_adjustment_perc / spot_price_usd
         securities_after_transaction = securities_to_buy_or_sell + number_of_securities_held_volume
@@ -569,7 +569,7 @@ def portfolio_index(
 
 
 def _calculate_security_adjustment_perc(
-    target_allocation_perc: float, post_fee_security_perc: float, current_bid_offer_spread_perc: float,
+    target_allocation_perc: float, post_fee_security_perc: float, current_bid_offer_spread_perc: float
 ) -> float:
     difference_in_target_allocation_and_post_fee_portfolio_value_perc = target_allocation_perc - post_fee_security_perc
     bid_offer_adjustment = current_bid_offer_spread_perc / 2 * target_allocation_perc
