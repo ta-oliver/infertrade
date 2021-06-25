@@ -19,7 +19,7 @@ Performance calculation using the InferTrade interface.
 """
 
 
-from typing import Optional
+from typing import Optional, Tuple
 from infertrade.PandasEnum import PandasEnum, create_price_column_from_synonym
 
 import numpy as np
@@ -397,7 +397,7 @@ def check_if_should_skip_return_calculation(
     day_of_return_to_calculate: int,
     show_absolute_bankruptcies: bool,
     bankrupt: bool = False,
-) -> (bool, float):
+) -> Tuple[bool, str, float]:
     """This function checks if we should skip the returns calculation for the requested day."""
     # We decide if we should skip trying to calculate this day. Reasons to skip include:
     # * portfolio already bankrupt;
@@ -467,7 +467,7 @@ def portfolio_index(
     last_securities_volume: float,
     last_cash_after_trade_usd: float,
     show_working: bool = False,
-) -> (float, float, float):
+) -> Tuple[float, float, float]:
     """A function for calculating the cumulative return of the portfolio."""
     # We initially verify inputs
     for ii_arg in [
