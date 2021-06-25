@@ -52,11 +52,11 @@ def high_low_diff_scaled(df: pd.DataFrame, amplitude: float = 1) -> pd.DataFrame
 
 
 def chande_kroll(
-        df: pd.DataFrame,
-        average_true_range_periods: int = 10,
-        average_true_range_multiplier: float = 1.0,
-        stop_periods: int = 9
-        ) -> pd.DataFrame:
+    df: pd.DataFrame,
+    average_true_range_periods: int = 10,
+    average_true_range_multiplier: float = 1.0,
+    stop_periods: int = 9,
+) -> pd.DataFrame:
     """
     Calculates signals for the Chande-Kroll stop.
     
@@ -71,11 +71,8 @@ def chande_kroll(
     # Calculate the Average True Range indicator using average_true_range_periods periods, and
     # temporarily store those values in df[PandasEnum.SIGNAL.value]
     adapted_average_true_range = ta_adaptor(
-            AverageTrueRange,
-            "average_true_range",
-            window=average_true_range_periods,
-            fillna=False
-            )
+        AverageTrueRange, "average_true_range", window=average_true_range_periods, fillna=False
+    )
 
     signal_transformer = scikit_signal_factory(adapted_average_true_range)
     signal_transformer.fit_transform(df)
