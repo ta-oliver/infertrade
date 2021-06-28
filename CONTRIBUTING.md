@@ -38,8 +38,6 @@ Contributions should be consistent with the [Apache 2.0 licence](https://www.apa
    [Google Style Guide](https://google.github.io/styleguide/pyguide.html) if unsure. We recommend you use
    ```
    make autoformat
-   ```
 1. Ensure that your code has an appropriate set of unit tests which all pass.
 1. If this is your first pull request, please add yourself to the [list of project copyright contributors](https://github.com/ta-oliver/infertrade/blob/main/docs/list_of_copyright_contributors.md).
 1. Submit a pull request.
-
