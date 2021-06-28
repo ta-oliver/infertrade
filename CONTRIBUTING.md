@@ -13,9 +13,33 @@ Contributions should be consistent with the [Apache 2.0 licence](https://www.apa
 
 1. Submit an issue describing your proposed change to the repo in question.
 1. The repo owner will respond to your issue promptly and the community can provide feedback.
-1. If your proposed change is accepted, fork infertrade, develop and test your code changes.
+1. If your proposed change is accepted, fork infertrade.
+    ```
+   git@github.com:ta-oliver/infertrade.git
+    ```
+1. Set up developer mode.
+    
+    ```
+   cd infertrade/
+   make dev-venv
+   source .inferlib_venv/bin/activate
+    ```
+1. Make changes, and test your code changes. You may use `make` for testing your code.
+      - Run tests:
+         ```
+         make test
+         ```
+      - Check code coverage:
+         ```
+         make coverage
+         ```
+
 1. Ensure that your code adheres to the existing style within InferTrade. Refer to the 
-   [Google Style Guide](https://google.github.io/styleguide/pyguide.html) if unsure. For linting we recommend the `black` package with 120 char lines (`black -l 120 infertrade`)
+   [Google Style Guide](https://google.github.io/styleguide/pyguide.html) if unsure. We recommend you use
+   ```
+   make autoformat
+   ```
 1. Ensure that your code has an appropriate set of unit tests which all pass.
 1. If this is your first pull request, please add yourself to the [list of project copyright contributors](https://github.com/ta-oliver/infertrade/blob/main/docs/list_of_copyright_contributors.md).
 1. Submit a pull request.
+
