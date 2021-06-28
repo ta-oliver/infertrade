@@ -59,7 +59,7 @@ def chande_kroll(
 ) -> pd.DataFrame:
     """
     Calculates signals for the Chande-Kroll stop.
-    
+
     See here: https://www.tradingview.com/support/solutions/43000589105-chande-kroll-stop
     """
 
