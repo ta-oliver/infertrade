@@ -367,7 +367,7 @@ class ReturnsFromPositions(TransformerMixin, BaseEstimator):
         Returns:
             A pandas.DataFrame object
 
-                """
+        """
         X_1 = deepcopy(X)
         X_2 = deepcopy(X)
         X_1[PandasEnum.VALUATION.value] = calculate_portfolio_performance_python(X_2)[PandasEnum.VALUATION.value]
