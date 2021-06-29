@@ -131,10 +131,3 @@ infertrade_export_signals = {
         },
     },
 }
-
-
-def test_NormalisedCloseTransformer():
-    """nct = NormalisedCloseTransformer()"""
-    nct = scikit_signal_factory(normalised_close)
-    X = nct.fit_transform(simulated_market_data_4_years_gen)
-    assert isinstance(X, np.array)
