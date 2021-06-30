@@ -19,6 +19,7 @@ Base functionality used by other functions in the package.
 """
 
 import pandas as pd
+import infertrade.PandasEnum as PandasEnum
 from copy import deepcopy
 from infertrade.utilities.performance import calculate_portfolio_performance_python
 
