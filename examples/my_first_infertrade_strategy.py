@@ -23,6 +23,9 @@ from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
 from infertrade.utilities.performance import calculate_portfolio_performance_python
+import matplotlib
+
+matplotlib.use('TKAgg')
 
 
 def buy_on_small_rises(df: pd.DataFrame) -> pd.DataFrame:

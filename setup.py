@@ -56,7 +56,7 @@ def get_pkg_list(requirement_file: str) -> list:
 
 def get_version(filename: str = "_version.py") -> str:
     """Returns the package version number as a string by searching and reading the _version.py file."""
-    
+    gitignore = []
     for dirpath, _, filenames in walk(this_directory):
         if ".gitignore" in filenames:
             with open(join(this_directory,".gitignore")) as _f:
