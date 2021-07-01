@@ -1,5 +1,4 @@
-<p align="center">
-  <img src="https://www.infertrade.com/static/media/InferTradeLogo.5c2cc437.svg" alt="InferTrade"/>
+<p align="center"><img src="https://www.infertrade.com/static/media/InferTradeLogo.5c2cc437.svg" alt="InferTrade"/>
 </p>
 
 # InferTrade
@@ -15,7 +14,6 @@ The [`infertrade`](https://github.com/ta-oliver/infertrade) package seeks to ach
 - The best open source trading strategies: wrapping functionality to allow strategies from any open source Python libraries with compatible licences, such as [`ta`](https://github.com/bukosabino/ta) to be used with the `infertrade` interface.
 
 The project is licenced under the [Apache 2.0](https://choosealicense.com/licenses/apache-2.0/) licence.  
-
 
 ## Connection to InferTrade.com
 
@@ -52,21 +50,6 @@ Please note the project requires Python 3.7 or higher due to dependent libraries
 
 See [Windows](https://github.com/ta-oliver/infertrade/blob/main/docs/Install%20Windows.md) or [Linux](https://github.com/ta-oliver/infertrade/blob/main/docs/Install%20Ubuntu%20Linux.md) guides for installation details.
 
-### Installing Python 3.7 on newer Ubuntu systems.
-
-Python 3.7 is not among the packages maintained by Ubuntu after 18.04. If regular installation fails, there are two methods to install it:
-- Install from a PPA
-- Compile from source
-
-It is recommended that you do the install from the PPA first:
-```bash
-> apt update
-> sudo apt install software-properties-common
-> sudo add-apt-repository ppa:deadsnakes/ppa
-> sudo apt-get install python3.7-tk
-```
-
-If you get SSL errors while using pip, you will have to install from source. Thankfully, this is not an unreasonable task. It is detailed Josh Spicer's blog post: [SSL issues with Python 3.7 Install From Source](https://joshspicer.com/python37-ssl-issue).
 
 ### My First InferTrade Rule
 
@@ -163,9 +146,3 @@ simulated_correlated_equities_4_years_gen().plot(y=["price", "signal"])
 plt.show()
 ```
 ![image](https://user-images.githubusercontent.com/29981664/111360130-4668a400-8684-11eb-933e-e8f10662b0bb.png)
-
-
-
- 
-
-
