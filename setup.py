@@ -22,6 +22,7 @@ infertrade setup.py file
 import re
 
 from os import walk
+from os.path import dirname, abspath, join
 from pathlib import Path
 
 # Third library (not InferStat)
@@ -32,7 +33,7 @@ PROJECT_NAME = "infertrade"
 PROJECT_DESCRIPTION = "Pandas and SciKit Learn compatible open source interface for algorithmic trading functions."
 BLACKLIST_DIRS = ["example_scripts"]
 
-this_directory = Path(__file__).cwd()
+this_directory = Path(dirname(abspath(__file__)))
 
 
 def get_long_description(filename: str = "README.md") -> str:
@@ -56,9 +57,9 @@ def get_pkg_list(requirement_file: str) -> list:
 def get_version(filename: str = "_version.py") -> str:
     """Returns the package version number as a string by searching and reading the _version.py file."""
     gitignore = []
-    for dirpath, _, filenames in walk(".", topdown=True):
+    for dirpath, _, filenames in walk(this_directory):
         if ".gitignore" in filenames:
-            with open(".gitignore") as _f:
+            with open(join(this_directory,".gitignore")) as _f:
                 gitignore = [file.strip() for file in _f.readlines() if not re.search(r"\#|\*", file)]
 
         if any(pattern for pattern in gitignore + BLACKLIST_DIRS if re.search(pattern, dirpath)):
