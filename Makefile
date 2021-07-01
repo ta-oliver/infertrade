@@ -41,6 +41,30 @@ install:
 	python3.7 -c "import $(PACKAGE_NAME)" >/dev/null 2>&1 || python3 -m pip install . && \
     python3.7 setup.py build_ext --inplace;
 
+.PHONY: clean
+clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
+
+.PHONY: clean-build
+clean-build: ## remove build artifacts
+	rm -fr build/
+	rm -fr dist/
+	rm -fr .eggs/
+	find . -name '*.egg-info' -exec rm -fr {} +
+	find . -name '*.egg' -exec rm -fr {} +
+	find . -name '*.xml' -exec rm -fr {} +
+
+
+.PHONY: clean-pyc
+clean-pyc: ## remove Python file artifacts
+	find . -name '*.pyc' -exec rm -rf {} +
+	find . -name '*.pyo' -exec rm -rf {} +
+	find . -name '*~' -exec rm -rf {} +
+	find . -name '__pycache__' -exec rm -fr {} +
+
+.PHONY: clean-test
+clean-test: ## remove test and coverage artifacts
+	rm -fr .$(PACKAGE_NAME)_venv
+	rm -fr .coverage
 
 .PHONY: venv
 venv:  ## create virtualenv environment on local directory.
@@ -55,6 +79,8 @@ dev: clean ## install the package in development mode including all dependencies
 
 .PHONY: dev-venv
 dev-venv: venv ## install the package in development mode including all dependencies inside a virtualenv (container).
+	source ".$(PACKAGE_NAME)_venv"/bin/activate && \
+	python3.7 -m pip install .[dev] 
 
 .PHONY: autoformat
 autoformat: ## formats code
