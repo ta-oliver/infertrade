@@ -2,17 +2,14 @@
   <img src="https://www.infertrade.com/static/media/InferTradeLogo.5c2cc437.svg" alt="InferTrade"/>
 </p>
 
-
-
-
 # How to Install Infertrade Package for Ubuntu Linux.
 
-
- 
 - Install [`Python 3.7.x`](https://www.python.org/).
+
   ```
   sudo apt install python3.7
   ``` 
+
 - Installing Python 3.7 on newer Ubuntu systems.
 
   Python 3.7 is not among the packages maintained by Ubuntu after 18.04. If regular installation fails, there are two methods to install it:
@@ -20,7 +17,7 @@
   - Compile from source
 
   It is recommended that you do the install from the PPA first:
-  ```bash
+  ```
   sudo apt update
   sudo apt install software-properties-common
   sudo add-apt-repository ppa:deadsnakes/ppa
