@@ -52,21 +52,6 @@ Please note the project requires Python 3.7 or higher due to dependent libraries
 
 See [Windows](https://github.com/ta-oliver/infertrade/blob/main/docs/Install%20Windows.md) or [Linux](https://github.com/ta-oliver/infertrade/blob/main/docs/Install%20Ubuntu%20Linux.md) guides for installation details.
 
-### Installing Python 3.7 on newer Ubuntu systems.
-
-Python 3.7 is not among the packages maintained by Ubuntu after 18.04. If regular installation fails, there are two methods to install it:
-- Install from a PPA
-- Compile from source
-
-It is recommended that you do the install from the PPA first:
-```bash
-> apt update
-> sudo apt install software-properties-common
-> sudo add-apt-repository ppa:deadsnakes/ppa
-> sudo apt-get install python3.7-tk
-```
-
-If you get SSL errors while using pip, you will have to install from source. Thankfully, this is not an unreasonable task. It is detailed Josh Spicer's blog post: [SSL issues with Python 3.7 Install From Source](https://joshspicer.com/python37-ssl-issue).
 
 ### My First InferTrade Rule
 
