@@ -37,8 +37,8 @@ def buy_and_hold(dataframe: pd.DataFrame) -> pd.DataFrame:
 
 
 def chande_kroll_crossover_strategy(
-        dataframe: pd.DataFrame,
-        ) -> pd.DataFrame:
+    dataframe: pd.DataFrame,
+) -> pd.DataFrame:
     """
     This simple all-or-nothing rule:
     (1) allocates 100% of the portofolio to a long position on the asset when the price of the asset is above both the
@@ -52,14 +52,12 @@ def chande_kroll_crossover_strategy(
     dataframe = infertrade.algos.community.signals.chande_kroll(dataframe)
 
     # Allocate positions according to the Chande Kroll lines
-    is_price_above_lines = (
-            (dataframe["price"] > dataframe["chande_kroll_long"]) &
-            (dataframe["price"] > dataframe["chande_kroll_short"])
-            )
-    is_price_below_lines = (
-            (dataframe["price"] < dataframe["chande_kroll_long"]) &
-            (dataframe["price"] < dataframe["chande_kroll_short"])
-            )
+    is_price_above_lines = (dataframe["price"] > dataframe["chande_kroll_long"]) & (
+        dataframe["price"] > dataframe["chande_kroll_short"]
+    )
+    is_price_below_lines = (dataframe["price"] < dataframe["chande_kroll_long"]) & (
+        dataframe["price"] < dataframe["chande_kroll_short"]
+    )
 
     dataframe.loc[is_price_above_lines, PandasEnum.ALLOCATION.value] = 1.0
     dataframe.loc[is_price_below_lines, PandasEnum.ALLOCATION.value] = -1.0
@@ -94,9 +92,7 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
     return dataframe
 
 
-def sma_crossover_strategy(dataframe: pd.DataFrame,
-                           fast: int = 0,
-                           slow: int = 0) -> pd.DataFrame:
+def sma_crossover_strategy(dataframe: pd.DataFrame, fast: int = 0, slow: int = 0) -> pd.DataFrame:
     """
     A Simple Moving Average crossover strategy, buys when short-term SMA crosses over a long-term SMA.
 
@@ -117,11 +113,11 @@ def sma_crossover_strategy(dataframe: pd.DataFrame,
 
 
 def weighted_moving_averages(
-        dataframe: pd.DataFrame,
-        avg_price_coeff: float = 1.0,
-        avg_research_coeff: float = 1.0,
-        avg_price_length: int = 2,
-        avg_research_length: int = 2,
+    dataframe: pd.DataFrame,
+    avg_price_coeff: float = 1.0,
+    avg_research_coeff: float = 1.0,
+    avg_price_length: int = 2,
+    avg_research_length: int = 2,
 ) -> pd.DataFrame:
     """
     This rule uses weightings of two moving averages to determine trade positioning.
@@ -158,27 +154,25 @@ def weighted_moving_averages(
     dataframe[PandasEnum.ALLOCATION.value] = position
     return dataframe
 
+
 def change_regression(
-        dataframe: pd.DataFrame,
-        change_coefficient: float = 0.1,
-        constant_coefficient: float = 0.1,
+    dataframe: pd.DataFrame, change_coefficient: float = 0.1, change_constant: float = 0.1
 ) -> pd.DataFrame:
     """
     This is a regression-type approach that directly calculates allocation from change in the research level.
 
     parameters:
     change_coefficient: The coefficient for allocation size versus the prior day fractional change in the research.
-    constant_coefficient: The coefficient for the constant contribution.
+    change_constant: The coefficient for the constant contribution.
     """
     research = dataframe["research"]
-    position = ((research / research.shift(1) - 1) * change_coefficient + constant_coefficient)
+    position = (research / research.shift(1) - 1) * change_coefficient + change_constant
     dataframe[PandasEnum.ALLOCATION.value] = position
     return dataframe
 
+
 def difference_regression(
-        dataframe: pd.DataFrame,
-        difference_coefficient: float = 0.1,
-        constant_coefficient: float = 0.1,
+    dataframe: pd.DataFrame, difference_coefficient: float = 0.1, difference_constant: float = 0.1
 ) -> pd.DataFrame:
     """
     This trading rules regresses the 1-day price changes seen historical against the prior day's % change
@@ -186,37 +180,37 @@ def difference_regression(
 
     parameters:
     difference_coefficient: The coefficient for dependence on the log gap between the signal series and the price series.
-    constant_coefficient: The coefficient for the constant contribution.
+    difference_constant: The coefficient for the constant contribution.
     """
     research = dataframe["research"]
     price = dataframe["price"]
-    position = ((research / price - 1) * difference_coefficient + constant_coefficient)
+    position = (research / price - 1) * difference_coefficient + difference_constant
     dataframe[PandasEnum.ALLOCATION.value] = position
     return dataframe
 
+
 def level_regression(
-        dataframe: pd.DataFrame,
-        level_coefficient: float = 0.1,
-        constant_coefficient: float = 0.1,
+    dataframe: pd.DataFrame, level_coefficient: float = 0.1, level_constant: float = 0.1
 ) -> pd.DataFrame:
     """
     This is a regression-type approach that directly calculates allocation from research level.
 
     parameters:
     level_coefficient: The coefficient for allocation size versus the level of the signal.
-    constant_coefficient: The coefficient for the constant contribution.
+    level_constant: The coefficient for the constant contribution.
     """
 
     research = dataframe["research"]
-    position = (research * level_coefficient + constant_coefficient)
+    position = research * level_coefficient + level_constant
     dataframe[PandasEnum.ALLOCATION.value] = position
     return dataframe
 
+
 def level_and_change_regression(
-        dataframe: pd.DataFrame,
-        level_coefficient: float = 0.1,
-        change_coefficient: float = 0.1,
-        constant_coefficient: float = 0.1,
+    dataframe: pd.DataFrame,
+    level_coefficient: float = 0.1,
+    change_coefficient: float = 0.1,
+    level_and_change_constant: float = 0.1,
 ) -> pd.DataFrame:
     """
     This trading rules regresses the 1-day price changes seen historical against the prior day's % change of the
@@ -225,11 +219,15 @@ def level_and_change_regression(
     parameters:
     level_coefficient: The coefficient for allocation size versus the level of the signal.
     change_coefficient: The coefficient for allocation size versus the prior day fractional change in the research.
-    constant_coefficient: The coefficient for the constant contribution.
+    level_and_change_constant: The coefficient for the constant contribution.
     """
 
     research = dataframe["research"]
-    position = (research * level_coefficient + (research / research.shift(1) - 1) * change_coefficient + constant_coefficient)
+    position = (
+        research * level_coefficient
+        + (research / research.shift(1) - 1) * change_coefficient
+        + level_and_change_constant
+    )
     dataframe[PandasEnum.ALLOCATION.value] = position
     return dataframe
 
@@ -277,10 +275,7 @@ infertrade_export_allocations = {
     },
     "sma_crossover_strategy": {
         "function": sma_crossover_strategy,
-        "parameters": {
-            "fast": 0,
-            "slow": 0,
-        },
+        "parameters": {"fast": 0, "slow": 0},
         "series": ["price"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/87185ebadc654b50e1bcfdb9a19f31c263ed7d53/infertrade/algos/community/allocations.py#L62"
@@ -292,7 +287,7 @@ infertrade_export_allocations = {
             "avg_price_coeff": 1.0,
             "avg_research_coeff": 1.0,
             "avg_price_length": 2,
-            "avg_research_length": 2
+            "avg_research_length": 2,
         },
         "series": ["research"],
         "available_representation_types": {
@@ -301,10 +296,7 @@ infertrade_export_allocations = {
     },
     "change_regression": {
         "function": change_regression,
-        "parameters": {
-            "change_coefficient": 0.1,
-            "constant_coefficient": 0.1,
-        },
+        "parameters": {"change_coefficient": 0.1, "change_constant": 0.1},
         "series": ["research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L161"
@@ -312,10 +304,7 @@ infertrade_export_allocations = {
     },
     "difference_regression": {
         "function": difference_regression,
-        "parameters": {
-            "difference_coefficient": 0.1,
-            "constant_coefficient": 0.1,
-        },
+        "parameters": {"difference_coefficient": 0.1, "difference_constant": 0.1},
         "series": ["price", "research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L178"
@@ -323,10 +312,7 @@ infertrade_export_allocations = {
     },
     "level_regression": {
         "function": level_regression,
-        "parameters": {
-            "level_coefficient": 0.1,
-            "constant_coefficient": 0.1,
-        },
+        "parameters": {"level_coefficient": 0.1, "level_constant": 0.1},
         "series": ["research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L197"
@@ -334,11 +320,7 @@ infertrade_export_allocations = {
     },
     "level_and_change_regression": {
         "function": level_and_change_regression,
-        "parameters": {
-            "level_coefficient": 0.1,
-            "change_coefficient": 0.1,
-            "constant_coefficient": 0.1,
-        },
+        "parameters": {"level_coefficient": 0.1, "change_coefficient": 0.1, "level_and_change_constant": 0.1},
         "series": ["research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L215"

@@ -20,7 +20,7 @@ This submodule includes facilities for operations such as converting positions t
 
 
 from copy import deepcopy
-from typing import List, Union
+from typing import List, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -56,21 +56,6 @@ def pct_chg(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
     return pc
 
 
-def diff_log(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
-    """Differencing and log transformation between the current and a prior element.
-
-    Args:
-        x: A numpy.ndarray or pandas.Series object
-
-    Returns:
-        A numpy.ndarray with the results
-
-    """
-    x = x.astype("float64")
-    dl = np.diff(np.log(x), n=1, prepend=np.nan, axis=0)
-    return dl
-
-
 def lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
     """Lag (shift) series by desired number of periods.
 
@@ -86,95 +71,6 @@ def lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
     lagged_array = np.roll(x, shift=shift, axis=0)
     lagged_array[:shift, :] = np.nan
     return lagged_array
-
-
-def dl_lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
-    """Differencing and log transformation of lagged series.
-
-    Args:
-        x: A numpy.ndarray or pandas.Series object
-        shift: The number of periods by which to shift the input time series
-
-    Returns:
-        A numpy.ndarray with the results
-
-    """
-    x = x.astype("float64")
-
-    dl_trans = FunctionTransformer(diff_log)
-    lag_trans = FunctionTransformer(lag, kw_args={"shift": shift})
-
-    dl_lag_pipe = make_pipeline(dl_trans, lag_trans)
-
-    dll = dl_lag_pipe.fit_transform(x)
-    return dll
-
-
-def zero_one_dl(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
-    """Returns ones for positive values of "diff-log" series, and zeros for negative values.
-
-    Args:
-        x: A numpy.ndarray or pandas.Series object
-
-    Returns:
-        A numpy.ndarray with the results
-
-    """
-    x = x.astype("float64")
-
-    dl_trans = FunctionTransformer(diff_log)
-
-    zero_one_pipe = make_pipeline(
-        dl_trans, SimpleImputer(strategy="constant", fill_value=0.0), Binarizer(threshold=0.0)
-    )
-    zero_one = zero_one_pipe.fit_transform(x)
-    return zero_one
-
-
-def moving_average(x: Union[np.ndarray, pd.Series], window: int) -> np.ndarray:
-    """Calculate moving average of series for desired number of periods (window).
-
-    Args:
-        x: A numpy.ndarray or pandas.Series object
-        window: The number of periods to be included in the moving average.
-
-    Returns:
-        A numpy.ndarray with the results
-
-    """
-    x = np.array(x)
-    x = x.astype("float64")
-
-    x_pd = pd.DataFrame(x, columns=["x"])
-    ma = x_pd["x"].rolling(window=window).mean()
-    ma_np = np.reshape(ma.values, (-1, 1))
-    return ma_np
-
-
-def log_price_minus_log_research(x: Union[np.ndarray, pd.Series], shift: int) -> np.ndarray:
-    """Difference of two lagged log series.
-
-    Args:
-        x: A numpy.ndarray or pandas.Series object with exactly two columns
-        shift: The number of periods by which the lag both series
-
-    Returns:
-        A numpy.ndarray with the results
-
-    """
-    x = np.array(x)
-    x = x.astype("float64")
-
-    if x.shape[1] != 2:
-        raise IndexError(f"Number of columns must be 2.")
-
-    lag_trans = FunctionTransformer(lag, kw_args={"shift": shift})
-
-    pmr_pipe = make_pipeline(lag_trans)
-    lagged = pmr_pipe.fit_transform(x)
-
-    pmr = np.log(lagged[:, [0]]) - np.log(lagged[:, [1]])
-    return pmr
 
 
 def research_over_price_minus_one(x: Union[np.ndarray, pd.Series], shift: int) -> np.ndarray:
@@ -273,7 +169,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
             X_[PandasEnum.FORECAST_PRICE_CHANGE.value].shift(-1)
         return X_
 
-    def _get_features_matrix_transformer(self):  # TODO - argument hints please.
+    def _get_features_matrix_transformer(self) -> ColumnTransformer:
         """
         1. Percent change of research series as predictor.
         2. Research series level as predictor.
@@ -295,9 +191,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
         self.feature_names = ["signal", "signal_changes", "signal_differences"]
         return features
 
-    def _get_features_matrix_target_array(
-        self, input_time_series: pd.DataFrame
-    ) -> [pd.Series, pd.Series]:  # TODO - are these argument hints correct?
+    def _get_features_matrix_target_array(self, input_time_series: pd.DataFrame) -> Tuple[pd.Series, pd.Series]:
         """Returns the target array features."""
         feat_tar_arr = self.fitted_features_and_target_.transform(input_time_series)
         feat_tar_arr = np.nan_to_num(feat_tar_arr, nan=0.0, posinf=0.0, neginf=0.0)
@@ -360,7 +254,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
                 ind_pred_end = series_length
 
             indices_for_prediction.append(
-                {"model_idx": range(ind_start, ind_end), "prediction_idx": range(ind_pred_start, ind_pred_end),}
+                {"model_idx": range(ind_start, ind_end), "prediction_idx": range(ind_pred_start, ind_pred_end)}
             )
 
         return indices_for_prediction
@@ -473,7 +367,7 @@ class ReturnsFromPositions(TransformerMixin, BaseEstimator):
         Returns:
             A pandas.DataFrame object
 
-                """
+        """
         X_1 = deepcopy(X)
         X_2 = deepcopy(X)
         X_1[PandasEnum.VALUATION.value] = calculate_portfolio_performance_python(X_2)[PandasEnum.VALUATION.value]
