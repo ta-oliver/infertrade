@@ -34,6 +34,18 @@ available_allocation_algorithms = Api.available_algorithms(filter_by_category=Pa
 available_signal_algorithms = Api.available_algorithms(filter_by_category=PandasEnum.SIGNAL.value)
 
 
+"""Test to see if there are overlapping algorithms in both SIGNAL and ALLOCATION after being filtered"""
+
+
+def test_is_filtered_overlapping():
+    for alg in available_allocation_algorithms:
+        if alg in available_signal_algorithms:
+            raise ValueError("ALLOCATION algorithm found in SIGNAL algorithms")
+    for alg in available_signal_algorithms:
+        if alg in available_allocation_algorithms:
+            raise ValueError("SIGNAL algorithm found in ALLOCATION algorithms")
+
+
 @pytest.mark.parametrize("algorithm", available_algorithms)
 def test_get_available_algorithms(algorithm):
     """Checks can get algorithm list and that returned algorithms can supply all expected properties."""
