@@ -220,6 +220,8 @@ def calculate_portfolio_performance_python(
 
         current_price_is_valid = np.isfinite(spot_price)
         target_position_is_valid = np.isfinite(todays_target_position)
+        securities_bought_today = None
+        cash_flow_today = None
 
         if current_price_is_valid and target_position_is_valid and not security_bankrupt:
             # We update last good price and position on last good price if they were valid.
@@ -265,6 +267,12 @@ def calculate_portfolio_performance_python(
             end_of_period_allocation = calculate_allocation_from_cash(
                 last_cash_after_trade, last_securities_after_transaction, spot_price
             )
+            if securities_bought_today is None:
+                raise TypeError(f"Expected a an object of {type(float)} received a \
+                                {type(securities_bought_today)} instead")
+            if cash_flow_today is None:
+                raise TypeError(f"Expected a an object of {type(float)} received a \
+                                               {type(cash_flow_today)} instead")
 
             # Append fresh end of ii_period information
             security_purchases_ls = np.append(security_purchases_ls, securities_bought_today)
