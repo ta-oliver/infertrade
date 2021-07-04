@@ -50,31 +50,18 @@ def lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
     return lagged_array
 
 
-def dl_lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
-    """Differencing and log transformation of lagged series."""
-    x = x.astype("float64")
-
-    dl_trans = FunctionTransformer(diff_log)
-    lag_trans = FunctionTransformer(lag, kw_args={"shift": shift})
-
-    dl_lag_pipe = make_pipeline(dl_trans, lag_trans)
-
-    dll = dl_lag_pipe.fit_transform(x)
-    return dll
-
-
 def test_pct_chg_one():
     x = np.array([10, 30, 40, 50])
     result = pct_chg(x)
     assert (result[1:] == np.array([2, 0.33333333333333326, 0.25]).reshape(-1, 1).astype("float64")).all() and \
-        np.isnan(result[0])
+           np.isnan(result[0])
 
 
 def test_pct_chg_two():
     x = np.array([10, np.inf, 40, 50])
     result = pct_chg(x)
     assert (result[1:] == np.array([np.inf, -1, 0.25]).reshape(-1, 1).astype("float64")).all() \
-        and np.isnan(result[0])
+           and np.isnan(result[0])
 
 
 def test_lag_one():
