@@ -44,7 +44,7 @@ def test_min_and_max_allocation():
 
     # Now constrain it.
     @restrict_allocation
-    def restricted_fifty_fifty(df: pd.DataFrame,allocation_lower_limit=0,allocation_upper_limit=0.25) -> pd.DataFrame:
+    def restricted_fifty_fifty(df: pd.DataFrame,**kwargs) -> pd.DataFrame:
         """Restrict fifty-fifty to limits."""
         return fifty_fifty(df)
 
@@ -58,7 +58,7 @@ def test_min_and_max_allocation():
         return df
 
     @restrict_allocation
-    def restricted_temp_func(df: pd.DataFrame,allocation_lower_limit=0,allocation_upper_limit=0.25) -> pd.DataFrame:
+    def restricted_temp_func(df: pd.DataFrame,**kwargs) -> pd.DataFrame:
         return temp_func(df)
 
     # Verify that the lower limit works as expected
