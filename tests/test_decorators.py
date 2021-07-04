@@ -25,7 +25,7 @@ from infertrade.PandasEnum import PandasEnum
 from infertrade.algos.community.allocations import fifty_fifty
 from infertrade.api import Api
 from infertrade.data.simulate_data import simulated_correlated_equities_4_years_gen
-from infertrade.utilities.operations import limit_allocation
+from infertrade.utilities.operations import restrict_allocation
 
 
 def test_min_and_max_allocation():
@@ -43,12 +43,12 @@ def test_min_and_max_allocation():
         assert ii_item > 0.25
 
     # Now constrain it.
-    @limit_allocation(0.0, 0.25)
-    def restricted_fifty_fifty(df: pd.DataFrame) -> pd.DataFrame:
+    @restrict_allocation
+    def restricted_fifty_fifty(df: pd.DataFrame,allocation_lower_limit=0,allocation_upper_limit=0.25) -> pd.DataFrame:
         """Restrict fifty-fifty to limits."""
         return fifty_fifty(df)
 
-    calculated_allocations = restricted_fifty_fifty(df)
+    calculated_allocations = restricted_fifty_fifty(df,allocation_lower_limit=0,allocation_upper_limit=0.25)
     for ii_item in calculated_allocations["allocation"]:
         assert ii_item == 0.25
 
@@ -57,13 +57,13 @@ def test_min_and_max_allocation():
         df[PandasEnum.ALLOCATION.value] = [-3]*10 + [.10]*10
         return df
 
-    @limit_allocation(0, 0.25)
-    def restricted_temp_func(df: pd.DataFrame) -> pd.DataFrame:
+    @restrict_allocation
+    def restricted_temp_func(df: pd.DataFrame,allocation_lower_limit=0,allocation_upper_limit=0.25) -> pd.DataFrame:
         return temp_func(df)
 
     # Verify that the lower limit works as expected
     df = pd.DataFrame()
     df[PandasEnum.MID.value] = [3]*20
-    calculated_allocations = restricted_temp_func(df)
+    calculated_allocations = restricted_temp_func(df,allocation_lower_limit=0,allocation_upper_limit=0.25)
     assert (df.loc[0:9, PandasEnum.ALLOCATION.value] == 0).all()
     assert (df.loc[10:19, PandasEnum.ALLOCATION.value] == .10).all()
