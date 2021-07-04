@@ -2,4 +2,5 @@ pytest==6.2.2
 sphinx==3.5.4
 pdftex==1.0.0
 myst-parser==0.14.0
-coverage==5.5
+pytest-cov==2.12.1
+black==21.6b0
