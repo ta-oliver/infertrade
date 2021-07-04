@@ -76,7 +76,4 @@ def test_lag_two():
     assert (result[1:] == np.array([40.0, 10.0, 20.0]).astype("float64")).all() and np.isnan(result[0])
 
 
-def test_lag_three():
-    x = np.array([30, 10, 20, 60])
-    result = lag(x, -1)
-    assert (result[:-1] == np.array([10, 20, 60]).astype("float64")).all() and np.isnan(result[-1])
+
