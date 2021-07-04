@@ -49,6 +49,7 @@ def lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
         lagged_array[:shift, ] = np.nan
     return lagged_array
 
+
 def dl_lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
     """Differencing and log transformation of lagged series."""
     x = x.astype("float64")
@@ -65,17 +66,15 @@ def dl_lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
 def test_pct_chg_one():
     x = np.array([10, 30, 40, 50])
     result = pct_chg(x)
-    # result = result[~np.isnan(result)]
-    assert (result[1:] == np.array([2, 0.33333333333333326, 0.25]).reshape(-1, 1).astype("float64")).all() \
-           and np.isnan(result[0])
+    assert (result[1:] == np.array([2, 0.33333333333333326, 0.25]).reshape(-1, 1).astype("float64")).all() and \
+        np.isnan(result[0])
 
 
 def test_pct_chg_two():
     x = np.array([10, np.inf, 40, 50])
     result = pct_chg(x)
-    # result = result[~np.isnan(result)]
     assert (result[1:] == np.array([np.inf, -1, 0.25]).reshape(-1, 1).astype("float64")).all() \
-           and np.isnan(result[0])
+        and np.isnan(result[0])
 
 
 def test_lag_one():
