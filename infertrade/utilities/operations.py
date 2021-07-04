@@ -402,29 +402,36 @@ def limit_allocation(dataframe: pd.DataFrame, allocation_lower_limit: Union[int,
             ] = allocation_lower_limit
     return dataframe
 
-
-
 def restrict_allocation(allocation_function: callable) -> callable:
     """"
     This function is intended to be used as a decorator that may apply one or more restrictions to functions that calculate
     allocation values.
     """
-    def function_with_options(*args, **kwargs) -> pd.DataFrame:
-        # get allocated dataframe from allocation function
-        allocated_dataframe = allocation_function(*args, **kwargs)
 
+    def restricted_function(*args, **kwargs) -> pd.DataFrame:
+
+        # Get allocation dataframe from allocation function
+        dataframe = allocation_function(*args, **kwargs)
+        
+        
         # Restrictions by limiting allocations between range
-        restricted_allocation_dataframe = allocated_dataframe
-        allocation_upper_limit = allocation_lower_limit = None
-        if 'allocation_upper_limit' in kwargs & 'allocation_lower_limit' in kwargs:
-            allocation_upper_limit = kwargs.pop('allocation_upper_limit')
-            allocation_lower_limit = kwargs.pop('allocation_lower_limit')
-            restricted_allocated_dataframe = limit_allocation(allocated_dataframe, allocation_upper_limit, allocation_lower_limit)
+
+        allocation_lower_limit=0
+        allocation_upper_limit=1
+
+        if "allocation_lower_limit" in kwargs:
+            allocation_lower_limit=kwargs.pop("allocation_lower_limit")
+            
+        if "allocation_upper_limit" in kwargs:
+            allocation_upper_limit=kwargs.pop("allocation_upper_limit")
+        
+        dataframe = limit_allocation(dataframe, allocation_lower_limit, allocation_upper_limit)
 
         # TODO Restriction by stop loss
             
-        
-    return function_with_options
+        return dataframe
+    return restricted_function
+
 
 def scikit_allocation_factory(allocation_function: callable) -> FunctionTransformer:
     """This function creates a SciKit Learn compatible Transformer embedding the position calculation.
