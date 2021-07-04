@@ -375,7 +375,17 @@ class ReturnsFromPositions(TransformerMixin, BaseEstimator):
 
 
 def limit_allocation(dataframe: pd.DataFrame, allocation_lower_limit: Union[int, float], allocation_upper_limit: Union[int, float]) -> pd.DataFrame:
-    
+    """
+    This function limits the ranges by limiting upper and lower limit of allocated values
+
+    params:
+    allocated_dataframe
+    allocation_lower_limit: the lower limit for allocation values.
+    allocation_upper_limit: the upper limit for allocation values.
+
+    returns:
+    allocation limited dataframe
+    """
     if allocation_lower_limit > allocation_upper_limit:
         raise ValueError(
                 'The lower limit for allocation values should not be greater than the upper limit for'
@@ -395,13 +405,15 @@ def limit_allocation(dataframe: pd.DataFrame, allocation_lower_limit: Union[int,
 
 
 def restrict_allocation(allocation_function: callable) -> callable:
-    
-
+    """"
+    This function is intended to be used as a decorator that may apply one or more restrictions to functions that calculate
+    allocation values.
+    """
     def function_with_options(*args, **kwargs) -> pd.DataFrame:
         # get allocated dataframe from allocation function
         allocated_dataframe = allocation_function(*args, **kwargs)
 
-        # Restrictions by limiting allocations 
+        # Restrictions by limiting allocations between range
         restricted_allocation_dataframe = allocated_dataframe
         allocation_upper_limit = allocation_lower_limit = None
         if 'allocation_upper_limit' in kwargs & 'allocation_lower_limit' in kwargs:
