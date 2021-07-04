@@ -374,46 +374,45 @@ class ReturnsFromPositions(TransformerMixin, BaseEstimator):
         return X_1
 
 
-def limit_allocation(allocation_lower_limit: Union[int, float], allocation_upper_limit: Union[int, float]) -> callable:
-    """
-    This function is intended to be used as a decorator that can be applied to functions that calculate
-    allocation values.
-    This decorator takes two parameters: the first one is the lower limit for allocation values, and the second
-    is the upper limit for allocation values. Values that are below the lower limit or above the upper limit are
-    simply replaced by the lower and upper limits, respectively.
-
-    params:
-    allocation_lower_limit: the lower limit for allocation values.
-    allocation_upper_limit: the upper limit for allocation values.
-
-    Example usage:
-    @limit_allocation(0, 2.5)
-    def myfunction(df: pandas.DataFrame) -> pandas.DataFrame:
-        return some_allocation_strategy(df)
-    """
-
+def limit_allocation(dataframe: pd.DataFrame, allocation_lower_limit: Union[int, float], allocation_upper_limit: Union[int, float]) -> pd.DataFrame:
+    
     if allocation_lower_limit > allocation_upper_limit:
         raise ValueError(
                 'The lower limit for allocation values should not be greater than the upper limit for'
                 ' allocation values.'
                 )
+    dataframe.loc[
+            dataframe[PandasEnum.ALLOCATION.value]
+            > allocation_upper_limit, PandasEnum.ALLOCATION.value
+            ] = allocation_upper_limit
+    dataframe.loc[
+            dataframe[PandasEnum.ALLOCATION.value]
+            <
+            allocation_lower_limit, PandasEnum.ALLOCATION.value
+            ] = allocation_lower_limit
+    return dataframe
 
-    def wrapper(allocation_function: callable) -> callable:
-        def limited_function(*args, **kwargs) -> pd.DataFrame:
-            dataframe = allocation_function(*args, **kwargs)
-            dataframe.loc[
-                    dataframe[PandasEnum.ALLOCATION.value]
-                    > allocation_upper_limit, PandasEnum.ALLOCATION.value
-                    ] = allocation_upper_limit
-            dataframe.loc[
-                    dataframe[PandasEnum.ALLOCATION.value]
-                    <
-                    allocation_lower_limit, PandasEnum.ALLOCATION.value
-                    ] = allocation_lower_limit
-            return dataframe
-        return limited_function
-    return wrapper
 
+
+def restrict_allocation(allocation_function: callable) -> callable:
+    
+
+    def function_with_options(*args, **kwargs) -> pd.DataFrame:
+        # get allocated dataframe from allocation function
+        allocated_dataframe = allocation_function(*args, **kwargs)
+
+        # Restrictions by limiting allocations 
+        restricted_allocation_dataframe = allocated_dataframe
+        allocation_upper_limit = allocation_lower_limit = None
+        if 'allocation_upper_limit' in kwargs & 'allocation_lower_limit' in kwargs:
+            allocation_upper_limit = kwargs.pop('allocation_upper_limit')
+            allocation_lower_limit = kwargs.pop('allocation_lower_limit')
+            restricted_allocated_dataframe = limit_allocation(allocated_dataframe, allocation_upper_limit, allocation_lower_limit)
+
+        # TODO Restriction by stop loss
+            
+        
+    return function_with_options
 
 def scikit_allocation_factory(allocation_function: callable) -> FunctionTransformer:
     """This function creates a SciKit Learn compatible Transformer embedding the position calculation.
