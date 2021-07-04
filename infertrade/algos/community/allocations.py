@@ -71,6 +71,7 @@ def chande_kroll_crossover_strategy(
 def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: float = 1.0) -> pd.DataFrame:
     """
     Returns a constant allocation, controlled by the fixed_allocation_size parameter.
+
     parameters:
     fixed_allocation_size: determines allocation size.
     """
@@ -82,6 +83,7 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
     """
     Returns an allocation based on the difference in high and low values. This has been added as an
     example with multiple series and parameters.
+
     parameters:
     scale: determines amplitude factor.
     constant: scalar value added to the allocation size.
@@ -93,6 +95,7 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
 def sma_crossover_strategy(dataframe: pd.DataFrame, fast: int = 0, slow: int = 0) -> pd.DataFrame:
     """
     A Simple Moving Average crossover strategy, buys when short-term SMA crosses over a long-term SMA.
+
     parameters:
     fast: determines the number of periods to be included in the short-term SMA.
     slow: determines the number of periods to be included in the long-term SMA.
@@ -118,11 +121,14 @@ def weighted_moving_averages(
 ) -> pd.DataFrame:
     """
     This rule uses weightings of two moving averages to determine trade positioning.
+
     The parameters accepted are the integer lengths of each average (2 parameters - one for price, one for the research
     signal) and two corresponding coefficients that determine each average's weighting contribution. The total sum is
     divided by the current price to calculate a position size.
+
     This strategy is suitable where the dimensionality of the signal/research series is the same as the dimensionality
     of the price series, e.g. where the signal is a price forecast or fair value estimate of the market or security.
+
     parameters:
     avg_price_coeff: price contribution scalar multiple.
     avg_research_coeff: research or signal contribution scalar multiple.
@@ -154,6 +160,7 @@ def change_regression(
 ) -> pd.DataFrame:
     """
     This is a regression-type approach that directly calculates allocation from change in the research level.
+
     parameters:
     change_coefficient: The coefficient for allocation size versus the prior day fractional change in the research.
     change_constant: The coefficient for the constant contribution.
@@ -170,6 +177,7 @@ def difference_regression(
     """
     This trading rules regresses the 1-day price changes seen historical against the prior day's % change
     of the research series.
+
     parameters:
     difference_coefficient: The coefficient for dependence on the log gap between the signal series and the price series.
     difference_constant: The coefficient for the constant contribution.
@@ -186,6 +194,7 @@ def level_regression(
 ) -> pd.DataFrame:
     """
     This is a regression-type approach that directly calculates allocation from research level.
+
     parameters:
     level_coefficient: The coefficient for allocation size versus the level of the signal.
     level_constant: The coefficient for the constant contribution.
@@ -206,6 +215,7 @@ def level_and_change_regression(
     """
     This trading rules regresses the 1-day price changes seen historical against the prior day's % change of the
     research series and level of research series.
+
     parameters:
     level_coefficient: The coefficient for allocation size versus the level of the signal.
     change_coefficient: The coefficient for allocation size versus the prior day fractional change in the research.

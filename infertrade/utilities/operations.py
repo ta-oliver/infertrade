@@ -36,10 +36,13 @@ from infertrade.PandasEnum import PandasEnum, create_price_column_from_synonym
 
 def pct_chg(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
     """Percentage change between the current and a prior element.
+
     Args:
         x: A numpy.ndarray or pandas.Series object
+
     Returns:
         A numpy.ndarray with the results
+
     """
     x = x.astype("float64")
 
@@ -55,11 +58,14 @@ def pct_chg(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
 
 def lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
     """Lag (shift) series by desired number of periods.
+
     Args:
         x: A numpy.ndarray or pandas.Series object
         shift: The number of periods by which to shift the input time series
+
     Returns:
         A numpy.ndarray with the results
+
     """
     x = x.astype("float64")
     lagged_array = np.roll(x, shift=shift, axis=0)
@@ -69,11 +75,14 @@ def lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
 
 def research_over_price_minus_one(x: Union[np.ndarray, pd.Series], shift: int) -> np.ndarray:
     """Difference of two lagged log series.
+
     Args:
         x: A numpy.ndarray or pandas.Series object with exactly two columns
         shift: The number of periods by which the lag both series
+
     Returns:
         A numpy.ndarray with the results
+
     """
     x = np.array(x)
     x = x.astype("float64")
@@ -93,16 +102,21 @@ def research_over_price_minus_one(x: Union[np.ndarray, pd.Series], shift: int) -
 class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
 
     """This class creates price predictions from signal values.
+
     Attributes:
         market_to_trade: The name of the column which contains the historical prices.
+
     """
 
     def __init__(self, market_to_trade: str = None):
         """Construction method for class PricePredictionFromPositions.
+
         Args:
             market_to_trade: The name of the column which contains the historical prices.
+
         Returns:
             None
+
         """
         if not market_to_trade:
             # We default to "price" as the target.
@@ -115,10 +129,13 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
 
     def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
         """This method transforms a signal input to a price prediction.
+
         Args:
             X: A pandas.DataFrame object
+
         Returns:
             A pandas.DataFrame object
+
         """
         X_ = deepcopy(X)
 
@@ -202,15 +219,18 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
     def _get_model_prediction_indices(series_length: int, reg_period: int, forecast_period: int) -> List[dict]:
         """
         Create list of ranges for rolling regression.
+
         Parameters
         ----------
         series_length - total length of series
         reg_period - regression period
         forecast_period - forecast period
+
         Returns
         -------
         - model_idx are ranges for model fitting
         - prediction_idx are ranges for forecasting
+
         Examples
         --------
         {'model_idx': range(0, 50), 'prediction_idx': range(50, 60)}
@@ -246,10 +266,13 @@ class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
 
     def __init__(self):
         """Construction method for class PositionsFromPricePrediction.
+
         Args:
             None
+
         Returns:
             None
+
         """
         pass
 
@@ -259,10 +282,13 @@ class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
 
     def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
         """This method calculates the positions to be taken based on the forecast price, assuming the Kelly Criterion.
+
         Args:
             X: A pandas.DataFrame object
+
         Returns:
             A pandas.DataFrame object
+
         """
         X_ = deepcopy(X)
         volatility = 0.1
@@ -278,10 +304,13 @@ class PricePredictionFromPositions(TransformerMixin, BaseEstimator):
 
     def __init__(self):
         """Construction method for class PricePredictionFromPositions.
+
         Args:
             None
+
         Returns:
             None
+
         """
 
         pass
@@ -292,10 +321,13 @@ class PricePredictionFromPositions(TransformerMixin, BaseEstimator):
 
     def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
         """This method converts allocations into the forecast one-day price changes.
+
         Args:
             X: A pandas.DataFrame object
+
         Returns:
             A pandas.DataFrame object
+
         """
 
         X_ = deepcopy(X)
@@ -312,10 +344,13 @@ class ReturnsFromPositions(TransformerMixin, BaseEstimator):
 
     def __init__(self):
         """Construction method for class ReturnsFromPositions.
+
         Args:
             None
+
         Returns:
             None
+
         """
         pass
 
@@ -325,10 +360,13 @@ class ReturnsFromPositions(TransformerMixin, BaseEstimator):
 
     def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
         """This method converts positions into the cumulative portfolio return.
+
         Args:
             X: A pandas.DataFrame object
+
         Returns:
             A pandas.DataFrame object
+
         """
         X_1 = deepcopy(X)
         X_2 = deepcopy(X)
@@ -343,9 +381,11 @@ def limit_allocation(allocation_lower_limit: Union[int, float], allocation_upper
     This decorator takes two parameters: the first one is the lower limit for allocation values, and the second
     is the upper limit for allocation values. Values that are below the lower limit or above the upper limit are
     simply replaced by the lower and upper limits, respectively.
+
     params:
     allocation_lower_limit: the lower limit for allocation values.
     allocation_upper_limit: the upper limit for allocation values.
+
     Example usage:
     @limit_allocation(0, 2.5)
     def myfunction(df: pandas.DataFrame) -> pandas.DataFrame:
@@ -377,9 +417,12 @@ def limit_allocation(allocation_lower_limit: Union[int, float], allocation_upper
 
 def scikit_allocation_factory(allocation_function: callable) -> FunctionTransformer:
     """This function creates a SciKit Learn compatible Transformer embedding the position calculation.
+
     Args:
         allocation_function: A function to be turned into a sklearn.preprocessing.FunctionTransformer
+
     Returns:
         A sklearn.preprocessing.FunctionTransformer
+
     """
     return FunctionTransformer(allocation_function)

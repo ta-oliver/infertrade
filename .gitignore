@@ -70,9 +70,11 @@ instance/
 
 # Sphinx documentation
 docs/_build/
-documentation/*
-!documentation/infertrade.pdf
-
+documentation/build/
+documentation/source/_static/
+documentation/source/_templates/
+documentation/DS_Store
+documentation/source/DS_Store
 
 # PyBuilder
 target/
@@ -123,6 +125,9 @@ venv.bak/
 # mkdocs documentation
 /site
 
+# Apple/iOS files
+*.DS_Store
+
 # mypy
 .mypy_cache/
 .dmypy.json
@@ -134,6 +139,7 @@ dmypy.json
 *.iml
 
 *.xml
+
 
 get-pip.py
 
