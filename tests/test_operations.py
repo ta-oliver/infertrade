@@ -49,16 +49,6 @@ def lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
         lagged_array[:shift, ] = np.nan
     return lagged_array
 
-
-def diff_log(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
-    """Differencing and log transformation between the current and a prior element."""
-    if not isinstance(x, (pd.DataFrame, pd.Series, np.ndarray)):
-        raise TypeError("must be Pandas Series, DataFrame or numpy ndarray")
-    x = x.astype("float64")
-    dl = np.diff(np.log(x), n=1, prepend=np.nan, axis=0)
-    return dl
-
-
 def dl_lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
     """Differencing and log transformation of lagged series."""
     x = x.astype("float64")
