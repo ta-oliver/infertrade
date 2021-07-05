@@ -421,7 +421,7 @@ def daily_stop_loss(dataframe: pd.DataFrame, loss_limit: float) -> pd.DataFrame:
         price_change=row.price-prev_price
         loss= -price_change*prev_alloc
         if loss>loss_limit:
-            dataframe[index].allocation=0
+            row.allocation=0
         prev_alloc=row.allocation
         prev_price=row.price
     return dataframe
