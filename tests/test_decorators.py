@@ -25,12 +25,14 @@ from infertrade.PandasEnum import PandasEnum
 from infertrade.algos.community.allocations import fifty_fifty
 from infertrade.api import Api
 from infertrade.data.simulate_data import simulated_correlated_equities_4_years_gen
-from infertrade.utilities.operations import restrict_allocation
+from infertrade.utilities.operations import restrict_allocation, pct_chg
+
 
 
 def test_min_and_max_allocation():
-    """Checks the allocation restrictions work."""
+    """Checks the limit allocation restriction"""
     df = simulated_correlated_equities_4_years_gen()
+    
     allocations = Api.calculate_allocations(df, "fifty_fifty", PandasEnum.MID.value)
     assert isinstance(allocations, pd.DataFrame)
 
@@ -51,6 +53,8 @@ def test_min_and_max_allocation():
     calculated_allocations = restricted_fifty_fifty(df,allocation_lower_limit=0,allocation_upper_limit=0.25)
     for ii_item in calculated_allocations["allocation"]:
         assert ii_item == 0.25
+    
+
 
     # Test also negative values.
     def temp_func(df: pd.DataFrame) -> pd.DataFrame:
@@ -67,3 +71,57 @@ def test_min_and_max_allocation():
     calculated_allocations = restricted_temp_func(df,allocation_lower_limit=0,allocation_upper_limit=0.25)
     assert (df.loc[0:9, PandasEnum.ALLOCATION.value] == 0).all()
     assert (df.loc[10:19, PandasEnum.ALLOCATION.value] == .10).all()
+
+def test_daily_stop_loss():
+    """Checks the limit allocation restriction"""
+    df = simulated_correlated_equities_4_years_gen()
+
+    # constrain fifty fifty allocation
+    @restrict_allocation
+    def restricted_fifty_fifty(df: pd.DataFrame,**kwargs) -> pd.DataFrame:
+        """Restrict fifty-fifty to limits."""
+        return fifty_fifty(df)
+
+    calculated_allocations = restricted_fifty_fifty(df,loss_limit=0.001)
+    calculated_allocations["pct_chg"]=pct_chg(calculated_allocations.price)
+
+    # Boolean to check if percent change less than -loss limit exist
+    check_if_exist=False
+    for ii_item, pct_change in zip(calculated_allocations["allocation"],calculated_allocations["pct_chg"]):
+        
+        if(pct_change<-0.001):
+            assert ii_item==0.0
+            check_if_exist=True
+        else:
+            assert ii_item==0.5
+    
+    assert check_if_exist
+
+
+def test_multiple_restrictions():
+
+    """Checks the limit allocation restriction"""
+    df = simulated_correlated_equities_4_years_gen()
+
+    # constrain fifty fifty allocation
+    @restrict_allocation
+    def restricted_fifty_fifty(df: pd.DataFrame,**kwargs) -> pd.DataFrame:
+        """Restrict fifty-fifty to limits."""
+        return fifty_fifty(df)
+
+    calculated_allocations = restricted_fifty_fifty(df,allocation_lower_limit=0.0, allocation_upper_limit=0.25,loss_limit=0.001)
+    calculated_allocations["pct_chg"]=pct_chg(calculated_allocations.price)
+
+    # Boolean to check if percent change less than -loss limit exist
+    check_if_exist=False
+    for ii_item, pct_change in zip(calculated_allocations["allocation"],calculated_allocations["pct_chg"]):
+        
+        if(pct_change<-0.001):
+            assert ii_item==0.0
+            check_if_exist=True
+        else:
+            assert ii_item==0.25
+    
+    assert check_if_exist
+     
+
