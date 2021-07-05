@@ -1,12 +1,11 @@
-<p align="center">
-  <img src="https://www.infertrade.com/static/media/InferTradeLogo.5c2cc437.svg" alt="InferTrade"/>
+<p align="center"><img src="https://www.infertrade.com/static/media/InferTradeLogo.5c2cc437.svg" alt="InferTrade"/>
 </p>
 
 # InferTrade
 
 [`infertrade`](https://github.com/ta-oliver/infertrade) is an open source trading and investment strategy library designed for accessibility and compatibility.
 
-The [`infertrade`](https://github.com/ta-oliver/infertrade) package seeks to achieve four objectives:
+The [`infertrade`](https://github.com/ta-oliver/infertrade) package seeks to achieve three objectives:
 
 - Simplicity: a simple [`pandas`](https://github.com/pandas-dev/pandas) to [`pandas`](https://github.com/pandas-dev/pandas) interface that those experienced in trading but new to Python can easily use.
 
@@ -15,7 +14,6 @@ The [`infertrade`](https://github.com/ta-oliver/infertrade) package seeks to ach
 - The best open source trading strategies: wrapping functionality to allow strategies from any open source Python libraries with compatible licences, such as [`ta`](https://github.com/bukosabino/ta) to be used with the `infertrade` interface.
 
 The project is licenced under the [Apache 2.0](https://choosealicense.com/licenses/apache-2.0/) licence.  
-
 
 ## Connection to InferTrade.com
 
@@ -100,7 +98,7 @@ signal_transformer.fit_transform(simulated_market_data_4_years_gen())
 
 ```python
 from infertrade.algos.community.allocations import constant_allocation_size
-from infertrade.algos.community import scikit_allocation_factory
+from infertrade.utilities.operations import scikit_allocation_factory
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
 position_transformer = scikit_allocation_factory(constant_allocation_size)
@@ -148,9 +146,3 @@ simulated_correlated_equities_4_years_gen().plot(y=["price", "signal"])
 plt.show()
 ```
 ![image](https://user-images.githubusercontent.com/29981664/111360130-4668a400-8684-11eb-933e-e8f10662b0bb.png)
-
-
-
- 
-
-
