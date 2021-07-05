@@ -104,8 +104,6 @@ def test_multiple_restrictions():
     """Checks the limit allocation restriction"""
     df = simulated_correlated_equities_4_years_gen()
 
-    
-
     calculated_allocations = restricted_fifty_fifty(df, allocation_lower_limit=0.0, allocation_upper_limit=0.25, loss_limit=0.001)
    
 
