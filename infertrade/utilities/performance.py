@@ -268,11 +268,15 @@ def calculate_portfolio_performance_python(
                 last_cash_after_trade, last_securities_after_transaction, spot_price
             )
             if securities_bought_today is None:
-                raise TypeError(f"Expected a an object of {type(float)} received a \
-                                {type(securities_bought_today)} instead")
+                raise TypeError(
+                    f"Expected a an object of {type(float)} received a \
+                                {type(securities_bought_today)} instead"
+                )
             if cash_flow_today is None:
-                raise TypeError(f"Expected a an object of {type(float)} received a \
-                                               {type(cash_flow_today)} instead")
+                raise TypeError(
+                    f"Expected a an object of {type(float)} received a \
+                                               {type(cash_flow_today)} instead"
+                )
 
             # Append fresh end of ii_period information
             security_purchases_ls = np.append(security_purchases_ls, securities_bought_today)
