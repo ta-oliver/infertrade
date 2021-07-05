@@ -1,22 +1,21 @@
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Copyright 2021 InferStat Ltd
+# Created by: Joshua Mason
+# Created date: 11/03/2021
+
 """
 Functions used to compute signals. Signals may be used for visual inspection or as inputs to trading rules.
-
-Copyright 2021 InferStat Ltd
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-Created by: Joshua Mason
-Created date: 11/03/2021
 """
 
 import pandas as pd
@@ -53,14 +52,14 @@ def high_low_diff_scaled(df: pd.DataFrame, amplitude: float = 1) -> pd.DataFrame
 
 
 def chande_kroll(
-        df: pd.DataFrame,
-        average_true_range_periods: int = 10,
-        average_true_range_multiplier: float = 1.0,
-        stop_periods: int = 9
-        ) -> pd.DataFrame:
+    df: pd.DataFrame,
+    average_true_range_periods: int = 10,
+    average_true_range_multiplier: float = 1.0,
+    stop_periods: int = 9,
+) -> pd.DataFrame:
     """
     Calculates signals for the Chande-Kroll stop.
-    
+
     See here: https://www.tradingview.com/support/solutions/43000589105-chande-kroll-stop
     """
 
@@ -72,11 +71,8 @@ def chande_kroll(
     # Calculate the Average True Range indicator using average_true_range_periods periods, and
     # temporarily store those values in df[PandasEnum.SIGNAL.value]
     adapted_average_true_range = ta_adaptor(
-            AverageTrueRange,
-            "average_true_range",
-            window=average_true_range_periods,
-            fillna=False
-            )
+        AverageTrueRange, "average_true_range", window=average_true_range_periods, fillna=False
+    )
 
     signal_transformer = scikit_signal_factory(adapted_average_true_range)
     signal_transformer.fit_transform(df)
@@ -135,10 +131,3 @@ infertrade_export_signals = {
         },
     },
 }
-
-
-def test_NormalisedCloseTransformer():
-    """nct = NormalisedCloseTransformer()"""
-    nct = scikit_signal_factory(normalised_close)
-    X = nct.fit_transform(simulated_market_data_4_years_gen)
-    assert isinstance(X, np.array)
