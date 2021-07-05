@@ -404,19 +404,28 @@ def limit_allocation(dataframe: pd.DataFrame, allocation_lower_limit: Union[int,
 
 def daily_stop_loss(dataframe: pd.DataFrame, loss_limit: float) -> pd.DataFrame:
     """
-    This function calculate daily percent change and restricts allocation if percent change in price is less than -loss_limit
+    This function calculates loss and limit the allocation accordingly.
+    It restricts allocation to 0 if loss>loss_limit
     
     params:
     allocated_dataframe
-    loss_limit: percent_change below which allocation is 0
+    loss_limit
+
+    returns:
+    dataframe
     """
-    # TODO improve this function to calculate stop loss
-    dataframe["allocation"][dataframe.price.pct_change()<-loss_limit]=0
+    # improve this function to calculate stop loss
+    prev_alloc=0
+    prev_price=0
+    for index, row in dataframe.iterrows():
+        price_change=row.price-prev_price
+        loss= -price_change*prev_alloc
+        if loss>loss_limit:
+            dataframe[index].allocation=0
+        prev_alloc=row.allocation
+        prev_price=row.price
     return dataframe
     
-
-
-
 def restrict_allocation(allocation_function: callable) -> callable:
     """
     This function is intended to be used as a decorator that may apply one or more restrictions to functions that calculate
@@ -429,19 +438,30 @@ def restrict_allocation(allocation_function: callable) -> callable:
         dataframe = allocation_function(*args, **kwargs)
         
         # Restriction by limiting allocations between range
-        if "allocation_lower_limit" in kwargs and "allocation_upper_limit" in kwargs:
-            allocation_upper_limit=allocation_lower_limit=None
-            allocation_lower_limit=kwargs.pop("allocation_lower_limit")
-            allocation_upper_limit=kwargs.pop("allocation_upper_limit")
+        
+        # initialize limits
+        allocation_lower_limit=0
+        allocation_upper_limit=1
+
+        if "allocation_lower_limit" in kwargs:
+            allocation_lower_limit=kwargs.get("allocation_lower_limit")
             dataframe = limit_allocation(dataframe, allocation_lower_limit, allocation_upper_limit)
+        
+        if "allocation_lower_limit" in kwargs:
+            allocation_upper_limit=kwargs.get("allocation_upper_limit")
+            dataframe = limit_allocation(dataframe, allocation_lower_limit, allocation_upper_limit)
+        
+        
 
         # Restriction by daily stop loss
+        loss_limit=None
         if "loss_limit" in kwargs:
-            loss_limit=kwargs.pop("loss_limit")
-            dataframe=daily_stop_loss(dataframe, loss_limit)
+            loss_limit=kwargs.get("loss_limit")
+            dataframe=daily_stop_loss(dataframe,loss_limit)
+
+       
         
         
-            
         return dataframe
     return restricted_function
 
