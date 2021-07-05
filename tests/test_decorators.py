@@ -111,12 +111,14 @@ def test_multiple_restrictions():
     check_if_exist=False
     prev_alloc=0
     prev_price=0
+    stop_loss_triggered = False
     for index, row in calculated_allocations.iterrows():
         price_change=row.price-prev_price
         loss= -price_change*prev_alloc
-        if loss>0.001:
+        if loss>0.001 or stop_loss_triggered:
             assert row.allocation==0.0
             check_if_exist=True
+            stop_loss_triggered = True
         else:
             assert row.allocation==0.25
         prev_alloc=row.allocation
