@@ -420,7 +420,8 @@ def daily_stop_loss(dataframe: pd.DataFrame, loss_limit: float) -> pd.DataFrame:
     for index, row in dataframe.iterrows():
         price_change = row.price - prev_price
         loss = -price_change * prev_alloc
-        if loss > loss_limit:
+        if loss > loss_limit or stop_loss_has_triggered:
+            stop_loss_has_triggered=True
             row.allocation = 0
         prev_alloc = row.allocation
         prev_price = row.price
