@@ -71,12 +71,11 @@ def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 3) -> 
     """
     This function uses an exponentially weighted multiplier to give more weight to recent prices.
     """
-    df["signal"] = 0
     coeff = 1 - 1/window
     prev_signal_value = 0
     for index, row in df.iterrows():
         signal_value = coeff*prev_signal_value+(1-coeff)*row.close
-        df["signal"]=signal_value
+        row.signal = signal_value
         prev_signal_value = signal_value
 
 
