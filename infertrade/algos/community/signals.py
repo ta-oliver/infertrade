@@ -71,23 +71,25 @@ def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 3) -> 
     """
     This function uses an exponentially weighted multiplier to give more weight to recent prices.
     """
-    coeff = 1 - 1/window
-    prev_signal_value = 0
-    for index, row in df.iterrows():
-        signal_value = coeff*prev_signal_value+(1-coeff)*row.close
-        row.signal = signal_value
-        prev_signal_value = signal_value
-    
+    df["signal"] = df["close"].ewm(span=window, adjust=False).mean()
     return df
 
 def moving_average_convergence_divergence(df: pd.DataFrame, lower_window: int =12, upper_window: int = 26) -> pd.DataFrame:
     """
     This function is a trend-following momentum indicator that shows the relationship between two moving averages at different windows:
     The MACD is usually calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA.
+    
     """
-    ema_26 = exponentially_weighted_moving_average(df , window = lower_window)
-    ema_12 = exponentially_weighted_moving_average(df, window= upper_window)
-    df["signal"]=ema_26["signal"]-ema_12["signal"]
+    ewma_26 = exponentially_weighted_moving_average(df , window = lower_window)
+    ewma_12 = exponentially_weighted_moving_average(df, window= upper_window)
+
+    # MACD calculation
+    macd = ewma_26["signal"]-ewma_12["signal"]
+
+    # convert MACD into signal
+    df["signal"]= macd.ewm(span=9, adjust=False).mean()
+
+
     return df
 
 
