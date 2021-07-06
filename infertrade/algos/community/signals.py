@@ -67,6 +67,20 @@ def weighted_moving_average(df: pd.DataFrame, window: int = 3) -> pd.DataFrame:
     df["signal"] = df["close"].rolling(window=window).apply(lambda a: a.mul(weights).sum())
     return df
 
+def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 3) -> pd.DataFrame:
+    """
+    This function uses an exponentially weighted multiplier to give more weight to recent prices.
+    """
+    df["signal"] = 0
+    coeff = 1 - 1/window
+    prev_signal_value = 0
+    for index, row in df.iterrows():
+        signal_value = coeff*prev_signal_value+(1-coeff)*row.close
+        df["signal"]=signal_value
+        prev_signal_value = signal_value
+
+
+
 def chande_kroll(
     df: pd.DataFrame,
     average_true_range_periods: int = 10,
