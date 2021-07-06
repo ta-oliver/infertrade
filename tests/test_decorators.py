@@ -80,21 +80,21 @@ def test_daily_stop_loss():
     
 
     # Boolean to check if percent change less than -loss limit exist
-    check_if_exist=False
+    stop_loss_triggered=False
     prev_alloc=0
     prev_price=0
     for index, row in calculated_allocations.iterrows():
         price_change=row.price-prev_price
         loss= -price_change*prev_alloc
-        if loss>0.001:
-            check_if_exist=True
+        if loss>0.001 or stop_loss_triggered:
             assert row.allocation==0.0
+            stop_loss_triggered=True
         else:
             assert row.allocation==0.5
         prev_alloc=row.allocation
         prev_price=row.price
     
-    assert check_if_exist
+    assert stop_loss_triggered
   
 
 
@@ -108,7 +108,6 @@ def test_multiple_restrictions():
    
 
     # Boolean to check if percent change less than -loss limit exist
-    check_if_exist=False
     prev_alloc=0
     prev_price=0
     stop_loss_triggered = False
@@ -117,7 +116,6 @@ def test_multiple_restrictions():
         loss= -price_change*prev_alloc
         if loss>0.001 or stop_loss_triggered:
             assert row.allocation==0.0
-            check_if_exist=True
             stop_loss_triggered = True
         else:
             assert row.allocation==0.25
@@ -125,5 +123,5 @@ def test_multiple_restrictions():
         prev_price=row.price
   
     
-    assert check_if_exist
+    assert stop_loss_triggered
      
