@@ -23,7 +23,6 @@ import numpy as np
 from pandas.core.frame import DataFrame
 from sklearn.preprocessing import FunctionTransformer
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
-
 from ta.volatility import AverageTrueRange
 from infertrade.algos.external.ta import ta_adaptor
 from infertrade.PandasEnum import PandasEnum
@@ -51,14 +50,14 @@ def high_low_diff_scaled(df: pd.DataFrame, amplitude: float = 1) -> pd.DataFrame
     df["signal"] = (df["high"] - max(df["low"])) * amplitude
     return df
 
-def simple_moving_average(df: pd.DataFrame, window: int = 3) -> pd.DataFrame:
+def simple_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     """
     Calculates smooth signal based on price trends by filtering out the noise from random short-term price fluctuations
     """
     df['signal'] = df["close"].rolling(window=window).mean()
     return df
 
-def weighted_moving_average(df: pd.DataFrame, window: int = 3) -> pd.DataFrame:
+def weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     """
     Weighted moving averages assign a heavier weighting to more current data points since they are more relevant than data points in the distant past. 
     """
@@ -67,24 +66,24 @@ def weighted_moving_average(df: pd.DataFrame, window: int = 3) -> pd.DataFrame:
     df["signal"] = df["close"].rolling(window=window).apply(lambda a: a.mul(weights).sum())
     return df
 
-def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 3) -> pd.DataFrame:
+def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     """
     This function uses an exponentially weighted multiplier to give more weight to recent prices.
     """
     df["signal"] = df["close"].ewm(span=window, adjust=False).mean()
     return df
 
-def moving_average_convergence_divergence(df: pd.DataFrame, lower_window: int =12, upper_window: int = 26) -> pd.DataFrame:
+def moving_average_convergence_divergence(df: pd.DataFrame) -> pd.DataFrame:
     """
     This function is a trend-following momentum indicator that shows the relationship between two moving averages at different windows:
     The MACD is usually calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA.
     
     """
-    ewma_26 = exponentially_weighted_moving_average(df , window = lower_window)
-    ewma_12 = exponentially_weighted_moving_average(df, window= upper_window)
+    ewma_26 = exponentially_weighted_moving_average(df , window = 26)
+    ewma_12 = exponentially_weighted_moving_average(df, window= 12)
 
     # MACD calculation
-    macd = ewma_26["signal"]-ewma_12["signal"]
+    macd = ewma_12["signal"]-ewma_26["signal"]
 
     # convert MACD into signal
     df["signal"]= macd.ewm(span=9, adjust=False).mean()
@@ -160,6 +159,38 @@ infertrade_export_signals = {
         "function": high_low_diff_scaled,
         "parameters": {"amplitude": 1.0},
         "series": ["high", "low"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L45"
+        },
+    },
+    "simple_moving_average": {
+        "function": simple_moving_average,
+        "parameters": {"window": 1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L45"
+        },
+    },
+    "weighted_moving_average": {
+        "function": weighted_moving_average,
+        "parameters": {"window": 1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L45"
+        },
+    },
+    "exponentially_weighted_moving_average": {
+        "function": exponentially_weighted_moving_average,
+        "parameters": {"window": 1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L45"
+        },
+    },
+    "moving_average_convergence_divergence": {
+        "function": moving_average_convergence_divergence,
+        "parameters": {},
+        "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L45"
         },
