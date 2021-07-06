@@ -20,6 +20,7 @@ Functions used to compute signals. Signals may be used for visual inspection or 
 
 import pandas as pd
 import numpy as np
+from pandas.core.frame import DataFrame
 from sklearn.preprocessing import FunctionTransformer
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
@@ -50,6 +51,12 @@ def high_low_diff_scaled(df: pd.DataFrame, amplitude: float = 1) -> pd.DataFrame
     df["signal"] = (df["high"] - max(df["low"])) * amplitude
     return df
 
+def simple_moving_average(df: pd.DataFrame, window: int = 3) -> pd.DataFrame:
+    """
+    Calculates smooth signal based on price trends by filtering out the noise from random short-term price fluctuations
+    """
+    df['signal'] = df["close"].rolling(window=window).mean()
+    return df
 
 def chande_kroll(
     df: pd.DataFrame,
