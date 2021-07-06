@@ -58,6 +58,15 @@ def simple_moving_average(df: pd.DataFrame, window: int = 3) -> pd.DataFrame:
     df['signal'] = df["close"].rolling(window=window).mean()
     return df
 
+def weighted_moving_average(df: pd.DataFrame, window: int = 3) -> pd.DataFrame:
+    """
+    Weighted moving averages assign a heavier weighting to more current data points since they are more relevant than data points in the distant past. 
+    """
+    weights = np.arange(1, window+1)
+    weights /= weights.sum()
+    df["signal"] = df["close"].rolling(window=window).apply(lambda a: a.mul(weights).sum())
+    return df
+
 def chande_kroll(
     df: pd.DataFrame,
     average_true_range_periods: int = 10,
