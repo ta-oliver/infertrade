@@ -77,7 +77,18 @@ def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 3) -> 
         signal_value = coeff*prev_signal_value+(1-coeff)*row.close
         row.signal = signal_value
         prev_signal_value = signal_value
+    
+    return df
 
+def moving_average_convergence_divergence(df: pd.DataFrame, lower_window: int =12, upper_window: int = 26) -> pd.DataFrame:
+    """
+    This function is a trend-following momentum indicator that shows the relationship between two moving averages at different windows:
+    The MACD is usually calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA.
+    """
+    ema_26 = exponentially_weighted_moving_average(df , window = lower_window)
+    ema_12 = exponentially_weighted_moving_average(df, window= upper_window)
+    df["signal"]=ema_26["signal"]-ema_12["signal"]
+    return df
 
 
 def chande_kroll(
