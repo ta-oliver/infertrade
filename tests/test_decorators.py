@@ -79,14 +79,14 @@ def test_daily_stop_loss():
     calculated_allocations = restricted_fifty_fifty(df,loss_limit=0.001)
     
 
-    # Boolean to check if percent change less than -loss limit exist
+    # Boolean to check if loss > loss limit exist
     stop_loss_triggered=False
     prev_alloc=0
     prev_price=0
     for index, row in calculated_allocations.iterrows():
         price_change=row.price-prev_price
         loss= -price_change*prev_alloc
-        if loss>0.001 or stop_loss_triggered:
+        if loss>0.001:
             assert row.allocation==0.0
             stop_loss_triggered=True
         else:
@@ -107,14 +107,15 @@ def test_multiple_restrictions():
     calculated_allocations = restricted_fifty_fifty(df, allocation_lower_limit=0.0, allocation_upper_limit=0.25, loss_limit=0.001)
    
 
-    # Boolean to check if percent change less than -loss limit exist
+    
     prev_alloc=0
     prev_price=0
+    # Boolean to trigger stop_loss if loss> loss limit exist
     stop_loss_triggered = False
     for index, row in calculated_allocations.iterrows():
         price_change=row.price-prev_price
         loss= -price_change*prev_alloc
-        if loss>0.001 or stop_loss_triggered:
+        if loss>0.001:
             assert row.allocation==0.0
             stop_loss_triggered = True
         else:
@@ -122,6 +123,5 @@ def test_multiple_restrictions():
         prev_alloc=row.allocation
         prev_price=row.price
   
-    
     assert stop_loss_triggered
      
