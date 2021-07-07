@@ -374,6 +374,96 @@ class ReturnsFromPositions(TransformerMixin, BaseEstimator):
         return X_1
 
 
+def limit_allocation(
+    dataframe: pd.DataFrame, allocation_lower_limit: Union[int, float], allocation_upper_limit: Union[int, float]
+) -> pd.DataFrame:
+    """
+    This function limits the ranges by limiting upper and lower limit of allocated values
+
+    params:
+    allocated_dataframe
+    allocation_lower_limit: the lower limit for allocation values.
+    allocation_upper_limit: the upper limit for allocation values.
+
+    returns:
+    allocation limited dataframe
+    """
+    if allocation_lower_limit > allocation_upper_limit:
+        raise ValueError(
+            "The lower limit for allocation values should not be greater than the upper limit for" " allocation values."
+        )
+    dataframe.loc[
+        dataframe[PandasEnum.ALLOCATION.value] > allocation_upper_limit, PandasEnum.ALLOCATION.value
+    ] = allocation_upper_limit
+    dataframe.loc[
+        dataframe[PandasEnum.ALLOCATION.value] < allocation_lower_limit, PandasEnum.ALLOCATION.value
+    ] = allocation_lower_limit
+    return dataframe
+
+
+def daily_stop_loss(dataframe: pd.DataFrame, loss_limit: float) -> pd.DataFrame:
+    """
+    This function calculates loss and limit the allocation accordingly.
+    It restricts allocation to 0 if loss>loss_limit
+
+    params:
+    allocated_dataframe
+    loss_limit
+
+    returns:
+    dataframe
+    """
+
+    prev_alloc = 0
+    prev_price = 0
+    stop_loss_has_triggered = False
+    for index, row in dataframe.iterrows():
+        price_change = row.price - prev_price
+        loss = -price_change * prev_alloc
+        if loss > loss_limit or stop_loss_has_triggered:
+            stop_loss_has_triggered=True
+            row.allocation = 0
+        prev_alloc = row.allocation
+        prev_price = row.price
+    return dataframe
+
+
+def restrict_allocation(allocation_function: callable) -> callable:
+    """
+    This function is intended to be used as a decorator that may apply one or more restrictions to functions that calculate
+    allocation values.
+    """
+
+    def restricted_function(*args, **kwargs) -> pd.DataFrame:
+
+        # Get allocation dataframe from allocation function
+        dataframe = allocation_function(*args, **kwargs)
+
+        # Restriction by limiting allocations between range
+
+        # initialize limits
+        allocation_lower_limit = 0
+        allocation_upper_limit = 1
+
+        if "allocation_lower_limit" in kwargs:
+            allocation_lower_limit = kwargs.get("allocation_lower_limit")
+            dataframe = limit_allocation(dataframe, allocation_lower_limit, allocation_upper_limit)
+
+        if "allocation_lower_limit" in kwargs:
+            allocation_upper_limit = kwargs.get("allocation_upper_limit")
+            dataframe = limit_allocation(dataframe, allocation_lower_limit, allocation_upper_limit)
+
+        # Restriction by daily stop loss
+        loss_limit = None
+        if "loss_limit" in kwargs:
+            loss_limit = kwargs.get("loss_limit")
+            dataframe = daily_stop_loss(dataframe, loss_limit)
+
+        return dataframe
+
+    return restricted_function
+
+
 def scikit_allocation_factory(allocation_function: callable) -> FunctionTransformer:
     """This function creates a SciKit Learn compatible Transformer embedding the position calculation.
 
