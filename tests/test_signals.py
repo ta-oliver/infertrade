@@ -21,22 +21,38 @@ Unit tests for signals
 """
 from numpy import NaN, sign
 import pandas as pd
-from ta.trend import macd
+from ta.trend import macd, sma_indicator, wma_indicator
 import infertrade.algos.community.signals as signals
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
+
+df=simulated_market_data_4_years_gen()
+
+def test_SMA():
+    """Tests for simple moving average"""
+    window=10
+    SMA=sma_indicator(df["close"], window)
+    df_with_signal=signals.simple_moving_average(df, window)
+    assert pd.Series.equals(SMA,df_with_signal["signal"])
+
+def test_WMA():
+    """Tests for weighted moving average"""
+    window=10
+    WMA=wma_indicator(df["close"],window=window)
+    df_with_signal=signals.weighted_moving_average(df,window)
+    assert pd.Series.equals(WMA, df_with_signal["signal"])
+
 def test_MACD():
-    
-    df=simulated_market_data_4_years_gen()
+    """Tests for moving average convergence divergence"""
     long_period=26
     short_period=12
     MACD= macd(df["close"], long_period, short_period)
-    df=signals.moving_average_convergence_divergence(df, short_period, long_period)
+    df_with_signal=signals.moving_average_convergence_divergence(df, short_period, long_period)
     
     #avoiding comparison with nan
     starting_point=long_period-1
 
-    assert pd.Series.equals(MACD[starting_point:],df["signal"][starting_point:])
+    assert pd.Series.equals(MACD[starting_point:],df_with_signal["signal"][starting_point:])
 
 
     

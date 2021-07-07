@@ -79,8 +79,9 @@ def moving_average_convergence_divergence(df: pd.DataFrame, short_period: int = 
     The MACD is usually calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA.
     
     """
-    ewma_26 = exponentially_weighted_moving_average(df , window = 26).copy()
-    ewma_12 = exponentially_weighted_moving_average(df, window= 12).copy()
+    #ewma for two different spans
+    ewma_26 = exponentially_weighted_moving_average(df , window = long_period).copy()
+    ewma_12 = exponentially_weighted_moving_average(df, window= short_period).copy()
 
     # MACD calculation
     macd = ewma_12["signal"]-ewma_26["signal"]
