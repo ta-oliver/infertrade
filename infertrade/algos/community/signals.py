@@ -62,7 +62,7 @@ def weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     Weighted moving averages assign a heavier weighting to more current data points since they are more relevant than data points in the distant past. 
     """
     weights = np.arange(1, window+1)
-    weights /= weights.sum()
+    weights = weights/ weights.sum()
     df["signal"] = df["close"].rolling(window=window).apply(lambda a: a.mul(weights).sum())
     return df
 
@@ -73,21 +73,21 @@ def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 1) -> 
     df["signal"] = df["close"].ewm(span=window, adjust=False).mean()
     return df
 
-def moving_average_convergence_divergence(df: pd.DataFrame) -> pd.DataFrame:
+def moving_average_convergence_divergence(df: pd.DataFrame, short_period: int = 12, long_period: int = 26) -> pd.DataFrame:
     """
     This function is a trend-following momentum indicator that shows the relationship between two moving averages at different windows:
     The MACD is usually calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA.
     
     """
-    ewma_26 = exponentially_weighted_moving_average(df , window = 26)
-    ewma_12 = exponentially_weighted_moving_average(df, window= 12)
+    ewma_26 = exponentially_weighted_moving_average(df , window = 26).copy()
+    ewma_12 = exponentially_weighted_moving_average(df, window= 12).copy()
 
     # MACD calculation
     macd = ewma_12["signal"]-ewma_26["signal"]
 
     # convert MACD into signal
-    df["signal"]= macd.ewm(span=9, adjust=False).mean()
-
+    #df["signal"]= macd.ewm(span=9, adjust=False).mean()
+    df["signal"]=macd
 
     return df
 
@@ -144,7 +144,7 @@ infertrade_export_signals = {
         "parameters": {},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L28"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L31"
         },
     },
     "high_low_diff": {
@@ -152,7 +152,7 @@ infertrade_export_signals = {
         "parameters": {},
         "series": ["high", "low"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L39"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L42"
         },
     },
     "high_low_diff_scaled": {
@@ -160,7 +160,7 @@ infertrade_export_signals = {
         "parameters": {"amplitude": 1.0},
         "series": ["high", "low"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L45"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L153"
         },
     },
     "simple_moving_average": {
@@ -168,7 +168,7 @@ infertrade_export_signals = {
         "parameters": {"window": 1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L45"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L158"
         },
     },
     "weighted_moving_average": {
@@ -176,7 +176,7 @@ infertrade_export_signals = {
         "parameters": {"window": 1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L45"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L60"
         },
     },
     "exponentially_weighted_moving_average": {
@@ -184,15 +184,15 @@ infertrade_export_signals = {
         "parameters": {"window": 1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L45"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L69"
         },
     },
     "moving_average_convergence_divergence": {
         "function": moving_average_convergence_divergence,
-        "parameters": {},
+        "parameters": {"short_period": 12, "long_period": 26},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L45"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L76"
         },
     },
     "chande_kroll": {
@@ -200,7 +200,7 @@ infertrade_export_signals = {
         "parameters": {"average_true_range_periods": 10, "average_true_range_multiplier": 1.0, "stop_periods": 9},
         "series": ["high", "low"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/df1f6f058b38e0ff9ab1250bb43ffb220b3a4725/infertrade/algos/community/signals.py#L55"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L95"
         },
     },
 }
