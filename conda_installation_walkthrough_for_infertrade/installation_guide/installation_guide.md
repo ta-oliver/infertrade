@@ -94,7 +94,7 @@ pip install seaborn
 
 pip install jupyter notebook
 
-Jupter notebook
+jupyter notebook
 
 ```
 
@@ -103,4 +103,3 @@ Jupter notebook
 In case you are new to Jupyter notebook the link below will take you to their website where you can find more documentation on how to use it.
 
 [Jupyter](https://jupyter.org "jupyter")
-
