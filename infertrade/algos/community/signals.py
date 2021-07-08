@@ -111,6 +111,16 @@ def relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
     df["signal"] = RSI
     return df
 
+def stochastic_relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
+    """
+    This function applies the Stochastic oscillator formula to a set of relative strength index (RSI) values rather than to standard price data.
+    
+    """
+    RSI=relative_strength_index(df, window)["signal"]
+    stochRSI  = (RSI - RSI.rolling(window).min()) / (RSI.rolling(window).max() - RSI.rolling(window).min())
+    df["signal"]=stochRSI
+    return df
+
 
 def chande_kroll(
     df: pd.DataFrame,
@@ -220,7 +230,15 @@ infertrade_export_signals = {
         "parameters": {"window": 14},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L76"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L100"
+        },
+    },
+    "stochastic_relative_strength_index": {
+        "function": stochastic_relative_strength_index,
+        "parameters": {"window": 14},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L114"
         },
     },
     "chande_kroll": {
@@ -228,7 +246,7 @@ infertrade_export_signals = {
         "parameters": {"average_true_range_periods": 10, "average_true_range_multiplier": 1.0, "stop_periods": 9},
         "series": ["high", "low"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L95"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L125"
         },
     },
 }

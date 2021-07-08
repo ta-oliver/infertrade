@@ -22,7 +22,7 @@ Unit tests for signals
 from numpy import NaN, sign
 import pandas as pd
 from ta.trend import macd, macd_signal, sma_indicator, wma_indicator
-from ta.momentum import rsi
+from ta.momentum import rsi, stochrsi
 import infertrade.algos.community.signals as signals
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
@@ -58,3 +58,11 @@ def test_RSI():
     RSI=rsi(df["close"], window=window)
     df_with_signal=signals.relative_strength_index(df, window)
     assert (RSI.round(5), df_with_signal["signal"].round(5))
+
+    stochRSI=stochrsi(df["close"],window)
+    df_with_signal=signals.stochastic_relative_strength_index(df, window)
+    assert (stochRSI.round(5),df_with_signal["signal"].round(5))
+
+
+
+
