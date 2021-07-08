@@ -62,7 +62,7 @@ AFTER INSTALLING ANACONDA
 
 * Step 11: pip install Jupyter notebook
 
-* Step 12: Open Jupyter notebook in you're activated virtual environment by running the command in anaconda prompt  (Jupyter notebook)
+* Step 12: Open [Jupyter notebook](https://jupyter.org/) in your activated virtual environment by running the command in the Anaconda prompt: `jupyter notebook`
 
 **Congratulations! You are all set to use your virtual environment with Infertrade.**
 
