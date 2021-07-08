@@ -55,7 +55,7 @@ AFTER INSTALLING ANACONDA
 
 * Step12: Open jupyter notebook in activated virtual environment by running the command in anaconda prompt  (jupyter notebook)
 
-**Congratulation’s! You are all set to work with virtual environment having infertrade.**
+**Congratulations! You are all set to work with virtual environment with the infertrade package.**
 
 Below, we have shown how the above steps in more specified way. Run the code one by one.
 
