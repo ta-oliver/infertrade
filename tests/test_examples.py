@@ -113,20 +113,24 @@ def test_pipeline_signal_to_position():
 def test_readme_example_one():
     """Example of signal generation from time series via simple function"""
     signal_transformer = scikit_signal_factory(normalised_close)
-    signal_transformer.fit_transform(simulated_market_data_4_years_gen())
+    df = signal_transformer.fit_transform(simulated_market_data_4_years_gen())
+    assert isinstance(df, pd.DataFrame)
 
 
 def test_readme_example_one_external():
     """Example of signal generation from time series via simple function"""
     adapted_aroon = ta_adaptor(AroonIndicator, "aroon_down", window=1)
     signal_transformer = scikit_signal_factory(adapted_aroon)
-    signal_transformer.fit_transform(simulated_market_data_4_years_gen())
+    df = signal_transformer.fit_transform(simulated_market_data_4_years_gen())
+    assert isinstance(df, pd.DataFrame)
 
 
 def test_readme_example_two():
     """Example of position calculation from simple position function"""
     position_transformer = scikit_allocation_factory(constant_allocation_size)
-    position_transformer.fit_transform(simulated_market_data_4_years_gen())
+    df = position_transformer.fit_transform(simulated_market_data_4_years_gen())
+    assert isinstance(df, pd.DataFrame)
+
 
 
 def test_readme_example_three():
@@ -134,7 +138,8 @@ def test_readme_example_three():
     pipeline = make_pipeline(
         scikit_signal_factory(normalised_close), PricePredictionFromSignalRegression(), PositionsFromPricePrediction()
     )
-    pipeline.fit_transform(simulated_market_data_4_years_gen())
+    df = pipeline.fit_transform(simulated_market_data_4_years_gen())
+    assert isinstance(df, pd.DataFrame)
 
 
 def test_readme_example_four():
@@ -143,7 +148,8 @@ def test_readme_example_four():
     pipeline = make_pipeline(
         scikit_signal_factory(adapted_aroon), PricePredictionFromSignalRegression(), PositionsFromPricePrediction()
     )
-    pipeline.fit_transform(simulated_market_data_4_years_gen())
+    df = pipeline.fit_transform(simulated_market_data_4_years_gen())
+    assert isinstance(df, pd.DataFrame)
 
 
 def test_pipeline_approach_matches_two_stage():
