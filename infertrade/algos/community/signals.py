@@ -78,7 +78,7 @@ def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 1) -> 
 
 
 def moving_average_convergence_divergence(
-    df: pd.DataFrame, short_period: int = 12, long_period: int = 26
+    df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int = 9
 ) -> pd.DataFrame:
     """
     This function is a trend-following momentum indicator that shows the relationship between two moving averages at different windows:
@@ -93,9 +93,22 @@ def moving_average_convergence_divergence(
     macd = ewma_12["signal"] - ewma_26["signal"]
 
     # convert MACD into signal
-    # df["signal"]= macd.ewm(span=9, adjust=False).mean()
-    df["signal"] = macd
+    df["signal"] = macd.ewm(span=window_signal, adjust=False).mean()
+    return df
 
+
+def relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
+    """
+    This function measures the magnitude of recent price changes to evaluate overbought or oversold conditions in the price.
+    """
+    daily_difference = df["close"].diff()
+    gain = daily_difference.clip(lower=0)
+    loss = -daily_difference.clip(upper=0)
+    average_gain = gain.ewm(com=window - 1).mean()
+    average_loss = loss.ewm(com=window - 1).mean()
+    RS = average_gain / average_loss
+    RSI = 100 - 100 / (1 + RS)
+    df["signal"] = RSI
     return df
 
 
@@ -197,6 +210,14 @@ infertrade_export_signals = {
     "moving_average_convergence_divergence": {
         "function": moving_average_convergence_divergence,
         "parameters": {"short_period": 12, "long_period": 26},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L76"
+        },
+    },
+    "relative_strength_index": {
+        "function": relative_strength_index,
+        "parameters": {"window": 14},
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L76"

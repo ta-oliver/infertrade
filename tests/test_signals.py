@@ -21,7 +21,8 @@ Unit tests for signals
 """
 from numpy import NaN, sign
 import pandas as pd
-from ta.trend import macd, sma_indicator, wma_indicator
+from ta.trend import macd, macd_signal, sma_indicator, wma_indicator
+from ta.momentum import rsi
 import infertrade.algos.community.signals as signals
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
@@ -46,14 +47,14 @@ def test_MACD():
     """Tests for moving average convergence divergence"""
     long_period=26
     short_period=12
-    MACD= macd(df["close"], long_period, short_period)
-    df_with_signal=signals.moving_average_convergence_divergence(df, short_period, long_period)
-    
-    #avoiding comparison with nan
-    starting_point=long_period-1
+    window_signal=9
+    MACD= macd_signal(df["close"], long_period, short_period,window_signal,fillna=True)
+    df_with_signal=signals.moving_average_convergence_divergence(df, short_period=short_period, long_period=long_period, window_signal=window_signal)
+    assert pd.Series.equals(MACD,df_with_signal["signal"])
 
-    assert pd.Series.equals(MACD[starting_point:],df_with_signal["signal"][starting_point:])
-
-
-    
-    
+def test_RSI():
+    """Tests for Relative Strength Index"""
+    window=14
+    RSI=rsi(df["close"], window=window)
+    df_with_signal=signals.relative_strength_index(df, window)
+    assert (RSI.round(5), df_with_signal["signal"].round(5))
