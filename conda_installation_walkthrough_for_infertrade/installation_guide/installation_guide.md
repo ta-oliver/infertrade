@@ -11,7 +11,7 @@
 * If you work with Data or Machine Learning then you might be fond of Anaconda software. It is great as it provides a flexible environment which makes your job faster and easier.
 
 * Let’s say, you already have multiple versions of python installed and you want to use Python 3.7x for our product but currently, you are using python 3.9x in your project. In that case. You will experience some difficulties in creating a virtual environment with Python 3.7x using virtualenv, venv or any other tool except Conda. 
-* In case you somehow manage to install it without using Conda you might still experience problems while installing some of the dependencies.
+* If you install it without using Conda or virtualvenv you might still experience problems while aligning some of the dependencies.
 * So, how can deal with this kind of problem?
 
    -You can get around this issue by using Conda to create a virtual environment that will help install the required Python version.-
