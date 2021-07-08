@@ -50,21 +50,24 @@ def high_low_diff_scaled(df: pd.DataFrame, amplitude: float = 1) -> pd.DataFrame
     df["signal"] = (df["high"] - max(df["low"])) * amplitude
     return df
 
+
 def simple_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     """
     Calculates smooth signal based on price trends by filtering out the noise from random short-term price fluctuations
     """
-    df['signal'] = df["close"].rolling(window=window).mean()
+    df["signal"] = df["close"].rolling(window=window).mean()
     return df
+
 
 def weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     """
-    Weighted moving averages assign a heavier weighting to more current data points since they are more relevant than data points in the distant past. 
+    Weighted moving averages assign a heavier weighting to more current data points since they are more relevant than data points in the distant past.
     """
-    weights = np.arange(1, window+1)
-    weights = weights/ weights.sum()
+    weights = np.arange(1, window + 1)
+    weights = weights / weights.sum()
     df["signal"] = df["close"].rolling(window=window).apply(lambda a: a.mul(weights).sum())
     return df
+
 
 def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     """
@@ -73,22 +76,25 @@ def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 1) -> 
     df["signal"] = df["close"].ewm(span=window, adjust=False).mean()
     return df
 
-def moving_average_convergence_divergence(df: pd.DataFrame, short_period: int = 12, long_period: int = 26) -> pd.DataFrame:
+
+def moving_average_convergence_divergence(
+    df: pd.DataFrame, short_period: int = 12, long_period: int = 26
+) -> pd.DataFrame:
     """
     This function is a trend-following momentum indicator that shows the relationship between two moving averages at different windows:
     The MACD is usually calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA.
-    
+
     """
-    #ewma for two different spans
-    ewma_26 = exponentially_weighted_moving_average(df , window = long_period).copy()
-    ewma_12 = exponentially_weighted_moving_average(df, window= short_period).copy()
+    # ewma for two different spans
+    ewma_26 = exponentially_weighted_moving_average(df, window=long_period).copy()
+    ewma_12 = exponentially_weighted_moving_average(df, window=short_period).copy()
 
     # MACD calculation
-    macd = ewma_12["signal"]-ewma_26["signal"]
+    macd = ewma_12["signal"] - ewma_26["signal"]
 
     # convert MACD into signal
-    #df["signal"]= macd.ewm(span=9, adjust=False).mean()
-    df["signal"]=macd
+    # df["signal"]= macd.ewm(span=9, adjust=False).mean()
+    df["signal"] = macd
 
     return df
 

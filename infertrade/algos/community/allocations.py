@@ -236,15 +236,15 @@ def buy_golden_cross_sell_death_cross(
     df: pd.DataFrame,
     allocation_size: float = 0.5,
     deallocation_size: float = 0.5,
-    short_term_moving_avg_length: int = 50, 
-    long_term_moving_avg_length: int = 200, 
+    short_term_moving_avg_length: int = 50,
+    long_term_moving_avg_length: int = 200,
 ) -> pd.DataFrame:
     """
     This trading rule allocates specified percentage of strategy budget to asset when there is a golden cross
-    and deallocates specified percentage of strategy budget from asset when there is a death cross. 
+    and deallocates specified percentage of strategy budget from asset when there is a death cross.
 
     Allocation and deallocation percentages specified in the parameters. Moving average lengths also
-    specified in the parameters. 
+    specified in the parameters.
 
     parameters:
     allocation_size: The percentage of strategy budget to be allocated to asset upon golden cross
@@ -255,11 +255,11 @@ def buy_golden_cross_sell_death_cross(
 
     short_term_df = df["price"].rolling(short_term_moving_avg_length).mean()
     long_term_df = df["price"].rolling(long_term_moving_avg_length).mean()
-    
+
     for i in range(long_term_moving_avg_length + 1, len(df["price"])):
-        if short_term_df[i] >= long_term_df[i] and short_term_df[i-1] < long_term_df[i-1]:
+        if short_term_df[i] >= long_term_df[i] and short_term_df[i - 1] < long_term_df[i - 1]:
             df.at[i, "allocation"] = allocation_size
-        elif short_term_df[i] <= long_term_df[i] and short_term_df[i-1] > long_term_df[i-1]:
+        elif short_term_df[i] <= long_term_df[i] and short_term_df[i - 1] > long_term_df[i - 1]:
             df.at[i, "allocation"] = -deallocation_size
 
     return df
