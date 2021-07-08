@@ -59,6 +59,7 @@ def test_RSI():
     df_with_signal=signals.relative_strength_index(df, window)
     assert (RSI.round(5), df_with_signal["signal"].round(5))
 
+    # Test for stochastic RSI
     stochRSI=stochrsi(df["close"],window)
     df_with_signal=signals.stochastic_relative_strength_index(df, window)
     assert (stochRSI.round(5),df_with_signal["signal"].round(5))

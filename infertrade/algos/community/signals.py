@@ -111,16 +111,16 @@ def relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
     df["signal"] = RSI
     return df
 
+
 def stochastic_relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
     """
     This function applies the Stochastic oscillator formula to a set of relative strength index (RSI) values rather than to standard price data.
-    
-    """
-    RSI=relative_strength_index(df, window)["signal"]
-    stochRSI  = (RSI - RSI.rolling(window).min()) / (RSI.rolling(window).max() - RSI.rolling(window).min())
-    df["signal"]=stochRSI
-    return df
 
+    """
+    RSI = relative_strength_index(df, window)["signal"]
+    stochRSI = (RSI - RSI.rolling(window).min()) / (RSI.rolling(window).max() - RSI.rolling(window).min())
+    df["signal"] = stochRSI
+    return df
 
 def chande_kroll(
     df: pd.DataFrame,
