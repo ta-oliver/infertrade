@@ -1,66 +1,75 @@
 ![](images/infertrade_logo.png)
 
+
+
 # Welcome!
 
-**New to Anaconda environment , Not a problem. It is a great start. Let's look in berief about about Anaconda Software.**
+**New to Anaconda?**
+**No problem, let's take a brief look into it**
 
-### What made us in Infertrade to make a documentation on this ?
-* If you are dealing with data_science, Machine Learing then you might be found of Anaconda software. It is awesome as it provides flexible environment to make your job easy and fast.
+### Why would the team at Infertrade make documentation regarding this?
+* If you work with Data or Machine Learning then you might be fond of Anaconda software. It is great as it provides a flexible environment which makes your job faster and easier.
 
-* Let’s say, you have already multiple versions of python installed and you want to use python 3.7x for our product but Currently you are using python 3.9x in your project then you will find some difficulties in making virtual environment with python 3.7x using virtualenv , venv or any other any other tool except conda. In case, 
-somehow you will manage to install without using conda but there might be again a problem while installing some of the dependencies. So, how to deal with this kind of 
-situation?
+* Let’s say, you already have multiple versions of python installed and you want to use Python 3.7x for our product but currently, you are using python 3.9x in your project. In that case. You will experience some difficulties in creating a virtual environment with Python 3.7x using virtualenv, venv or any other tool except Conda. 
+* If you install it without using Conda or virtualvenv you might still experience problems while aligning some of the dependencies.
+* So, how can deal with this kind of problem?
 
-   _The answer is using conda to create virtual environment that help us to install required python version for us._ 
+   -You can get around this issue by using Conda to create a virtual environment that will help install the required Python version.-
 
-* Once you are familiar with Anaconda Software and conda package manager we will make virtual environment required for our software.
+* Once you are familiar with Anaconda Software and the Conda package manager we will make a virtual environment required for our software.
 
 
-**Conda is a package manager for Anaconda prompt. Anaconda propmt and Conda is installed along with anaconda software i.e. they dont need seperate installation.**
+**Conda is a package manager for Anaconda prompt which is installed alongside Conda and Anaconda Software meaning that they don't need to be installed separately.**
 
 * Anaconda is a distribution of the Python and R programming languages for scientific computing, that aims to simplify package management and deployment.
 
-* The distribution includes data-science packages suitable for Windows, Linux, and macOS.
+* The distribution includes data science packages suitable for Windows, Linux, and macOS.
 
-* Anaconda prompt is like command prompt through which we can install and manage data science libraries using conda pacakge manager.
+* Anaconda prompt is a terminal similar to a command prompt through which we can install and manage data science libraries using the Conda package manager.
 
-*You can install anaconda for your system from the link below:*
-[Anaconda Installation](https://www.anaconda.com/products/individual "Install anaconda")
+*You can download and install Anaconda from the link below:*
+[Anaconda Download](https://www.anaconda.com/products/individual "Install anaconda")
 
 AFTER INSTALLING ANACONDA
 
-*Below is the link to conda guide for dealing with conda virtual environment.*
+*Below is the link to a Conda guide used for dealing with the virtual environment provided by Conda.*
 
 [conda-cheatSheet](https://docs.conda.io/projects/conda/en/4.6.0/_downloads/52a95608c49671267e40c689e0bc00ca/conda-cheatsheet.pdf "conda-cheatsheet")
 
-**Let’s create a virtual environment having python 3.7x using conda with virtual environment name – infertradenv. You are always free to give the name of your choice.**
+**Let’s create a virtual environment with python 3.7x using Conda, we went with the name – "infertradenv", but are always free to set the name of your choice.**
 
-* Step1: Open Anaconda prompt and make your way to desire drive (probably C drive).
-*  Step2: make a sub folder “infertrade” in user’s folder then cd infertrade.
-* Step3: conda create --name infertradenv python = 3.7
-* Step4: conda env list
-* Step5: conda activate infertradenv
-* Step6: python --version
+* Step 1: Open Anaconda prompt and navigate to your desired drive.
 
-   *  make sure you have python 3.7x.
-* Step7: curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+* Step 2: Make a sub folder called “infertrade” in your user’s folder, and then use the cd infertrade command.
 
-* Step8: py get-pip.py
+# Follow the commands used in the following steps
 
-* Step9: pip install infertrade
+* Step 3: conda create --name infertradenv python = 3.7
 
-* Step10: pip install seaborn
+* Step 4: conda env list
 
-* Step11: pip install jupyter notebook
+* Step 5: conda activate infertradenv
 
-* Step12: Open jupyter notebook in activated virtual environment by running the command in anaconda prompt  (jupyter notebook)
+* Step 6: python --version - This is to make sure you are using python 3.7
 
-**Congratulations! You are all set to work with virtual environment with the infertrade package.**
+* Step 7: curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 
-Below, we have shown how the above steps in more specified way. Run the code one by one.
+* Step 8: py get-pip.py
 
-```Anaconda promt
-Open anaconda propmt
+* Step 9: pip install infertrade
+
+* Step 10: pip install seaborn
+
+* Step 11: pip install Jupyter notebook
+
+* Step 12: Open [Jupyter notebook](https://jupyter.org/) in your activated virtual environment by running the command in the Anaconda prompt: `jupyter notebook`
+
+**Congratulations! You are all set to use your virtual environment with Infertrade.**
+
+The following text is a representation of the installation process within Anaconda prompt.
+
+```Anaconda prompt
+Open anaconda prompt
 c:users\<user_name>
 
 #codes are listed below:
@@ -85,11 +94,12 @@ pip install seaborn
 
 pip install jupyter notebook
 
-jupter notebook
+jupyter notebook
 
 ```
 
-**From opened jupyter notebook run our example.ipynb file to experince infertrade package.**
+**After opening Jupyter notebook run our "example.ipynb" file to use Infertrade.**
 
-If you are new to jupyter notebook you can check the link below:
+In case you are new to Jupyter notebook the link below will take you to their website where you can find more documentation on how to use it.
+
 [Jupyter](https://jupyter.org "jupyter")
