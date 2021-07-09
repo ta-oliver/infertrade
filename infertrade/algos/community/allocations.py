@@ -267,6 +267,9 @@ def buy_golden_cross_sell_death_cross(
     return df
 
 def SMA_strategy(df: pd.DataFrame, window: int) -> pd.DataFrame:
+    """
+    Simple simple moving average strategy which buys when price is above signal and sells when price is below signal
+    """
     SMA=sma_indicator(df["price"],window=window)
     
     price_above_signal = df["price"] > SMA
@@ -277,6 +280,10 @@ def SMA_strategy(df: pd.DataFrame, window: int) -> pd.DataFrame:
     return df
 
 def WMA_strategy(df: pd.DataFrame, window: int) -> pd.DataFrame:
+
+    """
+    Simple Weighted moving average strategy which buys when price is above signal and sells when price is below signal
+    """
     WMA=wma_indicator(df["price"],window=window)
     
     price_above_signal = df["price"] > WMA
@@ -287,19 +294,17 @@ def WMA_strategy(df: pd.DataFrame, window: int) -> pd.DataFrame:
     return df
 
 def MACD_strategy(df: pd.DataFrame, long_period: int, short_period: int = 12, window_signal: int = 26) -> pd.DataFrame:
+    """
+    Moving average convergence divergence strategy which buys when MACD signal is above 0 and sells when MACD signal is below zero
+    """
     MACD_signal = macd_signal(df["price"], long_period, short_period, window_signal, fillna=True)
     
     signal_above_zero_line = MACD_signal>0
-    signal_below_zero_line = MACD_signal<0
+    signal_below_zero_line = MACD_signal<=0
 
     df.loc[signal_above_zero_line, PandasEnum.ALLOCATION.value] = 1.0
     df.loc[signal_below_zero_line, PandasEnum.ALLOCATION.value] = -1.0
     return df
-
-
-
-
-
 
 infertrade_export_allocations = {
     "fifty_fifty": {
