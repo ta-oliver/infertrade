@@ -22,6 +22,8 @@ import numpy as np
 import pandas as pd
 from infertrade.PandasEnum import PandasEnum
 import infertrade.algos.community.signals
+from ta.trend import macd_signal, sma_indicator, wma_indicator
+from ta.momentum import rsi, stochrsi
 
 
 def fifty_fifty(dataframe) -> pd.DataFrame:
@@ -263,6 +265,40 @@ def buy_golden_cross_sell_death_cross(
             df.at[i, "allocation"] = -deallocation_size
 
     return df
+
+def SMA_strategy(df: pd.DataFrame, window: int) -> pd.DataFrame:
+    SMA=sma_indicator(df["price"],window=window)
+    
+    price_above_signal = df["price"] > SMA
+    price_below_signal = df["price"] <= SMA
+
+    df.loc[price_above_signal, PandasEnum.ALLOCATION.value] = 1.0
+    df.loc[price_below_signal, PandasEnum.ALLOCATION.value] = -1.0
+    return df
+
+def WMA_strategy(df: pd.DataFrame, window: int) -> pd.DataFrame:
+    WMA=wma_indicator(df["price"],window=window)
+    
+    price_above_signal = df["price"] > WMA
+    price_below_signal = df["price"] <= WMA
+
+    df.loc[price_above_signal, PandasEnum.ALLOCATION.value] = 1.0
+    df.loc[price_below_signal, PandasEnum.ALLOCATION.value] = -1.0
+    return df
+
+def MACD_strategy(df: pd.DataFrame, long_period: int, short_period: int = 12, window_signal: int = 26) -> pd.DataFrame:
+    MACD_signal = macd_signal(df["price"], long_period, short_period, window_signal, fillna=True)
+    
+    signal_above_zero_line = MACD_signal>0
+    signal_below_zero_line = MACD_signal<0
+
+    df.loc[signal_above_zero_line, PandasEnum.ALLOCATION.value] = 1.0
+    df.loc[signal_below_zero_line, PandasEnum.ALLOCATION.value] = -1.0
+    return df
+
+
+
+
 
 
 infertrade_export_allocations = {

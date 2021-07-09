@@ -122,6 +122,7 @@ def stochastic_relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd
     df["signal"] = stochRSI
     return df
 
+
 def chande_kroll(
     df: pd.DataFrame,
     average_true_range_periods: int = 10,
