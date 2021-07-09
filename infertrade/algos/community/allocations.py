@@ -322,22 +322,6 @@ def RSI_strategy(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
     df.loc[(not under_valued) and (not over_valued), PandasEnum.ALLOCATION.value] = 0.0
     return df
 
-def RSI_strategy(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
-    """
-    Relative Strength Strategy
-    """
-    # https://www.investopedia.com/terms/r/rsi.asp
-    RSI=rsi(df["price"], window=window)
-    
-    over_valued = RSI>=70
-    under_valued = RSI<=30
-
-
-    df.loc[over_valued, PandasEnum.ALLOCATION.value] = -1.0
-    df.loc[under_valued, PandasEnum.ALLOCATION.value] = 1.0
-    df.loc[(not under_valued) and (not over_valued), PandasEnum.ALLOCATION.value] = 0.0
-    return df
-
 def stochastic_RSI_strategy(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
     """
     Stochastic Relative Strength Index Strategy
@@ -448,36 +432,47 @@ infertrade_export_allocations = {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L215"
         },
     },
-    "level_and_change_regression": {
-        "function": level_and_change_regression,
-        "parameters": {"level_coefficient": 0.1, "change_coefficient": 0.1, "level_and_change_constant": 0.1},
-        "series": ["research"],
+    "SMA_strategy": {
+        "function": SMA_strategy,
+        "parameters": {"window": 1},
+        "series": ["price"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L215"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L269"
         },
     },
-    "level_and_change_regression": {
-        "function": level_and_change_regression,
-        "parameters": {"level_coefficient": 0.1, "change_coefficient": 0.1, "level_and_change_constant": 0.1},
-        "series": ["research"],
+    
+    "WMA_strategy": {
+        "function": WMA_strategy,
+        "parameters": {"window": 1},
+        "series": ["price"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L215"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L282"
         },
     },
-    "level_and_change_regression": {
-        "function": level_and_change_regression,
-        "parameters": {"level_coefficient": 0.1, "change_coefficient": 0.1, "level_and_change_constant": 0.1},
-        "series": ["research"],
+
+    "MACD_strategy": {
+        "function": MACD_strategy,
+        "parameters": {"short_period": 12, "long_period": 26, "windows_signal": 9},
+        "series": ["price"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L215"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L296"
         },
     },
-    "level_and_change_regression": {
-        "function": level_and_change_regression,
-        "parameters": {"level_coefficient": 0.1, "change_coefficient": 0.1, "level_and_change_constant": 0.1},
-        "series": ["research"],
+    "RSI_strategy": {
+        "function": RSI_strategy,
+        "parameters": {"window": 14},
+        "series": ["price"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L215"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L309"
         },
     },
+    "stochastic_RSI_strategy": {
+        "function": stochastic_RSI_strategy,
+        "parameters": {"window": 14},
+        "series": ["price"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L325"
+        },
+    },
+    
 }
