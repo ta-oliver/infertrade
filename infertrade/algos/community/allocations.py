@@ -306,6 +306,54 @@ def MACD_strategy(df: pd.DataFrame, long_period: int, short_period: int = 12, wi
     df.loc[signal_below_zero_line, PandasEnum.ALLOCATION.value] = -1.0
     return df
 
+def RSI_strategy(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
+    """
+    Moving average convergence divergence strategy which buys when MACD signal is above 0 and sells when MACD signal is below zero
+    """
+    # https://www.investopedia.com/terms/r/rsi.asp
+    RSI=rsi(df["price"], window=window)
+    
+    over_valued = RSI>=70
+    under_valued = RSI<=30
+
+
+    df.loc[over_valued, PandasEnum.ALLOCATION.value] = -1.0
+    df.loc[under_valued, PandasEnum.ALLOCATION.value] = 1.0
+    df.loc[(not under_valued) and (not over_valued), PandasEnum.ALLOCATION.value] = 0.0
+    return df
+
+def RSI_strategy(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
+    """
+    Relative Strength Strategy
+    """
+    # https://www.investopedia.com/terms/r/rsi.asp
+    RSI=rsi(df["price"], window=window)
+    
+    over_valued = RSI>=70
+    under_valued = RSI<=30
+
+
+    df.loc[over_valued, PandasEnum.ALLOCATION.value] = -1.0
+    df.loc[under_valued, PandasEnum.ALLOCATION.value] = 1.0
+    df.loc[(not under_valued) and (not over_valued), PandasEnum.ALLOCATION.value] = 0.0
+    return df
+
+def stochastic_RSI_strategy(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
+    """
+    Stochastic Relative Strength Index Strategy
+    """
+    # https://www.investopedia.com/terms/s/stochrsi.asp
+
+    RSI=stochrsi(df["price"], window=window)
+    
+    over_valued = RSI>=0.8
+    under_valued = RSI<=0.2
+
+    df.loc[over_valued, PandasEnum.ALLOCATION.value] = -1.0
+    df.loc[under_valued, PandasEnum.ALLOCATION.value] = 1.0
+    df.loc[(not under_valued) and (not over_valued), PandasEnum.ALLOCATION.value] = 0.0
+    return df
+
 infertrade_export_allocations = {
     "fifty_fifty": {
         "function": fifty_fifty,
@@ -390,6 +438,38 @@ infertrade_export_allocations = {
         "series": ["research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L197"
+        },
+    },
+    "level_and_change_regression": {
+        "function": level_and_change_regression,
+        "parameters": {"level_coefficient": 0.1, "change_coefficient": 0.1, "level_and_change_constant": 0.1},
+        "series": ["research"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L215"
+        },
+    },
+    "level_and_change_regression": {
+        "function": level_and_change_regression,
+        "parameters": {"level_coefficient": 0.1, "change_coefficient": 0.1, "level_and_change_constant": 0.1},
+        "series": ["research"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L215"
+        },
+    },
+    "level_and_change_regression": {
+        "function": level_and_change_regression,
+        "parameters": {"level_coefficient": 0.1, "change_coefficient": 0.1, "level_and_change_constant": 0.1},
+        "series": ["research"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L215"
+        },
+    },
+    "level_and_change_regression": {
+        "function": level_and_change_regression,
+        "parameters": {"level_coefficient": 0.1, "change_coefficient": 0.1, "level_and_change_constant": 0.1},
+        "series": ["research"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L215"
         },
     },
     "level_and_change_regression": {
