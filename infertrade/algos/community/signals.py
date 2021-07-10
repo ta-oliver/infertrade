@@ -22,6 +22,7 @@ import pandas as pd
 import numpy as np
 from pandas.core.frame import DataFrame
 from sklearn.preprocessing import FunctionTransformer
+from ta.trend import macd_signal
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 from ta.volatility import AverageTrueRange
 from infertrade.algos.external.ta import ta_adaptor
