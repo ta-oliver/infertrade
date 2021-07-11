@@ -1,0 +1,24 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+\graphicspath{ {../images/} }
+
+
+\begin{document}
+\logo
+\rulename{Exponential Moving Average Trading Rule} %Argument is name of rule
+\tblofcontents
+
+\ruledescription{Gives a buy signal when the asset price closed above the EMA($\lookbacklength$) and gives a sell signal when the asset price closed below or lower than EMA($\lookbacklength$). The lookback length, $\lookbacklength$, determines how far back the rule looks.}
+
+\section{Equation}
+
+\ruleparameters
+{Window size}{50}{This is the number of time steps over which exponential contributions are sourced.}{$\lookbacklength$}
+\stoptable
+
+\keyterms
+\furtherlinks
+
+\end{document}
