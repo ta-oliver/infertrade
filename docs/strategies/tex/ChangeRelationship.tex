@@ -10,7 +10,6 @@
 \input{common_symbols_and_format.tex}%
 \usepackage{tocloft}%
 \renewcommand{\cfttoctitlefont}{\Large\bfseries}%
-\graphicspath{ {../images/} }
 %
 \begin{document}%
 \normalsize%
@@ -46,13 +45,13 @@ Similarly, a technical positioning indicator as a signal may be more likely to s
 \begin{figure}[H]
 \begin{subfigure}{0.48\textwidth}
 \centering
-    \includegraphics[width=0.9\linewidth, height=5cm]{Market_ResearchSeries_360_380.pdf}
+    \includegraphics[width=0.9\linewidth, height=5cm]{\graphdir{Market_ResearchSeries_360_380.pdf}}
     \caption{Comparison of the research value and the market price in USD for 240 days of trading.}
     \label{fig:20Days-Market_Research}
 \end{subfigure}\quad
 \begin{subfigure}{0.48\textwidth}
 \centering
-    \includegraphics[width=0.9\linewidth, height=5cm]{Market_ResearchValue_360_380.pdf}
+    \includegraphics[width=0.9\linewidth, height=5cm]{\graphdir{Market_ResearchValue_360_380.pdf}}
     \caption{Comparison of the market price in USD and the research value obtained for 240 days of trading.}
     \label{fig:20Days-Market_Research}
 \end{subfigure}
@@ -89,13 +88,13 @@ where $\position_\currenttime$ is the recommended strategy allocation at time $\
 
 \begin{figure}[H]
  \begin{subfigure}{0.48\textwidth}
-\includegraphics[width=0.9\linewidth, height=5cm]{Allocation_MarketSeries_360_380.pdf}
+\includegraphics[width=0.9\linewidth, height=5cm]{\graphdir{Allocation_MarketSeries_360_380.pdf}}
 \caption{Suggested allocation per day, this graph shows when and how to invest the total or a fraction of the initial holding, and how the market price is correlated with it.}
 \label{fig:02}
 \end{subfigure}
 \quad
 \begin{subfigure}{0.48\textwidth}
-\includegraphics[width=0.9\linewidth, height=5cm]{Allocation_ResearchValue_360_380.pdf}
+\includegraphics[width=0.9\linewidth, height=5cm]{\graphdir{Allocation_ResearchValue_360_380.pdf}}
 \caption{Suggested allocation per day and the research value of the change relationship trading rule, the suggested allocation is calculated based on the research value. So, both are correlated as shown in this figure. }
 \label{fig:04}
 \end{subfigure}
@@ -106,7 +105,7 @@ where $\position_\currenttime$ is the recommended strategy allocation at time $\
  \newpage
 \ruleparameters
 {Regression Length}{120}{This is the number of previous days used to estimate the regression coefficients.}{$\lookbacklength$}%
-\stoptable 
+\stoptable
 
 \vspace{1mm}
 \justify Note that rule parameters are fixed to their default values for this and any other relationships optimised on simplified mode. For estimating the regression coefficients, a rolling window is used, so that at time t, the regression data uses research data from time t-121 to t-1 to calculate 120 research changes as the regression's independent variable. Price data from t-120 to t is used to calculate 120 next day price changes as the regression's dependent variable. %Argument is rule description
