@@ -1,11 +1,10 @@
-  
 \documentclass{article}%
 \usepackage[T1]{fontenc}%
 \usepackage[utf8]{inputenc}%
 \usepackage{lmodern}%
 \usepackage{textcomp}%
 \usepackage{lastpage}%
-%
+
 \input{common_symbols_and_format.tex}%
 \usepackage{tocloft}%
 \renewcommand{\cfttoctitlefont}{\Large\bfseries}%
@@ -55,15 +54,14 @@
 }
 
 \ruleparameters{Kelly fraction}{1.0}{Amplitude weighting. 1.0 is maximum growth if regression is exact. <1.0 scales down positions taken.}{$\kellyfraction$}{Regression length}{50}{This is the number of days used to estimate the regression coefficients.}{$\lookbacklength$}%
-
-
 \stoptable%
 
 
 \section{Equation}
 The following equations describe the static level regression rule:
 
-\begin{equation} \label{eq:predictedPrice}
+\begin{equation}
+\label{eq:predictedPrice}
     \regressionprice_\currenttime= \amplitudecoefficient\research_\currenttime + \constantc 
 \end{equation}
 Using the equation (\ref{eq:predictedPrice}), it is possible to calculate the predicted price $\regressionprice_{\currenttime}$ at time $\currenttime$. 
