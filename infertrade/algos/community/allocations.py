@@ -21,7 +21,7 @@ Allocation algorithms are functions used to compute allocations - % of your port
 import numpy as np
 import pandas as pd
 from infertrade.PandasEnum import PandasEnum
-import infertrade.algos.community.signals
+import infertrade.algos.community.signals as signals
 from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator
 from ta.momentum import rsi, stochrsi
 
@@ -51,7 +51,7 @@ def chande_kroll_crossover_strategy(
     """
     # Calculate the Chande Kroll lines, which will be added to the DataFrame as columns named "chande_kroll_long" and
     # "chande_kroll_short".
-    dataframe = infertrade.algos.community.signals.chande_kroll(dataframe)
+    dataframe = signals.chande_kroll(dataframe)
 
     # Allocate positions according to the Chande Kroll lines
     is_price_above_lines = (dataframe["price"] > dataframe["chande_kroll_long"]) & (
@@ -266,12 +266,11 @@ def buy_golden_cross_sell_death_cross(
 
     return df
 
-
 def SMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1) -> pd.DataFrame:
     """
     Simple simple moving average strategy which buys when price is above signal and sells when price is below signal
     """
-    SMA = sma_indicator(df["close"], window=window)
+    SMA = signals.simple_moving_average(df, window=window)["signal"]
 
     price_above_signal = df["close"] > SMA
     price_below_signal = df["close"] <= SMA
@@ -286,7 +285,7 @@ def WMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1)
     """
     Simple Weighted moving average strategy which buys when price is above signal and sells when price is below signal
     """
-    WMA = wma_indicator(df["close"], window=window)
+    WMA = signals.weighted_moving_average(df, window=window)["signal"]
 
     price_above_signal = df["close"] > WMA
     price_below_signal = df["close"] <= WMA
@@ -302,7 +301,7 @@ def MACD_strategy(
     """
     Moving average convergence divergence strategy which buys when MACD signal is above 0 and sells when MACD signal is below zero
     """
-    MACD_signal = macd_signal(df["close"], long_period, short_period, window_signal, fillna=True)
+    MACD_signal = signals.moving_average_convergence_divergence(df, short_period, long_period, window_signal)["signal"]
 
     signal_above_zero_line = MACD_signal > 0
     signal_below_zero_line = MACD_signal <= 0
@@ -317,7 +316,7 @@ def RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1
     Moving average convergence divergence strategy which buys when MACD signal is above 0 and sells when MACD signal is below zero
     """
     # https://www.investopedia.com/terms/r/rsi.asp
-    RSI = rsi(df["close"], window=window, fillna=True)
+    RSI = signals.relative_strength_index(df, window=window)["signal"]
 
     over_valued = RSI >= 70
     under_valued = RSI <= 30
@@ -335,11 +334,11 @@ def stochastic_RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: 
     """
     # https://www.investopedia.com/terms/s/stochrsi.asp
 
-    RSI = stochrsi(df["close"], window=window, fillna=True)
+    stochRSI = signals.stochastic_relative_strength_index(df, window=window)["signal"]
 
-    over_valued = RSI >= 0.8
-    under_valued = RSI <= 0.2
-    hold = RSI.between(0.2, 0.8)
+    over_valued = stochRSI >= 0.8
+    under_valued = stochRSI <= 0.2
+    hold = stochRSI.between(0.2, 0.8)
 
     df.loc[over_valued, PandasEnum.ALLOCATION.value] = -max_investment
     df.loc[under_valued, PandasEnum.ALLOCATION.value] = max_investment
@@ -353,7 +352,7 @@ def EMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1)
     """
     Simple Weighted moving average strategy which buys when price is above signal and sells when price is below signal
     """
-    EMA = ema_indicator(df["close"], window=window, fillna=True)
+    EMA = signals.exponentially_weighted_moving_average(df, window=window)["signal"]
 
     price_above_signal = df["close"] > EMA
     price_below_signal = df["close"] <= EMA

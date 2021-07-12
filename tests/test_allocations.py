@@ -24,13 +24,92 @@ import infertrade.algos.community.signals as signals
 import infertrade.algos.community.allocations as allocations
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 import pandas as pd
+import numpy as np
 
 df = simulated_market_data_4_years_gen()
 max_investment = 0.2
+
+"""
+Independent implementation of indicators for testing
+"""
+def simple_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
+    """
+    Calculates smooth signal based on price trends by filtering out the noise from random short-term price fluctuations
+    """
+    df["signal"] = df["close"].rolling(window=window).mean()
+    return df
+
+
+def weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
+    """
+    Weighted moving averages assign a heavier weighting to more current data points since they are more relevant than data points in the distant past.
+    """
+    weights = np.arange(1, window + 1)
+    weights = weights / weights.sum()
+    df["signal"] = df["close"].rolling(window=window).apply(lambda a: a.mul(weights).sum())
+    return df
+
+
+def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
+    """
+    This function uses an exponentially weighted multiplier to give more weight to recent prices.
+    """
+    df["signal"] = df["close"].ewm(span=window, adjust=False).mean()
+    return df
+
+
+def moving_average_convergence_divergence(
+    df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int = 9
+) -> pd.DataFrame:
+    """
+    This function is a trend-following momentum indicator that shows the relationship between two moving averages at different windows:
+    The MACD is usually calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA.
+
+    """
+    # ewma for two different spans
+    ewma_26 = exponentially_weighted_moving_average(df, window=long_period).copy()
+    ewma_12 = exponentially_weighted_moving_average(df, window=short_period).copy()
+
+    # MACD calculation
+    macd = ewma_12["signal"] - ewma_26["signal"]
+
+    # convert MACD into signal
+    df["signal"] = macd.ewm(span=window_signal, adjust=False).mean()
+    return df
+
+
+def relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
+    """
+    This function measures the magnitude of recent price changes to evaluate overbought or oversold conditions in the price.
+    """
+    daily_difference = df["close"].diff()
+    gain = daily_difference.clip(lower=0)
+    loss = -daily_difference.clip(upper=0)
+    average_gain = gain.ewm(com=window - 1).mean()
+    average_loss = loss.ewm(com=window - 1).mean()
+    RS = average_gain / average_loss
+    RSI = 100 - 100 / (1 + RS)
+    df["signal"] = RSI
+    return df
+
+
+def stochastic_relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
+    """
+    This function applies the Stochastic oscillator formula to a set of relative strength index (RSI) values rather than to standard price data.
+
+    """
+    RSI = relative_strength_index(df, window)["signal"]
+    stochRSI = (RSI - RSI.rolling(window).min()) / (RSI.rolling(window).max() - RSI.rolling(window).min())
+    df["signal"] = stochRSI
+    return df
+
+"""
+Tests
+"""
 def test_SMA_strategy():
     window = 50
-    df_with_allocations = allocations.SMA_strategy(df, 50, max_investment).copy()
-    df_with_signals = signals.simple_moving_average(df,50).copy()
+    df_with_allocations = allocations.SMA_strategy(df, window, max_investment).copy()
+    df_with_signals = simple_moving_average(df,window).copy()
  
     price_above_signal=df_with_signals["close"]>df_with_signals["signal"]
     price_below_signal=df_with_signals["close"]<=df_with_signals["signal"]
@@ -44,7 +123,7 @@ def test_SMA_strategy():
 def test_WMA_strategy():
     window = 50
     df_with_allocations = allocations.WMA_strategy(df, window, max_investment).copy()
-    df_with_signals = signals.weighted_moving_average(df,window).copy()
+    df_with_signals = weighted_moving_average(df,window).copy()
  
     price_above_signal=df_with_signals["close"]>df_with_signals["signal"]
     price_below_signal=df_with_signals["close"]<=df_with_signals["signal"]
@@ -58,7 +137,7 @@ def test_WMA_strategy():
 def test_EMA_strategy():
     window = 50
     df_with_allocations = allocations.EMA_strategy(df, window, max_investment).copy()
-    df_with_signals = signals.exponentially_weighted_moving_average(df,window).copy()
+    df_with_signals = exponentially_weighted_moving_average(df,window).copy()
  
     price_above_signal=df_with_signals["close"]>df_with_signals["signal"]
     price_below_signal=df_with_signals["close"]<=df_with_signals["signal"]
@@ -72,7 +151,7 @@ def test_EMA_strategy():
 def test_MACD_strategy():
     
     df_with_allocations = allocations.MACD_strategy(df, 12, 26 ,9, max_investment).copy()
-    df_with_signals = signals.moving_average_convergence_divergence(df,12, 26, 9).copy()
+    df_with_signals = moving_average_convergence_divergence(df,12, 26, 9).copy()
  
     above_zero_line=df_with_signals["signal"]>0
     below_zero_line=df_with_signals["signal"]<=0
@@ -85,7 +164,7 @@ def test_MACD_strategy():
 def test_RSI_strategy():
     
     df_with_allocations = allocations.RSI_strategy(df, 14, max_investment).copy()
-    df_with_signals = signals.relative_strength_index(df,14).copy()
+    df_with_signals = relative_strength_index(df,14).copy()
  
     over_valued = df_with_signals["signal"] >= 70
     under_valued = df_with_signals["signal"] <= 30
@@ -100,7 +179,7 @@ def test_RSI_strategy():
 def test_Stochastic_RSI_strategy():
     
     df_with_allocations = allocations.stochastic_RSI_strategy(df, 14, max_investment).copy()
-    df_with_signals = signals.stochastic_relative_strength_index(df,14).copy()
+    df_with_signals = stochastic_relative_strength_index(df,14).copy()
  
     over_valued = df_with_signals["signal"] >= 0.8
     under_valued = df_with_signals["signal"] <= 0.2

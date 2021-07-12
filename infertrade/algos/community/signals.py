@@ -22,7 +22,8 @@ import pandas as pd
 import numpy as np
 from pandas.core.frame import DataFrame
 from sklearn.preprocessing import FunctionTransformer
-from ta.trend import macd_signal
+from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator
+from ta.momentum import rsi, stochrsi
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 from ta.volatility import AverageTrueRange
 from infertrade.algos.external.ta import ta_adaptor
@@ -56,26 +57,27 @@ def simple_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     """
     Calculates smooth signal based on price trends by filtering out the noise from random short-term price fluctuations
     """
-    df["signal"] = df["close"].rolling(window=window).mean()
-    return df
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = sma_indicator(df_with_signal["close"], window=window)
+    return df_with_signal
 
 
 def weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     """
     Weighted moving averages assign a heavier weighting to more current data points since they are more relevant than data points in the distant past.
     """
-    weights = np.arange(1, window + 1)
-    weights = weights / weights.sum()
-    df["signal"] = df["close"].rolling(window=window).apply(lambda a: a.mul(weights).sum())
-    return df
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = wma_indicator(df_with_signal["close"], window=window)
+    return df_with_signal
 
 
 def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     """
     This function uses an exponentially weighted multiplier to give more weight to recent prices.
     """
-    df["signal"] = df["close"].ewm(span=window, adjust=False).mean()
-    return df
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = ema_indicator(df["close"], window=window, fillna=True)
+    return df_with_signal
 
 
 def moving_average_convergence_divergence(
@@ -86,31 +88,18 @@ def moving_average_convergence_divergence(
     The MACD is usually calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA.
 
     """
-    # ewma for two different spans
-    ewma_26 = exponentially_weighted_moving_average(df, window=long_period).copy()
-    ewma_12 = exponentially_weighted_moving_average(df, window=short_period).copy()
-
-    # MACD calculation
-    macd = ewma_12["signal"] - ewma_26["signal"]
-
-    # convert MACD into signal
-    df["signal"] = macd.ewm(span=window_signal, adjust=False).mean()
-    return df
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = macd_signal(df["close"], long_period, short_period, window_signal, fillna=True)
+    return df_with_signal
 
 
 def relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
     """
     This function measures the magnitude of recent price changes to evaluate overbought or oversold conditions in the price.
     """
-    daily_difference = df["close"].diff()
-    gain = daily_difference.clip(lower=0)
-    loss = -daily_difference.clip(upper=0)
-    average_gain = gain.ewm(com=window - 1).mean()
-    average_loss = loss.ewm(com=window - 1).mean()
-    RS = average_gain / average_loss
-    RSI = 100 - 100 / (1 + RS)
-    df["signal"] = RSI
-    return df
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = rsi(df["close"], window=window, fillna=True)
+    return df_with_signal
 
 
 def stochastic_relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
@@ -118,10 +107,9 @@ def stochastic_relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd
     This function applies the Stochastic oscillator formula to a set of relative strength index (RSI) values rather than to standard price data.
 
     """
-    RSI = relative_strength_index(df, window)["signal"]
-    stochRSI = (RSI - RSI.rolling(window).min()) / (RSI.rolling(window).max() - RSI.rolling(window).min())
-    df["signal"] = stochRSI
-    return df
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = stochrsi(df["close"], window=window, fillna=True)
+    return df_with_signal
 
 
 def chande_kroll(
