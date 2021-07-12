@@ -1,5 +1,4 @@
-<p align="center">
-  <img src="https://www.infertrade.com/static/media/InferTradeLogo.5c2cc437.svg" alt="InferTrade"/>
+<p align="center"><img src="https://www.infertrade.com/static/media/InferTradeLogo.5c2cc437.svg" alt="InferTrade"/>
 </p>
 
 # InferTrade
@@ -15,7 +14,6 @@ The [`infertrade`](https://github.com/ta-oliver/infertrade) package seeks to ach
 - The best open source trading strategies: wrapping functionality to allow strategies from any open source Python libraries with compatible licences, such as [`ta`](https://github.com/bukosabino/ta) to be used with the `infertrade` interface.
 
 The project is licenced under the [Apache 2.0](https://choosealicense.com/licenses/apache-2.0/) licence.  
-
 
 ## Connection to InferTrade.com
 
@@ -148,9 +146,3 @@ simulated_correlated_equities_4_years_gen().plot(y=["price", "signal"])
 plt.show()
 ```
 ![image](https://user-images.githubusercontent.com/29981664/111360130-4668a400-8684-11eb-933e-e8f10662b0bb.png)
-
-
-
- 
-
-

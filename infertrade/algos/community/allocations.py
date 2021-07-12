@@ -21,11 +21,10 @@ Allocation algorithms are functions used to compute allocations - % of your port
 import numpy as np
 import pandas as pd
 from infertrade.PandasEnum import PandasEnum
-import infertrade.algos.community.signals
 import infertrade.utilities.operations
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
-
+import infertrade.algos.community.signals as signals
 
 def fifty_fifty(dataframe) -> pd.DataFrame:
     """Allocates 50% of strategy budget to asset, 50% to cash."""
@@ -40,8 +39,8 @@ def buy_and_hold(dataframe: pd.DataFrame) -> pd.DataFrame:
 
 
 def chande_kroll_crossover_strategy(
-        dataframe: pd.DataFrame,
-        ) -> pd.DataFrame:
+    dataframe: pd.DataFrame,
+) -> pd.DataFrame:
     """
     This simple all-or-nothing rule:
     (1) allocates 100% of the portofolio to a long position on the asset when the price of the asset is above both the
@@ -52,17 +51,15 @@ def chande_kroll_crossover_strategy(
     """
     # Calculate the Chande Kroll lines, which will be added to the DataFrame as columns named "chande_kroll_long" and
     # "chande_kroll_short".
-    dataframe = infertrade.algos.community.signals.chande_kroll(dataframe)
+    dataframe = signals.chande_kroll(dataframe)
 
     # Allocate positions according to the Chande Kroll lines
-    is_price_above_lines = (
-            (dataframe["price"] > dataframe["chande_kroll_long"]) &
-            (dataframe["price"] > dataframe["chande_kroll_short"])
-            )
-    is_price_below_lines = (
-            (dataframe["price"] < dataframe["chande_kroll_long"]) &
-            (dataframe["price"] < dataframe["chande_kroll_short"])
-            )
+    is_price_above_lines = (dataframe["price"] > dataframe["chande_kroll_long"]) & (
+        dataframe["price"] > dataframe["chande_kroll_short"]
+    )
+    is_price_below_lines = (dataframe["price"] < dataframe["chande_kroll_long"]) & (
+        dataframe["price"] < dataframe["chande_kroll_short"]
+    )
 
     dataframe.loc[is_price_above_lines, PandasEnum.ALLOCATION.value] = 1.0
     dataframe.loc[is_price_below_lines, PandasEnum.ALLOCATION.value] = -1.0
@@ -345,11 +342,11 @@ def sma_crossover_strategy(dataframe: pd.DataFrame,
 
 
 def weighted_moving_averages(
-        dataframe: pd.DataFrame,
-        avg_price_coeff: float = 1.0,
-        avg_research_coeff: float = 1.0,
-        avg_price_length: int = 2,
-        avg_research_length: int = 2,
+    dataframe: pd.DataFrame,
+    avg_price_coeff: float = 1.0,
+    avg_research_coeff: float = 1.0,
+    avg_price_length: int = 2,
+    avg_research_length: int = 2,
 ) -> pd.DataFrame:
     """
     This rule uses weightings of two moving averages to determine trade positioning.
@@ -386,27 +383,25 @@ def weighted_moving_averages(
     dataframe[PandasEnum.ALLOCATION.value] = position
     return dataframe
 
+
 def change_regression(
-        dataframe: pd.DataFrame,
-        change_coefficient: float = 0.1,
-        constant_coefficient: float = 0.1,
+    dataframe: pd.DataFrame, change_coefficient: float = 0.1, change_constant: float = 0.1
 ) -> pd.DataFrame:
     """
     This is a regression-type approach that directly calculates allocation from change in the research level.
 
     parameters:
     change_coefficient: The coefficient for allocation size versus the prior day fractional change in the research.
-    constant_coefficient: The coefficient for the constant contribution.
+    change_constant: The coefficient for the constant contribution.
     """
     research = dataframe["research"]
-    position = ((research / research.shift(1) - 1) * change_coefficient + constant_coefficient)
+    position = (research / research.shift(1) - 1) * change_coefficient + change_constant
     dataframe[PandasEnum.ALLOCATION.value] = position
     return dataframe
 
+
 def difference_regression(
-        dataframe: pd.DataFrame,
-        difference_coefficient: float = 0.1,
-        constant_coefficient: float = 0.1,
+    dataframe: pd.DataFrame, difference_coefficient: float = 0.1, difference_constant: float = 0.1
 ) -> pd.DataFrame:
     """
     This trading rules regresses the 1-day price changes seen historical against the prior day's % change
@@ -414,37 +409,37 @@ def difference_regression(
 
     parameters:
     difference_coefficient: The coefficient for dependence on the log gap between the signal series and the price series.
-    constant_coefficient: The coefficient for the constant contribution.
+    difference_constant: The coefficient for the constant contribution.
     """
     research = dataframe["research"]
     price = dataframe["price"]
-    position = ((research / price - 1) * difference_coefficient + constant_coefficient)
+    position = (research / price - 1) * difference_coefficient + difference_constant
     dataframe[PandasEnum.ALLOCATION.value] = position
     return dataframe
 
+
 def level_regression(
-        dataframe: pd.DataFrame,
-        level_coefficient: float = 0.1,
-        constant_coefficient: float = 0.1,
+    dataframe: pd.DataFrame, level_coefficient: float = 0.1, level_constant: float = 0.1
 ) -> pd.DataFrame:
     """
     This is a regression-type approach that directly calculates allocation from research level.
 
     parameters:
     level_coefficient: The coefficient for allocation size versus the level of the signal.
-    constant_coefficient: The coefficient for the constant contribution.
+    level_constant: The coefficient for the constant contribution.
     """
 
     research = dataframe["research"]
-    position = (research * level_coefficient + constant_coefficient)
+    position = research * level_coefficient + level_constant
     dataframe[PandasEnum.ALLOCATION.value] = position
     return dataframe
 
+
 def level_and_change_regression(
-        dataframe: pd.DataFrame,
-        level_coefficient: float = 0.1,
-        change_coefficient: float = 0.1,
-        constant_coefficient: float = 0.1,
+    dataframe: pd.DataFrame,
+    level_coefficient: float = 0.1,
+    change_coefficient: float = 0.1,
+    level_and_change_constant: float = 0.1,
 ) -> pd.DataFrame:
     """
     This trading rules regresses the 1-day price changes seen historical against the prior day's % change of the
@@ -453,13 +448,145 @@ def level_and_change_regression(
     parameters:
     level_coefficient: The coefficient for allocation size versus the level of the signal.
     change_coefficient: The coefficient for allocation size versus the prior day fractional change in the research.
-    constant_coefficient: The coefficient for the constant contribution.
+    level_and_change_constant: The coefficient for the constant contribution.
     """
 
     research = dataframe["research"]
-    position = (research * level_coefficient + (research / research.shift(1) - 1) * change_coefficient + constant_coefficient)
+    position = (
+        research * level_coefficient
+        + (research / research.shift(1) - 1) * change_coefficient
+        + level_and_change_constant
+    )
     dataframe[PandasEnum.ALLOCATION.value] = position
     return dataframe
+
+
+def buy_golden_cross_sell_death_cross(
+    df: pd.DataFrame,
+    allocation_size: float = 0.5,
+    deallocation_size: float = 0.5,
+    short_term_moving_avg_length: int = 50,
+    long_term_moving_avg_length: int = 200,
+) -> pd.DataFrame:
+    """
+    This trading rule allocates specified percentage of strategy budget to asset when there is a golden cross
+    and deallocates specified percentage of strategy budget from asset when there is a death cross.
+
+    Allocation and deallocation percentages specified in the parameters. Moving average lengths also
+    specified in the parameters.
+
+    parameters:
+    allocation_size: The percentage of strategy budget to be allocated to asset upon golden cross
+    deallocation_size: The percentage of strategy budget to deallocate from asset upon death cross
+    short_term_moving_avg_length: The number of days for the short-term moving average length (default: 50 days)
+    long_term_moving_avg_length: The number of days for the long-term moving average length (default: 200 days)
+    """
+
+    short_term_df = df["price"].rolling(short_term_moving_avg_length).mean()
+    long_term_df = df["price"].rolling(long_term_moving_avg_length).mean()
+
+    for i in range(long_term_moving_avg_length + 1, len(df["price"])):
+        if short_term_df[i] >= long_term_df[i] and short_term_df[i - 1] < long_term_df[i - 1]:
+            df.at[i, "allocation"] = allocation_size
+        elif short_term_df[i] <= long_term_df[i] and short_term_df[i - 1] > long_term_df[i - 1]:
+            df.at[i, "allocation"] = -deallocation_size
+
+    return df
+
+def SMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1) -> pd.DataFrame:
+    """
+    Simple simple moving average strategy which buys when price is above signal and sells when price is below signal
+    """
+    SMA = signals.simple_moving_average(df, window=window)["signal"]
+
+    price_above_signal = df["close"] > SMA
+    price_below_signal = df["close"] <= SMA
+
+    df.loc[price_above_signal, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[price_below_signal, PandasEnum.ALLOCATION.value] = -max_investment
+    return df
+
+
+def WMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1) -> pd.DataFrame:
+
+    """
+    Simple Weighted moving average strategy which buys when price is above signal and sells when price is below signal
+    """
+    WMA = signals.weighted_moving_average(df, window=window)["signal"]
+
+    price_above_signal = df["close"] > WMA
+    price_below_signal = df["close"] <= WMA
+
+    df.loc[price_above_signal, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[price_below_signal, PandasEnum.ALLOCATION.value] = -max_investment
+    return df
+
+
+def MACD_strategy(
+    df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int = 9, max_investment: float = 0.1
+) -> pd.DataFrame:
+    """
+    Moving average convergence divergence strategy which buys when MACD signal is above 0 and sells when MACD signal is below zero
+    """
+    MACD_signal = signals.moving_average_convergence_divergence(df, short_period, long_period, window_signal)["signal"]
+
+    signal_above_zero_line = MACD_signal > 0
+    signal_below_zero_line = MACD_signal <= 0
+
+    df.loc[signal_above_zero_line, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[signal_below_zero_line, PandasEnum.ALLOCATION.value] = -max_investment
+    return df
+
+
+def RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1) -> pd.DataFrame:
+    """
+    Moving average convergence divergence strategy which buys when MACD signal is above 0 and sells when MACD signal is below zero
+    """
+    # https://www.investopedia.com/terms/r/rsi.asp
+    RSI = signals.relative_strength_index(df, window=window)["signal"]
+
+    over_valued = RSI >= 70
+    under_valued = RSI <= 30
+    hold = RSI.between(30, 70)
+
+    df.loc[over_valued, PandasEnum.ALLOCATION.value] = -max_investment
+    df.loc[under_valued, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[hold, PandasEnum.ALLOCATION.value] = 0.0
+    return df
+
+
+def stochastic_RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1) -> pd.DataFrame:
+    """
+    Stochastic Relative Strength Index Strategy
+    """
+    # https://www.investopedia.com/terms/s/stochrsi.asp
+
+    stochRSI = signals.stochastic_relative_strength_index(df, window=window)["signal"]
+
+    over_valued = stochRSI >= 0.8
+    under_valued = stochRSI <= 0.2
+    hold = stochRSI.between(0.2, 0.8)
+
+    df.loc[over_valued, PandasEnum.ALLOCATION.value] = -max_investment
+    df.loc[under_valued, PandasEnum.ALLOCATION.value] = max_investment
+
+    df.loc[hold, PandasEnum.ALLOCATION.value] = 0.0
+    return df
+
+
+def EMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1) -> pd.DataFrame:
+
+    """
+    Simple Weighted moving average strategy which buys when price is above signal and sells when price is below signal
+    """
+    EMA = signals.exponentially_weighted_moving_average(df, window=window)["signal"]
+
+    price_above_signal = df["close"] > EMA
+    price_below_signal = df["close"] <= EMA
+
+    df.loc[price_above_signal, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[price_below_signal, PandasEnum.ALLOCATION.value] = -max_investment
+    return df
 
 
 infertrade_export_allocations = {
@@ -505,10 +632,7 @@ infertrade_export_allocations = {
     },
     "sma_crossover_strategy": {
         "function": sma_crossover_strategy,
-        "parameters": {
-            "fast": 0,
-            "slow": 0,
-        },
+        "parameters": {"fast": 0, "slow": 0},
         "series": ["price"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/87185ebadc654b50e1bcfdb9a19f31c263ed7d53/infertrade/algos/community/allocations.py#L62"
@@ -520,7 +644,7 @@ infertrade_export_allocations = {
             "avg_price_coeff": 1.0,
             "avg_research_coeff": 1.0,
             "avg_price_length": 2,
-            "avg_research_length": 2
+            "avg_research_length": 2,
         },
         "series": ["research"],
         "available_representation_types": {
@@ -529,10 +653,7 @@ infertrade_export_allocations = {
     },
     "change_regression": {
         "function": change_regression,
-        "parameters": {
-            "change_coefficient": 0.1,
-            "constant_coefficient": 0.1,
-        },
+        "parameters": {"change_coefficient": 0.1, "change_constant": 0.1},
         "series": ["research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L161"
@@ -540,10 +661,7 @@ infertrade_export_allocations = {
     },
     "difference_regression": {
         "function": difference_regression,
-        "parameters": {
-            "difference_coefficient": 0.1,
-            "constant_coefficient": 0.1,
-        },
+        "parameters": {"difference_coefficient": 0.1, "difference_constant": 0.1},
         "series": ["price", "research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L178"
@@ -551,10 +669,7 @@ infertrade_export_allocations = {
     },
     "level_regression": {
         "function": level_regression,
-        "parameters": {
-            "level_coefficient": 0.1,
-            "constant_coefficient": 0.1,
-        },
+        "parameters": {"level_coefficient": 0.1, "level_constant": 0.1},
         "series": ["research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L197"
@@ -562,14 +677,58 @@ infertrade_export_allocations = {
     },
     "level_and_change_regression": {
         "function": level_and_change_regression,
-        "parameters": {
-            "level_coefficient": 0.1,
-            "change_coefficient": 0.1,
-            "constant_coefficient": 0.1,
-        },
+        "parameters": {"level_coefficient": 0.1, "change_coefficient": 0.1, "level_and_change_constant": 0.1},
         "series": ["research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L215"
+        },
+    },
+    "SMA_strategy": {
+        "function": SMA_strategy,
+        "parameters": {"window": 1, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L269"
+        },
+    },
+    "WMA_strategy": {
+        "function": WMA_strategy,
+        "parameters": {"window": 1, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L282"
+        },
+    },
+    "MACD_strategy": {
+        "function": MACD_strategy,
+        "parameters": {"short_period": 12, "long_period": 26, "windows_signal": 9, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L296"
+        },
+    },
+    "RSI_strategy": {
+        "function": RSI_strategy,
+        "parameters": {"window": 14, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L309"
+        },
+    },
+    "stochastic_RSI_strategy": {
+        "function": stochastic_RSI_strategy,
+        "parameters": {"window": 14, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L325"
+        },
+    },
+    "EMA_strategy": {
+        "function": EMA_strategy,
+        "parameters": {"window": 1, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/61de92d057ec5d7b25fb8dbe18a259463525ff2a/infertrade/algos/community/allocations.py#L344"
         },
     },
 }
