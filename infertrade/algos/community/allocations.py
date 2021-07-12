@@ -21,7 +21,9 @@ Allocation algorithms are functions used to compute allocations - % of your port
 import numpy as np
 import pandas as pd
 from infertrade.PandasEnum import PandasEnum
-import infertrade.algos.community.signals
+import infertrade.algos.community.signals as signals
+from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator
+from ta.momentum import rsi, stochrsi
 
 
 def fifty_fifty(dataframe) -> pd.DataFrame:
@@ -49,7 +51,7 @@ def chande_kroll_crossover_strategy(
     """
     # Calculate the Chande Kroll lines, which will be added to the DataFrame as columns named "chande_kroll_long" and
     # "chande_kroll_short".
-    dataframe = infertrade.algos.community.signals.chande_kroll(dataframe)
+    dataframe = signals.chande_kroll(dataframe)
 
     # Allocate positions according to the Chande Kroll lines
     is_price_above_lines = (dataframe["price"] > dataframe["chande_kroll_long"]) & (
@@ -236,15 +238,15 @@ def buy_golden_cross_sell_death_cross(
     df: pd.DataFrame,
     allocation_size: float = 0.5,
     deallocation_size: float = 0.5,
-    short_term_moving_avg_length: int = 50, 
-    long_term_moving_avg_length: int = 200, 
+    short_term_moving_avg_length: int = 50,
+    long_term_moving_avg_length: int = 200,
 ) -> pd.DataFrame:
     """
     This trading rule allocates specified percentage of strategy budget to asset when there is a golden cross
-    and deallocates specified percentage of strategy budget from asset when there is a death cross. 
+    and deallocates specified percentage of strategy budget from asset when there is a death cross.
 
     Allocation and deallocation percentages specified in the parameters. Moving average lengths also
-    specified in the parameters. 
+    specified in the parameters.
 
     parameters:
     allocation_size: The percentage of strategy budget to be allocated to asset upon golden cross
@@ -255,13 +257,108 @@ def buy_golden_cross_sell_death_cross(
 
     short_term_df = df["price"].rolling(short_term_moving_avg_length).mean()
     long_term_df = df["price"].rolling(long_term_moving_avg_length).mean()
-    
+
     for i in range(long_term_moving_avg_length + 1, len(df["price"])):
-        if short_term_df[i] >= long_term_df[i] and short_term_df[i-1] < long_term_df[i-1]:
+        if short_term_df[i] >= long_term_df[i] and short_term_df[i - 1] < long_term_df[i - 1]:
             df.at[i, "allocation"] = allocation_size
-        elif short_term_df[i] <= long_term_df[i] and short_term_df[i-1] > long_term_df[i-1]:
+        elif short_term_df[i] <= long_term_df[i] and short_term_df[i - 1] > long_term_df[i - 1]:
             df.at[i, "allocation"] = -deallocation_size
 
+    return df
+
+def SMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1) -> pd.DataFrame:
+    """
+    Simple simple moving average strategy which buys when price is above signal and sells when price is below signal
+    """
+    SMA = signals.simple_moving_average(df, window=window)["signal"]
+
+    price_above_signal = df["close"] > SMA
+    price_below_signal = df["close"] <= SMA
+
+    df.loc[price_above_signal, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[price_below_signal, PandasEnum.ALLOCATION.value] = -max_investment
+    return df
+
+
+def WMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1) -> pd.DataFrame:
+
+    """
+    Simple Weighted moving average strategy which buys when price is above signal and sells when price is below signal
+    """
+    WMA = signals.weighted_moving_average(df, window=window)["signal"]
+
+    price_above_signal = df["close"] > WMA
+    price_below_signal = df["close"] <= WMA
+
+    df.loc[price_above_signal, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[price_below_signal, PandasEnum.ALLOCATION.value] = -max_investment
+    return df
+
+
+def MACD_strategy(
+    df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int = 9, max_investment: float = 0.1
+) -> pd.DataFrame:
+    """
+    Moving average convergence divergence strategy which buys when MACD signal is above 0 and sells when MACD signal is below zero
+    """
+    MACD_signal = signals.moving_average_convergence_divergence(df, short_period, long_period, window_signal)["signal"]
+
+    signal_above_zero_line = MACD_signal > 0
+    signal_below_zero_line = MACD_signal <= 0
+
+    df.loc[signal_above_zero_line, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[signal_below_zero_line, PandasEnum.ALLOCATION.value] = -max_investment
+    return df
+
+
+def RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1) -> pd.DataFrame:
+    """
+    Moving average convergence divergence strategy which buys when MACD signal is above 0 and sells when MACD signal is below zero
+    """
+    # https://www.investopedia.com/terms/r/rsi.asp
+    RSI = signals.relative_strength_index(df, window=window)["signal"]
+
+    over_valued = RSI >= 70
+    under_valued = RSI <= 30
+    hold = RSI.between(30, 70)
+
+    df.loc[over_valued, PandasEnum.ALLOCATION.value] = -max_investment
+    df.loc[under_valued, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[hold, PandasEnum.ALLOCATION.value] = 0.0
+    return df
+
+
+def stochastic_RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1) -> pd.DataFrame:
+    """
+    Stochastic Relative Strength Index Strategy
+    """
+    # https://www.investopedia.com/terms/s/stochrsi.asp
+
+    stochRSI = signals.stochastic_relative_strength_index(df, window=window)["signal"]
+
+    over_valued = stochRSI >= 0.8
+    under_valued = stochRSI <= 0.2
+    hold = stochRSI.between(0.2, 0.8)
+
+    df.loc[over_valued, PandasEnum.ALLOCATION.value] = -max_investment
+    df.loc[under_valued, PandasEnum.ALLOCATION.value] = max_investment
+
+    df.loc[hold, PandasEnum.ALLOCATION.value] = 0.0
+    return df
+
+
+def EMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1) -> pd.DataFrame:
+
+    """
+    Simple Weighted moving average strategy which buys when price is above signal and sells when price is below signal
+    """
+    EMA = signals.exponentially_weighted_moving_average(df, window=window)["signal"]
+
+    price_above_signal = df["close"] > EMA
+    price_below_signal = df["close"] <= EMA
+
+    df.loc[price_above_signal, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[price_below_signal, PandasEnum.ALLOCATION.value] = -max_investment
     return df
 
 
@@ -357,6 +454,54 @@ infertrade_export_allocations = {
         "series": ["research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L215"
+        },
+    },
+    "SMA_strategy": {
+        "function": SMA_strategy,
+        "parameters": {"window": 1, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L269"
+        },
+    },
+    "WMA_strategy": {
+        "function": WMA_strategy,
+        "parameters": {"window": 1, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L282"
+        },
+    },
+    "MACD_strategy": {
+        "function": MACD_strategy,
+        "parameters": {"short_period": 12, "long_period": 26, "windows_signal": 9, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L296"
+        },
+    },
+    "RSI_strategy": {
+        "function": RSI_strategy,
+        "parameters": {"window": 14, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L309"
+        },
+    },
+    "stochastic_RSI_strategy": {
+        "function": stochastic_RSI_strategy,
+        "parameters": {"window": 14, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L325"
+        },
+    },
+    "EMA_strategy": {
+        "function": EMA_strategy,
+        "parameters": {"window": 1, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/61de92d057ec5d7b25fb8dbe18a259463525ff2a/infertrade/algos/community/allocations.py#L344"
         },
     },
 }
