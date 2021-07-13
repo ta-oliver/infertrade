@@ -20,15 +20,11 @@ Created date: 28th May 2021
 """
 
 import pandas as pd
-
 from infertrade.PandasEnum import PandasEnum
 from infertrade.algos.community.allocations import fifty_fifty
 from infertrade.api import Api
 from infertrade.data.simulate_data import simulated_correlated_equities_4_years_gen
 from infertrade.utilities.operations import restrict_allocation, pct_chg, daily_stop_loss
-
-
-
 
 # constrain fifty fifty allocation
 @restrict_allocation
@@ -78,7 +74,6 @@ def test_daily_stop_loss():
 
     calculated_allocations = restricted_fifty_fifty(df,loss_limit=0.001)
     
-
     # Boolean to check if loss > loss limit exist
     stop_loss_triggered=False
     prev_alloc=0
@@ -105,8 +100,6 @@ def test_multiple_restrictions():
     df = simulated_correlated_equities_4_years_gen()
 
     calculated_allocations = restricted_fifty_fifty(df, allocation_lower_limit=0.0, allocation_upper_limit=0.25, loss_limit=0.001)
-   
-
     
     prev_alloc=0
     prev_price=0
@@ -124,4 +117,3 @@ def test_multiple_restrictions():
         prev_price=row.price
   
     assert stop_loss_triggered
-     

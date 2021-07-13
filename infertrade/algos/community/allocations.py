@@ -70,12 +70,13 @@ def chande_kroll_crossover_strategy(
 
 
 def change_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
-    # observations:
-    # does not check for NaNs/infinite in input
-    # does not calculate bid-ask spread
-    # does not fill NaNs
-    # does not change NaNs/infinite to 0 after lag/pct_chg (except for for the first time step/period)
-    # is not able to calculate out_of_sample_erro
+    """
+    Calculates a change relationship, which compares the asset's future price change to the last change in the signal series.
+
+    Notes:
+    - Does not fill NaNs in input, so full data needs to be supplied.
+    - Error estimation uses same window as used for calibrating regression coefficients
+    """
     df = dataframe.copy()
     regression_period = 120
     minimum_length_to_calculate = regression_period + 1
@@ -117,13 +118,13 @@ def calculate_change_relationship(df: pd.DataFrame, regression_period: int, kell
 
 
 def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
-    # observations:
-    # does not return a new copy of the df, just alters the original df
-    # does not check for NaNs/infinite in input
-    # does not calculate bid-ask spread
-    # does not fill NaNs
-    # does not change NaNs/infinite to 0 after lag/pct_chg (except for for the first time step/period)
-    # is not able to calculate out_of_sample_erro
+    """
+    Calculates a combination relationship, which compares the asset's future price combination to the last combination in the signal series.
+
+    Notes:
+    - Does not fill NaNs in input, so full data needs to be supplied.
+    - Error estimation uses same window as used for calibrating regression coefficients
+    """
 
     df = dataframe.copy()
     regression_period = 120
@@ -189,13 +190,13 @@ def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: flo
 
 
 def difference_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
-    # observations:
-    # does not return a new copy of the df, just alters the original df
-    # does not check for NaNs/infinite in input
-    # does not calculate bid-ask spread
-    # does not fill NaNs
-    # does not change NaNs/infinite to 0 after lag/pct_chg (except for for the first time step/period)
-    # is not able to calculate out_of_sample_erro
+    """
+    Calculates a difference relationship, which compares the asset's future price difference to the last difference in the signal series.
+
+    Notes:
+    - Does not fill NaNs in input, so full data needs to be supplied.
+    - Error estimation uses same window as used for calibrating regression coefficients
+    """
 
     df = dataframe.copy()
     regression_period = 120
@@ -254,13 +255,13 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
 
 
 def level_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
-    # observations:
-    # does not return a new copy of the df, just alters the original df
-    # does not check for NaNs/infinite in input
-    # does not calculate bid-ask spread
-    # does not fill NaNs
-    # does not change NaNs/infinite to 0 after lag/pct_chg (except for for the first time step/period)
-    # is not able to calculate out_of_sample_erro
+    """
+    Calculates a level relationship, which compares the asset's future price level to the last price level in the signal series.
+
+    Notes:
+    - Does not fill NaNs in input, so full data needs to be supplied.
+    - Error estimation uses same window as used for calibrating regression coefficients
+    """
 
     df = dataframe.copy()
     regression_period = 120
@@ -490,7 +491,7 @@ def SMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1)
 def WMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1) -> pd.DataFrame:
 
     """
-    Simple Weighted moving average strategy which buys when price is above signal and sells when price is below signal
+    Weighted moving average strategy which buys when price is above signal and sells when price is below signal
     """
     WMA = signals.weighted_moving_average(df, window=window)["signal"]
 
@@ -520,7 +521,7 @@ def MACD_strategy(
 
 def RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1) -> pd.DataFrame:
     """
-    Moving average convergence divergence strategy which buys when MACD signal is above 0 and sells when MACD signal is below zero
+    Relative Strength Index
     """
     # https://www.investopedia.com/terms/r/rsi.asp
     RSI = signals.relative_strength_index(df, window=window)["signal"]
@@ -557,7 +558,7 @@ def stochastic_RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: 
 def EMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1) -> pd.DataFrame:
 
     """
-    Simple Weighted moving average strategy which buys when price is above signal and sells when price is below signal
+    Exponential moving average strategy which buys when price is above signal and sells when price is below signal
     """
     EMA = signals.exponentially_weighted_moving_average(df, window=window)["signal"]
 

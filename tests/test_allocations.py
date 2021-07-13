@@ -28,14 +28,14 @@ from infertrade.algos import algorithm_functions
 import pandas as pd
 import numpy as np
 
-
 df = simulated_market_data_4_years_gen()
 max_investment = 0.2
 
 def test_algorithm_functions():
     """
-    Verifies the algorithm_functions dictionary has all necessary values
     Tests that the strategies have all necessary properties.
+    Verifies the algorithm_functions dictionary has all necessary values
+    
     """
 
     # We have imported the list of algorithm functions.
@@ -48,9 +48,6 @@ def test_algorithm_functions():
             assert isinstance(param_dict, dict)
             for ii_parameter in param_dict:
                 assert isinstance(param_dict[ii_parameter], Real)
-
-
-
 
 """
 Independent implementation of indicators for testing allocation strategies
