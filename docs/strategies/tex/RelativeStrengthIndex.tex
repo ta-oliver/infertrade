@@ -1,0 +1,45 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Relative Strength Index} %Argument is name of rule
+\tblofcontents
+
+\ruledescription{Gives a buy signal when RSI is below 30 and a sell signal when RSI is above 70.}
+\ruleparameters %You can include however many arguments (in groups of 4) as you want!
+{Overbought}{70}{Overbought Condition}{$O_b$}
+{Oversold}{30}{Oversold Condition}{$O_s$}
+{Time Length}{14 Days}{Time frame on which the RSI is calculated}{$L$}
+\stoptable %must be included or Tex engine runs infinitely
+
+
+\section{Equation}
+Below are the equations which govern how this specific trading rule calculates a trading position.
+
+\begin{equation}
+RSI = 100-\frac{100}{(1+RS)}
+\end{equation}
+\\
+with:
+
+$RSI$: is the relative strength index at $\currenttime$
+
+$RS$: is the relative strength which is calculated using below formula.
+
+\begin{equation}
+RS = \frac{AvgU}{AvgD}
+\end{equation}
+\\
+with:
+
+$AvgU$ : average of all upward movements in the last $L$ price bars
+
+$AvgD$ : average of all downward movements in the last $L$ price bars
+$\L$ : Time Length
+
+\keyterms
+\furtherlinks %The footer
+\end{document}
