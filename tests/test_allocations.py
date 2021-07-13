@@ -23,14 +23,34 @@ Unit tests for allocations
 import infertrade.algos.community.signals as signals
 import infertrade.algos.community.allocations as allocations
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
+from numbers import Real
+from infertrade.algos import algorithm_functions
 import pandas as pd
 import numpy as np
 
 df = simulated_market_data_4_years_gen()
 max_investment = 0.2
 
+def test_algorithm_functions():
+    """
+    Tests that the strategies have all necessary properties.
+    Verifies the algorithm_functions dictionary has all necessary values
+    
+    """
+
+    # We have imported the list of algorithm functions.
+    assert isinstance(algorithm_functions, dict)
+
+    # We check the algorithm functions all have parameter dictionaries with default values.
+    for ii_function_library in algorithm_functions:
+        for jj_rule in algorithm_functions[ii_function_library]["allocation"]:
+            param_dict = algorithm_functions[ii_function_library]["allocation"][jj_rule]["parameters"]
+            assert isinstance(param_dict, dict)
+            for ii_parameter in param_dict:
+                assert isinstance(param_dict[ii_parameter], Real)
+
 """
-Independent implementation of indicators for testing
+Independent implementation of indicators for testing allocation strategies
 """
 def simple_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     """
@@ -104,7 +124,7 @@ def stochastic_relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd
     return df
 
 """
-Tests
+Tests for allocation strategies
 """
 def test_SMA_strategy():
     window = 50
