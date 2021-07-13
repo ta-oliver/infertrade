@@ -20,6 +20,7 @@ Allocation algorithms are functions used to compute allocations - % of your port
 
 import numpy as np
 import pandas as pd
+from pandas.core.frame import DataFrame
 from infertrade.PandasEnum import PandasEnum
 import infertrade.utilities.operations
 from sklearn.linear_model import LinearRegression
@@ -77,21 +78,22 @@ def change_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     # does not fill NaNs
     # does not change NaNs/infinite to 0 after lag/pct_chg (except for for the first time step/period)
     # is not able to calculate out_of_sample_erro
-
+    df = dataframe.copy()
     regression_period = 120
     minimum_length_to_calculate = regression_period + 1
-    if len(dataframe[PandasEnum.MID.value]) < minimum_length_to_calculate:
-        dataframe[PandasEnum.ALLOCATION.value] = 0.0
-        return dataframe
+    
+    if len(df[PandasEnum.MID.value]) < minimum_length_to_calculate:
+        df[PandasEnum.ALLOCATION.value] = 0.0
+        return df
 
-    calculate_change_relationship(dataframe, regression_period)
-
-    return dataframe
+    calculate_change_relationship(df, regression_period)
+    
+    return df
 
 
 def calculate_change_relationship(dataframe: pd.DataFrame, regression_period: int, kelly_fraction: float = 1.0):
     """Calculates allocations for change relationship."""
-    dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, 'research_1']
+    dataframe[PandasEnum.SIGNAL.value] = dataframe['research']
     forecast_period = 100
     signal_lagged = infertrade.utilities.operations.lag(np.reshape(dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values, (-1, 1)),
                                                         shift=1)
@@ -115,20 +117,21 @@ def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     # does not change NaNs/infinite to 0 after lag/pct_chg (except for for the first time step/period)
     # is not able to calculate out_of_sample_erro
 
+    df = dataframe.copy()
     regression_period = 120
     minimum_length_to_calculate = regression_period + 1
-    if len(dataframe[PandasEnum.MID.value]) < minimum_length_to_calculate:
-        dataframe[PandasEnum.ALLOCATION.value] = 0.0
-        return dataframe
+    if len(df[PandasEnum.MID.value]) < minimum_length_to_calculate:
+        df[PandasEnum.ALLOCATION.value] = 0.0
+        return df
 
-    calculate_combination_relationship(dataframe, regression_period)
+    calculate_combination_relationship(df, regression_period)
 
-    return dataframe
+    return df
 
 
 def calculate_combination_relationship(dataframe: pd.DataFrame, regression_period: int, kelly_fraction: float = 1.0):
     """Calculates allocations for combination relationship."""
-    dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, 'research_1']
+    dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, 'research']
     forecast_period = 100
     signal_lagged = infertrade.utilities.operations.lag(np.reshape(dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values, (-1, 1)),
                                                         shift=1)
@@ -168,23 +171,22 @@ def difference_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     # does not change NaNs/infinite to 0 after lag/pct_chg (except for for the first time step/period)
     # is not able to calculate out_of_sample_erro
 
+    df = dataframe.copy()
     regression_period = 120
     minimum_length_to_calculate = regression_period + 1
     if len(dataframe[PandasEnum.MID.value]) < minimum_length_to_calculate:
         dataframe[PandasEnum.ALLOCATION.value] = 0.0
-        return dataframe
+        return df
 
-    calculate_difference_relationship(dataframe, regression_period)
+    calculate_difference_relationship(df, regression_period)
 
-    return dataframe
+    return df
 
 
 def calculate_difference_relationship(dataframe: pd.DataFrame, regression_period: int, kelly_fraction: float = 1.0):
     """Calculates allocations for difference relationship."""
-    dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, 'research_1']
+    dataframe[PandasEnum.SIGNAL.value] = dataframe["research"]
     forecast_period = 100
-    import code
-    code.interact(local=locals())
     signal_differenced = infertrade.utilities.operations.research_over_price_minus_one(np.column_stack((dataframe[PandasEnum.MID.value].append(pd.Series([0])).values, dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values)),
                                                         shift=1)
     signal_differenced[0] = [0.0]
@@ -218,20 +220,21 @@ def level_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     # does not change NaNs/infinite to 0 after lag/pct_chg (except for for the first time step/period)
     # is not able to calculate out_of_sample_erro
 
+    df = dataframe.copy()
     regression_period = 120
     minimum_length_to_calculate = regression_period + 1
     if len(dataframe[PandasEnum.MID.value]) < minimum_length_to_calculate:
         dataframe[PandasEnum.ALLOCATION.value] = 0.0
-        return dataframe
+        return df
 
-    calculate_level_relationship(dataframe, regression_period)
+    calculate_level_relationship(df, regression_period)
 
-    return dataframe
+    return df
 
 
 def calculate_level_relationship(dataframe: pd.DataFrame, regression_period: int, kelly_fraction: float = 1.0):
     """Calculates allocations for level relationship."""
-    dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, 'research_1']
+    dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, 'research']
     forecast_period = 100
     signal_lagged = infertrade.utilities.operations.lag(np.reshape(dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values, (-1, 1)),
                                                         shift=1) # revert back to manually calculating last row? doing it manually seems awkward, doing it this way seems wasteful, altering the the lag (or other) function seems hacky
@@ -614,6 +617,38 @@ infertrade_export_allocations = {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/df1f6f058b38e0ff9ab1250bb43ffb220b3a4725/infertrade/algos/community/allocations.py#L39"
         },
     },
+    "change_relationship": {
+        "function": change_relationship,
+        "parameters": {},
+        "series": [],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/df1f6f058b38e0ff9ab1250bb43ffb220b3a4725/infertrade/algos/community/allocations.py#L39"
+        },
+    },
+    "combination_relationship": {
+        "function": combination_relationship,
+        "parameters": {},
+        "series": [],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/df1f6f058b38e0ff9ab1250bb43ffb220b3a4725/infertrade/algos/community/allocations.py#L39"
+        },
+    },
+    "difference_relationship": {
+        "function": difference_relationship,
+        "parameters": {},
+        "series": [],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/df1f6f058b38e0ff9ab1250bb43ffb220b3a4725/infertrade/algos/community/allocations.py#L39"
+        },
+    },
+    "level_relationship": {
+        "function": level_relationship,
+        "parameters": {},
+        "series": [],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/df1f6f058b38e0ff9ab1250bb43ffb220b3a4725/infertrade/algos/community/allocations.py#L39"
+        },
+    },
     "constant_allocation_size": {
         "function": constant_allocation_size,
         "parameters": {"fixed_allocation_size": 1.0},
@@ -678,6 +713,14 @@ infertrade_export_allocations = {
     "level_and_change_regression": {
         "function": level_and_change_regression,
         "parameters": {"level_coefficient": 0.1, "change_coefficient": 0.1, "level_and_change_constant": 0.1},
+        "series": ["research"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L215"
+        },
+    },
+    "buy_golden_cross_sell_death_cross": {
+        "function": buy_golden_cross_sell_death_cross,
+        "parameters": {"allocation_size": 0.5, "deallocation_size": 0.5, "short_term_moving_avg_length": 50, "long_term_moving_avg_length": 200},
         "series": ["research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L215"
