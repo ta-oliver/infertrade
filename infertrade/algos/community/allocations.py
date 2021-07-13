@@ -90,7 +90,7 @@ def change_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def calculate_change_relationship(df: pd.DataFrame, regression_period: int, kelly_fraction: float = 1.0):
+def calculate_change_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
     """Calculates allocations for change relationship."""
     dataframe = df.copy()
     dataframe[PandasEnum.SIGNAL.value] = dataframe["research"]
@@ -119,7 +119,7 @@ def calculate_change_relationship(df: pd.DataFrame, regression_period: int, kell
 
 def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
-    Calculates a combination relationship, which compares the asset's future price combination to the last combination in the signal series.
+    Calculates a combination relationship, which compares the asset's future price change to the multivariate regression of the level of the signal, the last change in the signal and the difference between the signal and the price.
 
     Notes:
     - Does not fill NaNs in input, so full data needs to be supplied.
@@ -138,7 +138,7 @@ def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def calculate_combination_relationship(df: pd.DataFrame, regression_period: int, kelly_fraction: float = 1.0):
+def calculate_combination_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
     """Calculates allocations for combination relationship."""
     dataframe = df.copy()
     dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, "research"]
@@ -191,7 +191,7 @@ def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: flo
 
 def difference_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
-    Calculates a difference relationship, which compares the asset's future price difference to the last difference in the signal series.
+    Calculates a difference relationship, which compares the asset's future price change to the last difference between the signal series and asset price.
 
     Notes:
     - Does not fill NaNs in input, so full data needs to be supplied.
@@ -210,7 +210,7 @@ def difference_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def calculate_difference_relationship(df: pd.DataFrame, regression_period: int, kelly_fraction: float = 1.0):
+def calculate_difference_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
     """Calculates allocations for difference relationship."""
     dataframe = df.copy()
     dataframe[PandasEnum.SIGNAL.value] = dataframe["research"]
@@ -256,7 +256,7 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
 
 def level_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
-    Calculates a level relationship, which compares the asset's future price level to the last price level in the signal series.
+    Calculates a level relationship, which compares the asset's future price change to the last value of the signal series.
 
     Notes:
     - Does not fill NaNs in input, so full data needs to be supplied.
@@ -275,7 +275,7 @@ def level_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def calculate_level_relationship(df: pd.DataFrame, regression_period: int, kelly_fraction: float = 1.0):
+def calculate_level_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
     """Calculates allocations for level relationship."""
     dataframe = df.copy()
     dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, "research"]
