@@ -247,7 +247,7 @@ def test_bollinger_band_strategy():
 
         assert (not (short_position == True and long_position == True))
 
-        # allocation conditions
+        # allocation rules
         if (short_position == True):
             df.loc[index, "allocation"] = -max_investment
             
@@ -256,7 +256,5 @@ def test_bollinger_band_strategy():
 
         else:
             df.loc[index, "allocation"] = 0.0
-
- 
 
     assert pd.Series.equals(df_with_signal["allocation"], df_with_allocations["allocation"])

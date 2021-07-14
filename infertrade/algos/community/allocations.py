@@ -589,7 +589,7 @@ def bollinger_band_strategy(
         # check if price breaks the bollinger bands
         if row["typical_price"] >= row["BOLU"]:
             short_position = True
-            
+
         if row["typical_price"] <= row["BOLD"]:
             long_position = True
 
@@ -600,13 +600,13 @@ def bollinger_band_strategy(
         if long_position == True and row["typical_price"] >= row["BOLA"]:
             long_position = False
 
-        assert (not (short_position == True and long_position == True))
+        assert not (short_position == True and long_position == True)
 
         # allocation conditions
-        if (short_position == True):
+        if short_position == True:
             df.loc[index, PandasEnum.ALLOCATION.value] = -max_investment
-            
-        elif (long_position == True):
+
+        elif long_position == True:
             df.loc[index, PandasEnum.ALLOCATION.value] = max_investment
 
         else:

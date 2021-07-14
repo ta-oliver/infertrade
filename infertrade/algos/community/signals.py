@@ -178,9 +178,7 @@ def bollinger_band(df: pd.DataFrame, window: int = 20, window_dev: int = 2) -> p
     df_with_signal["BOLD"] = bollinger_lband(
         df_with_signal["typical_price"], window=window, window_dev=window_dev, fillna=True
     )
-    df_with_signal["BOLA"] = bollinger_mavg(
-        df_with_signal["typical_price"], window=window, fillna=True
-    )
+    df_with_signal["BOLA"] = bollinger_mavg(df_with_signal["typical_price"], window=window, fillna=True)
 
     return df_with_signal
 
