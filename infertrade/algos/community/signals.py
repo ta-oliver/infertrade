@@ -25,7 +25,7 @@ from sklearn.preprocessing import FunctionTransformer
 from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator
 from ta.momentum import rsi, stochrsi
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
-from ta.volatility import AverageTrueRange
+from ta.volatility import AverageTrueRange, bollinger_hband_indicator, bollinger_lband_indicator, bollinger_mavg
 from infertrade.algos.external.ta import ta_adaptor
 from infertrade.PandasEnum import PandasEnum
 
@@ -152,6 +152,28 @@ def chande_kroll(
     return df
 
 
+def bollinger_band(df: pd.DataFrame, window: int = 20, window_dev: int = 2) -> pd.DataFrame:
+    """
+    This function calculates signal which characterizes the prices and volatility over time. 
+    There are three lines that compose Bollinger Bands:
+        1. Middle band: A 20 day simple moving average
+        2. The upper band: 2 standard deviations + from a 20-day simple moving average
+        3. The lower band: 2 standard deviations - from a 20-day SMA
+    
+    These can be adjusted by changing parameter window and window_dev
+
+    Parameters:
+    window: Smoothing period
+    window_dev: last n period over which standard deviation is calculated
+    """
+    df_with_signal = df.copy()
+    typical_price = (df_with_signal["close"]+df_with_signal["low"]+df_with_signal["high"])/3
+    df_with_signal["BOLU"] = bollinger_hband_indicator(typical_price, window=window, window_dev=window_dev, fillna=True)
+    df_with_signal["BOLD"] = bollinger_lband_indicator(typical_price, window=window, window_dev=window_dev, fillna=True)
+    df_with_signal["BOLA"] = bollinger_mavg(typical_price, window=window, fillna=True)
+    return df_with_signal
+
+
 # creates wrapper classes to fit sci-kit learn interface
 def scikit_signal_factory(signal_function: callable):
     """A class compatible with Sci-Kit Learn containing the signal function."""
@@ -237,6 +259,14 @@ infertrade_export_signals = {
         "series": ["high", "low"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L125"
+        },
+    },
+    "bollinger_band": {
+        "function": bollinger_band,
+        "parameters": {"window": 14, "window_dev": 2},
+        "series": ["close", "high", "low"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5f74bdeb99eb26c15df0b5417de837466cefaee1/infertrade/algos/community/signals.py#L155"
         },
     },
 }
