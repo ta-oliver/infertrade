@@ -129,9 +129,10 @@ def bollinger_band(df: pd.DataFrame, window: int = 20, window_dev: int = 2) -> p
     typical_price = (df["close"]+df["low"]+df["high"])/3
     df_with_signal["typical_price"]=typical_price
     std_dev = df_with_signal["typical_price"].rolling(window=window).std(ddof=0)
-    SMA = df_with_signal["typical_price"].rolling(window=window).mean()
-    df_with_signal["BOLU"] = SMA + window_dev*std_dev
-    df_with_signal["BOLD"] = SMA - window_dev*std_dev
+    df_with_signal["BOLA"] = df_with_signal["typical_price"].rolling(window=window).mean()
+    df_with_signal["BOLU"] = df_with_signal["BOLA"] + window_dev*std_dev
+    df_with_signal["BOLD"] = df_with_signal["BOLA"] - window_dev*std_dev
+
     return df_with_signal
 
 """
@@ -226,11 +227,36 @@ def test_bollinger_band_strategy():
     
     df_with_allocations = allocations.bollinger_band_strategy(df, 20, 2, max_investment).copy()
     df_with_signal = bollinger_band(df,20, 2).copy()
-    over_valued = df_with_signal["typical_price"]>= df_with_signal["BOLU"]
-    under_valued = df_with_signal["typical_price"]<= df_with_signal["BOLD"]
-    hold = df_with_signal["typical_price"].between(df_with_signal["BOLD"], df_with_signal["BOLU"])
-    df_with_signal.loc[over_valued, "allocation"]=-max_investment
-    df_with_signal.loc[under_valued, "allocation"]=max_investment
-    df_with_signal.loc[hold, "allocation"]=0.0
+    short_position = False
+    long_position = False
+
+    for index, row in df_with_signal.iterrows():
+        # check if price breaks the bollinger bands
+        if row["typical_price"] >= row["BOLU"]:
+            short_position = True
+            
+        if row["typical_price"] <= row["BOLD"]:
+            long_position = True
+
+        # check if position needs to be closed
+        if short_position == True and row["typical_price"] <= row["BOLA"]:
+            short_position = False
+
+        if long_position == True and row["typical_price"] >= row["BOLA"]:
+            long_position = False
+
+        assert (not (short_position == True and long_position == True))
+
+        # allocation conditions
+        if (short_position == True):
+            df.loc[index, "allocation"] = -max_investment
+            
+        elif (long_position == True):
+            df.loc[index, "allocation"] = max_investment
+
+        else:
+            df.loc[index, "allocation"] = 0.0
+
+ 
 
     assert pd.Series.equals(df_with_signal["allocation"], df_with_allocations["allocation"])

@@ -569,26 +569,48 @@ def EMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1)
     df.loc[price_below_signal, PandasEnum.ALLOCATION.value] = -max_investment
     return df
 
-def bollinger_band_strategy(df: pd.DataFrame, window: int = 20, window_dev: int = 2, max_investment: float = 0.1) -> pd.DataFrame:
+
+def bollinger_band_strategy(
+    df: pd.DataFrame, window: int = 20, window_dev: int = 2, max_investment: float = 0.1
+) -> pd.DataFrame:
 
     """
-    This is Strategy that identify overbought or oversold market conditions. 
+    This is Strategy that identify overbought or oversold market conditions.
         1. Oversold: Price breaks below the lower band of the Bollinger Bands
         2. Overbought: Price breaks above the upper band of the Bollinger bands
-    
+
     Relies on concept "Mean reversion"
     Reference: https://www.investopedia.com/trading/using-bollinger-bands-to-gauge-trends/
     """
-
+    short_position = False
+    long_position = False
     df_with_signal = signals.bollinger_band(df, window=window, window_dev=window_dev)
-    typical_price = (df["close"] + df["low"]+ df["high"])/3
-    over_valued = df_with_signal["typical_price"]>= df_with_signal["BOLU"]
-    under_valued = df_with_signal["typical_price"]<=df_with_signal["BOLD"]
-    hold = typical_price.between(df_with_signal["BOLD"], df_with_signal["BOLU"])
+    for index, row in df_with_signal.iterrows():
+        # check if price breaks the bollinger bands
+        if row["typical_price"] >= row["BOLU"]:
+            short_position = True
+            
+        if row["typical_price"] <= row["BOLD"]:
+            long_position = True
 
-    df.loc[over_valued, PandasEnum.ALLOCATION.value] = -max_investment
-    df.loc[under_valued, PandasEnum.ALLOCATION.value] = max_investment
-    df.loc[hold, PandasEnum.ALLOCATION.value] = 0.0
+        # check if position needs to be closed
+        if short_position == True and row["typical_price"] <= row["BOLA"]:
+            short_position = False
+
+        if long_position == True and row["typical_price"] >= row["BOLA"]:
+            long_position = False
+
+        assert (not (short_position == True and long_position == True))
+
+        # allocation conditions
+        if (short_position == True):
+            df.loc[index, PandasEnum.ALLOCATION.value] = -max_investment
+            
+        elif (long_position == True):
+            df.loc[index, PandasEnum.ALLOCATION.value] = max_investment
+
+        else:
+            df.loc[index, PandasEnum.ALLOCATION.value] = 0.0
 
     return df
 
