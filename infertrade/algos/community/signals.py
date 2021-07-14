@@ -25,7 +25,7 @@ from sklearn.preprocessing import FunctionTransformer
 from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator
 from ta.momentum import rsi, stochrsi
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
-from ta.volatility import AverageTrueRange, bollinger_hband_indicator, bollinger_lband_indicator, bollinger_mavg
+from ta.volatility import AverageTrueRange, bollinger_hband, bollinger_hband_indicator, bollinger_lband, bollinger_lband_indicator, bollinger_mavg
 from infertrade.algos.external.ta import ta_adaptor
 from infertrade.PandasEnum import PandasEnum
 
@@ -167,10 +167,10 @@ def bollinger_band(df: pd.DataFrame, window: int = 20, window_dev: int = 2) -> p
     window_dev: number of standard deviation
     """
     df_with_signal = df.copy()
-    df_with_signal["typical_price"] = (df_with_signal["close"]+df_with_signal["low"]+df_with_signal["high"])/3
-    df_with_signal["BOLU"] = bollinger_hband_indicator(typical_price, window=window, window_dev=window_dev, fillna=True)
-    df_with_signal["BOLD"] = bollinger_lband_indicator(typical_price, window=window, window_dev=window_dev, fillna=True)
-    df_with_signal["BOLA"] = bollinger_mavg(typical_price, window=window, fillna=True)
+    df_with_signal["typical_price"] = (df["close"]+df["low"]+df["high"])/3
+    df_with_signal["BOLU"] = bollinger_hband(df_with_signal["typical_price"], window=window, window_dev=window_dev, fillna=True)
+    df_with_signal["BOLD"] = bollinger_lband(df_with_signal["typical_price"], window=window, window_dev=window_dev, fillna=True)
+    
     return df_with_signal
 
 

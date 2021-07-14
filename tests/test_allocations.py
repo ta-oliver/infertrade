@@ -123,6 +123,17 @@ def stochastic_relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd
     df["signal"] = stochRSI
     return df
 
+def bollinger_band(df: pd.DataFrame, window: int = 20, window_dev: int = 2) -> pd.DataFrame:
+    # Implementation of bollinger band
+    df_with_signal= df.copy()
+    typical_price = (df["close"]+df["low"]+df["high"])/3
+    df_with_signal["typical_price"]=typical_price
+    std_dev = df_with_signal["typical_price"].rolling(window=window).std(ddof=0)
+    SMA = df_with_signal["typical_price"].rolling(window=window).mean()
+    df_with_signal["BOLU"] = SMA + window_dev*std_dev
+    df_with_signal["BOLD"] = SMA - window_dev*std_dev
+    return df_with_signal
+
 """
 Tests for allocation strategies
 """
@@ -210,3 +221,16 @@ def test_Stochastic_RSI_strategy():
     df_with_signals.loc[hold, "allocation"]=0.0
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
+
+def test_bollinger_band_strategy():
+    
+    df_with_allocations = allocations.bollinger_band_strategy(df, 20, 2, max_investment).copy()
+    df_with_signal = bollinger_band(df,20, 2).copy()
+    over_valued = df_with_signal["typical_price"]>= df_with_signal["BOLU"]
+    under_valued = df_with_signal["typical_price"]<= df_with_signal["BOLD"]
+    hold = df_with_signal["typical_price"].between(df_with_signal["BOLD"], df_with_signal["BOLU"])
+    df_with_signal.loc[over_valued, "allocation"]=-max_investment
+    df_with_signal.loc[under_valued, "allocation"]=max_investment
+    df_with_signal.loc[hold, "allocation"]=0.0
+
+    assert pd.Series.equals(df_with_signal["allocation"], df_with_allocations["allocation"])

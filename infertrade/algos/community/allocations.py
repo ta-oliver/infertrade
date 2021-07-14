@@ -581,15 +581,15 @@ def bollinger_band_strategy(df: pd.DataFrame, window: int = 20, window_dev: int 
     """
 
     df_with_signal = signals.bollinger_band(df, window=window, window_dev=window_dev)
-    
-    over_valued = df_with_signal["typical_price"] >= df_with_signal["BOLU"]
-    under_valued = df_with_signal["typical_price"]<= df_with_signal["BOLD"]
-    hold = df_with_signal["typical_price"].between(df_with_signal["BOLD"], df_with_signal["BOLU"])
+    typical_price = (df["close"] + df["low"]+ df["high"])/3
+    over_valued = df_with_signal["typical_price"]>= df_with_signal["BOLU"]
+    under_valued = df_with_signal["typical_price"]<=df_with_signal["BOLD"]
+    hold = typical_price.between(df_with_signal["BOLD"], df_with_signal["BOLU"])
 
-
-    df.loc[over_valued, PandasEnum.ALLOCATION.value] = max_investment
-    df.loc[under_valued, PandasEnum.ALLOCATION.value] = -max_investment
+    df.loc[over_valued, PandasEnum.ALLOCATION.value] = -max_investment
+    df.loc[under_valued, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[hold, PandasEnum.ALLOCATION.value] = 0.0
+
     return df
 
 
@@ -778,6 +778,14 @@ infertrade_export_allocations = {
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L344"
+        },
+    },
+    "bollinger_band_strategy": {
+        "function": bollinger_band_strategy,
+        "parameters": {"window": 20, "window_dev": 2, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d13842aaae91afeb22c6631a06d7de4cb723ae23/infertrade/algos/community/allocations.py#L789"
         },
     },
 }
