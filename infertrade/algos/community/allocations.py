@@ -569,6 +569,29 @@ def EMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1)
     df.loc[price_below_signal, PandasEnum.ALLOCATION.value] = -max_investment
     return df
 
+def bollinger_band_strategy(df: pd.DataFrame, window: int = 20, window_dev: int = 2, max_investment: float = 0.1) -> pd.DataFrame:
+
+    """
+    This is Strategy that identify overbought or oversold market conditions. 
+        1. Oversold: Price breaks below the lower band of the Bollinger Bands
+        2. Overbought: Price breaks above the upper band of the Bollinger bands
+    
+    Relies on concept "Mean reversion"
+    Reference: https://www.investopedia.com/trading/using-bollinger-bands-to-gauge-trends/
+    """
+
+    df_with_signal = signals.bollinger_band(df, window=window, window_dev=window_dev)
+    
+    over_valued = df_with_signal["typical_price"] >= df_with_signal["BOLU"]
+    under_valued = df_with_signal["typical_price"]<= df_with_signal["BOLD"]
+    hold = df_with_signal["typical_price"].between(df_with_signal["BOLD"], df_with_signal["BOLU"])
+
+
+    df.loc[over_valued, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[under_valued, PandasEnum.ALLOCATION.value] = -max_investment
+    df.loc[hold, PandasEnum.ALLOCATION.value] = 0.0
+    return df
+
 
 infertrade_export_allocations = {
     "fifty_fifty": {

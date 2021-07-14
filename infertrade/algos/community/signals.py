@@ -155,19 +155,19 @@ def chande_kroll(
 def bollinger_band(df: pd.DataFrame, window: int = 20, window_dev: int = 2) -> pd.DataFrame:
     """
     This function calculates signal which characterizes the prices and volatility over time. 
-    There are three lines that compose Bollinger Bands:
+    There are three lines that compose Bollinger Bands. By default:
         1. Middle band: A 20 day simple moving average
-        2. The upper band: 2 standard deviations + from a 20-day simple moving average
-        3. The lower band: 2 standard deviations - from a 20-day SMA
+        2. The upper band: 2 standard deviations + from a 20 day simple moving average
+        3. The lower band: 2 standard deviations - from a 20 day SMA
     
     These can be adjusted by changing parameter window and window_dev
 
     Parameters:
     window: Smoothing period
-    window_dev: last n period over which standard deviation is calculated
+    window_dev: number of standard deviation
     """
     df_with_signal = df.copy()
-    typical_price = (df_with_signal["close"]+df_with_signal["low"]+df_with_signal["high"])/3
+    df_with_signal["typical_price"] = (df_with_signal["close"]+df_with_signal["low"]+df_with_signal["high"])/3
     df_with_signal["BOLU"] = bollinger_hband_indicator(typical_price, window=window, window_dev=window_dev, fillna=True)
     df_with_signal["BOLD"] = bollinger_lband_indicator(typical_price, window=window, window_dev=window_dev, fillna=True)
     df_with_signal["BOLA"] = bollinger_mavg(typical_price, window=window, fillna=True)
@@ -263,7 +263,7 @@ infertrade_export_signals = {
     },
     "bollinger_band": {
         "function": bollinger_band,
-        "parameters": {"window": 14, "window_dev": 2},
+        "parameters": {"window": 20, "window_dev": 2},
         "series": ["close", "high", "low"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5f74bdeb99eb26c15df0b5417de837466cefaee1/infertrade/algos/community/signals.py#L155"
