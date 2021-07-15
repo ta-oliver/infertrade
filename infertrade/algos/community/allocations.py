@@ -771,7 +771,7 @@ infertrade_export_allocations = {
     },
     "MACD_strategy": {
         "function": MACD_strategy,
-        "parameters": {"short_period": 12, "long_period": 26, "windows_signal": 9, "max_investment": 0.1},
+        "parameters": {"short_period": 12, "long_period": 26, "window_signal": 9, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L296"

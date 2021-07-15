@@ -240,7 +240,7 @@ infertrade_export_signals = {
     },
     "moving_average_convergence_divergence": {
         "function": moving_average_convergence_divergence,
-        "parameters": {"short_period": 12, "long_period": 26},
+        "parameters": {"short_period": 12, "long_period": 26, "window_signal": 9},
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L76"
