@@ -586,18 +586,17 @@ def bollinger_band_strategy(
     long_position = False
     df_with_signal = signals.bollinger_band(df, window=window, window_dev=window_dev)
     for index, row in df_with_signal.iterrows():
-        # check if price breaks the bollinger bands
-        if row["typical_price"] >= row["BOLU"]:
+
+        # Check if short position
+        if (row["typical_price"] >= row["BOLU"] or short_position == True) and row["typical_price"]>row["BOLA"]:
             short_position = True
-
-        if row["typical_price"] <= row["BOLD"]:
-            long_position = True
-
-        # check if position needs to be closed
-        if short_position == True and row["typical_price"] <= row["BOLA"]:
+        else:
             short_position = False
 
-        if long_position == True and row["typical_price"] >= row["BOLA"]:
+        # Check if long position
+        if row["typical_price"] <= row["BOLD"] or long_position == True and row["typical_price"] < row["BOLA"]:
+            long_position = True
+        else:
             long_position = False
 
         assert not (short_position == True and long_position == True)

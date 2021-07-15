@@ -224,9 +224,11 @@ def test_Stochastic_RSI_strategy():
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 def test_bollinger_band_strategy():
-    
-    df_with_allocations = allocations.bollinger_band_strategy(df, 20, 2, max_investment).copy()
-    df_with_signal = bollinger_band(df,20, 2).copy()
+    # Window_dev is kept lower to make sure prices breaks the band
+    window = 20
+    window_dev = 1
+    df_with_allocations = allocations.bollinger_band_strategy(df, window, window_dev, max_investment).copy()
+    df_with_signal = bollinger_band(df,window, window_dev).copy()
     short_position = False
     long_position = False
 
