@@ -9,31 +9,18 @@
 
 \begin{document}
 \logo
+\rulename{Trading Rule: Simple Moving Averages}
 \tblofcontents
-\section*{Trading Rule: Integer Differential Moving Averages}
 
-\subsection{Rule Description}
+\ruledescription{
+These representations have the position dependent on comparing two moving average windows one is short and the other is Long when the short window average length $\averagelengthshort$ is greater than the long one average length $\averagelengthlong$ so the model will go for the long position and when the short $\averagelengthshort$ is less than the long one $\averagelengthlong$, the position will be short}
+\\
 
-
-These representations have the position dependent on comparing two moving average windows one is short and the other is Long when the short window average length $\averagelengthshort$ is greater than the long one average length $\averagelengthlong$ so the model will go for the long position and when the short $\averagelengthshort$ is less than the long one $\averagelengthlong$, the position will be short \\
-
-\subsection{Rule Parameters}
-\begin{center}
-\begin{tabular}{|m{9em}| m{3em}| m{15em}| m{3em}|}
-\hline
-Parameter Name & Default Value &	Description & Symbol \\
-\hline
-Long Window size & 	10	 & This is the number of time steps over which exponential contributions are sourced. & $\averagelengthlong$ \\
-\hline
-Short Window Size & 	5	 & This is the decay factor that reduces older contributions from the price series. & $\averagelengthshort$ \\
-\hline
-
-\end{tabular}
-\end{center}
-
-\subsection{Equation}
-
-
+\ruleparameters
+{Long Window size}{10}{This is the number of time steps over which exponential contributions are sourced}{$\averagelengthlong$}
+{Short Window Size}{5}{This is the decay factor that reduces older contributions from the price series}{$\averagelengthshort$}
+\stoptable
+\section{Equation}
 \begin{equation}
 \sum_{\dummyiterator}^{\averagelengthlong} \price_{\currenttime - \dummyiterator} \\
 \label{eq1}
@@ -54,12 +41,6 @@ where $\price_\currenttime$ is the price at time $\currenttime$,
 \hspace{200mm}
 \hspace{200mm}
 
-\subsection*{Further Links}
-
-\begin{enumerate}
-    \item InferTrade: https://www.infertrade.com
-    \item Privacy Policy / Legal notice: https://www.infertrade.com/privacy-policy
-    \item InferStat Ltd: https://www.inferstat.com
-\end{enumerate}
-
+\keyterms
+\furtherlinks %The footer
 \end{document}
