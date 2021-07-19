@@ -21,9 +21,8 @@ Allocation algorithms are functions used to compute allocations - % of your port
 import numpy as np
 import pandas as pd
 from infertrade.PandasEnum import PandasEnum
+import infertrade.utilities.operations as operations
 import infertrade.algos.community.signals as signals
-from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator
-from ta.momentum import rsi, stochrsi
 
 
 def fifty_fifty(dataframe) -> pd.DataFrame:
@@ -70,6 +69,115 @@ def chande_kroll_crossover_strategy(
     return dataframe
 
 
+def change_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calculates a change relationship, which compares the asset's future price change to the last change in the signal series.
+
+    Notes:
+    - Does not fill NaNs in input, so full data needs to be supplied.
+    - Error estimation uses same window as used for calibrating regression coefficients
+    """
+    df = dataframe.copy()
+    regression_period = 120
+    minimum_length_to_calculate = regression_period + 1
+
+    if len(df[PandasEnum.MID.value]) < minimum_length_to_calculate:
+        df[PandasEnum.ALLOCATION.value] = 0.0
+        return df
+
+    calculate_change_relationship(df, regression_period)
+
+    return df
+
+
+def calculate_change_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
+    """Calculates allocations for change relationship."""
+    dataframe = df.copy()
+    dataframe[PandasEnum.SIGNAL.value] = dataframe["research"]
+    forecast_period = 100
+    signal_lagged = operations.lag(
+        np.reshape(dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values, (-1, 1)), shift=1
+    )
+    signal_lagged_pct_change = operations.pct_chg(signal_lagged)
+    signal_lagged_pct_change[0] = [0.0]
+    signal_lagged_pct_change[1] = [0.0]
+    last_feature_row = signal_lagged_pct_change[-1:]
+    signal_lagged_pct_change = signal_lagged_pct_change[:-1]
+    price_pct_chg = operations.pct_chg(dataframe[PandasEnum.MID.value])
+    price_pct_chg[0] = [0.0]
+
+    dataframe = operations.calculate_regression_with_kelly_optimum(
+        dataframe,
+        feature_matrix=signal_lagged_pct_change,
+        last_feature_row=last_feature_row,
+        target_array=price_pct_chg,
+        regression_period=regression_period,
+        forecast_period=forecast_period,
+        kelly_fraction=kelly_fraction,
+    )
+
+
+def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calculates a combination relationship, which compares the asset's future price change to the multivariate regression of the level of the signal, the last change in the signal and the difference between the signal and the price.
+
+    Notes:
+    - Does not fill NaNs in input, so full data needs to be supplied.
+    - Error estimation uses same window as used for calibrating regression coefficients
+    """
+
+    df = dataframe.copy()
+    regression_period = 120
+    minimum_length_to_calculate = regression_period + 1
+    if len(df[PandasEnum.MID.value]) < minimum_length_to_calculate:
+        df[PandasEnum.ALLOCATION.value] = 0.0
+        return df
+
+    calculate_combination_relationship(df, regression_period)
+
+    return df
+
+
+def calculate_combination_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
+    """Calculates allocations for combination relationship."""
+    dataframe = df.copy()
+    dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, "research"]
+    forecast_period = 100
+    signal_lagged = operations.lag(
+        np.reshape(dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values, (-1, 1)), shift=1
+    )
+    signal_lagged[0] = [0.0]
+    signal_lagged_pct_change = operations.pct_chg(signal_lagged)
+    signal_lagged_pct_change[0] = [0.0]
+    signal_lagged_pct_change[1] = [0.0]
+    signal_differenced = operations.research_over_price_minus_one(
+        np.column_stack(
+            (
+                dataframe[PandasEnum.MID.value].append(pd.Series([0])).values,
+                dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values,
+            )
+        ),
+        shift=1,
+    )
+    signal_differenced[0] = [0.0]
+    intermediate_matrix = np.column_stack((signal_lagged, signal_lagged_pct_change, signal_differenced))
+    last_feature_row = intermediate_matrix[-1:]
+    intermediate_matrix = intermediate_matrix[:-1]
+    price_pct_chg = operations.pct_chg(dataframe[PandasEnum.MID.value])
+    price_pct_chg[0] = [0.0]
+
+    dataframe = operations.calculate_regression_with_kelly_optimum(
+        dataframe,
+        feature_matrix=intermediate_matrix,
+        last_feature_row=last_feature_row,
+        target_array=price_pct_chg,
+        regression_period=regression_period,
+        forecast_period=forecast_period,
+        kelly_fraction=kelly_fraction,
+    )
+    return dataframe
+
+
 def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: float = 1.0) -> pd.DataFrame:
     """
     Returns a constant allocation, controlled by the fixed_allocation_size parameter.
@@ -79,6 +187,58 @@ def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: flo
     """
     dataframe[PandasEnum.ALLOCATION.value] = fixed_allocation_size
     return dataframe
+
+
+def difference_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calculates a difference relationship, which compares the asset's future price change to the last difference between the signal series and asset price.
+
+    Notes:
+    - Does not fill NaNs in input, so full data needs to be supplied.
+    - Error estimation uses same window as used for calibrating regression coefficients
+    """
+
+    df = dataframe.copy()
+    regression_period = 120
+    minimum_length_to_calculate = regression_period + 1
+    if len(dataframe[PandasEnum.MID.value]) < minimum_length_to_calculate:
+        dataframe[PandasEnum.ALLOCATION.value] = 0.0
+        return df
+
+    calculate_difference_relationship(df, regression_period)
+
+    return df
+
+
+def calculate_difference_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
+    """Calculates allocations for difference relationship."""
+    dataframe = df.copy()
+    dataframe[PandasEnum.SIGNAL.value] = dataframe["research"]
+    forecast_period = 100
+    signal_differenced = operations.research_over_price_minus_one(
+        np.column_stack(
+            (
+                dataframe[PandasEnum.MID.value].append(pd.Series([0])).values,
+                dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values,
+            )
+        ),
+        shift=1,
+    )
+    signal_differenced[0] = [0.0]
+    last_feature_row = signal_differenced[-1:]
+    signal_differenced = signal_differenced[:-1]
+    price_pct_chg = operations.pct_chg(dataframe[PandasEnum.MID.value])
+    price_pct_chg[0] = [0.0]
+
+    dataframe = operations.calculate_regression_with_kelly_optimum(
+        dataframe,
+        feature_matrix=signal_differenced,
+        last_feature_row=last_feature_row,
+        target_array=price_pct_chg,
+        regression_period=regression_period,
+        forecast_period=forecast_period,
+        kelly_fraction=kelly_fraction,
+    )
 
 
 def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: float = 0.0) -> pd.DataFrame:
@@ -91,6 +251,53 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
     constant: scalar value added to the allocation size.
     """
     dataframe[PandasEnum.ALLOCATION.value] = (dataframe["high"] - dataframe["low"]) * scale + constant
+    return dataframe
+
+
+def level_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calculates a level relationship, which compares the asset's future price change to the last value of the signal series.
+
+    Notes:
+    - Does not fill NaNs in input, so full data needs to be supplied.
+    - Error estimation uses same window as used for calibrating regression coefficients
+    """
+
+    df = dataframe.copy()
+    regression_period = 120
+    minimum_length_to_calculate = regression_period + 1
+    if len(dataframe[PandasEnum.MID.value]) < minimum_length_to_calculate:
+        dataframe[PandasEnum.ALLOCATION.value] = 0.0
+        return df
+
+    calculate_level_relationship(df, regression_period)
+
+    return df
+
+
+def calculate_level_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
+    """Calculates allocations for level relationship."""
+    dataframe = df.copy()
+    dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, "research"]
+    forecast_period = 100
+    signal_lagged = operations.lag(
+        np.reshape(dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values, (-1, 1)), shift=1
+    )  # revert back to manually calculating last row? doing it manually seems awkward, doing it this way seems wasteful, altering the the lag (or other) function seems hacky
+    signal_lagged[0] = [0.0]
+    last_feature_row = signal_lagged[-1:]
+    signal_lagged = signal_lagged[:-1]
+    price_pct_chg = operations.pct_chg(dataframe[PandasEnum.MID.value])
+    price_pct_chg[0] = [0.0]
+
+    dataframe = operations.calculate_regression_with_kelly_optimum(
+        dataframe,
+        feature_matrix=signal_lagged,
+        last_feature_row=last_feature_row,
+        target_array=price_pct_chg,
+        regression_period=regression_period,
+        forecast_period=forecast_period,
+        kelly_fraction=kelly_fraction,
+    )
     return dataframe
 
 
@@ -266,6 +473,7 @@ def buy_golden_cross_sell_death_cross(
 
     return df
 
+
 def SMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1) -> pd.DataFrame:
     """
     Simple simple moving average strategy which buys when price is above signal and sells when price is below signal
@@ -283,7 +491,7 @@ def SMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1)
 def WMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1) -> pd.DataFrame:
 
     """
-    Simple Weighted moving average strategy which buys when price is above signal and sells when price is below signal
+    Weighted moving average strategy which buys when price is above signal and sells when price is below signal
     """
     WMA = signals.weighted_moving_average(df, window=window)["signal"]
 
@@ -313,7 +521,7 @@ def MACD_strategy(
 
 def RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1) -> pd.DataFrame:
     """
-    Moving average convergence divergence strategy which buys when MACD signal is above 0 and sells when MACD signal is below zero
+    Relative Strength Index
     """
     # https://www.investopedia.com/terms/r/rsi.asp
     RSI = signals.relative_strength_index(df, window=window)["signal"]
@@ -350,7 +558,7 @@ def stochastic_RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: 
 def EMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1) -> pd.DataFrame:
 
     """
-    Simple Weighted moving average strategy which buys when price is above signal and sells when price is below signal
+    Exponential moving average strategy which buys when price is above signal and sells when price is below signal
     """
     EMA = signals.exponentially_weighted_moving_average(df, window=window)["signal"]
 
@@ -368,7 +576,7 @@ infertrade_export_allocations = {
         "parameters": {},
         "series": [],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b2cf85c28ed574b8c246ab31125a9a5d51a8c43e/infertrade/algos/community/allocations.py#L28"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
     },
     "buy_and_hold": {
@@ -376,7 +584,7 @@ infertrade_export_allocations = {
         "parameters": {},
         "series": [],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b2cf85c28ed574b8c246ab31125a9a5d51a8c43e/infertrade/algos/community/allocations.py#L34"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L37"
         },
     },
     "chande_kroll_crossover_strategy": {
@@ -384,7 +592,39 @@ infertrade_export_allocations = {
         "parameters": {},
         "series": [],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/df1f6f058b38e0ff9ab1250bb43ffb220b3a4725/infertrade/algos/community/allocations.py#L39"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L43"
+        },
+    },
+    "change_relationship": {
+        "function": change_relationship,
+        "parameters": {},
+        "series": [],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L59"
+        },
+    },
+    "combination_relationship": {
+        "function": combination_relationship,
+        "parameters": {},
+        "series": [],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
+        },
+    },
+    "difference_relationship": {
+        "function": difference_relationship,
+        "parameters": {},
+        "series": [],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
+        },
+    },
+    "level_relationship": {
+        "function": level_relationship,
+        "parameters": {},
+        "series": [],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
     },
     "constant_allocation_size": {
@@ -392,7 +632,7 @@ infertrade_export_allocations = {
         "parameters": {"fixed_allocation_size": 1.0},
         "series": [],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b2cf85c28ed574b8c246ab31125a9a5d51a8c43e/infertrade/algos/community/allocations.py#L40"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
     },
     "high_low_difference": {
@@ -400,7 +640,7 @@ infertrade_export_allocations = {
         "parameters": {"scale": 1.0, "constant": 0.0},
         "series": ["high", "low"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b2cf85c28ed574b8c246ab31125a9a5d51a8c43e/infertrade/algos/community/allocations.py#L51"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
     },
     "sma_crossover_strategy": {
@@ -408,7 +648,7 @@ infertrade_export_allocations = {
         "parameters": {"fast": 0, "slow": 0},
         "series": ["price"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/87185ebadc654b50e1bcfdb9a19f31c263ed7d53/infertrade/algos/community/allocations.py#L62"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
     },
     "weighted_moving_averages": {
@@ -421,7 +661,7 @@ infertrade_export_allocations = {
         },
         "series": ["research"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b2cf85c28ed574b8c246ab31125a9a5d51a8c43e/infertrade/algos/community/allocations.py#L64"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
     },
     "change_regression": {
@@ -429,7 +669,7 @@ infertrade_export_allocations = {
         "parameters": {"change_coefficient": 0.1, "change_constant": 0.1},
         "series": ["research"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L161"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
     },
     "difference_regression": {
@@ -437,7 +677,7 @@ infertrade_export_allocations = {
         "parameters": {"difference_coefficient": 0.1, "difference_constant": 0.1},
         "series": ["price", "research"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L178"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
     },
     "level_regression": {
@@ -445,7 +685,7 @@ infertrade_export_allocations = {
         "parameters": {"level_coefficient": 0.1, "level_constant": 0.1},
         "series": ["research"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L197"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
     },
     "level_and_change_regression": {
@@ -453,7 +693,20 @@ infertrade_export_allocations = {
         "parameters": {"level_coefficient": 0.1, "change_coefficient": 0.1, "level_and_change_constant": 0.1},
         "series": ["research"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e190e31eb8a3edfaac1d1f4904a88712b0db0fe5/infertrade/algos/community/allocations.py#L215"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
+        },
+    },
+    "buy_golden_cross_sell_death_cross": {
+        "function": buy_golden_cross_sell_death_cross,
+        "parameters": {
+            "allocation_size": 0.5,
+            "deallocation_size": 0.5,
+            "short_term_moving_avg_length": 50,
+            "long_term_moving_avg_length": 200,
+        },
+        "series": ["research"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
     },
     "SMA_strategy": {
@@ -461,7 +714,7 @@ infertrade_export_allocations = {
         "parameters": {"window": 1, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L269"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
     },
     "WMA_strategy": {
@@ -469,15 +722,15 @@ infertrade_export_allocations = {
         "parameters": {"window": 1, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L282"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L282"
         },
     },
     "MACD_strategy": {
         "function": MACD_strategy,
-        "parameters": {"short_period": 12, "long_period": 26, "windows_signal": 9, "max_investment": 0.1},
+        "parameters": {"short_period": 12, "long_period": 26, "window_signal": 9, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L296"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L296"
         },
     },
     "RSI_strategy": {
@@ -485,7 +738,7 @@ infertrade_export_allocations = {
         "parameters": {"window": 14, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L309"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L309"
         },
     },
     "stochastic_RSI_strategy": {
@@ -493,7 +746,7 @@ infertrade_export_allocations = {
         "parameters": {"window": 14, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/acd0181fdede26dd08feb9ffc871fe3f63276cf9/infertrade/algos/community/allocations.py#L325"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L325"
         },
     },
     "EMA_strategy": {
@@ -501,7 +754,7 @@ infertrade_export_allocations = {
         "parameters": {"window": 1, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/61de92d057ec5d7b25fb8dbe18a259463525ff2a/infertrade/algos/community/allocations.py#L344"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L344"
         },
     },
 }
