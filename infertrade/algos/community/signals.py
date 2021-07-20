@@ -22,7 +22,7 @@ import pandas as pd
 import numpy as np
 from pandas.core.frame import DataFrame
 from sklearn.preprocessing import FunctionTransformer
-from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator
+from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator, dpo
 from ta.momentum import rsi, stochrsi
 from ta.volatility import (
     AverageTrueRange,
@@ -183,6 +183,16 @@ def bollinger_band(df: pd.DataFrame, window: int = 20, window_dev: int = 2) -> p
     return df_with_signal
 
 
+def detrended_price_oscillator(df: pd.DataFrame, window: int = 20) -> pd.DataFrame:
+    """
+    This function is a detrended price oscillator which strips out price trends in an effort to 
+    estimate the length of price cycles from peak to peak or trough to trough.
+    """
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = dpo(df["close"], window=window, fillna=True)
+    return df_with_signal
+
+
 # creates wrapper classes to fit sci-kit learn interface
 def scikit_signal_factory(signal_function: callable):
     """A class compatible with Sci-Kit Learn containing the signal function."""
@@ -276,6 +286,14 @@ infertrade_export_signals = {
         "series": ["close", "high", "low"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5f74bdeb99eb26c15df0b5417de837466cefaee1/infertrade/algos/community/signals.py#L155"
+        },
+    },
+    "detrended_price_oscillator": {
+        "function": detrended_price_oscillator,
+        "parameters": {"window": 20},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5f74bdeb99eb26c15df0b5417de837466cefaee1/infertrade/algos/community/signals.py#L186"
         },
     },
 }
