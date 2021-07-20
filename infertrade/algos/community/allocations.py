@@ -555,7 +555,7 @@ def stochastic_RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: 
     return df
 
 
-def EMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1) -> pd.DataFrame:
+def EMA_strategy(df: pd.DataFrame, window: int = 50, max_investment: float = 0.1) -> pd.DataFrame:
 
     """
     Exponential moving average strategy which buys when price is above signal and sells when price is below signal
@@ -795,7 +795,7 @@ infertrade_export_allocations = {
     },
     "EMA_strategy": {
         "function": EMA_strategy,
-        "parameters": {"window": 1, "max_investment": 0.1},
+        "parameters": {"window": 50, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L344"

@@ -75,7 +75,7 @@ def weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     return df_with_signal
 
 
-def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
+def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 50) -> pd.DataFrame:
     """
     This function uses an exponentially weighted multiplier to give more weight to recent prices.
     """
@@ -232,7 +232,7 @@ infertrade_export_signals = {
     },
     "exponentially_weighted_moving_average": {
         "function": exponentially_weighted_moving_average,
-        "parameters": {"window": 1},
+        "parameters": {"window": 50},
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L69"
