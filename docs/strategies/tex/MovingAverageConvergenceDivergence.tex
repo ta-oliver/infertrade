@@ -14,31 +14,37 @@ The MACD is calculated by subtracting the 26-period exponential moving average (
 }
 
 \howtotrade
-{}
+{The strategy is to identify bullish and bearish crossovers.
+Bullish crossover - when MACD line cross above the signal line
+Bearish Crossover - when signal line cross above the MACD line.
+}
 
-\ruleparameters%You can include however many arguments (in groups of 4) as you want!
-{Change Coefficient}{0.1}{Multiplier for regression.}{$k_1$}
-{Constant Coefficient}{0.1}{Initial constant for regression.}{$k_2$}
-\stoptable %must be included or Tex engine runs infinitely
+\ruleparameters
+{Short term look back Length}{12}{Short term look back length used to compute EMA.}{$\lookbacklength_{s}$}
+{Long term look back Length}{26}{Long term look back length used to compute EMA.}{$\lookbacklength_{l}$}
+{Signal look back Length}{9}{Look back length used to generate Signal line.}{$S_{l}$}
+\stoptable
 
+\newpage
 \section{Equation}
 Below are the equations which govern how this specific trading rule calculates a trading position.
 
 \begin{equation}
-MACD = EMA(t_{1}) - EMA(t_{2})
+MACD = EMA(\lookbacklength_{s}) - EMA(\lookbacklength_{l})
+\end{equation}
+\\
+\begin{equation}
+Signal = EMA(S_{l})
 \end{equation}
 \\ % creates some space after equation
 with:
 
-$\position_\currenttime$: is the portfolio allocation at time $\currenttime$
+$EMA(\lookbacklength_{s})$: is the short term exponentially weighted average.
 
-$R_t$: Research value at time $\currenttime$
+$EMA(\lookbacklength_{l})$: is the long term exponentially weighted average.
 
-$R_{t-1}$: Research value at time $\currenttime -1$
+$EMA(S_{l})$: is the exponentially weighted average computed to generate signal line.
 
-$k_1$: level coefficient
-
-$k_2$: static coefficient
 
 \keyterms
 \furtherlinks %The footer
