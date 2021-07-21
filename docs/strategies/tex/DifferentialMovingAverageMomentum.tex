@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+\begin{document}
+
+\logo
+
+\rulename{Differential Moving Average Momentum}
+\tblofcontents
+\ruledescription{This trading rules takes the slope, or derivative or momentum of two different price moving averages and subtracts one slope from the other to determine position size. The parameters accepted are the momentum length, the look back length of the short moving average and the look back length of the long moving average.}
+
+\ruleparameters
+{Short price average length}{20}{Number of days in the short price
+average.}{$\averagelengthshort^{\price}$}
+{Long price average length}{100}{Number of additional days in the longer price average (added to the number in the short price average).}{$\averagelengthlong^{\price}$}
+{Moving average momentum length}{5}{Number of days in the moving
+average slope calculation.}{$M^{\price}$}
+\stoptable
+
+
+\section{Equation}
+
+\begin{equation}
+\bigcontribution(\averagelengthshort, \price) = \frac{1}{\averagelengthshort} \sum_{\dummyiterator=0}^{\averagelengthshort} \price_{n}
+\end{equation}
+
+\begin{equation}
+\bigcontribution(\averagelengthlong, \price) = \frac{1}{\averagelengthlong} \sum_{\dummyiterator=0}^{\averagelengthlong} \price_{n}
+\end{equation}
+
+\begin{equation}
+\bigcontribution(\bigcontribution(\averagelengthshort, \price), M^{\price}, \currenttime) = \frac
+{(\bigcontribution(\averagelengthshort, \price)(t) -
+(\bigcontribution(\averagelengthshort, \price)(\currenttime - M^{\price}))}
+{M^{\price}}
+\end{equation}
+
+\begin{equation}
+\bigcontribution(\bigcontribution(\averagelengthlong, \price), M^{\price}, \currenttime) = \frac
+{(\bigcontribution(\averagelengthlong, \price)(t) -
+(\bigcontribution(\averagelengthlong, \price)(\currenttime - M^{\price}))}
+{M^{\price}}
+\end{equation}
+
+\begin{equation}
+\position(\currenttime) =
+\bigcontribution(\bigcontribution(\averagelengthshort, \price), M^{\price}, \currenttime) - \bigcontribution(\bigcontribution(\averagelengthlong, \price), M^{\price}, \currenttime)
+\end{equation}
+
+\hspace{200mm}
+
+\noindent where $\position_\currenttime$ is the portfolio allocation at time $\currenttime$ and $\price = \price(\currenttime)$ is the value of the price series.
+
+\hspace{200mm}
+\hspace{200mm}
+
+\keyterms
+
+\furtherlinks
+
+\end{document}

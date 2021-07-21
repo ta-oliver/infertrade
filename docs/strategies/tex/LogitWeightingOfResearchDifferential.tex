@@ -63,18 +63,18 @@ where $\price_\currenttime$ is the price at time $\currenttime$, $\research$ is 
 \hspace{200mm}
 
 
-\begin{Strategy Rationale}
+\section{Strategy Rationale}
 
 Proportional Weighting is a strategy that seeks to capture smaller deviations from fair value between a price series and another time series - a comparable security or price forecast. If the price series tends to mean revert, then proportional weighting will take increasing positions for larger deviations from fair value.
-
+\\
 The advantage of some scaling in for medium positions is that the frequency of small bets may be much more than the big bets.
-
+\\
 Compare mean reversion with 100\% in at 10\% cheap, versus 50\% in at 5\% cheap, 100\% in at 10\% cheap. Imagine the market is 10\% cheap 2 times in five years. You will make 20\% from riding the 10\% gains twice if eventually reverts.
-
+\\
 If market is 5\% cheap only twice in five years (i.e. it tends to become 10\% cheap if 5\% cheap) then scaling in is worse, because you only gain 15\% (half of what you invested was at 5\% cheap, not 10\% cheap). 50\% * 5\% * 2 + 50\% * 10\% * 2 = 15\%
-
+\\
 If however market is 5\% cheap 10 times in five years then scaling in performs better as you make 50\% * 5\% * 10 + 50\% * 10\% * 2 =  35\%.
-
+\\
 So scaling in, using strategies like Proportional Weighting, allows you to make money from smaller opportunities, at the expense of less gain for bigger opportunities and a deeper maximum loss (as at the bottom you have lost 5\% more on 50\% of your holdings).
 
 \keyterms

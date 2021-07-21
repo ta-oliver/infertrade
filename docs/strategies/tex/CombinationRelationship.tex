@@ -15,7 +15,7 @@
 \normalsize%
 \logo%
 \rulename{Combination Relationship}%
-\tableofcontents%
+\tblofcontents
 
 \relationshipdescription{
 \justify
@@ -59,7 +59,7 @@ E^{model}_{\currenttime}[\Delta \price_{\currenttime+1}] = \amplitudecoefficient
 
 \vspace{1mm}
 \begin{equation}
-    \position_\currenttime = 
+    \position_\currenttime =
     \begin{cases}
     \frac{\Delta \price_{\currenttime+1}}{\rmserrorsquared} & \text{if } \currenttime > L,\\
     0                                        & \text{otherwise}
@@ -78,8 +78,8 @@ We see from this example the expected gain over the next day is 2.5 basis points
 \vspace{1mm}
 \justify (Note that if the magnitude of the error term is smaller than the magnitude of the price change prediction, i.e. $|\rmserror| < |\Delta\price_{\currenttime+1}|$, dividing $\Delta\price_{\currenttime+1}$ by $\rmserrorsquared$ would result in $\position_\currenttime>1$. Limits can then be applied to cap the allocation. E.g. between 0\% and 100\% if short selling is prohibited. In practice it is generally unlikely that in liquid markets a genuine statistical trading signal this strong will be found.)
 
-\\
-\vspace{1mm}
+% \\
+% \vspace{1mm}
 \fixedruleparameters
 {Regression Length}{120}{This is the number of previous days used to estimate the regression coefficients.}{$\lookbacklength$}%
 \stoptable 

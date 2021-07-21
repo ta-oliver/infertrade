@@ -1,33 +1,36 @@
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Created by: Joshua Mason
+# Created date: 11/03/2021
+# Copyright 2021 InferStat Ltd
+
 """
-Utility code for operations such as converting positions to price predictions and vice versa.
-
-Copyright 2021 InferStat Ltd
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-Created by: Joshua Mason
-Created date: 11/03/2021
+This submodule includes facilities for operations such as converting positions to price predictions and vice versa.
 """
+
 
 from copy import deepcopy
-from typing import List, Union
-
+from typing import List, Tuple, Union
 import numpy as np
 import pandas as pd
+from pandas.core.frame import DataFrame
+
 from sklearn.base import TransformerMixin, BaseEstimator
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
 from sklearn.pipeline import make_pipeline, FeatureUnion
 from sklearn.preprocessing import FunctionTransformer, Binarizer
 from infertrade.utilities.performance import calculate_portfolio_performance_python
@@ -35,7 +38,15 @@ from infertrade.PandasEnum import PandasEnum, create_price_column_from_synonym
 
 
 def pct_chg(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
-    """Percentage change between the current and a prior element."""
+    """Percentage change between the current and a prior element.
+
+    Args:
+        x: A numpy.ndarray or pandas.Series object
+
+    Returns:
+        A numpy.ndarray with the results
+
+    """
     x = x.astype("float64")
 
     if isinstance(x, pd.DataFrame):
@@ -48,77 +59,34 @@ def pct_chg(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
     return pc
 
 
-def diff_log(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
-    """Differencing and log transformation between the current and a prior element."""
-    x = x.astype("float64")
-    dl = np.diff(np.log(x), n=1, prepend=np.nan, axis=0)
-    return dl
-
-
 def lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
-    """Lag (shift) series by desired number of periods."""
+    """Lag (shift) series by desired number of periods.
+
+    Args:
+        x: A numpy.ndarray or pandas.Series object
+        shift: The number of periods by which to shift the input time series
+
+    Returns:
+        A numpy.ndarray with the results
+
+    """
     x = x.astype("float64")
     lagged_array = np.roll(x, shift=shift, axis=0)
     lagged_array[:shift, :] = np.nan
     return lagged_array
 
 
-def dl_lag(x: Union[np.ndarray, pd.Series], shift: int = 1) -> np.ndarray:
-    """Differencing and log transformation of lagged series."""
-    x = x.astype("float64")
-
-    dl_trans = FunctionTransformer(diff_log)
-    lag_trans = FunctionTransformer(lag, kw_args={"shift": shift})
-
-    dl_lag_pipe = make_pipeline(dl_trans, lag_trans)
-
-    dll = dl_lag_pipe.fit_transform(x)
-    return dll
-
-
-def zero_one_dl(x: Union[np.ndarray, pd.Series]) -> np.ndarray:
-    """Returns ones for positive values of "diff-log" series, and zeros for negative values."""
-    x = x.astype("float64")
-
-    dl_trans = FunctionTransformer(diff_log)
-
-    zero_one_pipe = make_pipeline(
-        dl_trans, SimpleImputer(strategy="constant", fill_value=0.0), Binarizer(threshold=0.0)
-    )
-    zero_one = zero_one_pipe.fit_transform(x)
-    return zero_one
-
-
-def moving_average(x: Union[np.ndarray, pd.Series], window: int) -> np.ndarray:
-    """Calculate moving average of series for desired number of periods (window)."""
-    x = np.array(x)
-    x = x.astype("float64")
-
-    x_pd = pd.DataFrame(x, columns=["x"])
-    ma = x_pd["x"].rolling(window=window).mean()
-    ma_np = np.reshape(ma.values, (-1, 1))
-    return ma_np
-
-
-def log_price_minus_log_research(x: Union[np.ndarray, pd.Series], shift: int) -> np.ndarray:
-    """Difference of two lagged log series."""
-    x = np.array(x)
-    x = x.astype("float64")
-
-    if x.shape[1] != 2:
-        raise IndexError(f"Number of columns must be 2.")
-
-    lag_trans = FunctionTransformer(lag, kw_args={"shift": shift})
-
-    pmr_pipe = make_pipeline(lag_trans)
-    lagged = pmr_pipe.fit_transform(x)
-
-    pmr = np.log(lagged[:, [0]]) - np.log(lagged[:, [1]])
-    return pmr
-
-
 def research_over_price_minus_one(x: Union[np.ndarray, pd.Series], shift: int) -> np.ndarray:
-    """Difference of two lagged log series."""
+    """Difference of two lagged log series.
+
+    Args:
+        x: A numpy.ndarray or pandas.Series object with exactly two columns
+        shift: The number of periods by which the lag both series
+
+    Returns:
+        A numpy.ndarray with the results
+
+    """
     x = np.array(x)
     x = x.astype("float64")
 
@@ -136,10 +104,23 @@ def research_over_price_minus_one(x: Union[np.ndarray, pd.Series], shift: int) -
 
 class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
 
-    """Class for creating price predictions from signal values."""
+    """This class creates price predictions from signal values.
+
+    Attributes:
+        market_to_trade: The name of the column which contains the historical prices.
+
+    """
 
     def __init__(self, market_to_trade: str = None):
-        """We create by determining one input column as being the price to target."""
+        """Construction method for class PricePredictionFromPositions.
+
+        Args:
+            market_to_trade: The name of the column which contains the historical prices.
+
+        Returns:
+            None
+
+        """
         if not market_to_trade:
             # We default to "price" as the target.
             market_to_trade = PandasEnum.MID.value
@@ -149,8 +130,16 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
         self.fitted_features_and_target_ = None
         return self
 
-    def transform(self, X, y=None):
-        """We transform a signal input to a price prediction."""
+    def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
+        """This method transforms a signal input to a price prediction.
+
+        Args:
+            X: A pandas.DataFrame object
+
+        Returns:
+            A pandas.DataFrame object
+
+        """
         X_ = deepcopy(X)
 
         create_price_column_from_synonym(X_)
@@ -183,7 +172,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
             X_[PandasEnum.FORECAST_PRICE_CHANGE.value].shift(-1)
         return X_
 
-    def _get_features_matrix_transformer(self):
+    def _get_features_matrix_transformer(self) -> ColumnTransformer:
         """
         1. Percent change of research series as predictor.
         2. Research series level as predictor.
@@ -205,9 +194,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
         self.feature_names = ["signal", "signal_changes", "signal_differences"]
         return features
 
-    def _get_features_matrix_target_array(
-        self, input_time_series: pd.DataFrame
-    ) -> [pd.Series, pd.Series]:  # TODO - argument hints please.
+    def _get_features_matrix_target_array(self, input_time_series: pd.DataFrame) -> Tuple[pd.Series, pd.Series]:
         """Returns the target array features."""
         feat_tar_arr = self.fitted_features_and_target_.transform(input_time_series)
         feat_tar_arr = np.nan_to_num(feat_tar_arr, nan=0.0, posinf=0.0, neginf=0.0)
@@ -270,22 +257,42 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
                 ind_pred_end = series_length
 
             indices_for_prediction.append(
-                {"model_idx": range(ind_start, ind_end), "prediction_idx": range(ind_pred_start, ind_pred_end),}
+                {"model_idx": range(ind_start, ind_end), "prediction_idx": range(ind_pred_start, ind_pred_end)}
             )
 
         return indices_for_prediction
 
 
 class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
+
     """This class calculates the positions to take assuming Kelly Criterion."""
 
     def __init__(self):
+        """Construction method for class PositionsFromPricePrediction.
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        """
         pass
 
     def fit(self, X, y=None):
+        """This method is not used."""
         return self
 
-    def transform(self, X, y=None):
+    def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
+        """This method calculates the positions to be taken based on the forecast price, assuming the Kelly Criterion.
+
+        Args:
+            X: A pandas.DataFrame object
+
+        Returns:
+            A pandas.DataFrame object
+
+        """
         X_ = deepcopy(X)
         volatility = 0.1
         kelly_fraction = 1.0
@@ -296,20 +303,36 @@ class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
 
 
 class PricePredictionFromPositions(TransformerMixin, BaseEstimator):
-    """
-    This converts positions into implicit price predictions based on the Kelly Criterion and an assumed volatility.
-    """
+    """This class converts positions into implicit price predictions based on the Kelly Criterion and an assumed volatility."""
 
     def __init__(self):
-        """Trivial creation method."""
+        """Construction method for class PricePredictionFromPositions.
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        """
+
         pass
 
     def fit(self, X, y=None):
-        """Not used."""
+        """This method is not used."""
         return self
 
-    def transform(self, X: pd.DataFrame, y=None):
-        """Converts allocations into the forecast one-day price changes."""
+    def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
+        """This method converts allocations into the forecast one-day price changes.
+
+        Args:
+            X: A pandas.DataFrame object
+
+        Returns:
+            A pandas.DataFrame object
+
+        """
+
         X_ = deepcopy(X)
         volatility = 0.1
         kelly_fraction = 1.0
@@ -320,19 +343,221 @@ class PricePredictionFromPositions(TransformerMixin, BaseEstimator):
 
 
 class ReturnsFromPositions(TransformerMixin, BaseEstimator):
-    """This calculate returns from positions."""
+    """This class calculates returns from positions."""
 
     def __init__(self):
-        """Trivial creation method."""
+        """Construction method for class ReturnsFromPositions.
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        """
         pass
 
     def fit(self, X, y=None):
-        """Not used."""
+        """This method is not used."""
         return self
 
-    def transform(self, X: pd.DataFrame, y=None):
-        """Converts positions into the cumulative portfolio return."""
+    def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
+        """This method converts positions into the cumulative portfolio return.
+
+        Args:
+            X: A pandas.DataFrame object
+
+        Returns:
+            A pandas.DataFrame object
+
+        """
         X_1 = deepcopy(X)
         X_2 = deepcopy(X)
         X_1[PandasEnum.VALUATION.value] = calculate_portfolio_performance_python(X_2)[PandasEnum.VALUATION.value]
         return X_1
+
+
+def limit_allocation(
+    dataframe: pd.DataFrame, allocation_lower_limit: Union[int, float], allocation_upper_limit: Union[int, float]
+) -> pd.DataFrame:
+    """
+    This function limits the ranges by limiting upper and lower limit of allocated values
+
+    params:
+    allocated_dataframe
+    allocation_lower_limit: the lower limit for allocation values.
+    allocation_upper_limit: the upper limit for allocation values.
+
+    returns:
+    allocation limited dataframe
+    """
+    if allocation_lower_limit > allocation_upper_limit:
+        raise ValueError(
+            "The lower limit for allocation values should not be greater than the upper limit for" " allocation values."
+        )
+    dataframe.loc[
+        dataframe[PandasEnum.ALLOCATION.value] > allocation_upper_limit, PandasEnum.ALLOCATION.value
+    ] = allocation_upper_limit
+    dataframe.loc[
+        dataframe[PandasEnum.ALLOCATION.value] < allocation_lower_limit, PandasEnum.ALLOCATION.value
+    ] = allocation_lower_limit
+    return dataframe
+
+
+def daily_stop_loss(dataframe: pd.DataFrame, loss_limit: float) -> pd.DataFrame:
+    """
+    This function calculates loss and limit the allocation accordingly.
+    It restricts allocation to 0 if loss>loss_limit
+
+    params:
+    allocated_dataframe
+    loss_limit
+
+    returns:
+    dataframe
+    """
+
+    prev_alloc = 0
+    prev_price = 0
+    stop_loss_has_triggered = False
+    for index, row in dataframe.iterrows():
+        price_change = row.price - prev_price
+        loss = -price_change * prev_alloc
+        if loss > loss_limit or stop_loss_has_triggered:
+            stop_loss_has_triggered = True
+            row.allocation = 0
+        prev_alloc = row.allocation
+        prev_price = row.price
+    return dataframe
+
+
+def restrict_allocation(allocation_function: callable) -> callable:
+    """
+    This function is intended to be used as a decorator that may apply one or more restrictions to functions that calculate
+    allocation values.
+    """
+
+    def restricted_function(*args, **kwargs) -> pd.DataFrame:
+
+        # Get allocation dataframe from allocation function
+        dataframe = allocation_function(*args, **kwargs)
+
+        # Restriction by limiting allocations between range
+
+        # initialize limits
+        allocation_lower_limit = 0
+        allocation_upper_limit = 1
+
+        if "allocation_lower_limit" in kwargs:
+            allocation_lower_limit = kwargs.get("allocation_lower_limit")
+            dataframe = limit_allocation(dataframe, allocation_lower_limit, allocation_upper_limit)
+
+        if "allocation_lower_limit" in kwargs:
+            allocation_upper_limit = kwargs.get("allocation_upper_limit")
+            dataframe = limit_allocation(dataframe, allocation_lower_limit, allocation_upper_limit)
+
+        # Restriction by daily stop loss
+        loss_limit = None
+        if "loss_limit" in kwargs:
+            loss_limit = kwargs.get("loss_limit")
+            dataframe = daily_stop_loss(dataframe, loss_limit)
+
+        return dataframe
+
+    return restricted_function
+
+
+def calculate_regression_with_kelly_optimum(
+    df: pd.DataFrame,
+    feature_matrix: pd.Series,
+    last_feature_row: np.ndarray,
+    target_array: pd.Series,
+    regression_period: int,
+    forecast_period: int,
+    kelly_fraction: float = 1.0,
+):
+
+    # Refactor to make original method static.
+    dataframe = df.copy()
+    prediction_indices = PricePredictionFromSignalRegression._get_model_prediction_indices(
+        series_length=len(feature_matrix), reg_period=regression_period, forecast_period=forecast_period
+    )
+
+    if not len(prediction_indices) > 0:
+        raise IndexError("Unexpected error: Prediction indices are zero in length.")
+
+    for ii_day in range(len(prediction_indices)):
+        model_idx = prediction_indices[ii_day]["model_idx"]
+        prediction_idx = prediction_indices[ii_day]["prediction_idx"]
+        regression_period_signal = feature_matrix[model_idx, :]
+        regression_period_price_change = target_array[model_idx]
+
+        std_price = np.std(regression_period_price_change)
+        std_signal = np.std(regression_period_signal)
+
+        if not std_price > 0.0 or not std_signal > 0.0:
+            if not std_price > 0.0:
+                print("WARNING - price had no variation: ", std_price)
+            if not std_signal > 0.0:
+                print(
+                    "WARNING - signal had no variation. Usually this means the lookback period was too short"
+                    " for the data sample: ",
+                    std_signal,
+                )
+            rule_recommended_allocation = 0.0
+            volatility = 1.0
+        else:
+            # Assuming no bad inputs we calculate the recommended allocation.
+            rolling_regression_model = LinearRegression().fit(regression_period_signal, regression_period_price_change)
+
+            # Calculate model error
+            predictions = rolling_regression_model.predict(regression_period_signal)
+            forecast_horizon_model_error = np.sqrt(mean_squared_error(regression_period_price_change, predictions))
+
+            # Predictions
+            forecast_distance = 1
+            current_research = feature_matrix[prediction_idx, :]
+            forecast_price_change = rolling_regression_model.predict(current_research)
+
+            # Calculate drift and volatility
+            volatility = ((1 + forecast_horizon_model_error) * (forecast_distance ** -0.5)) - 1
+
+            # Kelly recommended optimum
+            if volatility < 0:
+                raise ZeroDivisionError("Volatility needs to be positive value.")
+            if volatility == 0:
+                volatility = 0.01
+
+            kelly_recommended_optimum = forecast_price_change / volatility ** 2
+            rule_recommended_allocation = kelly_fraction * kelly_recommended_optimum
+
+        # Apply the calculated allocation to the dataframe.
+        dataframe.loc[prediction_idx, PandasEnum.ALLOCATION.value] = rule_recommended_allocation
+
+    # Shift position series  (QUESTION - does not appear to shift?)
+    dataframe[PandasEnum.ALLOCATION.value] = dataframe[PandasEnum.ALLOCATION.value].shift(-1)
+
+    # Calculate price forecast for last research value
+    if std_price > 0.0 and std_signal > 0.0:
+        # last_research = [[dataframe[PandasEnum.SIGNAL.value].iloc[-1]]]
+        last_research = last_feature_row
+        last_forecast_price = rolling_regression_model.predict(last_research)[0]
+        value_to_update = kelly_fraction * (last_forecast_price / volatility ** 2)
+    else:
+        value_to_update = 0.0
+    dataframe.iloc[-1, dataframe.columns.get_loc(PandasEnum.ALLOCATION.value)] = value_to_update
+
+    return dataframe
+
+
+def scikit_allocation_factory(allocation_function: callable) -> FunctionTransformer:
+    """This function creates a SciKit Learn compatible Transformer embedding the position calculation.
+
+    Args:
+        allocation_function: A function to be turned into a sklearn.preprocessing.FunctionTransformer
+
+    Returns:
+        A sklearn.preprocessing.FunctionTransformer
+
+    """
+    return FunctionTransformer(allocation_function)

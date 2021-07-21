@@ -1,25 +1,25 @@
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Author: Thomas Oliver
+# Created: 11th March 2021
+# Copyright 2021 InferStat Ltd
+
 """
-Performance calculation using the InferTrade inferface.
-
-Copyright 2021 InferStat Ltd
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-Author: Thomas Oliver
-Created: 11th March 2021
+Performance calculation using the InferTrade interface.
 """
 
-from typing import Optional
+
+from typing import Optional, Tuple, Union
 from infertrade.PandasEnum import PandasEnum, create_price_column_from_synonym
 
 import numpy as np
@@ -34,7 +34,7 @@ def calculate_portfolio_performance_python(
     daily_spread_percent_override: float = 0.0,
     minimum_allocation_change_to_adjust: float = 0.0,
     detailed_output: bool = True,
-):
+) -> pd.DataFrame:
     """This is the main vanilla Python calculation of portfolio performance."""
     # We check the positions and inputs if skip_checks is not enabled.
     if not skip_checks:
@@ -65,16 +65,16 @@ def calculate_portfolio_performance_python(
 
     if detailed_output:
         new_columns = [
-            "period_start_cash",
-            "period_start_securities",
-            "start_of_period_allocation",
-            "trade_percentage",
-            "trading_skipped",
-            "period_end_cash",
-            "period_end_securities",
-            "end_of_period_allocation",
-            "security_purchases",
-            "cash_flow",
+            "period_start_cash",          # The cash held in the hypothetical portfolio (just) after previous timestamp.
+            "period_start_securities",    # Securities held in the hypothetical portfolio after previous timestamp.
+            "start_of_period_allocation",  # Fraction of portfolio invested after prior timestamp.
+            "trade_percentage",           # Fraction of portfolio value of securities to buy at this timestamp.
+            "trading_skipped",            # Bool for whether we skipped trading on this particular timestamp.
+            "period_end_cash",            # The cash held in the hypothetical portfolio at timestamp after adjustment.
+            "period_end_securities",      # Securities held in the hypothetical portfolio at timestamp after adjustment.
+            "end_of_period_allocation",   # Fraction of portfolio invested at timestamp after adjustment.
+            "security_purchases",         # Number of securities bought at this timestamp.
+            "cash_flow",                  # Net cash change from security purchases at this timestamp.
         ]
         for ii_new_column in new_columns:
             if ii_new_column in ["security_purchases", "cash_flow", "trade_percentage"]:
@@ -220,6 +220,8 @@ def calculate_portfolio_performance_python(
 
         current_price_is_valid = np.isfinite(spot_price)
         target_position_is_valid = np.isfinite(todays_target_position)
+        securities_bought_today = None
+        cash_flow_today = None
 
         if current_price_is_valid and target_position_is_valid and not security_bankrupt:
             # We update last good price and position on last good price if they were valid.
@@ -265,6 +267,16 @@ def calculate_portfolio_performance_python(
             end_of_period_allocation = calculate_allocation_from_cash(
                 last_cash_after_trade, last_securities_after_transaction, spot_price
             )
+            if securities_bought_today is None:
+                raise TypeError(
+                    f"Expected a an object of {type(float)} received a \
+                                {type(securities_bought_today)} instead"
+                )
+            if cash_flow_today is None:
+                raise TypeError(
+                    f"Expected a an object of {type(float)} received a \
+                                               {type(cash_flow_today)} instead"
+                )
 
             # Append fresh end of ii_period information
             security_purchases_ls = np.append(security_purchases_ls, securities_bought_today)
@@ -341,7 +353,7 @@ def calculate_allocation_from_cash(
     return start_of_period_allocation
 
 
-def _get_percentage_bid_offer(df_with_positions, day, daily_spread_percent_override):
+def _get_percentage_bid_offer(df_with_positions, day, daily_spread_percent_override) -> float:
     """Defines the daily spread used in computation."""
     if daily_spread_percent_override is not None:
         daily_spread_percentage = daily_spread_percent_override
@@ -397,7 +409,7 @@ def check_if_should_skip_return_calculation(
     day_of_return_to_calculate: int,
     show_absolute_bankruptcies: bool,
     bankrupt: bool = False,
-) -> (bool, float):
+) -> Tuple[bool, Union[float, str], bool]:
     """This function checks if we should skip the returns calculation for the requested day."""
     # We decide if we should skip trying to calculate this day. Reasons to skip include:
     # * portfolio already bankrupt;
@@ -467,7 +479,7 @@ def portfolio_index(
     last_securities_volume: float,
     last_cash_after_trade_usd: float,
     show_working: bool = False,
-) -> (float, float, float):
+) -> Tuple[float, float, float]:
     """A function for calculating the cumulative return of the portfolio."""
     # We initially verify inputs
     for ii_arg in [
@@ -526,7 +538,7 @@ def portfolio_index(
         else:
             # If not a full sale we need to calculate how many securities to sell.
             security_adjustment_perc = _calculate_security_adjustment_perc(
-                target_allocation_perc, post_fee_security_perc, current_bid_offer_spread_percent,
+                target_allocation_perc, post_fee_security_perc, current_bid_offer_spread_percent
             )
             securities_to_buy_or_sell = portfolio_value_after_fee_usd * security_adjustment_perc / spot_price_usd
         securities_after_transaction = securities_to_buy_or_sell + number_of_securities_held_volume
@@ -569,7 +581,7 @@ def portfolio_index(
 
 
 def _calculate_security_adjustment_perc(
-    target_allocation_perc: float, post_fee_security_perc: float, current_bid_offer_spread_perc: float,
+    target_allocation_perc: float, post_fee_security_perc: float, current_bid_offer_spread_perc: float
 ) -> float:
     difference_in_target_allocation_and_post_fee_portfolio_value_perc = target_allocation_perc - post_fee_security_perc
     bid_offer_adjustment = current_bid_offer_spread_perc / 2 * target_allocation_perc
