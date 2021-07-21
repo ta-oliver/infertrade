@@ -18,11 +18,13 @@ Functions for signals and positions created within this package.
 
 from infertrade.PandasEnum import PandasEnum
 from infertrade.algos.community.allocations import infertrade_export_allocations
-from infertrade.utilities.operations import scikit_allocation_factory
 from infertrade.algos.community.signals import normalised_close, scikit_signal_factory, infertrade_export_signals
+from infertrade.algos.community.ta_regressions import ta_export_regression_allocations
+
+combined_allocation = infertrade_export_allocations.update(ta_export_regression_allocations)
 
 # A dictionary providing the list of community signals and trading strategies.
 infertrade_export = {
     PandasEnum.SIGNAL.value: infertrade_export_signals,
-    PandasEnum.ALLOCATION.value: infertrade_export_allocations,
+    PandasEnum.ALLOCATION.value: combined_allocation,
 }
