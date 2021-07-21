@@ -65,16 +65,16 @@ def calculate_portfolio_performance_python(
 
     if detailed_output:
         new_columns = [
-            "period_start_cash",
-            "period_start_securities",
-            "start_of_period_allocation",
-            "trade_percentage",
-            "trading_skipped",
-            "period_end_cash",
-            "period_end_securities",
-            "end_of_period_allocation",
-            "security_purchases",
-            "cash_flow",
+            "period_start_cash",          # The cash held in the hypothetical portfolio (just) after previous timestamp.
+            "period_start_securities",    # Securities held in the hypothetical portfolio after previous timestamp.
+            "start_of_period_allocation",  # Fraction of portfolio invested after prior timestamp.
+            "trade_percentage",           # Fraction of portfolio value of securities to buy at this timestamp.
+            "trading_skipped",            # Bool for whether we skipped trading on this particular timestamp.
+            "period_end_cash",            # The cash held in the hypothetical portfolio at timestamp after adjustment.
+            "period_end_securities",      # Securities held in the hypothetical portfolio at timestamp after adjustment.
+            "end_of_period_allocation",   # Fraction of portfolio invested at timestamp after adjustment.
+            "security_purchases",         # Number of securities bought at this timestamp.
+            "cash_flow",                  # Net cash change from security purchases at this timestamp.
         ]
         for ii_new_column in new_columns:
             if ii_new_column in ["security_purchases", "cash_flow", "trade_percentage"]:

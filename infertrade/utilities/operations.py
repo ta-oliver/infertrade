@@ -21,13 +21,16 @@ This submodule includes facilities for operations such as converting positions t
 
 from copy import deepcopy
 from typing import List, Tuple, Union
-
 import numpy as np
 import pandas as pd
+from pandas.core.frame import DataFrame
+
 from sklearn.base import TransformerMixin, BaseEstimator
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
 from sklearn.pipeline import make_pipeline, FeatureUnion
 from sklearn.preprocessing import FunctionTransformer, Binarizer
 from infertrade.utilities.performance import calculate_portfolio_performance_python
@@ -421,7 +424,7 @@ def daily_stop_loss(dataframe: pd.DataFrame, loss_limit: float) -> pd.DataFrame:
         price_change = row.price - prev_price
         loss = -price_change * prev_alloc
         if loss > loss_limit or stop_loss_has_triggered:
-            stop_loss_has_triggered=True
+            stop_loss_has_triggered = True
             row.allocation = 0
         prev_alloc = row.allocation
         prev_price = row.price
@@ -462,6 +465,89 @@ def restrict_allocation(allocation_function: callable) -> callable:
         return dataframe
 
     return restricted_function
+
+
+def calculate_regression_with_kelly_optimum(
+    df: pd.DataFrame,
+    feature_matrix: pd.Series,
+    last_feature_row: np.ndarray,
+    target_array: pd.Series,
+    regression_period: int,
+    forecast_period: int,
+    kelly_fraction: float = 1.0,
+):
+
+    # Refactor to make original method static.
+    dataframe = df.copy()
+    prediction_indices = PricePredictionFromSignalRegression._get_model_prediction_indices(
+        series_length=len(feature_matrix), reg_period=regression_period, forecast_period=forecast_period
+    )
+
+    if not len(prediction_indices) > 0:
+        raise IndexError("Unexpected error: Prediction indices are zero in length.")
+
+    for ii_day in range(len(prediction_indices)):
+        model_idx = prediction_indices[ii_day]["model_idx"]
+        prediction_idx = prediction_indices[ii_day]["prediction_idx"]
+        regression_period_signal = feature_matrix[model_idx, :]
+        regression_period_price_change = target_array[model_idx]
+
+        std_price = np.std(regression_period_price_change)
+        std_signal = np.std(regression_period_signal)
+
+        if not std_price > 0.0 or not std_signal > 0.0:
+            if not std_price > 0.0:
+                print("WARNING - price had no variation: ", std_price)
+            if not std_signal > 0.0:
+                print(
+                    "WARNING - signal had no variation. Usually this means the lookback period was too short"
+                    " for the data sample: ",
+                    std_signal,
+                )
+            rule_recommended_allocation = 0.0
+            volatility = 1.0
+        else:
+            # Assuming no bad inputs we calculate the recommended allocation.
+            rolling_regression_model = LinearRegression().fit(regression_period_signal, regression_period_price_change)
+
+            # Calculate model error
+            predictions = rolling_regression_model.predict(regression_period_signal)
+            forecast_horizon_model_error = np.sqrt(mean_squared_error(regression_period_price_change, predictions))
+
+            # Predictions
+            forecast_distance = 1
+            current_research = feature_matrix[prediction_idx, :]
+            forecast_price_change = rolling_regression_model.predict(current_research)
+
+            # Calculate drift and volatility
+            volatility = ((1 + forecast_horizon_model_error) * (forecast_distance ** -0.5)) - 1
+
+            # Kelly recommended optimum
+            if volatility < 0:
+                raise ZeroDivisionError("Volatility needs to be positive value.")
+            if volatility == 0:
+                volatility = 0.01
+
+            kelly_recommended_optimum = forecast_price_change / volatility ** 2
+            rule_recommended_allocation = kelly_fraction * kelly_recommended_optimum
+
+        # Apply the calculated allocation to the dataframe.
+        dataframe.loc[prediction_idx, PandasEnum.ALLOCATION.value] = rule_recommended_allocation
+
+    # Shift position series  (QUESTION - does not appear to shift?)
+    dataframe[PandasEnum.ALLOCATION.value] = dataframe[PandasEnum.ALLOCATION.value].shift(-1)
+
+    # Calculate price forecast for last research value
+    if std_price > 0.0 and std_signal > 0.0:
+        # last_research = [[dataframe[PandasEnum.SIGNAL.value].iloc[-1]]]
+        last_research = last_feature_row
+        last_forecast_price = rolling_regression_model.predict(last_research)[0]
+        value_to_update = kelly_fraction * (last_forecast_price / volatility ** 2)
+    else:
+        value_to_update = 0.0
+    dataframe.iloc[-1, dataframe.columns.get_loc(PandasEnum.ALLOCATION.value)] = value_to_update
+
+    return dataframe
 
 
 def scikit_allocation_factory(allocation_function: callable) -> FunctionTransformer:

@@ -16,7 +16,7 @@
 \normalsize%
 \logo%
 \rulename{Level Relationship}%
-\tableofcontents%
+\tblofcontents
 
 \relationshipdescription{
 \justify
@@ -44,20 +44,17 @@ We would typically not expect a signal that is a price forecast to show a predic
 }%
 
 
-\newpage
-
-
 
 \begin{figure}[H]
 \begin{subfigure}{0.48\textwidth}
 \centering
-    \includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Market_ResearchSeries_360_380.pdf}
+    \includegraphics[width=0.9\linewidth, height=5cm]{\graphdir{Market_ResearchSeries_360_380.pdf}}
     \caption{Comparison of the research value and the market price in USD for 240 days of trading.}
     \label{fig:20Days-Market_Research}
 \end{subfigure}\quad
 \begin{subfigure}{0.48\textwidth}
 \centering
-    \includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/StrategyReturn_MarketSeries_360_380.pdf}
+    \includegraphics[width=0.9\linewidth, height=5cm]{\graphdir{StrategyReturn_MarketSeries_360_380.pdf}}
     \caption{Comparison of the market price in USD and the re-turns obtained from the first 20 days of trading.}
     \label{fig:20Days-Market_Research}
 \end{subfigure}
@@ -127,13 +124,13 @@ We see from this example the expected gain over the next day is 2.5 basis points
 
 \begin{figure}[H]
  \begin{subfigure}{0.48\textwidth}
-\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Allocation_MarketSeries_360_380.pdf}
+\includegraphics[width=0.9\linewidth, height=5cm]{\graphdir{Allocation_MarketSeries_360_380.pdf}}
 \caption{Suggested allocation per day, this graph shows when and how to invest the total or a fraction of the initial holding, and how the market price is correlated with it.}
 \label{fig:02}
 \end{subfigure}
 \quad
 \begin{subfigure}{0.48\textwidth}
-\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Allocation_ResearchValue_360_380.pdf}
+\includegraphics[width=0.9\linewidth, height=5cm]{\graphdir{Allocation_ResearchValue_360_380.pdf}}
 \caption{Suggested allocation per day and the research value of the level relationship trading rule, the suggested allocation is calculated based on the research value. So, both are correlated as shown in this figure. }
 \label{fig:04}
 \end{subfigure}
@@ -141,7 +138,7 @@ We see from this example the expected gain over the next day is 2.5 basis points
 \end{figure}
 \justify  It is very interesting to observe that the suggested allocation calculated by equation (\ref{eq:Suggested_Allocation}) is correlated with the market price.
 
-\\
+
 \vspace{1mm}
 \fixedruleparameters
 {Regression Length}{120}{This is the number of previous days used to estimate the regression coefficients.}{$\lookbacklength$}%
@@ -171,28 +168,30 @@ regression data uses research data from time $\currenttime - 121$ to $\currentti
 }
 
 
-\end{document}
+
 
 \begin{figure}[h]
 \begin{subfigure}{0.48\textwidth}
-\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Market_ResearchSeries_120_140.pdf} 
+\includegraphics[width=0.9\linewidth, height=5cm]{\graphdir{Market_ResearchSeries_120_140.pdf}}
 \caption{Comparison of the research value of the level relationship trading rule and the market price in USD for the first 20 days of trading.}
 \label{fig:01}
 \end{subfigure}	\quad
 \begin{subfigure}{0.48\textwidth}
-\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/StrategyReturn_MarketSeries_120_140.pdf} 
+\includegraphics[width=0.9\linewidth, height=5cm]{\graphdir{StrategyReturn_MarketSeries_120_140.pdf}}
 \caption{Comparison of the market price in USD and the returns obtained from the first 20 days of trading, after the 120 days of training the algorithm has been used. In other words, it is the original holding + the returns.}
 \label{fig:03}
 \end{subfigure}
 \begin{subfigure}{0.48\textwidth}
-\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Allocation_MarketSeries_120_140.pdf}
+\includegraphics[width=0.9\linewidth, height=5cm]{\graphdir{Allocation_MarketSeries_120_140.pdf}}
 \caption{Suggested allocation per day, this graph shows when and how to invest the total or a fraction of the initial holding, and how the market price is correlated with it.}
 \label{fig:02}
 \end{subfigure}
 \quad
 \begin{subfigure}{0.48\textwidth}
-\includegraphics[width=0.9\linewidth, height=5cm]{rule_graphs/Allocation_ResearchValue_120_140.pdf}
+\includegraphics[width=0.9\linewidth, height=5cm]{\graphdir{Allocation_ResearchValue_120_140.pdf}}
 \caption{Suggested allocation per day and the research value of the level relationship trading rule, the suggested allocation is calculated based on the research value. So, both are correlated as shown in this figure. }
 \label{fig:04}
 \end{subfigure}
 \end{figure}
+
+\end{document}

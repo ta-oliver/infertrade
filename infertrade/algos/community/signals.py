@@ -20,9 +20,11 @@ Functions used to compute signals. Signals may be used for visual inspection or 
 
 import pandas as pd
 import numpy as np
+from pandas.core.frame import DataFrame
 from sklearn.preprocessing import FunctionTransformer
+from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator
+from ta.momentum import rsi, stochrsi
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
-
 from ta.volatility import AverageTrueRange
 from infertrade.algos.external.ta import ta_adaptor
 from infertrade.PandasEnum import PandasEnum
@@ -49,6 +51,65 @@ def high_low_diff_scaled(df: pd.DataFrame, amplitude: float = 1) -> pd.DataFrame
     """Example signal based on high-low range times scalar."""
     df["signal"] = (df["high"] - max(df["low"])) * amplitude
     return df
+
+
+def simple_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
+    """
+    Calculates smooth signal based on price trends by filtering out the noise from random short-term price fluctuations
+    """
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = sma_indicator(df_with_signal["close"], window=window)
+    return df_with_signal
+
+
+def weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
+    """
+    Weighted moving averages assign a heavier weighting to more current data points since they are more relevant than data points in the distant past.
+    """
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = wma_indicator(df_with_signal["close"], window=window)
+    return df_with_signal
+
+
+def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
+    """
+    This function uses an exponentially weighted multiplier to give more weight to recent prices.
+    """
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = ema_indicator(df["close"], window=window, fillna=True)
+    return df_with_signal
+
+
+def moving_average_convergence_divergence(
+    df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int = 9
+) -> pd.DataFrame:
+    """
+    This function is a trend-following momentum indicator that shows the relationship between two moving averages at different windows:
+    The MACD is usually calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA.
+
+    """
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = macd_signal(df["close"], long_period, short_period, window_signal, fillna=True)
+    return df_with_signal
+
+
+def relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
+    """
+    This function measures the magnitude of recent price changes to evaluate overbought or oversold conditions in the price.
+    """
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = rsi(df["close"], window=window, fillna=True)
+    return df_with_signal
+
+
+def stochastic_relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
+    """
+    This function applies the Stochastic oscillator formula to a set of relative strength index (RSI) values rather than to standard price data.
+
+    """
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = stochrsi(df["close"], window=window, fillna=True)
+    return df_with_signal
 
 
 def chande_kroll(
@@ -103,7 +164,7 @@ infertrade_export_signals = {
         "parameters": {},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L28"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L31"
         },
     },
     "high_low_diff": {
@@ -111,7 +172,7 @@ infertrade_export_signals = {
         "parameters": {},
         "series": ["high", "low"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L39"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L42"
         },
     },
     "high_low_diff_scaled": {
@@ -119,7 +180,55 @@ infertrade_export_signals = {
         "parameters": {"amplitude": 1.0},
         "series": ["high", "low"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L45"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L153"
+        },
+    },
+    "simple_moving_average": {
+        "function": simple_moving_average,
+        "parameters": {"window": 1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L158"
+        },
+    },
+    "weighted_moving_average": {
+        "function": weighted_moving_average,
+        "parameters": {"window": 1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L60"
+        },
+    },
+    "exponentially_weighted_moving_average": {
+        "function": exponentially_weighted_moving_average,
+        "parameters": {"window": 1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L69"
+        },
+    },
+    "moving_average_convergence_divergence": {
+        "function": moving_average_convergence_divergence,
+        "parameters": {"short_period": 12, "long_period": 26, "window_signal": 9},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L76"
+        },
+    },
+    "relative_strength_index": {
+        "function": relative_strength_index,
+        "parameters": {"window": 14},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L100"
+        },
+    },
+    "stochastic_relative_strength_index": {
+        "function": stochastic_relative_strength_index,
+        "parameters": {"window": 14},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L114"
         },
     },
     "chande_kroll": {
@@ -127,7 +236,7 @@ infertrade_export_signals = {
         "parameters": {"average_true_range_periods": 10, "average_true_range_multiplier": 1.0, "stop_periods": 9},
         "series": ["high", "low"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/df1f6f058b38e0ff9ab1250bb43ffb220b3a4725/infertrade/algos/community/signals.py#L55"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L125"
         },
     },
 }
