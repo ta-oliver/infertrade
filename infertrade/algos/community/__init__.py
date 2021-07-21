@@ -15,16 +15,18 @@
 """
 Functions for signals and positions created within this package.
 """
+from copy import deepcopy
 
 from infertrade.PandasEnum import PandasEnum
 from infertrade.algos.community.allocations import infertrade_export_allocations
 from infertrade.algos.community.signals import normalised_close, scikit_signal_factory, infertrade_export_signals
 from infertrade.algos.community.ta_regressions import ta_export_regression_allocations
 
-combined_allocation = infertrade_export_allocations.update(ta_export_regression_allocations)
+joint_set = deepcopy(infertrade_export_allocations)
+joint_set.update(ta_export_regression_allocations)
 
 # A dictionary providing the list of community signals and trading strategies.
 infertrade_export = {
     PandasEnum.SIGNAL.value: infertrade_export_signals,
-    PandasEnum.ALLOCATION.value: combined_allocation,
+    PandasEnum.ALLOCATION.value: joint_set,
 }

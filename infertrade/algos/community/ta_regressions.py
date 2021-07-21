@@ -17,6 +17,7 @@ def ta_rules_with_regression() -> dict:
         ta_rule_name = ta_export_signals[ii_ta_signal]["function_names"]
 
         def allocation_function(time_series_df: pd.DataFrame, *args, **kwargs) -> pd.DataFrame:
+            """Generic regression treatment of ta technical signals."""
             ta_signal_func = ta_export_signals[ii_ta_signal]["class"]
 
             adapted_allocation_rule_using_regression = ta_adaptor(ta_signal_func, ta_rule_name, *args, **kwargs)
@@ -47,4 +48,9 @@ def ta_rules_with_regression() -> dict:
     return allocation_dictionary
 
 
-ta_export_regression_allocations = {"allocation": ta_rules_with_regression()}
+ta_export_regression_allocations = ta_rules_with_regression()
+
+
+if __name__ == "__main__":
+
+    print(ta_export_regression_allocations)
