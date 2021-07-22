@@ -1,0 +1,51 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Moving Average Convergence Divergence} %Argument is name of rule
+\tblofcontents
+
+\ruledescription{Moving average convergence divergence (MACD) is a trend-following momentum indicator that
+shows the relationship between two moving averages of a security’s price.
+The MACD is calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA.
+}
+
+\howtotrade
+{The strategy is to identify bullish and bearish crossovers.
+Bullish crossover - when MACD line cross above the signal line
+Bearish Crossover - when signal line cross above the MACD line.
+}
+
+\ruleparameters
+{Short term look back Length}{12}{Short term look back length used to compute EMA.}{$\lookbacklength_{s}$}
+{Long term look back Length}{26}{Long term look back length used to compute EMA.}{$\lookbacklength_{l}$}
+{Signal look back Length}{9}{Look back length used to generate Signal line.}{$S_{l}$}
+\stoptable
+
+\newpage
+\section{Equation}
+Below are the equations which govern how this specific trading rule calculates a trading position.
+
+\begin{equation}
+MACD = EMA(\lookbacklength_{s}) - EMA(\lookbacklength_{l})
+\end{equation}
+\\
+\begin{equation}
+Signal = EMA(S_{l})
+\end{equation}
+\\ % creates some space after equation
+with:
+
+$EMA(\lookbacklength_{s})$: is the short term exponentially weighted average.
+
+$EMA(\lookbacklength_{l})$: is the long term exponentially weighted average.
+
+$EMA(S_{l})$: is the exponentially weighted average computed to generate signal line.
+
+
+\keyterms
+\furtherlinks %The footer
+\end{document}
