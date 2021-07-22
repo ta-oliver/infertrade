@@ -173,12 +173,12 @@ def bollinger_band(df: pd.DataFrame, window: int = 20, window_dev: int = 2) -> p
     df_with_signal = df.copy()
     df_with_signal["typical_price"] = (df["close"] + df["low"] + df["high"]) / 3
     df_with_signal["BOLU"] = bollinger_hband(
-        df_with_signal["typical_price"], window=window, window_dev=window_dev, fillna=True
+        df_with_signal["typical_price"], window=window, window_dev=window_dev
     )
     df_with_signal["BOLD"] = bollinger_lband(
-        df_with_signal["typical_price"], window=window, window_dev=window_dev, fillna=True
+        df_with_signal["typical_price"], window=window, window_dev=window_dev
     )
-    df_with_signal["BOLA"] = bollinger_mavg(df_with_signal["typical_price"], window=window, fillna=True)
+    df_with_signal["BOLA"] = bollinger_mavg(df_with_signal["typical_price"], window=window)
 
     return df_with_signal
 
@@ -189,7 +189,7 @@ def detrended_price_oscillator(df: pd.DataFrame, window: int = 20) -> pd.DataFra
     estimate the length of price cycles from peak to peak or trough to trough.
     """
     df_with_signal = df.copy()
-    df_with_signal["signal"] = dpo(df["close"], window=window, fillna=True)
+    df_with_signal["signal"] = dpo(df["close"], window=window)
     return df_with_signal
 
 

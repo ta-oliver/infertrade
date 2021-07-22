@@ -64,18 +64,20 @@ def weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     """
     Weighted moving averages assign a heavier weighting to more current data points since they are more relevant than data points in the distant past.
     """
+    df_with_signals = df.copy()
     weights = np.arange(1, window + 1)
     weights = weights / weights.sum()
-    df["signal"] = df["close"].rolling(window=window).apply(lambda a: a.mul(weights).sum())
-    return df
+    df_with_signals["signal"] = df_with_signals["close"].rolling(window=window).apply(lambda a: a.mul(weights).sum())
+    return df_with_signals
 
 
 def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     """
     This function uses an exponentially weighted multiplier to give more weight to recent prices.
     """
-    df["signal"] = df["close"].ewm(span=window, adjust=False).mean()
-    return df
+    df_with_signals = df.copy()
+    df_with_signals["signal"] = df_with_signals["close"].ewm(span=window, adjust=False).mean()
+    return df_with_signals
 
 
 def moving_average_convergence_divergence(
@@ -86,31 +88,33 @@ def moving_average_convergence_divergence(
     The MACD is usually calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA.
 
     """
+    df_with_signals = df.copy()
     # ewma for two different spans
-    ewma_26 = exponentially_weighted_moving_average(df, window=long_period).copy()
-    ewma_12 = exponentially_weighted_moving_average(df, window=short_period).copy()
+    ewma_26 = exponentially_weighted_moving_average(df_with_signals, window=long_period).copy()
+    ewma_12 = exponentially_weighted_moving_average(df_with_signals, window=short_period).copy()
 
     # MACD calculation
     macd = ewma_12["signal"] - ewma_26["signal"]
 
     # convert MACD into signal
-    df["signal"] = macd.ewm(span=window_signal, adjust=False).mean()
-    return df
+    df_with_signals["signal"] = macd.ewm(span=window_signal, adjust=False).mean()
+    return df_with_signals
 
 
 def relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
     """
     This function measures the magnitude of recent price changes to evaluate overbought or oversold conditions in the price.
     """
-    daily_difference = df["close"].diff()
+    df_with_signals = df.copy()
+    daily_difference = df_with_signals["close"].diff()
     gain = daily_difference.clip(lower=0)
     loss = -daily_difference.clip(upper=0)
     average_gain = gain.ewm(com=window - 1).mean()
     average_loss = loss.ewm(com=window - 1).mean()
     RS = average_gain / average_loss
     RSI = 100 - 100 / (1 + RS)
-    df["signal"] = RSI
-    return df
+    df_with_signals["signal"] = RSI
+    return df_with_signals
 
 
 def stochastic_relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
@@ -118,30 +122,42 @@ def stochastic_relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd
     This function applies the Stochastic oscillator formula to a set of relative strength index (RSI) values rather than to standard price data.
 
     """
+    df_with_signals = df.copy()
     RSI = relative_strength_index(df, window)["signal"]
     stochRSI = (RSI - RSI.rolling(window).min()) / (RSI.rolling(window).max() - RSI.rolling(window).min())
-    df["signal"] = stochRSI
-    return df
+    df_with_signals["signal"] = stochRSI
+    return df_with_signals
 
 def bollinger_band(df: pd.DataFrame, window: int = 20, window_dev: int = 2) -> pd.DataFrame:
     # Implementation of bollinger band
-    df_with_signal= df.copy()
+    df_with_signals= df.copy()
     typical_price = (df["close"]+df["low"]+df["high"])/3
-    df_with_signal["typical_price"]=typical_price
-    std_dev = df_with_signal["typical_price"].rolling(window=window).std(ddof=0)
-    df_with_signal["BOLA"] = df_with_signal["typical_price"].rolling(window=window).mean()
-    df_with_signal["BOLU"] = df_with_signal["BOLA"] + window_dev*std_dev
-    df_with_signal["BOLD"] = df_with_signal["BOLA"] - window_dev*std_dev
+    df_with_signals["typical_price"]=typical_price
+    std_dev = df_with_signals["typical_price"].rolling(window=window).std(ddof=0)
+    df_with_signals["BOLA"] = df_with_signals["typical_price"].rolling(window=window).mean()
+    df_with_signals["BOLU"] = df_with_signals["BOLA"] + window_dev*std_dev
+    df_with_signals["BOLD"] = df_with_signals["BOLA"] - window_dev*std_dev
 
-    return df_with_signal
+    return df_with_signals
+
+def detrended_price_oscillator(df: pd.DataFrame, window: int = 20) -> pd.DataFrame:
+    # Implementation of detrended price oscillator
+    df_with_signals = df.copy()
+    DPO = pd.Series()
+    SMA = df_with_signals["close"].rolling(window=window).mean()
+    displacement = int(window/2+1)
+    for i in range(window-1, len(df_with_signals)):
+        DPO.loc[i] = df_with_signals.loc[i-displacement,"close"]-SMA.loc[i]
+    df_with_signals["signal"] = DPO
+    return df_with_signals
 
 """
 Tests for allocation strategies
 """
 def test_SMA_strategy():
     window = 50
-    df_with_allocations = allocations.SMA_strategy(df, window, max_investment).copy()
-    df_with_signals = simple_moving_average(df,window).copy()
+    df_with_allocations = allocations.SMA_strategy(df, window, max_investment)
+    df_with_signals = simple_moving_average(df,window)
  
     price_above_signal=df_with_signals["close"]>df_with_signals["signal"]
     price_below_signal=df_with_signals["close"]<=df_with_signals["signal"]
@@ -154,8 +170,8 @@ def test_SMA_strategy():
 
 def test_WMA_strategy():
     window = 50
-    df_with_allocations = allocations.WMA_strategy(df, window, max_investment).copy()
-    df_with_signals = weighted_moving_average(df,window).copy()
+    df_with_allocations = allocations.WMA_strategy(df, window, max_investment)
+    df_with_signals = weighted_moving_average(df,window)
  
     price_above_signal=df_with_signals["close"]>df_with_signals["signal"]
     price_below_signal=df_with_signals["close"]<=df_with_signals["signal"]
@@ -168,8 +184,8 @@ def test_WMA_strategy():
 
 def test_EMA_strategy():
     window = 50
-    df_with_allocations = allocations.EMA_strategy(df, window, max_investment).copy()
-    df_with_signals = exponentially_weighted_moving_average(df,window).copy()
+    df_with_allocations = allocations.EMA_strategy(df, window, max_investment)
+    df_with_signals = exponentially_weighted_moving_average(df,window)
  
     price_above_signal=df_with_signals["close"]>df_with_signals["signal"]
     price_below_signal=df_with_signals["close"]<=df_with_signals["signal"]
@@ -182,8 +198,8 @@ def test_EMA_strategy():
 
 def test_MACD_strategy():
     
-    df_with_allocations = allocations.MACD_strategy(df, 12, 26 ,9, max_investment).copy()
-    df_with_signals = moving_average_convergence_divergence(df,12, 26, 9).copy()
+    df_with_allocations = allocations.MACD_strategy(df, 12, 26 ,9, max_investment)
+    df_with_signals = moving_average_convergence_divergence(df,12, 26, 9)
  
     above_zero_line=df_with_signals["signal"]>0
     below_zero_line=df_with_signals["signal"]<=0
@@ -195,8 +211,8 @@ def test_MACD_strategy():
 
 def test_RSI_strategy():
     
-    df_with_allocations = allocations.RSI_strategy(df, 14, max_investment).copy()
-    df_with_signals = relative_strength_index(df,14).copy()
+    df_with_allocations = allocations.RSI_strategy(df, 14, max_investment)
+    df_with_signals = relative_strength_index(df,14)
  
     over_valued = df_with_signals["signal"] >= 70
     under_valued = df_with_signals["signal"] <= 30
@@ -210,8 +226,8 @@ def test_RSI_strategy():
 
 def test_Stochastic_RSI_strategy():
     
-    df_with_allocations = allocations.stochastic_RSI_strategy(df, 14, max_investment).copy()
-    df_with_signals = stochastic_relative_strength_index(df,14).copy()
+    df_with_allocations = allocations.stochastic_RSI_strategy(df, 14, max_investment)
+    df_with_signals = stochastic_relative_strength_index(df,14)
  
     over_valued = df_with_signals["signal"] >= 0.8
     under_valued = df_with_signals["signal"] <= 0.2
@@ -226,13 +242,13 @@ def test_Stochastic_RSI_strategy():
 def test_bollinger_band_strategy():
     # Window_dev is kept lower to make sure prices breaks the band
     window = 20
-    window_dev = 1
-    df_with_allocations = allocations.bollinger_band_strategy(df, window, window_dev, max_investment).copy()
-    df_with_signal = bollinger_band(df,window, window_dev).copy()
+    window_dev = 2
+    df_with_allocations = allocations.bollinger_band_strategy(df, window, window_dev, max_investment)
+    df_with_signals = bollinger_band(df,window, window_dev)
     short_position = False
     long_position = False
 
-    for index, row in df_with_signal.iterrows():
+    for index, row in df_with_signals.iterrows():
         # check if price breaks the bollinger bands
         if row["typical_price"] >= row["BOLU"]:
             short_position = True
@@ -251,12 +267,25 @@ def test_bollinger_band_strategy():
 
         # allocation rules
         if (short_position == True):
-            df.loc[index, "allocation"] = -max_investment
+            df_with_signals.loc[index, "allocation"] = max_investment
             
         elif (long_position == True):
-            df.loc[index, "allocation"] = max_investment
+            df_with_signals.loc[index, "allocation"] = -max_investment
 
         else:
-            df.loc[index, "allocation"] = 0.0
+            df_with_signals.loc[index, "allocation"] = 0.0
 
-    assert pd.Series.equals(df_with_signal["allocation"], df_with_allocations["allocation"])
+    assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
+
+
+def test_DPO_strategy():
+    df_with_allocations = allocations.DPO_strategy(df, 20, max_investment)
+    df_with_signals = detrended_price_oscillator(df, 20)
+
+    above_zero = df_with_signals["signal"]>0
+    below_zero = df_with_signals["signal"]<0
+
+    df_with_signals.loc[above_zero, "allocation"] = max_investment
+    df_with_signals.loc[below_zero, "allocation"] = -max_investment
+
+    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])

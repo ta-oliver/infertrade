@@ -594,7 +594,7 @@ def bollinger_band_strategy(
             short_position = False
 
         # Check if long position
-        if row["typical_price"] <= row["BOLD"] or long_position == True and row["typical_price"] < row["BOLA"]:
+        if (row["typical_price"] <= row["BOLD"] or long_position == True) and row["typical_price"] < row["BOLA"]:
             long_position = True
         else:
             long_position = False
@@ -603,14 +603,27 @@ def bollinger_band_strategy(
 
         # allocation conditions
         if short_position == True:
-            df.loc[index, PandasEnum.ALLOCATION.value] = -max_investment
+            df.loc[index, PandasEnum.ALLOCATION.value] = max_investment
 
         elif long_position == True:
-            df.loc[index, PandasEnum.ALLOCATION.value] = max_investment
+            df.loc[index, PandasEnum.ALLOCATION.value] = -max_investment
 
         else:
             df.loc[index, PandasEnum.ALLOCATION.value] = 0.0
 
+    return df
+
+def DPO_strategy(df: pd.DataFrame, window: int = 20, max_investment: float = 0.1) -> pd.DataFrame:
+    """
+    Exponential moving average strategy which buys when price is above signal and sells when price is below signal
+    """
+    DPO = signals.detrended_price_oscillator(df, window=window)["signal"]
+
+    above_zero = DPO > 0
+    below_zero = DPO <= 0
+
+    df.loc[above_zero, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
     return df
 
 
