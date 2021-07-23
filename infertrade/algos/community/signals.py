@@ -23,7 +23,7 @@ import numpy as np
 from pandas.core.frame import DataFrame
 from sklearn.preprocessing import FunctionTransformer
 from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator, dpo
-from ta.momentum import rsi, stochrsi
+from ta.momentum import ppo, ppo_signal, rsi, stochrsi
 from ta.volatility import (
     AverageTrueRange,
     bollinger_hband,
@@ -190,6 +190,18 @@ def detrended_price_oscillator(df: pd.DataFrame, window: int = 20) -> pd.DataFra
     """
     df_with_signal = df.copy()
     df_with_signal["signal"] = dpo(df["close"], window=window)
+    return df_with_signal
+
+def precentage_price_oscillator(
+    df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int = 9
+) -> pd.DataFrame:
+    """
+    This function is a trend-following momentum indicator that shows the relationship between two moving averages at different windows:
+    The MACD is usually calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA.
+
+    """
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = ppo_signal(df["close"], long_period, short_period, window_signal, fillna=True)
     return df_with_signal
 
 
