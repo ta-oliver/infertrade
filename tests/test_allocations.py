@@ -151,6 +151,26 @@ def detrended_price_oscillator(df: pd.DataFrame, window: int = 20) -> pd.DataFra
     df_with_signals["signal"] = DPO
     return df_with_signals
 
+def percentage_price_oscillator(
+    df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int = 9
+) -> pd.DataFrame:
+    """
+    This function is a trend-following momentum indicator that shows the relationship between two moving averages at different windows:
+    The MACD is usually calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA.
+
+    """
+    df_with_signals = df.copy()
+    # ewma for two different spans
+    ewma_26 = exponentially_weighted_moving_average(df_with_signals, window=long_period)["signal"]
+    ewma_12 = exponentially_weighted_moving_average(df_with_signals, window=short_period)["signal"]
+
+    # MACD calculation
+    ppo = ((ewma_12 - ewma_26)/ewma_26)*100
+
+    # convert MACD into signal
+    df_with_signals["signal"] = ppo.ewm(span=window_signal, adjust=False).mean()
+    return df_with_signals
+
 """
 Tests for allocation strategies
 """
@@ -281,6 +301,18 @@ def test_bollinger_band_strategy():
 def test_DPO_strategy():
     df_with_allocations = allocations.DPO_strategy(df, 20, max_investment)
     df_with_signals = detrended_price_oscillator(df, 20)
+
+    above_zero = df_with_signals["signal"]>0
+    below_zero = df_with_signals["signal"]<0
+
+    df_with_signals.loc[above_zero, "allocation"] = max_investment
+    df_with_signals.loc[below_zero, "allocation"] = -max_investment
+
+    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
+
+def test_PPO_strategy():
+    df_with_allocations = allocations.PPO_strategy(df, 12, 26, 9, max_investment)
+    df_with_signals = percentage_price_oscillator(df, 12, 26, 9)
 
     above_zero = df_with_signals["signal"]>0
     below_zero = df_with_signals["signal"]<0
