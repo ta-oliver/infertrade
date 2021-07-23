@@ -626,6 +626,19 @@ def DPO_strategy(df: pd.DataFrame, window: int = 20, max_investment: float = 0.1
     df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
     return df
 
+def PPO_strategy(df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int =9, max_investment: float = 0.1) -> pd.DataFrame:
+    """
+    Exponential moving average strategy which buys when price is above signal and sells when price is below signal
+    """
+    PPO = signals.precentage_price_oscillator(df, short_period, long_period, window_signal)["signal"]
+
+    above_zero = PPO > 0
+    below_zero = PPO <= 0
+
+    df.loc[above_zero, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
+    return df
+
 
 infertrade_export_allocations = {
     "fifty_fifty": {
