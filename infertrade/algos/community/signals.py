@@ -172,12 +172,8 @@ def bollinger_band(df: pd.DataFrame, window: int = 20, window_dev: int = 2) -> p
     """
     df_with_signal = df.copy()
     df_with_signal["typical_price"] = (df["close"] + df["low"] + df["high"]) / 3
-    df_with_signal["BOLU"] = bollinger_hband(
-        df_with_signal["typical_price"], window=window, window_dev=window_dev
-    )
-    df_with_signal["BOLD"] = bollinger_lband(
-        df_with_signal["typical_price"], window=window, window_dev=window_dev
-    )
+    df_with_signal["BOLU"] = bollinger_hband(df_with_signal["typical_price"], window=window, window_dev=window_dev)
+    df_with_signal["BOLD"] = bollinger_lband(df_with_signal["typical_price"], window=window, window_dev=window_dev)
     df_with_signal["BOLA"] = bollinger_mavg(df_with_signal["typical_price"], window=window)
 
     return df_with_signal
@@ -185,19 +181,20 @@ def bollinger_band(df: pd.DataFrame, window: int = 20, window_dev: int = 2) -> p
 
 def detrended_price_oscillator(df: pd.DataFrame, window: int = 20) -> pd.DataFrame:
     """
-    This function is a detrended price oscillator which strips out price trends in an effort to 
+    This function is a detrended price oscillator which strips out price trends in an effort to
     estimate the length of price cycles from peak to peak or trough to trough.
     """
     df_with_signal = df.copy()
     df_with_signal["signal"] = dpo(df["close"], window=window)
     return df_with_signal
 
+
 def percentage_price_oscillator(
     df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int = 9
 ) -> pd.DataFrame:
     """
-    This is a technical momentum indicator that shows the relationship between two moving averages in percentage terms. 
-    The moving averages are a 26-period and 12-period exponential moving average (EMA). 
+    This is a technical momentum indicator that shows the relationship between two moving averages in percentage terms.
+    The moving averages are a 26-period and 12-period exponential moving average (EMA).
     """
     df_with_signal = df.copy()
     df_with_signal["signal"] = ppo_signal(df["close"], long_period, short_period, window_signal, fillna=True)

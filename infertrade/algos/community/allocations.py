@@ -588,7 +588,7 @@ def bollinger_band_strategy(
     for index, row in df_with_signal.iterrows():
 
         # Check if short position
-        if (row["typical_price"] >= row["BOLU"] or short_position == True) and row["typical_price"]>row["BOLA"]:
+        if (row["typical_price"] >= row["BOLU"] or short_position == True) and row["typical_price"] > row["BOLA"]:
             short_position = True
         else:
             short_position = False
@@ -613,6 +613,7 @@ def bollinger_band_strategy(
 
     return df
 
+
 def DPO_strategy(df: pd.DataFrame, window: int = 20, max_investment: float = 0.1) -> pd.DataFrame:
     """
     Exponential moving average strategy which buys when price is above signal and sells when price is below signal
@@ -626,7 +627,10 @@ def DPO_strategy(df: pd.DataFrame, window: int = 20, max_investment: float = 0.1
     df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
     return df
 
-def PPO_strategy(df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int =9, max_investment: float = 0.1) -> pd.DataFrame:
+
+def PPO_strategy(
+    df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int = 9, max_investment: float = 0.1
+) -> pd.DataFrame:
     """
     Percentage Price Oscillator strategy which buys when signal is above zero and sells when signal is below zero
     """
