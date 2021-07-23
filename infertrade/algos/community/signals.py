@@ -192,13 +192,12 @@ def detrended_price_oscillator(df: pd.DataFrame, window: int = 20) -> pd.DataFra
     df_with_signal["signal"] = dpo(df["close"], window=window)
     return df_with_signal
 
-def precentage_price_oscillator(
+def percentage_price_oscillator(
     df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int = 9
 ) -> pd.DataFrame:
     """
-    This function is a trend-following momentum indicator that shows the relationship between two moving averages at different windows:
-    The MACD is usually calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA.
-
+    This is a technical momentum indicator that shows the relationship between two moving averages in percentage terms. 
+    The moving averages are a 26-period and 12-period exponential moving average (EMA). 
     """
     df_with_signal = df.copy()
     df_with_signal["signal"] = ppo_signal(df["close"], long_period, short_period, window_signal, fillna=True)
@@ -306,6 +305,14 @@ infertrade_export_signals = {
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5f74bdeb99eb26c15df0b5417de837466cefaee1/infertrade/algos/community/signals.py#L186"
+        },
+    },
+    "percentage_price_oscillator": {
+        "function": percentage_price_oscillator,
+        "parameters": {"short_period": 12, "long_period": 26, "window_signal": 9},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L196"
         },
     },
 }

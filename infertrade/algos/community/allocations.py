@@ -628,9 +628,9 @@ def DPO_strategy(df: pd.DataFrame, window: int = 20, max_investment: float = 0.1
 
 def PPO_strategy(df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int =9, max_investment: float = 0.1) -> pd.DataFrame:
     """
-    Exponential moving average strategy which buys when price is above signal and sells when price is below signal
+    Percentage Price Oscillator strategy which buys when signal is above zero and sells when signal is below zero
     """
-    PPO = signals.precentage_price_oscillator(df, short_period, long_period, window_signal)["signal"]
+    PPO = signals.percentage_price_oscillator(df, short_period, long_period, window_signal)["signal"]
 
     above_zero = PPO > 0
     below_zero = PPO <= 0
@@ -808,7 +808,7 @@ infertrade_export_allocations = {
         "parameters": {"window": 14, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L309"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L522"
         },
     },
     "stochastic_RSI_strategy": {
@@ -816,7 +816,7 @@ infertrade_export_allocations = {
         "parameters": {"window": 14, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L325"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L539"
         },
     },
     "EMA_strategy": {
@@ -832,7 +832,15 @@ infertrade_export_allocations = {
         "parameters": {"window": 20, "window_dev": 2, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d13842aaae91afeb22c6631a06d7de4cb723ae23/infertrade/algos/community/allocations.py#L789"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d13842aaae91afeb22c6631a06d7de4cb723ae23/infertrade/algos/community/allocations.py#L616"
+        },
+    },
+    "PPO_strategy": {
+        "function": PPO_strategy,
+        "parameters": {"short_period": 12, "long_period": 26, "window_signal": 9, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L629"
         },
     },
 }

@@ -19,8 +19,6 @@
 """
 Unit tests for allocations
 """
-
-import infertrade.algos.community.signals as signals
 import infertrade.algos.community.allocations as allocations
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 from numbers import Real
@@ -86,7 +84,6 @@ def moving_average_convergence_divergence(
     """
     This function is a trend-following momentum indicator that shows the relationship between two moving averages at different windows:
     The MACD is usually calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA.
-
     """
     df_with_signals = df.copy()
     # ewma for two different spans
@@ -120,7 +117,6 @@ def relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
 def stochastic_relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
     """
     This function applies the Stochastic oscillator formula to a set of relative strength index (RSI) values rather than to standard price data.
-
     """
     df_with_signals = df.copy()
     RSI = relative_strength_index(df, window)["signal"]
@@ -154,11 +150,7 @@ def detrended_price_oscillator(df: pd.DataFrame, window: int = 20) -> pd.DataFra
 def percentage_price_oscillator(
     df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int = 9
 ) -> pd.DataFrame:
-    """
-    This function is a trend-following momentum indicator that shows the relationship between two moving averages at different windows:
-    The MACD is usually calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA.
-
-    """
+    # Implementation of percentage price oscillator
     df_with_signals = df.copy()
     # ewma for two different spans
     ewma_26 = exponentially_weighted_moving_average(df_with_signals, window=long_period)["signal"]
@@ -217,7 +209,6 @@ def test_EMA_strategy():
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 def test_MACD_strategy():
-    
     df_with_allocations = allocations.MACD_strategy(df, 12, 26 ,9, max_investment)
     df_with_signals = moving_average_convergence_divergence(df,12, 26, 9)
  
@@ -230,7 +221,6 @@ def test_MACD_strategy():
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 def test_RSI_strategy():
-    
     df_with_allocations = allocations.RSI_strategy(df, 14, max_investment)
     df_with_signals = relative_strength_index(df,14)
  
@@ -245,7 +235,6 @@ def test_RSI_strategy():
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 def test_Stochastic_RSI_strategy():
-    
     df_with_allocations = allocations.stochastic_RSI_strategy(df, 14, max_investment)
     df_with_signals = stochastic_relative_strength_index(df,14)
  
