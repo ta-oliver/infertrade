@@ -504,12 +504,12 @@ def WMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1)
 
 
 def MACD_strategy(
-    df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int = 9, max_investment: float = 0.1
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, max_investment: float = 0.1
 ) -> pd.DataFrame:
     """
     Moving average convergence divergence strategy which buys when MACD signal is above 0 and sells when MACD signal is below zero
     """
-    MACD_signal = signals.moving_average_convergence_divergence(df, short_period, long_period, window_signal)["signal"]
+    MACD_signal = signals.moving_average_convergence_divergence(df, window_slow, window_fast, window_signal)["signal"]
 
     signal_above_zero_line = MACD_signal > 0
     signal_below_zero_line = MACD_signal <= 0
@@ -587,18 +587,19 @@ def bollinger_band_strategy(
     df_with_signal = signals.bollinger_band(df, window=window, window_dev=window_dev)
     for index, row in df_with_signal.iterrows():
 
-        # Check if short position
+        # Check for short position
         if (row["typical_price"] >= row["BOLU"] or short_position == True) and row["typical_price"] > row["BOLA"]:
             short_position = True
         else:
             short_position = False
 
-        # Check if long position
+        # Check for long position
         if (row["typical_price"] <= row["BOLD"] or long_position == True) and row["typical_price"] < row["BOLA"]:
             long_position = True
         else:
             long_position = False
 
+        # Both short position and long position can't be true
         assert not (short_position == True and long_position == True)
 
         # allocation conditions
@@ -609,6 +610,7 @@ def bollinger_band_strategy(
             df.loc[index, PandasEnum.ALLOCATION.value] = -max_investment
 
         else:
+            # if both short position and long position is false
             df.loc[index, PandasEnum.ALLOCATION.value] = 0.0
 
     return df
@@ -629,15 +631,30 @@ def DPO_strategy(df: pd.DataFrame, window: int = 20, max_investment: float = 0.1
 
 
 def PPO_strategy(
-    df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int = 9, max_investment: float = 0.1
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, max_investment: float = 0.1
 ) -> pd.DataFrame:
     """
     Percentage Price Oscillator strategy which buys when signal is above zero and sells when signal is below zero
     """
-    PPO = signals.percentage_price_oscillator(df, short_period, long_period, window_signal)["signal"]
+    PPO = signals.percentage_price_oscillator(df, window_slow, window_fast, window_signal)["signal"]
 
     above_zero = PPO > 0
     below_zero = PPO <= 0
+
+    df.loc[above_zero, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
+    return df
+
+def PVO_strategy(
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, max_investment: float = 0.1
+) -> pd.DataFrame:
+    """
+    Percentage volume Oscillator strategy which buys when signal is above zero and sells when signal is below zero
+    """
+    PVO = signals.percentage_volume_oscillator(df, window_slow, window_fast, window_signal)["signal"]
+
+    above_zero = PVO > 0
+    below_zero = PVO <= 0
 
     df.loc[above_zero, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
@@ -801,7 +818,7 @@ infertrade_export_allocations = {
     },
     "MACD_strategy": {
         "function": MACD_strategy,
-        "parameters": {"short_period": 12, "long_period": 26, "window_signal": 9, "max_investment": 0.1},
+        "parameters": {"window_fast": 26, "window_slow": 12, "window_signal": 9, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L296"
@@ -841,10 +858,18 @@ infertrade_export_allocations = {
     },
     "PPO_strategy": {
         "function": PPO_strategy,
-        "parameters": {"short_period": 12, "long_period": 26, "window_signal": 9, "max_investment": 0.1},
+        "parameters": {"window_fast": 26, "window_slow": 12, "window_signal": 9, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L629"
+        },
+    },
+    "PVO_strategy": {
+        "function": PVO_strategy,
+        "parameters": {"window_fast": 26, "window_slow": 12, "window_signal": 9, "max_investment": 0.1},
+        "series": ["volume"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L648"
         },
     },
 }

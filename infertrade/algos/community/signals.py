@@ -23,7 +23,7 @@ import numpy as np
 from pandas.core.frame import DataFrame
 from sklearn.preprocessing import FunctionTransformer
 from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator, dpo
-from ta.momentum import ppo, ppo_signal, rsi, stochrsi
+from ta.momentum import ppo_signal, rsi, stochrsi, pvo_signal
 from ta.volatility import (
     AverageTrueRange,
     bollinger_hband,
@@ -85,7 +85,7 @@ def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 50) ->
 
 
 def moving_average_convergence_divergence(
-    df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int = 9
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9
 ) -> pd.DataFrame:
     """
     This function is a trend-following momentum indicator that shows the relationship between two moving averages at different windows:
@@ -93,7 +93,7 @@ def moving_average_convergence_divergence(
 
     """
     df_with_signal = df.copy()
-    df_with_signal["signal"] = macd_signal(df["close"], long_period, short_period, window_signal, fillna=True)
+    df_with_signal["signal"] = macd_signal(df["close"], window_slow, window_fast, window_signal, fillna=True)
     return df_with_signal
 
 
@@ -190,14 +190,26 @@ def detrended_price_oscillator(df: pd.DataFrame, window: int = 20) -> pd.DataFra
 
 
 def percentage_price_oscillator(
-    df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int = 9
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9
 ) -> pd.DataFrame:
     """
     This is a technical momentum indicator that shows the relationship between two moving averages in percentage terms.
     The moving averages are a 26-period and 12-period exponential moving average (EMA).
     """
     df_with_signal = df.copy()
-    df_with_signal["signal"] = ppo_signal(df["close"], long_period, short_period, window_signal, fillna=True)
+    df_with_signal["signal"] = ppo_signal(df["close"], window_slow, window_fast, window_signal, fillna=True)
+    return df_with_signal
+
+
+def percentage_volume_oscillator(
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9
+) -> pd.DataFrame:
+    """
+    This is a technical momentum indicator that shows the relationship between two moving averages of volume in percentage terms.
+    The moving averages are a 26-period and 12-period exponential moving average (EMA) of volume.
+    """
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = pvo_signal(df["volume"], window_slow, window_fast, window_signal, fillna=True)
     return df_with_signal
 
 
@@ -258,7 +270,7 @@ infertrade_export_signals = {
     },
     "moving_average_convergence_divergence": {
         "function": moving_average_convergence_divergence,
-        "parameters": {"short_period": 12, "long_period": 26, "window_signal": 9},
+        "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9},
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L76"
@@ -306,10 +318,18 @@ infertrade_export_signals = {
     },
     "percentage_price_oscillator": {
         "function": percentage_price_oscillator,
-        "parameters": {"short_period": 12, "long_period": 26, "window_signal": 9},
+        "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9},
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L196"
+        },
+    },
+    "percentage_volume_oscillator": {
+        "function": percentage_volume_oscillator,
+        "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9},
+        "series": ["volume"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L204"
         },
     },
 }
