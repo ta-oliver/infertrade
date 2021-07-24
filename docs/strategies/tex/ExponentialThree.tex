@@ -7,7 +7,7 @@
 \rulename{Exponential Trading Rule - Three factor} %Argument is name of rule
 \tblofcontents
 
-\ruledescription{These representations have the position dependent on an exponentially weighted average of the prior values of research and price. The lookback length, $\lookbacklength$, determines how far back the rule looks. The decay rates, $\decaycoefficientone$, $\decaycoefficienttwo$ and $\decaycoefficientthree$, and amplitudes, $\amplitudecoefficientone$, $\amplitudecoefficienttwo$ and $\amplitudecoefficientthree$ coefficients determine the contribution from each exponential. The expression is normalised to be dimensionless by division by the weighting factors and current price.}
+\ruledescription{These representations have the position dependent on an exponentially weighted average of the prior values of research and price. The look back length, $\lookbacklength$, determines how far back the rule looks. The decay rates, $\decaycoefficientone$, $\decaycoefficienttwo$ and $\decaycoefficientthree$, and amplitudes, $\amplitudecoefficientone$, $\amplitudecoefficienttwo$ and $\amplitudecoefficientthree$ coefficients determine the contribution from each exponential. The expression is normalised to be dimensionless by division by the weighting factors and current price.}
 
 \ruleparameters
 {Window size}{10}{This is the number of time steps over which exponential contributions are sourced.}{$\lookbacklength$}
@@ -29,14 +29,14 @@
 \bigcontribution_{\dummyiteratortwo \price} = \amplitudecoefficient_m^\price \frac{\sum_{\dummyiterator=0}^{\lookbacklength} \price_{\currenttime - \dummyiterator} \contribution^{\price}(\dummyiterator, \dummyiteratortwo)}{\sum_{\dummyiterator = 0}^{\lookbacklength} \contribution^{\price}(\dummyiterator, \dummyiteratortwo)}
 \end{equation}\\
 \begin{equation}
-\bigcontribution_{\dummyiteratortwo \research} = \amplitudecoefficient_m^\research \frac{\sum_{\dummyiterator=0}^{\lookbacklength} \research_{\currenttime - \dummyiterator} \contribution^{\research}(\dummyiterator, \dummyiteratortwo)}{\sum_{\dummyiterator = 0}^{\lookbacklength} \contribution^{\research}(\dummyiterator, \dummyiteratortwo)} 
+\bigcontribution_{\dummyiteratortwo \research} = \amplitudecoefficient_m^\research \frac{\sum_{\dummyiterator=0}^{\lookbacklength} \research_{\currenttime - \dummyiterator} \contribution^{\research}(\dummyiterator, \dummyiteratortwo)}{\sum_{\dummyiterator = 0}^{\lookbacklength} \contribution^{\research}(\dummyiterator, \dummyiteratortwo)}
 \end{equation}\\
 \begin{equation}
 \position_{\currenttime} = \frac{({\bigcontributionone}_{\price} + {\bigcontributionone}_{\research} + {\bigcontributiontwo}_{\price} + {\bigcontributiontwo}_{\research} + {\bigcontributionthree}_{\price} + {\bigcontributionthree}_{\research})}{\price_{\currenttime}}
 \end{equation}
 \\
 where $\price_\currenttime$ is the price at time $\currenttime$, $\research$ is the value of the research series, $\amplitudecoefficientone$, $\amplitudecoefficienttwo$ and $\amplitudecoefficientthree$ are the amplitude coefficients, $\decaycoefficientone$, $\decaycoefficienttwo$ and $\decaycoefficientthree$  are the decay rate coefficients and $\position$ is the resultant fractional portfolio investment.\\
-Intuitively, the $\contribution$ are the exponential weightings for each historical value in the lookback period, with $\bigcontribution$ the normalised sum of all the contributions, scaled by the amplitude coefficient. The total contributions are then scaled by the current price to give a dimensionless fraction of the portfolio to invest.
+Intuitively, the $\contribution$ are the exponential weightings for each historical value in the look back period, with $\bigcontribution$ the normalised sum of all the contributions, scaled by the amplitude coefficient. The total contributions are then scaled by the current price to give a dimensionless fraction of the portfolio to invest.
 \hspace{200mm}
 \hspace{200mm}
 \keyterms
