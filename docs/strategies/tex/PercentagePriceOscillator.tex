@@ -1,0 +1,48 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Percentage Price Oscillator} %Argument is name of rule
+\tblofcontents
+
+\ruledescription{The percentage price oscillator (PPO) is a technical momentum indicator that shows the relationship between two moving averages in percentage terms. The moving averages are a 26-period and 12-period exponential moving average (EMA).
+The PPO is used to compare asset performance and volatility, spot divergence that could lead to price reversals, generate trade signals, and help confirm trend direction.
+}
+
+\howtotrade
+{The strategy is to identify asset's price cycles.
+Bullish Reversal - when PPO is above zero \&
+Bearish Reversal - when PPO is below zero.
+}
+
+\ruleparameters %You can include however many arguments (in groups of 4) as you want!
+{Short term look back Length}{12}{Short term look back length used to compute EMA.}{$\lookbacklength_{s}$}
+{Long term look back Length}{26}{Long term look back length used to compute EMA.}{$\lookbacklength_{l}$}
+{Signal look back Length}{9}{Look back length used to generate Signal line.}{$S_{l}$}
+\stoptable %must be included or Tex engine runs infinitely
+
+\newpage
+\section{Equation}
+Below are the equations which govern how this specific trading rule calculates a trading position.
+
+\begin{equation}
+    PPO = \frac{EMA(\lookbacklength_{s}) -         EMA(\lookbacklength_{l})}{EMA(\lookbacklength_{l})} \times 100
+\end{equation}
+\begin{equation}
+    Signal = EMA(S_{l})
+\end{equation}
+\\ % creates some space after equation
+where:
+
+$EMA(\lookbacklength_{s})$: is the short term exponentially weighted average.
+
+$EMA(\lookbacklength_{l})$: is the long term exponentially weighted average.
+
+$EMA(S_{l})$: is the exponentially weighted average computed to generate signal line.
+
+\keyterms
+\furtherlinks %The footer
+\end{document}
