@@ -20,6 +20,7 @@
 Unit tests for allocations
 """
 import infertrade.algos.community.allocations as allocations
+import infertrade.algos.community.signals as signals
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 from numbers import Real
 from infertrade.algos import algorithm_functions
@@ -69,17 +70,17 @@ def weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     return df_with_signals
 
 
-def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
+def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 1, series_name: str = "close") -> pd.DataFrame:
     """
     This function uses an exponentially weighted multiplier to give more weight to recent prices.
     """
     df_with_signals = df.copy()
-    df_with_signals["signal"] = df_with_signals["close"].ewm(span=window, adjust=False).mean()
+    df_with_signals["signal"] = df_with_signals[series_name].ewm(span=window, adjust=False).mean()
     return df_with_signals
 
 
 def moving_average_convergence_divergence(
-    df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int = 9
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 26, window_signal: int = 9
 ) -> pd.DataFrame:
     """
     This function is a trend-following momentum indicator that shows the relationship between two moving averages at different windows:
@@ -87,8 +88,8 @@ def moving_average_convergence_divergence(
     """
     df_with_signals = df.copy()
     # ewma for two different spans
-    ewma_26 = exponentially_weighted_moving_average(df_with_signals, window=long_period).copy()
-    ewma_12 = exponentially_weighted_moving_average(df_with_signals, window=short_period).copy()
+    ewma_26 = exponentially_weighted_moving_average(df_with_signals, window=window_slow).copy()
+    ewma_12 = exponentially_weighted_moving_average(df_with_signals, window=window_fast).copy()
 
     # MACD calculation
     macd = ewma_12["signal"] - ewma_26["signal"]
@@ -147,14 +148,14 @@ def detrended_price_oscillator(df: pd.DataFrame, window: int = 20) -> pd.DataFra
     df_with_signals["signal"] = DPO
     return df_with_signals
 
-def percentage_price_oscillator(
-    df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int = 9
+def percentage_series_oscillator(
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, series_name: str="close"
 ) -> pd.DataFrame:
     # Implementation of percentage price oscillator
     df_with_signals = df.copy()
     # ewma for two different spans
-    ewma_26 = exponentially_weighted_moving_average(df_with_signals, window=long_period)["signal"]
-    ewma_12 = exponentially_weighted_moving_average(df_with_signals, window=short_period)["signal"]
+    ewma_26 = exponentially_weighted_moving_average(df_with_signals, window=window_slow, series_name=series_name)["signal"]
+    ewma_12 = exponentially_weighted_moving_average(df_with_signals, window=window_fast, series_name=series_name)["signal"]
 
     # MACD calculation
     ppo = ((ewma_12 - ewma_26)/ewma_26)*100
@@ -162,6 +163,7 @@ def percentage_price_oscillator(
     # convert MACD into signal
     df_with_signals["signal"] = ppo.ewm(span=window_signal, adjust=False).mean()
     return df_with_signals
+
 
 """
 Tests for allocation strategies
@@ -300,8 +302,9 @@ def test_DPO_strategy():
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 def test_PPO_strategy():
-    df_with_allocations = allocations.PPO_strategy(df, 12, 26, 9, max_investment)
-    df_with_signals = percentage_price_oscillator(df, 12, 26, 9)
+    series_name = "close"
+    df_with_allocations = allocations.PPO_strategy(df, 26, 12, 9, max_investment)
+    df_with_signals = percentage_series_oscillator(df, 26, 12, 9, series_name)
 
     above_zero = df_with_signals["signal"]>0
     below_zero = df_with_signals["signal"]<0
@@ -310,3 +313,19 @@ def test_PPO_strategy():
     df_with_signals.loc[below_zero, "allocation"] = -max_investment
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
+
+def test_PVO_strategy():
+    series_name = "volume"
+    df_with_allocations = allocations.PVO_strategy(df, 26, 12, 9, max_investment)
+    df_with_signals = percentage_series_oscillator(df, 26, 12, 9, series_name)
+    
+    above_zero = df_with_signals["signal"]>0
+    below_zero = df_with_signals["signal"]<=0
+
+    df_with_signals.loc[above_zero, "allocation"] = max_investment
+    df_with_signals.loc[below_zero, "allocation"] = -max_investment
+
+    for i in range(len(df_with_signals)):
+        assert (df_with_signals["allocation"][i]==df_with_allocations["allocation"][i])
+
+
