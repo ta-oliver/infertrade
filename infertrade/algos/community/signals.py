@@ -22,7 +22,7 @@ import pandas as pd
 import numpy as np
 from pandas.core.frame import DataFrame
 from sklearn.preprocessing import FunctionTransformer
-from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator, dpo
+from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator, dpo, trix
 from ta.momentum import ppo_signal, rsi, stochrsi, pvo_signal
 from ta.volatility import (
     AverageTrueRange,
@@ -213,6 +213,18 @@ def percentage_volume_oscillator(
     return df_with_signal
 
 
+def triple_exponential_average(
+    df: pd.DataFrame, window: int = 14
+) -> pd.DataFrame:
+    """
+    The triple exponential average (TRIX) is a momentum indicator shows the percentage change 
+    in a moving average that has been smoothed exponentially three times.
+    """
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = trix(df["close"], window, fillna = True)
+    return df_with_signal
+
+
 # creates wrapper classes to fit sci-kit learn interface
 def scikit_signal_factory(signal_function: callable):
     """A class compatible with Sci-Kit Learn containing the signal function."""
@@ -330,6 +342,14 @@ infertrade_export_signals = {
         "series": ["volume"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L204"
+        },
+    },
+    "triple_exponential_average": {
+        "function": triple_exponential_average,
+        "parameters": {"window": 14},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L215"
         },
     },
 }
