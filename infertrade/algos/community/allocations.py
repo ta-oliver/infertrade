@@ -660,6 +660,21 @@ def PVO_strategy(
     df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
     return df
 
+def TRIX_strategy(
+    df: pd.DataFrame, window: int = 14, max_investment: float = 0.1
+) -> pd.DataFrame:
+    """
+    This is Triple Exponential Average (TRIX) strategy which buys when signal is above zero and sells when signal is below zero
+    """
+    TRIX = signals.triple_exponential_average(df, window)["signal"]
+
+    above_zero = TRIX > 0
+    below_zero = TRIX <= 0
+
+    df.loc[above_zero, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
+    return df
+
 
 infertrade_export_allocations = {
     "fifty_fifty": {
@@ -870,6 +885,14 @@ infertrade_export_allocations = {
         "series": ["volume"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L648"
+        },
+    },
+    "TRIX_strategy": {
+        "function": TRIX_strategy,
+        "parameters": {"window": 14, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L663"
         },
     },
 }
