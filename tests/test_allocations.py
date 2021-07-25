@@ -70,12 +70,12 @@ def weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     return df_with_signals
 
 
-def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 1, series_name: str = "close") -> pd.DataFrame:
+def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 50, series_name: str = "close", ignore_na = False) -> pd.DataFrame:
     """
     This function uses an exponentially weighted multiplier to give more weight to recent prices.
     """
     df_with_signals = df.copy()
-    df_with_signals["signal"] = df_with_signals[series_name].ewm(span=window, adjust=False).mean()
+    df_with_signals["signal"] = df_with_signals[series_name].ewm(span=window, adjust=False, ignore_na=ignore_na).mean()
     return df_with_signals
 
 
@@ -164,6 +164,21 @@ def percentage_series_oscillator(
     df_with_signals["signal"] = ppo.ewm(span=window_signal, adjust=False).mean()
     return df_with_signals
 
+def triple_exponential_average(
+    df: pd.DataFrame, window: int = 14
+) -> pd.DataFrame:
+    # Implementation of percentage price oscillator
+    df_with_signals = df.copy()
+    # ema1
+    df_with_signals = exponentially_weighted_moving_average(df_with_signals, window, "close", True)
+    # ema2
+    df_with_signals = exponentially_weighted_moving_average(df_with_signals, window, "signal", True)
+    # ema3
+    df_with_signals = exponentially_weighted_moving_average(df_with_signals, window, "signal", False)
+    # 1 period percent change
+    df_with_signals["signal"] = df_with_signals["signal"].pct_change(fill_method="pad") * 100
+
+    return df_with_signals
 
 """
 Tests for allocation strategies
@@ -327,5 +342,17 @@ def test_PVO_strategy():
 
     for i in range(len(df_with_signals)):
         assert (df_with_signals["allocation"][i]==df_with_allocations["allocation"][i])
+
+def test_TRIX_strategy():
+    df_with_allocations = allocations.TRIX_strategy(df, 14, max_investment)
+    df_with_signals = triple_exponential_average(df, 14)
+    
+    above_zero = df_with_signals["signal"]>0
+    below_zero = df_with_signals["signal"]<=0
+
+    df_with_signals.loc[above_zero, "allocation"] = max_investment
+    df_with_signals.loc[below_zero, "allocation"] = -max_investment
+    
+    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 
