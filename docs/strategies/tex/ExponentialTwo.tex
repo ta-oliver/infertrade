@@ -8,7 +8,7 @@
 
 \tblofcontents
 
-\ruledescription{These representations have the position dependent on an exponentially weighted average of the prior values of research and price. The lookback length, $\lookbacklength$, determines how far back the rule looks. The decay rates, $\decaycoefficientone$ and $\decaycoefficienttwo$, and amplitudes, $\amplitudecoefficientone$ and $\amplitudecoefficienttwo$, coefficients determine the contribution from each exponential. The expression is normalised to be dimensionless by division by the weighting factors and current price.}
+\ruledescription{These representations have the position dependent on an exponentially weighted average of the prior values of research and price. The look back length, $\lookbacklength$, determines how far back the rule looks. The decay rates, $\decaycoefficientone$ and $\decaycoefficienttwo$, and amplitudes, $\amplitudecoefficientone$ and $\amplitudecoefficienttwo$, coefficients determine the contribution from each exponential. The expression is normalised to be dimensionless by division by the weighting factors and current price.}
 
 \ruleparameters
 {Window size}{10}{This is the number of time steps over which exponential contributions are sourced.}{$\lookbacklength$}
@@ -42,7 +42,7 @@
 \hspace{200mm}
 
 \noindent where $\price_\currenttime$ is the price at time $\currenttime$, $\research$ is the value of the research series, $\amplitudecoefficientone$ and $\amplitudecoefficienttwo$ are the amplitude coefficients, $\decaycoefficientone$ and $\decaycoefficienttwo$ are the decay rate coefficients and $\position$ is the resultant fractional portfolio investment.\\
-Intuitively, the $\contribution$ are the exponential weightings for each historical value in the lookback period, with $\bigcontribution$ the normalised sum of all the contributions, scaled by the amplitude coefficient. The total contributions are then scaled by the current price to give a dimensionless fraction of the portfolio to invest.
+Intuitively, the $\contribution$ are the exponential weightings for each historical value in the look back period, with $\bigcontribution$ the normalised sum of all the contributions, scaled by the amplitude coefficient. The total contributions are then scaled by the current price to give a dimensionless fraction of the portfolio to invest.
 \hspace{200mm}
 \hspace{200mm}
 
