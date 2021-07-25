@@ -23,7 +23,7 @@ import numpy as np
 from pandas.core.frame import DataFrame
 from sklearn.preprocessing import FunctionTransformer
 from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator, dpo, trix
-from ta.momentum import ppo_signal, rsi, stochrsi, pvo_signal
+from ta.momentum import ppo_signal, rsi, stochrsi, pvo_signal, tsi
 from ta.volatility import (
     AverageTrueRange,
     bollinger_hband,
@@ -225,6 +225,18 @@ def triple_exponential_average(
     return df_with_signal
 
 
+def true_strength_index(
+    df: pd.DataFrame, window_slow: int = 25, window_fast: int = 13
+) -> pd.DataFrame:
+    """
+    This is a technical momentum oscillator that finds trends and reversals. 
+    It helps in determining overbought and oversold conditions.
+    It also gives warning of trend weakness through divergence.
+    """ 
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = tsi(df["close"], window_slow, window_fast)
+    return df_with_signal
+
 # creates wrapper classes to fit sci-kit learn interface
 def scikit_signal_factory(signal_function: callable):
     """A class compatible with Sci-Kit Learn containing the signal function."""
@@ -350,6 +362,14 @@ infertrade_export_signals = {
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L215"
+        },
+    },
+    "true_strength_index": {
+        "function": true_strength_index,
+        "parameters": {"window_slow": 25, "window_fast": 13},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L228"
         },
     },
 }
