@@ -675,6 +675,22 @@ def TRIX_strategy(
     df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
     return df
 
+def TSI_strategy(
+    df: pd.DataFrame, window_slow: int = 25, window_fast: int = 13, window_signal: int =13, max_investment: float = 0.1
+) -> pd.DataFrame:
+    """
+    This is True Strength Index (TSI) strategy which buys when TSI is greater than signal and sells when TSI is below signal
+    Signal is EMA of TSI 
+    """
+    df_with_signals = signals.true_strength_index(df, window_slow, window_fast, window_signal)
+    
+    above_signal = df_with_signals["TSI"] > df_with_signals["signal"] 
+    below_signal = df_with_signals["TSI"] <= df_with_signals["signal"]
+
+    df.loc[above_signal, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[below_signal, PandasEnum.ALLOCATION.value] = -max_investment
+    return df
+
 
 infertrade_export_allocations = {
     "fifty_fifty": {
@@ -890,6 +906,14 @@ infertrade_export_allocations = {
     "TRIX_strategy": {
         "function": TRIX_strategy,
         "parameters": {"window": 14, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L663"
+        },
+    },
+    "TSI_strategy": {
+        "function": TSI_strategy,
+        "parameters": {"window_slow": 25, "window_fast": 13, "window_signal": 13, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L663"
