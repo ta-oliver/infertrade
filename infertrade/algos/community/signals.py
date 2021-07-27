@@ -22,7 +22,7 @@ import pandas as pd
 import numpy as np
 from pandas.core.frame import DataFrame
 from sklearn.preprocessing import FunctionTransformer
-from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator, dpo, trix
+from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator, dpo, trix, stc
 from ta.momentum import ppo_signal, rsi, stochrsi, pvo_signal, tsi
 from ta.volatility import (
     AverageTrueRange,
@@ -236,6 +236,18 @@ def true_strength_index(
     df_with_signal["signal"] = ema_indicator(df_with_signal["TSI"], window_signal, fillna=True)
     return df_with_signal
 
+def schaff_trend_cycle(
+    df: pd.DataFrame, window_slow: int = 50, window_fast: int = 23, cycle: int =10, smooth1: int = 3, smooth2: int = 3
+) -> pd.DataFrame:
+    """
+    This is a technical momentum oscillator that finds trends and reversals.
+    It helps in determining overbought and oversold conditions.
+    It also gives warning of trend weakness through divergence.
+    """
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = stc(df_with_signal["TSI"], window_slow, window_fast, cycle, smooth1, smooth2, fillna=True)
+    return df_with_signal
+
 
 # creates wrapper classes to fit sci-kit learn interface
 def scikit_signal_factory(signal_function: callable):
@@ -367,6 +379,14 @@ infertrade_export_signals = {
     "true_strength_index": {
         "function": true_strength_index,
         "parameters": {"window_slow": 25, "window_fast": 13},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L228"
+        },
+    },
+    "schaff_trend_cycle": {
+        "function": schaff_trend_cycle,
+        "parameters": {"window_slow": 50, "window_fast": 23, "cycle": 10, "smooth1": 3, "smooth2": 3},
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L228"
