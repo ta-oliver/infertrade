@@ -167,9 +167,12 @@ def test_check_if_should_skip_return_calculation():
         day_of_return_to_calculate=1,
         show_absolute_bankruptcies=False,
     )
-    assert (returned_tuple[0], bool)
-    assert (returned_tuple[1], str or float)
-    assert (returned_tuple[2], bool)
+    returned_tuple_value = returned_tuple[0]
+    assert (returned_tuple_value, bool)
+    returned_tuple_value = returned_tuple[1]
+    assert (returned_tuple_value, str or float)
+    returned_tuple_value = returned_tuple[2]
+    assert (returned_tuple_value, bool)
 
     returned_tuple = infertrade.utilities.performance.check_if_should_skip_return_calculation(
         previous_portfolio_return=1,
@@ -178,9 +181,12 @@ def test_check_if_should_skip_return_calculation():
         day_of_return_to_calculate=1,
         show_absolute_bankruptcies=False,
     )
-    assert (returned_tuple[0], bool)
-    assert (returned_tuple[1], str or float)
-    assert (returned_tuple[2], bool)
+    returned_tuple_value = returned_tuple[0]
+    assert (returned_tuple_value, bool)
+    returned_tuple_value = returned_tuple[1]
+    assert (returned_tuple_value, str or float)
+    returned_tuple_value = returned_tuple[2]
+    assert (returned_tuple_value, bool)
 
     returned_tuple = infertrade.utilities.performance.check_if_should_skip_return_calculation(
         previous_portfolio_return=1,
@@ -190,9 +196,12 @@ def test_check_if_should_skip_return_calculation():
         show_absolute_bankruptcies=False,
         bankrupt=True
     )
-    assert (returned_tuple[0], bool)
-    assert (returned_tuple[1], str or float)
-    assert (returned_tuple[2], bool)
+    returned_tuple_value = returned_tuple[0]
+    assert (returned_tuple_value, bool)
+    returned_tuple_value = returned_tuple[1]
+    assert (returned_tuple_value, str or float)
+    returned_tuple_value = returned_tuple[2]
+    assert (returned_tuple_value, bool)
 
 def test_cumulative_return_if_bankrupt():
     """Tests if the returned value is the correct data type"""
