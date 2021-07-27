@@ -1,0 +1,44 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Detrended Price Oscillator} %Argument is name of rule
+\tblofcontents
+
+\ruledescription{A detrended price oscillator is an oscillator that strips out price trends in an effort to estimate the length of price cycles from peak to peak or trough to trough.
+Unlike other oscillators, such as the stochastic or moving average convergence divergence (MACD), the DPO is not a momentum indicator. It instead highlights peaks and troughs in price, which are used to estimate buy and sell points in line with the historical cycle.
+}
+
+\howtotrade
+{The strategy is to identify asset's price cycles.
+Bullish Reversal - when DPO is above zero \&
+Bearish Reversal - when DPO is below zero.
+}
+
+\ruleparameters %You can include however many arguments (in groups of 4) as you want!
+{Look Back}{20}{Number of look back periods.}{\lookbacklength}
+{Simple Moving Average}{20}{Simple Moving Average of \textit{\textbf{n}} periods.}{$SMA(\lookbacklength)$}
+\stoptable %must be included or Tex engine runs infinitely
+
+
+\section{Equation}
+Below are the equations which govern how this specific trading rule calculates a trading position.
+
+\begin{equation}
+DPO = P_{\frac{\lookbacklength}{2} + 1} - SMA(\lookbacklength)
+\end{equation}
+\\
+where: \\
+$P_{\frac{\lookbacklength}{2} + 1}$ : Closing Price of asset where look back periods are determined using $\frac{\lookbacklength}{2} + 1$.
+\\ \\
+e.g. if $\lookbacklength = 20$ then closing price of asset would be from $\frac{20}{2} +1 = 11$ periods ago.
+\\ \\
+$SMA(\lookbacklength)$ : is the Simple Moving Average with number of periods determined using parameter \lookbacklength.
+
+
+\keyterms
+\furtherlinks %The footer
+\end{document}
