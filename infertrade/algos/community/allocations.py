@@ -645,6 +645,7 @@ def PPO_strategy(
     df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
     return df
 
+
 def PVO_strategy(
     df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, max_investment: float = 0.1
 ) -> pd.DataFrame:
@@ -660,9 +661,8 @@ def PVO_strategy(
     df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
     return df
 
-def TRIX_strategy(
-    df: pd.DataFrame, window: int = 14, max_investment: float = 0.1
-) -> pd.DataFrame:
+
+def TRIX_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1) -> pd.DataFrame:
     """
     This is Triple Exponential Average (TRIX) strategy which buys when signal is above zero and sells when signal is below zero
     """
@@ -675,16 +675,17 @@ def TRIX_strategy(
     df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
     return df
 
+
 def TSI_strategy(
-    df: pd.DataFrame, window_slow: int = 25, window_fast: int = 13, window_signal: int =13, max_investment: float = 0.1
+    df: pd.DataFrame, window_slow: int = 25, window_fast: int = 13, window_signal: int = 13, max_investment: float = 0.1
 ) -> pd.DataFrame:
     """
     This is True Strength Index (TSI) strategy which buys when TSI is greater than signal and sells when TSI is below signal
-    Signal is EMA of TSI 
+    Signal is EMA of TSI
     """
     df_with_signals = signals.true_strength_index(df, window_slow, window_fast, window_signal)
-    
-    above_signal = df_with_signals["TSI"] > df_with_signals["signal"] 
+
+    above_signal = df_with_signals["TSI"] > df_with_signals["signal"]
     below_signal = df_with_signals["TSI"] <= df_with_signals["signal"]
 
     df.loc[above_signal, PandasEnum.ALLOCATION.value] = max_investment

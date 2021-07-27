@@ -213,15 +213,13 @@ def percentage_volume_oscillator(
     return df_with_signal
 
 
-def triple_exponential_average(
-    df: pd.DataFrame, window: int = 14
-) -> pd.DataFrame:
+def triple_exponential_average(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
     """
-    The triple exponential average (TRIX) is a momentum indicator shows the percentage change 
+    The triple exponential average (TRIX) is a momentum indicator shows the percentage change
     in a moving average that has been smoothed exponentially three times.
     """
     df_with_signal = df.copy()
-    df_with_signal["signal"] = trix(df["close"], window, fillna = True)
+    df_with_signal["signal"] = trix(df["close"], window, fillna=True)
     return df_with_signal
 
 
@@ -229,14 +227,15 @@ def true_strength_index(
     df: pd.DataFrame, window_slow: int = 25, window_fast: int = 13, window_signal: int = 13
 ) -> pd.DataFrame:
     """
-    This is a technical momentum oscillator that finds trends and reversals. 
+    This is a technical momentum oscillator that finds trends and reversals.
     It helps in determining overbought and oversold conditions.
     It also gives warning of trend weakness through divergence.
-    """ 
+    """
     df_with_signal = df.copy()
     df_with_signal["TSI"] = tsi(df["close"], window_slow, window_fast, fillna=True)
     df_with_signal["signal"] = ema_indicator(df_with_signal["TSI"], window_signal, fillna=True)
     return df_with_signal
+
 
 # creates wrapper classes to fit sci-kit learn interface
 def scikit_signal_factory(signal_function: callable):
