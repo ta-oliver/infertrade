@@ -245,7 +245,7 @@ def schaff_trend_cycle(
     It also gives warning of trend weakness through divergence.
     """
     df_with_signal = df.copy()
-    df_with_signal["signal"] = stc(df_with_signal["TSI"], window_slow, window_fast, cycle, smooth1, smooth2, fillna=True)
+    df_with_signal["signal"] = stc(df_with_signal["close"], window_slow, window_fast, cycle, smooth1, smooth2, fillna=True)
     return df_with_signal
 
 
