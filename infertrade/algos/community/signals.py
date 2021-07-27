@@ -226,7 +226,7 @@ def triple_exponential_average(
 
 
 def true_strength_index(
-    df: pd.DataFrame, window_slow: int = 25, window_fast: int = 13
+    df: pd.DataFrame, window_slow: int = 25, window_fast: int = 13, window_signal: int = 13
 ) -> pd.DataFrame:
     """
     This is a technical momentum oscillator that finds trends and reversals. 
@@ -234,7 +234,8 @@ def true_strength_index(
     It also gives warning of trend weakness through divergence.
     """ 
     df_with_signal = df.copy()
-    df_with_signal["signal"] = tsi(df["close"], window_slow, window_fast)
+    df_with_signal["TSI"] = tsi(df["close"], window_slow, window_fast, fillna=True)
+    df_with_signal["signal"] = ema_indicator(df_with_signal["TSI"], window_signal, fillna=True)
     return df_with_signal
 
 # creates wrapper classes to fit sci-kit learn interface
