@@ -70,12 +70,12 @@ def weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     return df_with_signals
 
 
-def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 50, series_name: str = "close", ignore_na = False) -> pd.DataFrame:
+def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 50, series_name: str = "close") -> pd.DataFrame:
     """
     This function uses an exponentially weighted multiplier to give more weight to recent prices.
     """
     df_with_signals = df.copy()
-    df_with_signals["signal"] = df_with_signals[series_name].ewm(span=window, adjust=False, ignore_na=ignore_na).mean()
+    df_with_signals["signal"] = df_with_signals[series_name].ewm(span=window, adjust=False).mean()
     return df_with_signals
 
 
@@ -170,13 +170,37 @@ def triple_exponential_average(
     # Implementation of percentage price oscillator
     df_with_signals = df.copy()
     # ema1
-    df_with_signals = exponentially_weighted_moving_average(df_with_signals, window, "close", True)
+    df_with_signals = exponentially_weighted_moving_average(df_with_signals, window, "close")
     # ema2
-    df_with_signals = exponentially_weighted_moving_average(df_with_signals, window, "signal", True)
+    df_with_signals = exponentially_weighted_moving_average(df_with_signals, window, "signal")
     # ema3
-    df_with_signals = exponentially_weighted_moving_average(df_with_signals, window, "signal", False)
+    df_with_signals = exponentially_weighted_moving_average(df_with_signals, window, "signal")
     # 1 period percent change
     df_with_signals["signal"] = df_with_signals["signal"].pct_change(fill_method="pad") * 100
+
+    return df_with_signals
+
+def true_strength_index(
+    df: pd.DataFrame, window_slow: int = 25, window_fast: int = 13, window_signal: int = 13
+) -> pd.DataFrame:
+    # Implementation of percentage price oscillator
+    df_with_signals = df.copy()
+    #price change
+    PC = df_with_signals["close"].diff()
+    APC = PC.abs()
+    #single smoothing
+    PCS = PC.ewm(span=window_slow, adjust=False).mean()
+    #double smoothing
+    PCDS = PCS.ewm(span=window_fast, adjust=False).mean()
+    #absolute price change
+ 
+    APCS = APC.ewm(span=window_slow, adjust=False).mean()
+    APCDS = APCS.ewm(span=window_fast, adjust=False).mean()
+    
+    df_with_signals["TSI"] = PCDS/APCDS *100
+    df_with_signals.fillna(0, inplace=True)
+    df_with_signals["signal"] = df_with_signals["TSI"].ewm(span=window_signal, adjust=False).mean()
+    
 
     return df_with_signals
 
@@ -340,8 +364,7 @@ def test_PVO_strategy():
     df_with_signals.loc[above_zero, "allocation"] = max_investment
     df_with_signals.loc[below_zero, "allocation"] = -max_investment
 
-    for i in range(len(df_with_signals)):
-        assert (df_with_signals["allocation"][i]==df_with_allocations["allocation"][i])
+    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 def test_TRIX_strategy():
     df_with_allocations = allocations.TRIX_strategy(df, 14, max_investment)
@@ -355,4 +378,15 @@ def test_TRIX_strategy():
     
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
+def test_TSI_strategy():
+    df_with_allocations = allocations.TSI_strategy(df, 25, 13, 13, max_investment=max_investment)
+    df_with_signals = true_strength_index(df, 25, 13, 13)
+    
+    above_signal = df_with_signals["TSI"] > df_with_signals["signal"] 
+    below_signal = df_with_signals["TSI"] <= df_with_signals["signal"]
 
+    df_with_signals.loc[above_signal, "allocation"] = max_investment
+    df_with_signals.loc[below_signal, "allocation"] = -max_investment
+
+    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
+    
