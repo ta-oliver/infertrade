@@ -85,7 +85,7 @@ def change_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
         df[PandasEnum.ALLOCATION.value] = 0.0
         return df
 
-    calculate_change_relationship(df, regression_period)
+    df = calculate_change_relationship(df, regression_period)
 
     return df
 
@@ -115,6 +115,7 @@ def calculate_change_relationship(df: pd.DataFrame, regression_period: int = 120
         forecast_period=forecast_period,
         kelly_fraction=kelly_fraction,
     )
+    return dataframe
 
 
 def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
@@ -133,7 +134,7 @@ def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
         df[PandasEnum.ALLOCATION.value] = 0.0
         return df
 
-    calculate_combination_relationship(df, regression_period)
+    df = calculate_combination_relationship(df, regression_period)
 
     return df
 
@@ -205,7 +206,7 @@ def difference_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
         dataframe[PandasEnum.ALLOCATION.value] = 0.0
         return df
 
-    calculate_difference_relationship(df, regression_period)
+    df = calculate_difference_relationship(df, regression_period)
 
     return df
 
@@ -239,6 +240,7 @@ def calculate_difference_relationship(df: pd.DataFrame, regression_period: int =
         forecast_period=forecast_period,
         kelly_fraction=kelly_fraction,
     )
+    return dataframe
 
 
 def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: float = 0.0) -> pd.DataFrame:
@@ -270,7 +272,7 @@ def level_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
         dataframe[PandasEnum.ALLOCATION.value] = 0.0
         return df
 
-    calculate_level_relationship(df, regression_period)
+    df = calculate_level_relationship(df, regression_period)
 
     return df
 
