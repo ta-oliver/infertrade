@@ -75,7 +75,7 @@ def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 50, se
     This function uses an exponentially weighted multiplier to give more weight to recent prices.
     """
     df_with_signals = df.copy()
-    df_with_signals["signal"] = df_with_signals[series_name].ewm(span=window, adjust=False).mean()
+    df_with_signals["signal"] = df_with_signals[series_name].ewm(span = window, adjust = False).mean()
     return df_with_signals
 
 
@@ -88,14 +88,14 @@ def moving_average_convergence_divergence(
     """
     df_with_signals = df.copy()
     # ewma for two different spans
-    ewma_26 = exponentially_weighted_moving_average(df_with_signals, window=window_slow)
-    ewma_12 = exponentially_weighted_moving_average(df_with_signals, window=window_fast)
+    ewma_26 = exponentially_weighted_moving_average(df_with_signals, window = window_slow)
+    ewma_12 = exponentially_weighted_moving_average(df_with_signals, window = window_fast)
 
     # MACD calculation
     df_with_signals["diff"] = ewma_12["signal"] - ewma_26["signal"]
 
     # convert MACD into signal
-    df_with_signals["signal"] = df_with_signals["diff"].ewm(span=window_signal, adjust=False).mean()
+    df_with_signals["signal"] = df_with_signals["diff"].ewm(span = window_signal, adjust = False).mean()
     return df_with_signals
 
 
@@ -105,10 +105,10 @@ def relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
     """
     df_with_signals = df.copy()
     daily_difference = df_with_signals["close"].diff()
-    gain = daily_difference.clip(lower=0)
-    loss = -daily_difference.clip(upper=0)
-    average_gain = gain.ewm(com=window - 1).mean()
-    average_loss = loss.ewm(com=window - 1).mean()
+    gain = daily_difference.clip(lower = 0)
+    loss = -daily_difference.clip(upper = 0)
+    average_gain = gain.ewm(com = window - 1).mean()
+    average_loss = loss.ewm(com = window - 1).mean()
     RS = average_gain / average_loss
     RSI = 100 - 100 / (1 + RS)
     df_with_signals["signal"] = RSI
@@ -127,13 +127,13 @@ def stochastic_relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd
 
 def bollinger_band(df: pd.DataFrame, window: int = 20, window_dev: int = 2) -> pd.DataFrame:
     # Implementation of bollinger band
-    df_with_signals= df.copy()
-    typical_price = (df["close"]+df["low"]+df["high"])/3
-    df_with_signals["typical_price"]=typical_price
-    std_dev = df_with_signals["typical_price"].rolling(window=window).std(ddof=0)
-    df_with_signals["BOLA"] = df_with_signals["typical_price"].rolling(window=window).mean()
-    df_with_signals["BOLU"] = df_with_signals["BOLA"] + window_dev*std_dev
-    df_with_signals["BOLD"] = df_with_signals["BOLA"] - window_dev*std_dev
+    df_with_signals = df.copy()
+    typical_price = (df["close"] + df["low"] + df["high"]) / 3
+    df_with_signals["typical_price"] = typical_price
+    std_dev = df_with_signals["typical_price"].rolling(window = window).std(ddof = 0)
+    df_with_signals["BOLA"] = df_with_signals["typical_price"].rolling(window = window).mean()
+    df_with_signals["BOLU"] = df_with_signals["BOLA"] + window_dev * std_dev
+    df_with_signals["BOLD"] = df_with_signals["BOLA"] - window_dev * std_dev
 
     return df_with_signals
 
@@ -141,10 +141,10 @@ def detrended_price_oscillator(df: pd.DataFrame, window: int = 20) -> pd.DataFra
     # Implementation of detrended price oscillator
     df_with_signals = df.copy()
     DPO = pd.Series()
-    SMA = df_with_signals["close"].rolling(window=window).mean()
-    displacement = int(window/2+1)
-    for i in range(window-1, len(df_with_signals)):
-        DPO.loc[i] = df_with_signals.loc[i-displacement,"close"]-SMA.loc[i]
+    SMA = df_with_signals["close"].rolling(window = window).mean()
+    displacement = int(window / 2 + 1)
+    for i in range(window - 1, len(df_with_signals)):
+        DPO.loc[i] = df_with_signals.loc[i - displacement, "close"] - SMA.loc[i]
     df_with_signals["signal"] = DPO
     return df_with_signals
 
@@ -154,14 +154,14 @@ def percentage_series_oscillator(
     # Implementation of percentage price oscillator
     df_with_signals = df.copy()
     # ewma for two different spans
-    ewma_26 = exponentially_weighted_moving_average(df_with_signals, window=window_slow, series_name=series_name)["signal"]
-    ewma_12 = exponentially_weighted_moving_average(df_with_signals, window=window_fast, series_name=series_name)["signal"]
+    ewma_26 = exponentially_weighted_moving_average(df_with_signals, window = window_slow, series_name = series_name)["signal"]
+    ewma_12 = exponentially_weighted_moving_average(df_with_signals, window = window_fast, series_name = series_name)["signal"]
 
     # MACD calculation
-    ppo = ((ewma_12 - ewma_26)/ewma_26)*100
+    ppo = ((ewma_12 - ewma_26) / ewma_26) * 100
 
     # convert MACD into signal
-    df_with_signals["signal"] = ppo.ewm(span=window_signal, adjust=False).mean()
+    df_with_signals["signal"] = ppo.ewm(span = window_signal, adjust = False).mean()
     return df_with_signals
 
 def triple_exponential_average(
@@ -176,7 +176,7 @@ def triple_exponential_average(
     # ema3
     df_with_signals = exponentially_weighted_moving_average(df_with_signals, window, "signal")
     # 1 period percent change
-    df_with_signals["signal"] = df_with_signals["signal"].pct_change(fill_method="pad") * 100
+    df_with_signals["signal"] = df_with_signals["signal"].pct_change(fill_method = "pad") * 100
 
     return df_with_signals
 
@@ -189,17 +189,17 @@ def true_strength_index(
     PC = df_with_signals["close"].diff()
     APC = PC.abs()
     #single smoothing
-    PCS = PC.ewm(span=window_slow, adjust=False).mean()
+    PCS = PC.ewm(span = window_slow, adjust = False).mean()
     #double smoothing
-    PCDS = PCS.ewm(span=window_fast, adjust=False).mean()
+    PCDS = PCS.ewm(span = window_fast, adjust = False).mean()
     #absolute price change
  
-    APCS = APC.ewm(span=window_slow, adjust=False).mean()
-    APCDS = APCS.ewm(span=window_fast, adjust=False).mean()
+    APCS = APC.ewm(span = window_slow, adjust = False).mean()
+    APCDS = APCS.ewm(span = window_fast, adjust = False).mean()
     
-    df_with_signals["TSI"] = PCDS/APCDS *100
-    df_with_signals.fillna(0, inplace=True)
-    df_with_signals["signal"] = df_with_signals["TSI"].ewm(span=window_signal, adjust=False).mean()
+    df_with_signals["TSI"] = PCDS / APCDS *100
+    df_with_signals.fillna(0, inplace = True)
+    df_with_signals["signal"] = df_with_signals["TSI"].ewm(span = window_signal, adjust = False).mean()
 
     return df_with_signals
 

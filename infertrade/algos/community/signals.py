@@ -236,19 +236,22 @@ def true_strength_index(
     df_with_signal["signal"] = ema_indicator(df_with_signal["TSI"], window_signal, fillna=True)
     return df_with_signal
 
+
 def schaff_trend_cycle(
-    df: pd.DataFrame, window_slow: int = 50, window_fast: int = 23, cycle: int =10, smooth1: int = 3, smooth2: int = 3
+    df: pd.DataFrame, window_slow: int = 50, window_fast: int = 23, cycle: int = 10, smooth1: int = 3, smooth2: int = 3
 ) -> pd.DataFrame:
     """
     The Schaff Trend Cycle (STC) is a trend indicator that
     is commonly used to identify market trends and provide buy
     and sell signals to traders.
 
-    Assumption: 
+    Assumption:
     Currency trends accelerate and decelerate in cyclical patterns regardless of time frame
     """
     df_with_signal = df.copy()
-    df_with_signal["signal"] = stc(df_with_signal["close"], window_slow, window_fast, cycle, smooth1, smooth2, fillna=True)
+    df_with_signal["signal"] = stc(
+        df_with_signal["close"], window_slow, window_fast, cycle, smooth1, smooth2, fillna=True
+    )
     return df_with_signal
 
 
