@@ -695,6 +695,27 @@ def TSI_strategy(
     return df
 
 
+def STC_strategy(
+    df: pd.DataFrame, window_slow: int = 50, window_fast: int = 23, cycle: int = 10, smooth1: int = 3, smooth2: int = 3, max_investment: float = 0.1
+) -> pd.DataFrame:
+    """
+    This is Schaff Trend Cycle (STC) strategy which indicate 
+        1. oversold when STC < 25 
+        2. overbought when STC > 75
+    """
+    STC = signals.schaff_trend_cycle(df, window_slow, window_fast, cycle, smooth1, smooth2)["signal"]
+
+    oversold = STC <= 25
+    overbought = STC >= 75
+    hold = STC.between(25, 75)
+
+    df.loc[oversold, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[overbought, PandasEnum.ALLOCATION.value] = -max_investment
+    df.loc[hold, PandasEnum.ALLOCATION.value] = 0
+
+    return df
+
+
 infertrade_export_allocations = {
     "fifty_fifty": {
         "function": fifty_fifty,
@@ -917,6 +938,14 @@ infertrade_export_allocations = {
     "TSI_strategy": {
         "function": TSI_strategy,
         "parameters": {"window_slow": 25, "window_fast": 13, "window_signal": 13, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L663"
+        },
+    },
+    "STC_strategy": {
+        "function": STC_strategy,
+        "parameters": {"window_slow": 50, "window_fast": 23, "cycle": 10, "smooth1": 3, "smooth2": 3, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L663"

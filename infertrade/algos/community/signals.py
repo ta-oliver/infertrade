@@ -240,9 +240,12 @@ def schaff_trend_cycle(
     df: pd.DataFrame, window_slow: int = 50, window_fast: int = 23, cycle: int =10, smooth1: int = 3, smooth2: int = 3
 ) -> pd.DataFrame:
     """
-    This is a technical momentum oscillator that finds trends and reversals.
-    It helps in determining overbought and oversold conditions.
-    It also gives warning of trend weakness through divergence.
+    The Schaff Trend Cycle (STC) is a trend indicator that
+    is commonly used to identify market trends and provide buy
+    and sell signals to traders.
+
+    Assumption: 
+    Currency trends accelerate and decelerate in cyclical patterns regardless of time frame
     """
     df_with_signal = df.copy()
     df_with_signal["signal"] = stc(df_with_signal["close"], window_slow, window_fast, cycle, smooth1, smooth2, fillna=True)
