@@ -80,7 +80,7 @@ def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 50, se
 
 
 def moving_average_convergence_divergence(
-    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 26, window_signal: int = 9
+    df: pd.DataFrame, window_slow: int = 50, window_fast: int = 26, window_signal: int = 9
 ) -> pd.DataFrame:
     """
     This function is a trend-following momentum indicator that shows the relationship between two moving averages at different windows:
@@ -88,14 +88,14 @@ def moving_average_convergence_divergence(
     """
     df_with_signals = df.copy()
     # ewma for two different spans
-    ewma_26 = exponentially_weighted_moving_average(df_with_signals, window=window_slow).copy()
-    ewma_12 = exponentially_weighted_moving_average(df_with_signals, window=window_fast).copy()
+    ewma_26 = exponentially_weighted_moving_average(df_with_signals, window=window_slow)
+    ewma_12 = exponentially_weighted_moving_average(df_with_signals, window=window_fast)
 
     # MACD calculation
-    macd = ewma_12["signal"] - ewma_26["signal"]
+    df_with_signals["diff"] = ewma_12["signal"] - ewma_26["signal"]
 
     # convert MACD into signal
-    df_with_signals["signal"] = macd.ewm(span=window_signal, adjust=False).mean()
+    df_with_signals["signal"] = df_with_signals["diff"].ewm(span=window_signal, adjust=False).mean()
     return df_with_signals
 
 
@@ -200,8 +200,26 @@ def true_strength_index(
     df_with_signals["TSI"] = PCDS/APCDS *100
     df_with_signals.fillna(0, inplace=True)
     df_with_signals["signal"] = df_with_signals["TSI"].ewm(span=window_signal, adjust=False).mean()
-    
 
+    return df_with_signals
+
+def schaff_trend_cycle(
+    df: pd.DataFrame, window_slow: int = 50, window_fast: int = 23, cycle: int = 10, smooth1: int = 3, smooth2: int = 3
+) -> pd.DataFrame:
+    # Implementation of percentage price oscillator
+    df_with_signals = df.copy()
+    ewm_slow = df_with_signals["close"].ewm(span = window_slow, adjust = False, ignore_na = False).mean()
+    ewm_fast = df_with_signals["close"].ewm(span = window_fast, adjust = False, ignore_na = False).mean()
+    macd_diff = ewm_fast - ewm_slow
+    macd_min = macd_diff.rolling(cycle).min()
+    macd_max = macd_diff.rolling(cycle).max()
+    STOK = 100*(macd_diff - macd_max) / (macd_max - macd_min)
+    STOD = STOK.ewm(span = smooth1, adjust = False, ignore_na = False).mean()
+    STOD_min = STOD.rolling(cycle).min()
+    STOD_max = STOD.rolling(cycle).max()
+    STOKD = 100*(STOD - STOD_min)/(STOD_max - STOD_min)
+    STC = STOKD.ewm(span = smooth2, adjust = False, ignore_na = False).mean()
+    df_with_signals["signal"] = STC.fillna(0)
     return df_with_signals
 
 """
@@ -217,8 +235,6 @@ def test_SMA_strategy():
     
     df_with_signals.loc[price_above_signal, "allocation"]=max_investment
     df_with_signals.loc[price_below_signal, "allocation"]=-max_investment
-
-
     assert pd.Series.equals(df_with_signals["allocation"],df_with_allocations["allocation"])
 
 def test_WMA_strategy():
@@ -231,7 +247,6 @@ def test_WMA_strategy():
     
     df_with_signals.loc[price_above_signal, "allocation"]=max_investment
     df_with_signals.loc[price_below_signal, "allocation"]=-max_investment
-
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
@@ -389,4 +404,18 @@ def test_TSI_strategy():
     df_with_signals.loc[below_signal, "allocation"] = -max_investment
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
+
+def test_SCT_strategy():
+    df_with_allocations = allocations.STC_strategy(df, 50, 23, 10, 3, 3, max_investment=max_investment)
+    df_with_signal = schaff_trend_cycle(df)
+    oversold = df_with_signal["signal"] <= 25
+    overbought = df_with_signal["signal"] >= 75
+    hold = df_with_signal["signal"].between(25, 75)
+
+    df_with_signal.loc[oversold, "allocation"] = max_investment
+    df_with_signal.loc[overbought, "allocation"] = -max_investment
+    df_with_signal.loc[hold, "allocation"] = 0
+
+    assert pd.Series.equals(df_with_signal["allocation"], df_with_allocations["allocation"])
+
     
