@@ -26,6 +26,7 @@ from numbers import Real
 from infertrade.algos import algorithm_functions
 import pandas as pd
 import numpy as np
+from infertrade import PandasEnum 
 
 df = simulated_market_data_4_years_gen()
 max_investment = 0.2
@@ -140,7 +141,7 @@ def bollinger_band(df: pd.DataFrame, window: int = 20, window_dev: int = 2) -> p
 def detrended_price_oscillator(df: pd.DataFrame, window: int = 20) -> pd.DataFrame:
     # Implementation of detrended price oscillator
     df_with_signals = df.copy()
-    DPO = pd.Series()
+    DPO = pd.Series(dtype=np.float64)
     SMA = df_with_signals["close"].rolling(window = window).mean()
     displacement = int(window / 2 + 1)
     for i in range(window - 1, len(df_with_signals)):
@@ -167,7 +168,6 @@ def percentage_series_oscillator(
 def triple_exponential_average(
     df: pd.DataFrame, window: int = 14
 ) -> pd.DataFrame:
-    # Implementation of percentage price oscillator
     df_with_signals = df.copy()
     # ema1
     df_with_signals = exponentially_weighted_moving_average(df_with_signals, window, "close")
@@ -183,17 +183,15 @@ def triple_exponential_average(
 def true_strength_index(
     df: pd.DataFrame, window_slow: int = 25, window_fast: int = 13, window_signal: int = 13
 ) -> pd.DataFrame:
-    # Implementation of percentage price oscillator
     df_with_signals = df.copy()
     #price change
     PC = df_with_signals["close"].diff()
-    APC = PC.abs()
     #single smoothing
     PCS = PC.ewm(span = window_slow, adjust = False).mean()
     #double smoothing
     PCDS = PCS.ewm(span = window_fast, adjust = False).mean()
     #absolute price change
- 
+    APC = PC.abs()
     APCS = APC.ewm(span = window_slow, adjust = False).mean()
     APCDS = APCS.ewm(span = window_fast, adjust = False).mean()
     
@@ -206,21 +204,48 @@ def true_strength_index(
 def schaff_trend_cycle(
     df: pd.DataFrame, window_slow: int = 50, window_fast: int = 23, cycle: int = 10, smooth1: int = 3, smooth2: int = 3
 ) -> pd.DataFrame:
-    # Implementation of percentage price oscillator
     df_with_signals = df.copy()
+    # calculate EMAs
     ewm_slow = df_with_signals["close"].ewm(span = window_slow, adjust = False, ignore_na = False).mean()
     ewm_fast = df_with_signals["close"].ewm(span = window_fast, adjust = False, ignore_na = False).mean()
+    # calculate MACD
     macd_diff = ewm_fast - ewm_slow
     macd_min = macd_diff.rolling(cycle).min()
     macd_max = macd_diff.rolling(cycle).max()
-    STOK = 100*(macd_diff - macd_max) / (macd_max - macd_min)
+    # fast stochastic indicator %K
+    STOK = 100 * (macd_diff - macd_max) / (macd_max - macd_min)
+    # slow stochastic indicator %D
     STOD = STOK.ewm(span = smooth1, adjust = False, ignore_na = False).mean()
     STOD_min = STOD.rolling(cycle).min()
     STOD_max = STOD.rolling(cycle).max()
-    STOKD = 100*(STOD - STOD_min)/(STOD_max - STOD_min)
+    STOKD = 100 * (STOD - STOD_min)/(STOD_max - STOD_min)
     STC = STOKD.ewm(span = smooth2, adjust = False, ignore_na = False).mean()
     df_with_signals["signal"] = STC.fillna(0)
     return df_with_signals
+
+def KAMA(
+    df: pd.DataFrame, window: int = 10, pow1: int = 2, pow2: int = 30
+) -> pd.DataFrame:
+    df_with_signals = df.copy()
+    change = df_with_signals["close"].diff(periods=window).abs()
+    vol =df_with_signals["close"].diff().abs()
+    volatility = vol.rolling(window=window).sum()
+    # Efficiency Ratio
+    ER = change / volatility
+    alpha1 = 2 / (pow1 + 1)
+    alpha2 = 2 / (pow2 + 1)
+    # Smoothing Constant
+    SC = (ER * (alpha1 - alpha2) + alpha2) ** 2
+    first_price_value = df_with_signals.loc[window - 1, "close"]
+    kama = first_price_value
+    df_with_signals.loc[window - 1, "signal"] = kama
+
+    for index in range(window, len(SC)):
+        kama = kama + SC[index] * (df_with_signals.loc[index, "close"] - kama) 
+        df_with_signals.loc[index, "signal"] = kama
+        
+    return df_with_signals
+
 
 """
 Tests for allocation strategies
@@ -260,7 +285,6 @@ def test_EMA_strategy():
     
     df_with_signals.loc[price_above_signal, "allocation"]=max_investment
     df_with_signals.loc[price_below_signal, "allocation"]=-max_investment
-
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
@@ -348,7 +372,7 @@ def test_DPO_strategy():
     df_with_signals = detrended_price_oscillator(df, 20)
 
     above_zero = df_with_signals["signal"]>0
-    below_zero = df_with_signals["signal"]<0
+    below_zero = df_with_signals["signal"]<=0
 
     df_with_signals.loc[above_zero, "allocation"] = max_investment
     df_with_signals.loc[below_zero, "allocation"] = -max_investment
@@ -418,4 +442,14 @@ def test_SCT_strategy():
 
     assert pd.Series.equals(df_with_signal["allocation"], df_with_allocations["allocation"])
 
+def test_KAMA_strategy():
+    df_with_signals = KAMA(df, 10, 2, 30)
+    df_with_allocations = allocations.KAMA_strategy(df, 10, 2, 30, max_investment)
     
+    downtrend = df_with_signals["signal"] <= df_with_signals["close"]
+    uptrend = df_with_signals["signal"] > df_with_signals["close"]
+
+    df_with_signals.loc[uptrend, "allocation"] = max_investment
+    df_with_signals.loc[downtrend, "allocation"] = -max_investment
+
+    assert df_with_signals["allocation"][10]==df_with_allocations["allocation"][10]
