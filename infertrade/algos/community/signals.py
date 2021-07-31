@@ -23,7 +23,7 @@ import numpy as np
 from pandas.core.frame import DataFrame
 from sklearn.preprocessing import FunctionTransformer
 from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator, dpo, trix, stc
-from ta.momentum import ppo_signal, rsi, stochrsi, pvo_signal, tsi
+from ta.momentum import KAMAIndicator, ppo_signal, rsi, stochrsi, pvo_signal, tsi, kama
 from ta.volatility import (
     AverageTrueRange,
     bollinger_hband,
@@ -254,6 +254,17 @@ def schaff_trend_cycle(
     )
     return df_with_signal
 
+def KAMA(
+    df: pd.DataFrame, window: int = 10, pow1: int = 2, pow2: int = 30
+) -> pd.DataFrame:
+    """
+    Kaufman's Adaptive Moving Average (KAMA) is an indicator that 
+    indicates both the volatility and trend of the market.
+    """
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = kama(df["close"], window, pow1, pow2)
+    return df_with_signal
+
 
 # creates wrapper classes to fit sci-kit learn interface
 def scikit_signal_factory(signal_function: callable):
@@ -395,7 +406,15 @@ infertrade_export_signals = {
         "parameters": {"window_slow": 50, "window_fast": 23, "cycle": 10, "smooth1": 3, "smooth2": 3},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L228"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L240"
+        },
+    },
+    "KAMA": {
+        "function": KAMA,
+        "parameters": {"window": 10, "pow1": 2, "pow2": 30},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L257"
         },
     },
 }
