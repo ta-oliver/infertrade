@@ -146,3 +146,5 @@ simulated_correlated_equities_4_years_gen().plot(y=["price", "signal"])
 plt.show()
 ```
 ![image](https://user-images.githubusercontent.com/29981664/111360130-4668a400-8684-11eb-933e-e8f10662b0bb.png)
+
+[![Build Status](https://semaphoreci.com/api/v1/projects/5b6af3ed-39ea-40b5-a62f-afc006dd3998/3584698/badge.svg)](https://semaphoreci.com/inferstat/infertrade)
