@@ -133,7 +133,7 @@ def test_signals_creation(test_df, signal_algorithm):
 
     # Signal algorithms should be adding new columns with float, int or NaN data.
     new_columns = False
-    for ii_column_name in df_with_signal:
+    for ii_column_name in df_with_signal.columns:
         if ii_column_name not in original_columns:
             new_columns = True
             for ii_value in df_with_signal[ii_column_name]:
