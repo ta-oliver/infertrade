@@ -23,6 +23,7 @@ import pandas as pd
 import pytest
 
 # Internal imports
+from ta.trend import AroonIndicator
 from infertrade.PandasEnum import PandasEnum
 from infertrade.api import Api
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
@@ -50,6 +51,10 @@ def test_get_available_algorithms(algorithm):
     assert isinstance(algorithm, str)
     assert Api.return_algorithm_category(algorithm) in Api.algorithm_categories()
     assert Api.determine_package_of_algorithm(algorithm) in Api.available_packages()
+    try:
+        Api.determine_package_of_algorithm("not_available_algo")
+    except(NameError):
+        pass
 
     inputs = Api.required_inputs_for_algorithm(algorithm)
     assert isinstance(inputs, list)
@@ -204,3 +209,56 @@ def test_return_representations_failures():
         Api.return_representations("")
     with pytest.raises(NotImplementedError):
         Api.return_representations("Unknown")
+
+
+def test_get_available_representations():
+    """Test to ensure functionality of implementation check"""
+    try:
+        Api.get_available_representations(name_of_algorithm="non_existing_algo")
+    except NotImplementedError:
+        pass
+
+    algo_information = Api.get_algorithm_information()
+    algo_names = algo_information.keys()
+    name_list = list(algo_names)
+    returned_rep_info = Api.get_available_representations(name_of_algorithm=name_list[0])
+    rep_info = list(algo_information[name_list[0]]["available_representation_types"].keys())
+    assert returned_rep_info == rep_info
+
+
+def test_return_representations():
+    algo_information = Api.get_algorithm_information()
+    algo_names = algo_information.keys()
+    name_list = list(algo_names)
+    returned_rep_info = Api.get_available_representations(name_of_algorithm=name_list[0])
+    try:
+        Api.return_representations(name_of_algorithm=name_list[1],
+                                   representation_or_list_of_representations=name_list[0])
+    except NameError:
+        pass
+
+    try:
+        Api.return_representations(name_of_algorithm=name_list[0],
+                                   representation_or_list_of_representations=1)
+    except TypeError:
+        pass
+
+    returned_dict = Api.return_representations(name_of_algorithm=name_list[0],
+                                   representation_or_list_of_representations=list(algo_information[name_list[0]]["available_representation_types"].keys()))
+    assert (returned_dict, dict)
+
+    returned_dict = Api.return_representations(name_of_algorithm=name_list[0])
+    assert (returned_dict, dict)
+
+
+def test_get_raw_callable():
+    try:
+        Api._get_raw_callable(name_of_strategy_or_signal="false_signal_name")
+    except KeyError:
+        pass
+
+    info = Api.get_algorithm_information()
+    names = list(info.keys())
+    returned_callable = Api._get_raw_callable(name_of_strategy_or_signal=names[0])
+    assert callable(returned_callable)
+

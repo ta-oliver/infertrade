@@ -19,17 +19,52 @@
 """
 Unit tests for allocations
 """
+from copy import deepcopy
 
 import infertrade.algos.community.signals as signals
 import infertrade.algos.community.allocations as allocations
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 from numbers import Real
 from infertrade.algos import algorithm_functions
+from infertrade.PandasEnum import PandasEnum
+from infertrade.algos.community import allocations
 import pandas as pd
 import numpy as np
 
 df = simulated_market_data_4_years_gen()
 max_investment = 0.2
+
+
+def test_under_minimum_length_to_calculate():
+    """Checks the expected output if MID value is under the minimum length to calculate"""
+    dfr = {'price': np.arange(10),'allocation': [1 for _ in range(0,10)]}
+    df_no_mid = pd.DataFrame(data=dfr)
+
+    df_test = allocations.change_relationship(dataframe = df_no_mid)
+    assert(df_test, pd.DataFrame)
+    for _ in df_test[PandasEnum.ALLOCATION.value]:
+        if not _ == 0.0:
+            raise ValueError("Allocation value not returned correctly")
+
+    df_test = allocations.combination_relationship(dataframe = df_no_mid)
+    assert(df_test, pd.DataFrame)
+    for _ in df_test[PandasEnum.ALLOCATION.value]:
+        if not _ == 0.0:
+            raise ValueError("Allocation value not returned correctly")
+
+
+    df_test = allocations.difference_relationship(dataframe = df_no_mid)
+    assert (df_test, pd.DataFrame)
+    for _ in df_test[PandasEnum.ALLOCATION.value]:
+        if not _ == 0.0:
+            raise ValueError("Allocation value not returned correctly")
+
+    df_test = allocations.level_relationship(dataframe = df_no_mid)
+    assert (df_test, pd.DataFrame)
+    for _ in df_test[PandasEnum.ALLOCATION.value]:
+        if not _ == 0.0:
+            raise ValueError("Allocation value not returned correctly")
+
 
 def test_algorithm_functions():
     """
