@@ -79,7 +79,10 @@ def test_calculation_positions(test_df, allocation_algorithm):
     """Checks algorithms calculate positions and returns."""
 
     # We check for split calculations.
-    df_with_allocations = Api.calculate_allocations(test_df, allocation_algorithm, "close")
+    df_with_allocations = Api.calculate_allocations(df=test_df,
+                                                    name_of_strategy=allocation_algorithm,
+                                                    name_of_price_series="close")
+
     assert isinstance(df_with_allocations, pd.DataFrame)
     assert "allocation" in df_with_allocations.columns
     df_with_returns = Api.calculate_returns(df_with_allocations)

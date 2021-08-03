@@ -1,4 +1,5 @@
 import pandas as pd
+from sklearn.preprocessing import FunctionTransformer
 
 from infertrade.algos.external.ta import ta_export_signals
 from infertrade.utilities.operations import PositionsFromPricePrediction, PricePredictionFromSignalRegression, scikit_allocation_factory
@@ -22,9 +23,11 @@ def ta_rules_with_regression() -> dict:
 
             adapted_allocation_rule_using_regression = ta_adaptor(ta_signal_func, ta_rule_name, *args, **kwargs)
 
-            pipeline = make_pipeline(adapted_allocation_rule_using_regression,
+
+            pipeline = make_pipeline(FunctionTransformer(adapted_allocation_rule_using_regression),
                                      PricePredictionFromSignalRegression(),
                                      PositionsFromPricePrediction())
+
             time_series_df = pipeline.fit_transform(time_series_df)
             return time_series_df
 
