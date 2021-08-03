@@ -18,49 +18,50 @@
 Base functionality used by other functions in the package.
 """
 
+# import pandas as pd
+# import infertrade.PandasEnum as PandasEnum
+# from copy import deepcopy
+# from infertrade.utilities.performance import calculate_portfolio_performance_python
 import pandas as pd
-import infertrade.PandasEnum as PandasEnum
-from copy import deepcopy
-from infertrade.utilities.performance import calculate_portfolio_performance_python
 
 
-def get_signal_calc(func: callable, adapter: callable = None) -> callable:
+def get_signal_calc(func: callable , adapter: callable = None) -> callable or pd.DataFrame:
     """An adapter to calculate a signal prior to usage within a trading rule."""
     if adapter:
-        func = adapter(func)
+        func = adapter(func())
     return func
 
 
-def get_positions_calc(df: pd.DataFrame, func: callable) -> callable:
-    """Pass through method to return the results of the allocation calculation."""
-    try:
-        df_with_positions = func(df)
-    except IndexError as index_error:
-        df_with_positions = deepcopy(df)
-        print("Index error occurred: ", index_error)
-        df_with_positions[PandasEnum.ALLOCATION.value] = 1.0
-
-    return df_with_positions
-
-
-def get_portfolio_calc(func: callable) -> callable:
-    """Given a position calculation generates the portfolio valuation index."""
-
-    def get_portfolio(df: pd.DataFrame):
-        """Inner function to apply the position calculation."""
-        position_data = func(df)
-        return _get_portfolio(position_data)
-
-    return get_portfolio
-
-
-def _get_portfolio(df: pd.DataFrame) -> pd.DataFrame:
-    """Calculates the cumulative portfolio performance."""
-    try:
-        df_with_returns = calculate_portfolio_performance_python(df)
-    except IndexError as index_error:
-        df_with_returns = deepcopy(df)
-        print("Index error occurred: ", index_error)
-        df_with_returns["portfolio_returns"] = 1.0
-
-    return df_with_returns
+# def get_positions_calc(df: pd.DataFrame, func: callable) -> callable:
+#     """Pass through method to return the results of the allocation calculation."""
+#     try:
+#         df_with_positions = func(df)
+#     except IndexError as index_error:
+#         df_with_positions = deepcopy(df)
+#         print("Index error occurred: ", index_error)
+#         df_with_positions[PandasEnum.ALLOCATION.value] = 1.0
+#
+#     return df_with_positions
+#
+#
+# def get_portfolio_calc(func: callable) -> callable:
+#     """Given a position calculation generates the portfolio valuation index."""
+#
+#     def get_portfolio(df: pd.DataFrame):
+#         """Inner function to apply the position calculation."""
+#         position_data = func(df)
+#         return _get_portfolio(position_data)
+#
+#     return get_portfolio
+#
+#
+# def _get_portfolio(df: pd.DataFrame) -> pd.DataFrame:
+#     """Calculates the cumulative portfolio performance."""
+#     try:
+#         df_with_returns = calculate_portfolio_performance_python(df)
+#     except IndexError as index_error:
+#         df_with_returns = deepcopy(df)
+#         print("Index error occurred: ", index_error)
+#         df_with_returns["portfolio_returns"] = 1.0
+#
+#     return df_with_returns
