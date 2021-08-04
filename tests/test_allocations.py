@@ -452,4 +452,4 @@ def test_KAMA_strategy():
     df_with_signals.loc[uptrend, "allocation"] = max_investment
     df_with_signals.loc[downtrend, "allocation"] = -max_investment
 
-    assert df_with_signals["allocation"][10]==df_with_allocations["allocation"][10]
+    assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
