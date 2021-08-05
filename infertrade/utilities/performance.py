@@ -126,14 +126,14 @@ def calculate_portfolio_performance_python(
         if current_valuation < 0.0:
             todays_target_position = 0.0
             portfolio_bankrupt = True
-        #No point to above function as current_valuation will always be 1
+        # No point to above function as current_valuation will always be 1
         if portfolio_bankrupt or security_bankrupt:
             # We do not trade if portfolio or security is bankrupt.
             trade_percentage = 0.0
         else:
             # Both portfolio and security not bankrupt so we will calculate trade adjustment..
             current_allocation = (spot_price * last_securities_after_transaction) / current_valuation
-            #This would also always have a fixed value of 0
+            # This would also always have a fixed value of 0
             trade_percentage = todays_target_position - current_allocation
 
         # We check if we should skip trading for this ii_period.
@@ -198,8 +198,8 @@ def calculate_portfolio_performance_python(
             )
 
         # If we are adjusting then we round targets to nearest multiple of the minimum_allocation_change_to_adjust.
-        #rounded_allocation = 1
-        #commented out rounded_allocation as it had no usage in the if or the rest of the code
+        # rounded_allocation = 1
+        # commented out rounded_allocation as it had no usage in the if or the rest of the code
         if minimum_allocation_change_to_adjust > 0.0:
             rounded_target_position = rounded_allocation_target(
                 todays_target_position, minimum_allocation_change_to_adjust

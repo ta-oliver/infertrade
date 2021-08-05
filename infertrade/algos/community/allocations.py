@@ -741,14 +741,12 @@ def KAMA_strategy(
     return df
 
 
-def aroon_strategy(
-    df: pd.DataFrame, window: int = 25, max_investment: int = 0.1
-) -> pd.DataFrame:
+def aroon_strategy(df: pd.DataFrame, window: int = 25, max_investment: int = 0.1) -> pd.DataFrame:
     """
-    The Arron indicator is composed of two lines. 
-        1. Aroon_up: line which measures the number of periods since a High, and 
+    The Arron indicator is composed of two lines.
+        1. Aroon_up: line which measures the number of periods since a High, and
         2. Aroon_down: line which measures the number of periods since a Low.
-    
+
     This strategy indicates:
         1. Bearish: when aroon_up >= aroon_down
         2. Bullish: when aroon_down < aroon_up
@@ -762,6 +760,7 @@ def aroon_strategy(
     df.loc[bullish, PandasEnum.ALLOCATION.value] = -max_investment
 
     return df
+
 
 infertrade_export_allocations = {
     "fifty_fifty": {
@@ -1021,5 +1020,4 @@ infertrade_export_allocations = {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L724"
         },
     },
-
 }

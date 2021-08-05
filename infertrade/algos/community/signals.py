@@ -254,23 +254,21 @@ def schaff_trend_cycle(
     )
     return df_with_signal
 
-def KAMA(
-    df: pd.DataFrame, window: int = 10, pow1: int = 2, pow2: int = 30
-) -> pd.DataFrame:
+
+def KAMA(df: pd.DataFrame, window: int = 10, pow1: int = 2, pow2: int = 30) -> pd.DataFrame:
     """
-    Kaufman's Adaptive Moving Average (KAMA) is an indicator that 
+    Kaufman's Adaptive Moving Average (KAMA) is an indicator that
     indicates both the volatility and trend of the market.
     """
     df_with_signal = df.copy()
     df_with_signal["signal"] = kama(df["close"], window, pow1, pow2)
     return df_with_signal
 
-def aroon(
-    df: pd.DataFrame, window: int = 25
-) -> pd.DataFrame:
+
+def aroon(df: pd.DataFrame, window: int = 25) -> pd.DataFrame:
     """
-    The Arron indicator is composed of two lines. 
-        1. Aroon_up: line which measures the number of periods since a High, and 
+    The Arron indicator is composed of two lines.
+        1. Aroon_up: line which measures the number of periods since a High, and
         2. Aroon_down: line which measures the number of periods since a Low.
     """
     df_with_signal = df.copy()
