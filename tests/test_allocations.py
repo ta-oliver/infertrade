@@ -29,7 +29,7 @@ from infertrade.PandasEnum import PandasEnum
 from infertrade.algos.community import allocations
 import pandas as pd
 import numpy as np
-from infertrade import PandasEnum 
+from infertrade.PandasEnum import PandasEnum 
 
 df = simulated_market_data_4_years_gen()
 max_investment = 0.2
