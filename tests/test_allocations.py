@@ -19,6 +19,7 @@
 """
 Unit tests for allocations
 """
+from ta.trend import aroon_down
 import infertrade.algos.community.allocations as allocations
 import infertrade.algos.community.signals as signals
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
@@ -247,6 +248,16 @@ def KAMA(
     return df_with_signals
 
 
+def aroon(
+    df: pd.DataFrame, window: int = 25
+) -> pd.DataFrame:
+    df_with_signals = df.copy()
+    df_with_signals["aroon_up"] = (window - df_with_signals["close"].rolling(window=window).max())/window
+    df_with_signals["aroon_down"] = (window - df_with_signals["close"].rolling(window=window).min())/window
+        
+    return df_with_signals
+
+
 """
 Tests for allocation strategies
 """
@@ -453,3 +464,17 @@ def test_KAMA_strategy():
     df_with_signals.loc[downtrend, "allocation"] = -max_investment
 
     assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
+
+def test_aroon_strategy():
+    df_with_signals = aroon(df, window=25)
+    aroon_up = df_with_signals["aroon_up"]
+    aroon_down = df_with_signals["aroon_down"]
+    df_with_allocations = allocations.aroon_strategy(df, 25)
+
+    bearish = aroon_up >= aroon_down
+    bullish = aroon_down < aroon_up
+
+    df_with_signals.loc[bearish, "allocation"] = max_investment
+    df_with_signals.loc[bullish, "allocation"] = -max_investment
+
+    pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
