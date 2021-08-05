@@ -1,0 +1,3 @@
+[run]
+omit =
+        */home/nikola/Documents/GitHub/infertrade/infertrade/_version.py*

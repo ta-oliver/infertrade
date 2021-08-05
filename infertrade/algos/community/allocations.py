@@ -202,8 +202,8 @@ def difference_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     df = dataframe.copy()
     regression_period = 120
     minimum_length_to_calculate = regression_period + 1
-    if len(dataframe[PandasEnum.MID.value]) < minimum_length_to_calculate:
-        dataframe[PandasEnum.ALLOCATION.value] = 0.0
+    if len(df[PandasEnum.MID.value]) < minimum_length_to_calculate:
+        df[PandasEnum.ALLOCATION.value] = 0.0
         return df
 
     df = calculate_difference_relationship(df, regression_period)
@@ -268,8 +268,8 @@ def level_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     df = dataframe.copy()
     regression_period = 120
     minimum_length_to_calculate = regression_period + 1
-    if len(dataframe[PandasEnum.MID.value]) < minimum_length_to_calculate:
-        dataframe[PandasEnum.ALLOCATION.value] = 0.0
+    if len(df[PandasEnum.MID.value]) < minimum_length_to_calculate:
+        df[PandasEnum.ALLOCATION.value] = 0.0
         return df
 
     df = calculate_level_relationship(df, regression_period)
