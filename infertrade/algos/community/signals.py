@@ -22,7 +22,7 @@ import pandas as pd
 import numpy as np
 from pandas.core.frame import DataFrame
 from sklearn.preprocessing import FunctionTransformer
-from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator, dpo, trix, stc
+from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator, dpo, trix, stc, aroon_up, aroon_down
 from ta.momentum import KAMAIndicator, ppo_signal, rsi, stochrsi, pvo_signal, tsi, kama
 from ta.volatility import (
     AverageTrueRange,
@@ -265,6 +265,19 @@ def KAMA(
     df_with_signal["signal"] = kama(df["close"], window, pow1, pow2)
     return df_with_signal
 
+def aroon(
+    df: pd.DataFrame, window: int = 25
+) -> pd.DataFrame:
+    """
+    The Arron indicator is composed of two lines. 
+        1. Aroon_up: line which measures the number of periods since a High, and 
+        2. Aroon_down: line which measures the number of periods since a Low.
+    """
+    df_with_signal = df.copy()
+    df_with_signal["aroon_up"] = aroon_up(df["close"], window, fillna=True)
+    df_with_signal["aroon_down"] = aroon_down(df["close"], window, fillna=True)
+    return df_with_signal
+
 
 # creates wrapper classes to fit sci-kit learn interface
 def scikit_signal_factory(signal_function: callable):
@@ -415,6 +428,14 @@ infertrade_export_signals = {
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L257"
+        },
+    },
+    "aroon": {
+        "function": aroon,
+        "parameters": {"window": 10},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L268"
         },
     },
 }
