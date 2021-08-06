@@ -131,17 +131,21 @@ class Api:
         """Private method to return the raw function - should not be used externally."""
         info = Api.get_algorithm_information()
         callable_fields = ["function", "class"]
+
         try:
             callable_key = next(key for key in callable_fields if key in info[name_of_strategy_or_signal])
             raw_callable = info[name_of_strategy_or_signal][callable_key]
+
         except StopIteration:
             raise KeyError("The dictionary has no recognised callable (" + ",".join(callable_fields) + ") fields.")
+
         except KeyError:
             raise KeyError("A strategy or signal was requested that could not be found: ", name_of_strategy_or_signal)
 
         if callable_key is "function":
             # We will not amend.
             callable_func = raw_callable
+
         else:
             # Is a class, so we need to adapt, so we call the adaptor.
             package_of_algo = Api.determine_package_of_algorithm(name_of_strategy_or_signal)

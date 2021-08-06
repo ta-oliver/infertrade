@@ -65,16 +65,16 @@ def calculate_portfolio_performance_python(
 
     if detailed_output:
         new_columns = [
-            "period_start_cash",          # The cash held in the hypothetical portfolio (just) after previous timestamp.
-            "period_start_securities",    # Securities held in the hypothetical portfolio after previous timestamp.
+            "period_start_cash",  # The cash held in the hypothetical portfolio (just) after previous timestamp.
+            "period_start_securities",  # Securities held in the hypothetical portfolio after previous timestamp.
             "start_of_period_allocation",  # Fraction of portfolio invested after prior timestamp.
-            "trade_percentage",           # Fraction of portfolio value of securities to buy at this timestamp.
-            "trading_skipped",            # Bool for whether we skipped trading on this particular timestamp.
-            "period_end_cash",            # The cash held in the hypothetical portfolio at timestamp after adjustment.
-            "period_end_securities",      # Securities held in the hypothetical portfolio at timestamp after adjustment.
-            "end_of_period_allocation",   # Fraction of portfolio invested at timestamp after adjustment.
-            "security_purchases",         # Number of securities bought at this timestamp.
-            "cash_flow",                  # Net cash change from security purchases at this timestamp.
+            "trade_percentage",  # Fraction of portfolio value of securities to buy at this timestamp.
+            "trading_skipped",  # Bool for whether we skipped trading on this particular timestamp.
+            "period_end_cash",  # The cash held in the hypothetical portfolio at timestamp after adjustment.
+            "period_end_securities",  # Securities held in the hypothetical portfolio at timestamp after adjustment.
+            "end_of_period_allocation",  # Fraction of portfolio invested at timestamp after adjustment.
+            "security_purchases",  # Number of securities bought at this timestamp.
+            "cash_flow",  # Net cash change from security purchases at this timestamp.
         ]
         for ii_new_column in new_columns:
             if ii_new_column in ["security_purchases", "cash_flow", "trade_percentage"]:
@@ -126,13 +126,14 @@ def calculate_portfolio_performance_python(
         if current_valuation < 0.0:
             todays_target_position = 0.0
             portfolio_bankrupt = True
-
+        # No point to above function as current_valuation will always be 1
         if portfolio_bankrupt or security_bankrupt:
             # We do not trade if portfolio or security is bankrupt.
             trade_percentage = 0.0
         else:
             # Both portfolio and security not bankrupt so we will calculate trade adjustment..
             current_allocation = (spot_price * last_securities_after_transaction) / current_valuation
+            # This would also always have a fixed value of 0
             trade_percentage = todays_target_position - current_allocation
 
         # We check if we should skip trading for this ii_period.
@@ -172,7 +173,6 @@ def calculate_portfolio_performance_python(
                 end_of_period_allocation_ls = np.append(end_of_period_allocation_ls, current_allocation)
 
             continue
-
         else:
             # We did not skip trading period.
             if detailed_output:
@@ -198,8 +198,9 @@ def calculate_portfolio_performance_python(
             )
 
         # If we are adjusting then we round targets to nearest multiple of the minimum_allocation_change_to_adjust.
-        rounded_allocation = True
-        if rounded_allocation and minimum_allocation_change_to_adjust > 0.0:
+        # rounded_allocation = 1
+        # commented out rounded_allocation as it had no usage in the if or the rest of the code
+        if minimum_allocation_change_to_adjust > 0.0:
             rounded_target_position = rounded_allocation_target(
                 todays_target_position, minimum_allocation_change_to_adjust
             )
@@ -502,7 +503,7 @@ def portfolio_index(
                 1 + position_on_last_good_price * (spot_price_usd / last_good_price_usd - 1)
             )
             # If the market allocation does not calculate we set it to zero.
-            if np.isinf(market_open_allocation_perc):
+            if np.isnan(market_open_allocation_perc):
                 market_open_allocation_perc = 0.0
     else:
         market_open_allocation_perc = 0

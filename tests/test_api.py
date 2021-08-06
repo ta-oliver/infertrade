@@ -23,6 +23,7 @@ import pandas as pd
 import pytest
 
 # Internal imports
+from ta.trend import AroonIndicator
 from infertrade.PandasEnum import PandasEnum
 from infertrade.api import Api
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
@@ -50,6 +51,10 @@ def test_get_available_algorithms(algorithm):
     assert isinstance(algorithm, str)
     assert Api.return_algorithm_category(algorithm) in Api.algorithm_categories()
     assert Api.determine_package_of_algorithm(algorithm) in Api.available_packages()
+    try:
+        Api.determine_package_of_algorithm("not_available_algo")
+    except(NameError):
+        pass
 
     inputs = Api.required_inputs_for_algorithm(algorithm)
     assert isinstance(inputs, list)
@@ -77,9 +82,12 @@ def test_representations(algorithm):
 @pytest.mark.parametrize("allocation_algorithm", available_allocation_algorithms)
 def test_calculation_positions(test_df, allocation_algorithm):
     """Checks algorithms calculate positions and returns."""
-
+    test_df_copy = test_df.copy()
     # We check for split calculations.
-    df_with_allocations = Api.calculate_allocations(test_df, allocation_algorithm, "close")
+    df_with_allocations = Api.calculate_allocations(df=test_df_copy,
+                                                    name_of_strategy=allocation_algorithm,
+                                                    name_of_price_series="close")
+
     assert isinstance(df_with_allocations, pd.DataFrame)
     assert "allocation" in df_with_allocations.columns
     df_with_returns = Api.calculate_returns(df_with_allocations)
@@ -89,7 +97,7 @@ def test_calculation_positions(test_df, allocation_algorithm):
             assert ii_value is "NaN"
 
     # We check for combined calculations.
-    df_with_allocations_and_returns = Api.calculate_allocations_and_returns(test_df, allocation_algorithm, "close")
+    df_with_allocations_and_returns = Api.calculate_allocations_and_returns(test_df_copy, allocation_algorithm, "close")
     assert isinstance(df_with_allocations_and_returns, pd.DataFrame)
     for ii_value in df_with_allocations_and_returns[PandasEnum.VALUATION.value]:
         if not isinstance(ii_value, float):
@@ -100,29 +108,29 @@ def test_calculation_positions(test_df, allocation_algorithm):
         df_with_returns[PandasEnum.VALUATION.value], df_with_allocations_and_returns[PandasEnum.VALUATION.value]
     )
 
-
 @pytest.mark.parametrize("test_df", test_dfs)
 @pytest.mark.parametrize("signal_algorithm", available_signal_algorithms)
 def test_signals_creation(test_df, signal_algorithm):
     """Checks signal algorithms can create a signal in a Pandas dataframe."""
 
+    test_df_copy = test_df.copy()
     original_columns = test_df.columns
 
     # We check if the test series has the columns needed for the rule to calculate.
     required_columns = Api.required_inputs_for_algorithm(signal_algorithm)
     all_present = True
     for ii_requirement in required_columns:
-        if ii_requirement not in test_df.columns:
+        if ii_requirement not in original_columns:
             all_present = False
 
     # If columns are missing, we anticipate a KeyError will trigger.
     if not all_present:
         with pytest.raises(KeyError):
-            Api.calculate_signal(test_df, signal_algorithm)
+            Api.calculate_signal(test_df_copy, signal_algorithm)
         return True
 
     # Otherwise we expect to parse successfully.
-    df_with_signal = Api.calculate_signal(test_df, signal_algorithm)
+    df_with_signal = Api.calculate_signal(test_df_copy, signal_algorithm)
     if not isinstance(df_with_signal, pd.DataFrame):
         print(df_with_signal)
         print("Type was: ", type(df_with_signal))
@@ -130,7 +138,7 @@ def test_signals_creation(test_df, signal_algorithm):
 
     # Signal algorithms should be adding new columns with float, int or NaN data.
     new_columns = False
-    for ii_column_name in df_with_signal:
+    for ii_column_name in df_with_signal.columns:
         if ii_column_name not in original_columns:
             new_columns = True
             for ii_value in df_with_signal[ii_column_name]:
@@ -201,3 +209,56 @@ def test_return_representations_failures():
         Api.return_representations("")
     with pytest.raises(NotImplementedError):
         Api.return_representations("Unknown")
+
+
+def test_get_available_representations():
+    """Test to ensure functionality of implementation check"""
+    try:
+        Api.get_available_representations(name_of_algorithm="non_existing_algo")
+    except NotImplementedError:
+        pass
+
+    algo_information = Api.get_algorithm_information()
+    algo_names = algo_information.keys()
+    name_list = list(algo_names)
+    returned_rep_info = Api.get_available_representations(name_of_algorithm=name_list[0])
+    rep_info = list(algo_information[name_list[0]]["available_representation_types"].keys())
+    assert returned_rep_info == rep_info
+
+
+def test_return_representations():
+    algo_information = Api.get_algorithm_information()
+    algo_names = algo_information.keys()
+    name_list = list(algo_names)
+    returned_rep_info = Api.get_available_representations(name_of_algorithm=name_list[0])
+    try:
+        Api.return_representations(name_of_algorithm=name_list[1],
+                                   representation_or_list_of_representations=name_list[0])
+    except NameError:
+        pass
+
+    try:
+        Api.return_representations(name_of_algorithm=name_list[0],
+                                   representation_or_list_of_representations=1)
+    except TypeError:
+        pass
+
+    returned_dict = Api.return_representations(name_of_algorithm=name_list[0],
+                                   representation_or_list_of_representations=list(algo_information[name_list[0]]["available_representation_types"].keys()))
+    assert (returned_dict, dict)
+
+    returned_dict = Api.return_representations(name_of_algorithm=name_list[0])
+    assert (returned_dict, dict)
+
+
+def test_get_raw_callable():
+    try:
+        Api._get_raw_callable(name_of_strategy_or_signal="false_signal_name")
+    except KeyError:
+        pass
+
+    info = Api.get_algorithm_information()
+    names = list(info.keys())
+    returned_callable = Api._get_raw_callable(name_of_strategy_or_signal=names[0])
+    assert callable(returned_callable)
+
