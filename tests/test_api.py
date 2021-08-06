@@ -82,9 +82,12 @@ def test_representations(algorithm):
 @pytest.mark.parametrize("allocation_algorithm", available_allocation_algorithms)
 def test_calculation_positions(test_df, allocation_algorithm):
     """Checks algorithms calculate positions and returns."""
-
+    test_df_copy = test_df.copy()
     # We check for split calculations.
-    df_with_allocations = Api.calculate_allocations(test_df, allocation_algorithm, "close")
+    df_with_allocations = Api.calculate_allocations(df=test_df_copy,
+                                                    name_of_strategy=allocation_algorithm,
+                                                    name_of_price_series="close")
+
     assert isinstance(df_with_allocations, pd.DataFrame)
     assert "allocation" in df_with_allocations.columns
     df_with_returns = Api.calculate_returns(df_with_allocations)
@@ -94,7 +97,7 @@ def test_calculation_positions(test_df, allocation_algorithm):
             assert ii_value is "NaN"
 
     # We check for combined calculations.
-    df_with_allocations_and_returns = Api.calculate_allocations_and_returns(test_df, allocation_algorithm, "close")
+    df_with_allocations_and_returns = Api.calculate_allocations_and_returns(test_df_copy, allocation_algorithm, "close")
     assert isinstance(df_with_allocations_and_returns, pd.DataFrame)
     for ii_value in df_with_allocations_and_returns[PandasEnum.VALUATION.value]:
         if not isinstance(ii_value, float):
@@ -105,29 +108,29 @@ def test_calculation_positions(test_df, allocation_algorithm):
         df_with_returns[PandasEnum.VALUATION.value], df_with_allocations_and_returns[PandasEnum.VALUATION.value]
     )
 
-
 @pytest.mark.parametrize("test_df", test_dfs)
 @pytest.mark.parametrize("signal_algorithm", available_signal_algorithms)
 def test_signals_creation(test_df, signal_algorithm):
     """Checks signal algorithms can create a signal in a Pandas dataframe."""
 
+    test_df_copy = test_df.copy()
     original_columns = test_df.columns
 
     # We check if the test series has the columns needed for the rule to calculate.
     required_columns = Api.required_inputs_for_algorithm(signal_algorithm)
     all_present = True
     for ii_requirement in required_columns:
-        if ii_requirement not in test_df.columns:
+        if ii_requirement not in original_columns:
             all_present = False
 
     # If columns are missing, we anticipate a KeyError will trigger.
     if not all_present:
         with pytest.raises(KeyError):
-            Api.calculate_signal(test_df, signal_algorithm)
+            Api.calculate_signal(test_df_copy, signal_algorithm)
         return True
 
     # Otherwise we expect to parse successfully.
-    df_with_signal = Api.calculate_signal(test_df, signal_algorithm)
+    df_with_signal = Api.calculate_signal(test_df_copy, signal_algorithm)
     if not isinstance(df_with_signal, pd.DataFrame):
         print(df_with_signal)
         print("Type was: ", type(df_with_signal))
@@ -135,7 +138,7 @@ def test_signals_creation(test_df, signal_algorithm):
 
     # Signal algorithms should be adding new columns with float, int or NaN data.
     new_columns = False
-    for ii_column_name in df_with_signal:
+    for ii_column_name in df_with_signal.columns:
         if ii_column_name not in original_columns:
             new_columns = True
             for ii_value in df_with_signal[ii_column_name]:

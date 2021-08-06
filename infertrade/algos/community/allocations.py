@@ -558,7 +558,6 @@ def stochastic_RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: 
 
 
 def EMA_strategy(df: pd.DataFrame, window: int = 50, max_investment: float = 0.1) -> pd.DataFrame:
-
     """
     Exponential moving average strategy which buys when price is above signal and sells when price is below signal
     """
