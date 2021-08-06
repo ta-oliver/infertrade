@@ -13,8 +13,6 @@ def ta_rules_with_regression() -> dict:
     allocation_dictionary = {}
 
     for ii_ta_signal in ta_export_signals:
-
-        print(ta_export_signals)
         ta_rule_name = ta_export_signals[ii_ta_signal]["function_names"]
 
         def allocation_function(time_series_df: pd.DataFrame, *args, **kwargs) -> pd.DataFrame:
@@ -45,15 +43,5 @@ def ta_rules_with_regression() -> dict:
         }
 
         allocation_dictionary.update(dictionary_addition)
-
-    print(allocation_dictionary)
-
+        
     return allocation_dictionary
-
-
-ta_export_regression_allocations = ta_rules_with_regression()
-
-
-if __name__ == "__main__":
-
-    print(ta_export_regression_allocations)
