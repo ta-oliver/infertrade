@@ -85,7 +85,7 @@ def change_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
         df[PandasEnum.ALLOCATION.value] = 0.0
         return df
 
-    calculate_change_relationship(df, regression_period)
+    df = calculate_change_relationship(df, regression_period)
 
     return df
 
@@ -115,6 +115,7 @@ def calculate_change_relationship(df: pd.DataFrame, regression_period: int = 120
         forecast_period=forecast_period,
         kelly_fraction=kelly_fraction,
     )
+    return dataframe
 
 
 def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
@@ -133,7 +134,7 @@ def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
         df[PandasEnum.ALLOCATION.value] = 0.0
         return df
 
-    calculate_combination_relationship(df, regression_period)
+    df = calculate_combination_relationship(df, regression_period)
 
     return df
 
@@ -205,7 +206,7 @@ def difference_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
         df[PandasEnum.ALLOCATION.value] = 0.0
         return df
 
-    calculate_difference_relationship(df, regression_period)
+    df = calculate_difference_relationship(df, regression_period)
 
     return df
 
@@ -239,6 +240,7 @@ def calculate_difference_relationship(df: pd.DataFrame, regression_period: int =
         forecast_period=forecast_period,
         kelly_fraction=kelly_fraction,
     )
+    return dataframe
 
 
 def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: float = 0.0) -> pd.DataFrame:
@@ -270,7 +272,7 @@ def level_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
         df[PandasEnum.ALLOCATION.value] = 0.0
         return df
 
-    calculate_level_relationship(df, regression_period)
+    df = calculate_level_relationship(df, regression_period)
 
     return df
 
@@ -504,12 +506,12 @@ def WMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1)
 
 
 def MACD_strategy(
-    df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int = 9, max_investment: float = 0.1
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, max_investment: float = 0.1
 ) -> pd.DataFrame:
     """
     Moving average convergence divergence strategy which buys when MACD signal is above 0 and sells when MACD signal is below zero
     """
-    MACD_signal = signals.moving_average_convergence_divergence(df, short_period, long_period, window_signal)["signal"]
+    MACD_signal = signals.moving_average_convergence_divergence(df, window_slow, window_fast, window_signal)["signal"]
 
     signal_above_zero_line = MACD_signal > 0
     signal_below_zero_line = MACD_signal <= 0
@@ -555,7 +557,7 @@ def stochastic_RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: 
     return df
 
 
-def EMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1) -> pd.DataFrame:
+def EMA_strategy(df: pd.DataFrame, window: int = 50, max_investment: float = 0.1) -> pd.DataFrame:
     """
     Exponential moving average strategy which buys when price is above signal and sells when price is below signal
     """
@@ -566,6 +568,196 @@ def EMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1)
 
     df.loc[price_above_signal, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[price_below_signal, PandasEnum.ALLOCATION.value] = -max_investment
+    return df
+
+
+def bollinger_band_strategy(
+    df: pd.DataFrame, window: int = 20, window_dev: int = 2, max_investment: float = 0.1
+) -> pd.DataFrame:
+
+    """
+    This is Strategy that identify overbought or oversold market conditions.
+        1. Oversold: Price breaks below the lower band of the Bollinger Bands
+        2. Overbought: Price breaks above the upper band of the Bollinger bands
+
+    Relies on concept "Mean reversion"
+    Reference: https://www.investopedia.com/trading/using-bollinger-bands-to-gauge-trends/
+    """
+    short_position = False
+    long_position = False
+    df_with_signal = signals.bollinger_band(df, window=window, window_dev=window_dev)
+    for index, row in df_with_signal.iterrows():
+
+        # Check for short position
+        if (row["typical_price"] >= row["BOLU"] or short_position == True) and row["typical_price"] > row["BOLA"]:
+            short_position = True
+        else:
+            short_position = False
+
+        # Check for long position
+        if (row["typical_price"] <= row["BOLD"] or long_position == True) and row["typical_price"] < row["BOLA"]:
+            long_position = True
+        else:
+            long_position = False
+
+        # Both short position and long position can't be true
+        assert not (short_position == True and long_position == True)
+
+        # allocation conditions
+        if short_position == True:
+            df.loc[index, PandasEnum.ALLOCATION.value] = max_investment
+
+        elif long_position == True:
+            df.loc[index, PandasEnum.ALLOCATION.value] = -max_investment
+
+        else:
+            # if both short position and long position is false
+            df.loc[index, PandasEnum.ALLOCATION.value] = 0.0
+
+    return df
+
+
+def DPO_strategy(df: pd.DataFrame, window: int = 20, max_investment: float = 0.1) -> pd.DataFrame:
+    """
+    Exponential moving average strategy which buys when price is above signal and sells when price is below signal
+    """
+    DPO = signals.detrended_price_oscillator(df, window=window)["signal"]
+
+    above_zero = DPO > 0
+    below_zero = DPO <= 0
+
+    df.loc[above_zero, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
+    return df
+
+
+def PPO_strategy(
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, max_investment: float = 0.1
+) -> pd.DataFrame:
+    """
+    Percentage Price Oscillator strategy which buys when signal is above zero and sells when signal is below zero
+    """
+    PPO = signals.percentage_price_oscillator(df, window_slow, window_fast, window_signal)["signal"]
+
+    above_zero = PPO > 0
+    below_zero = PPO <= 0
+
+    df.loc[above_zero, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
+    return df
+
+
+def PVO_strategy(
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, max_investment: float = 0.1
+) -> pd.DataFrame:
+    """
+    Percentage volume Oscillator strategy which buys when signal is above zero and sells when signal is below zero
+    """
+    PVO = signals.percentage_volume_oscillator(df, window_slow, window_fast, window_signal)["signal"]
+
+    above_zero = PVO > 0
+    below_zero = PVO <= 0
+
+    df.loc[above_zero, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
+    return df
+
+
+def TRIX_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1) -> pd.DataFrame:
+    """
+    This is Triple Exponential Average (TRIX) strategy which buys when signal is above zero and sells when signal is below zero
+    """
+    TRIX = signals.triple_exponential_average(df, window)["signal"]
+
+    above_zero = TRIX > 0
+    below_zero = TRIX <= 0
+
+    df.loc[above_zero, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
+    return df
+
+
+def TSI_strategy(
+    df: pd.DataFrame, window_slow: int = 25, window_fast: int = 13, window_signal: int = 13, max_investment: float = 0.1
+) -> pd.DataFrame:
+    """
+    This is True Strength Index (TSI) strategy which buys when TSI is greater than signal and sells when TSI is below signal
+    Signal is EMA of TSI
+    """
+    df_with_signals = signals.true_strength_index(df, window_slow, window_fast, window_signal)
+
+    above_signal = df_with_signals["TSI"] > df_with_signals["signal"]
+    below_signal = df_with_signals["TSI"] <= df_with_signals["signal"]
+
+    df.loc[above_signal, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[below_signal, PandasEnum.ALLOCATION.value] = -max_investment
+    return df
+
+
+def STC_strategy(
+    df: pd.DataFrame,
+    window_slow: int = 50,
+    window_fast: int = 23,
+    cycle: int = 10,
+    smooth1: int = 3,
+    smooth2: int = 3,
+    max_investment: float = 0.1,
+) -> pd.DataFrame:
+    """
+    This is Schaff Trend Cycle (STC) strategy which indicate
+        1. oversold when STC < 25
+        2. overbought when STC > 75
+    """
+    STC = signals.schaff_trend_cycle(df, window_slow, window_fast, cycle, smooth1, smooth2)["signal"]
+
+    oversold = STC <= 25
+    overbought = STC >= 75
+    hold = STC.between(25, 75)
+
+    df.loc[oversold, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[overbought, PandasEnum.ALLOCATION.value] = -max_investment
+    df.loc[hold, PandasEnum.ALLOCATION.value] = 0
+
+    return df
+
+
+def KAMA_strategy(
+    df: pd.DataFrame, window: int = 10, pow1: int = 2, pow2: int = 30, max_investment: float = 0.1
+) -> pd.DataFrame:
+    """
+    Kaufman's Adaptive Moving Average (KAMA) strategy indicates
+        1. downtrend when signal < price
+        2. uptrend when signal > price
+    """
+    df_with_signals = signals.KAMA(df, window, pow1, pow2)
+
+    downtrend = df_with_signals["signal"] <= df_with_signals["close"]
+    uptrend = df_with_signals["signal"] > df_with_signals["close"]
+
+    df.loc[uptrend, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[downtrend, PandasEnum.ALLOCATION.value] = -max_investment
+
+    return df
+
+
+def aroon_strategy(df: pd.DataFrame, window: int = 25, max_investment: float = 0.1) -> pd.DataFrame:
+    """
+    The Arron indicator is composed of two lines.
+        1. Aroon_up: line which measures the number of periods since a High, and
+        2. Aroon_down: line which measures the number of periods since a Low.
+
+    This strategy indicates:
+        1. Bearish: when aroon_up >= aroon_down
+        2. Bullish: when aroon_down < aroon_up
+    """
+    df_with_signals = signals.aroon(df, window)
+
+    bearish = df_with_signals["aroon_up"] >= df_with_signals["aroon_down"]
+    bullish = df_with_signals["aroon_down"] < df_with_signals["aroon_up"]
+
+    df.loc[bearish, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[bullish, PandasEnum.ALLOCATION.value] = -max_investment
+
     return df
 
 
@@ -726,7 +918,7 @@ infertrade_export_allocations = {
     },
     "MACD_strategy": {
         "function": MACD_strategy,
-        "parameters": {"short_period": 12, "long_period": 26, "window_signal": 9, "max_investment": 0.1},
+        "parameters": {"window_fast": 26, "window_slow": 12, "window_signal": 9, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L296"
@@ -737,7 +929,7 @@ infertrade_export_allocations = {
         "parameters": {"window": 14, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L309"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L522"
         },
     },
     "stochastic_RSI_strategy": {
@@ -745,15 +937,86 @@ infertrade_export_allocations = {
         "parameters": {"window": 14, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L325"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L539"
         },
     },
     "EMA_strategy": {
         "function": EMA_strategy,
-        "parameters": {"window": 1, "max_investment": 0.1},
+        "parameters": {"window": 50, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L344"
+        },
+    },
+    "bollinger_band_strategy": {
+        "function": bollinger_band_strategy,
+        "parameters": {"window": 20, "window_dev": 2, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d13842aaae91afeb22c6631a06d7de4cb723ae23/infertrade/algos/community/allocations.py#L616"
+        },
+    },
+    "PPO_strategy": {
+        "function": PPO_strategy,
+        "parameters": {"window_fast": 26, "window_slow": 12, "window_signal": 9, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L629"
+        },
+    },
+    "PVO_strategy": {
+        "function": PVO_strategy,
+        "parameters": {"window_fast": 26, "window_slow": 12, "window_signal": 9, "max_investment": 0.1},
+        "series": ["volume"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L648"
+        },
+    },
+    "TRIX_strategy": {
+        "function": TRIX_strategy,
+        "parameters": {"window": 14, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L663"
+        },
+    },
+    "TSI_strategy": {
+        "function": TSI_strategy,
+        "parameters": {"window_slow": 25, "window_fast": 13, "window_signal": 13, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L663"
+        },
+    },
+    "STC_strategy": {
+        "function": STC_strategy,
+        "parameters": {
+            "window_slow": 50,
+            "window_fast": 23,
+            "cycle": 10,
+            "smooth1": 3,
+            "smooth2": 3,
+            "max_investment": 0.1,
+        },
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L663"
+        },
+    },
+    "KAMA_strategy": {
+        "function": KAMA_strategy,
+        "parameters": {"window": 10, "pow1": 2, "pow2": 30, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L724"
+        },
+    },
+    "aroon_strategy": {
+        "function": aroon_strategy,
+        "parameters": {"window": 25, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L724"
         },
     },
 }

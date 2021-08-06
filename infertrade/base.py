@@ -25,7 +25,7 @@ Base functionality used by other functions in the package.
 import pandas as pd
 
 
-def get_signal_calc(func: callable , adapter: callable = None) -> callable or pd.DataFrame:
+def get_signal_calc(func: callable, adapter: callable = None) -> callable or pd.DataFrame:
     """An adapter to calculate a signal prior to usage within a trading rule."""
     if adapter:
         func = adapter(func())

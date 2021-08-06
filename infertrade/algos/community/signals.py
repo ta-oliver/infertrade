@@ -22,10 +22,14 @@ import pandas as pd
 import numpy as np
 from pandas.core.frame import DataFrame
 from sklearn.preprocessing import FunctionTransformer
-from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator
-from ta.momentum import rsi, stochrsi
-from infertrade.data.simulate_data import simulated_market_data_4_years_gen
-from ta.volatility import AverageTrueRange
+from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator, dpo, trix, stc, aroon_up, aroon_down
+from ta.momentum import KAMAIndicator, ppo_signal, rsi, stochrsi, pvo_signal, tsi, kama
+from ta.volatility import (
+    AverageTrueRange,
+    bollinger_hband,
+    bollinger_lband,
+    bollinger_mavg,
+)
 from infertrade.algos.external.ta import ta_adaptor
 from infertrade.PandasEnum import PandasEnum
 
@@ -71,7 +75,7 @@ def weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     return df_with_signal
 
 
-def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
+def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 50) -> pd.DataFrame:
     """
     This function uses an exponentially weighted multiplier to give more weight to recent prices.
     """
@@ -81,7 +85,7 @@ def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 1) -> 
 
 
 def moving_average_convergence_divergence(
-    df: pd.DataFrame, short_period: int = 12, long_period: int = 26, window_signal: int = 9
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9
 ) -> pd.DataFrame:
     """
     This function is a trend-following momentum indicator that shows the relationship between two moving averages at different windows:
@@ -89,7 +93,7 @@ def moving_average_convergence_divergence(
 
     """
     df_with_signal = df.copy()
-    df_with_signal["signal"] = macd_signal(df["close"], long_period, short_period, window_signal, fillna=True)
+    df_with_signal["signal"] = macd_signal(df["close"], window_slow, window_fast, window_signal, fillna=True)
     return df_with_signal
 
 
@@ -152,6 +156,127 @@ def chande_kroll(
     return df
 
 
+def bollinger_band(df: pd.DataFrame, window: int = 20, window_dev: int = 2) -> pd.DataFrame:
+    """
+    This function calculates signal which characterizes the prices and volatility over time.
+    There are three lines that compose Bollinger Bands. By default:
+        1. Middle band: A 20 day simple moving average
+        2. The upper band: 2 standard deviations above from a 20 day simple moving average
+        3. The lower band: 2 standard deviations - from a 20 day SMA
+
+    These can be adjusted by changing parameter window and window_dev
+
+    Parameters:
+    window: Smoothing period
+    window_dev: number of standard deviation
+    """
+    df_with_signal = df.copy()
+    df_with_signal["typical_price"] = (df["close"] + df["low"] + df["high"]) / 3
+    df_with_signal["BOLU"] = bollinger_hband(df_with_signal["typical_price"], window=window, window_dev=window_dev)
+    df_with_signal["BOLD"] = bollinger_lband(df_with_signal["typical_price"], window=window, window_dev=window_dev)
+    df_with_signal["BOLA"] = bollinger_mavg(df_with_signal["typical_price"], window=window)
+
+    return df_with_signal
+
+
+def detrended_price_oscillator(df: pd.DataFrame, window: int = 20) -> pd.DataFrame:
+    """
+    This function is a detrended price oscillator which strips out price trends in an effort to
+    estimate the length of price cycles from peak to peak or trough to trough.
+    """
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = dpo(df["close"], window=window)
+    return df_with_signal
+
+
+def percentage_price_oscillator(
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9
+) -> pd.DataFrame:
+    """
+    This is a technical momentum indicator that shows the relationship between two moving averages in percentage terms.
+    The moving averages are a 26-period and 12-period exponential moving average (EMA).
+    """
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = ppo_signal(df["close"], window_slow, window_fast, window_signal, fillna=True)
+    return df_with_signal
+
+
+def percentage_volume_oscillator(
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9
+) -> pd.DataFrame:
+    """
+    This is a technical momentum indicator that shows the relationship between two moving averages of volume in percentage terms.
+    The moving averages are a 26-period and 12-period exponential moving average (EMA) of volume.
+    """
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = pvo_signal(df["volume"], window_slow, window_fast, window_signal, fillna=True)
+    return df_with_signal
+
+
+def triple_exponential_average(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
+    """
+    The triple exponential average (TRIX) is a momentum indicator shows the percentage change
+    in a moving average that has been smoothed exponentially three times.
+    """
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = trix(df["close"], window, fillna=True)
+    return df_with_signal
+
+
+def true_strength_index(
+    df: pd.DataFrame, window_slow: int = 25, window_fast: int = 13, window_signal: int = 13
+) -> pd.DataFrame:
+    """
+    This is a technical momentum oscillator that finds trends and reversals.
+    It helps in determining overbought and oversold conditions.
+    It also gives warning of trend weakness through divergence.
+    """
+    df_with_signal = df.copy()
+    df_with_signal["TSI"] = tsi(df["close"], window_slow, window_fast, fillna=True)
+    df_with_signal["signal"] = ema_indicator(df_with_signal["TSI"], window_signal, fillna=True)
+    return df_with_signal
+
+
+def schaff_trend_cycle(
+    df: pd.DataFrame, window_slow: int = 50, window_fast: int = 23, cycle: int = 10, smooth1: int = 3, smooth2: int = 3
+) -> pd.DataFrame:
+    """
+    The Schaff Trend Cycle (STC) is a trend indicator that
+    is commonly used to identify market trends and provide buy
+    and sell signals to traders.
+
+    Assumption:
+    Currency trends accelerate and decelerate in cyclical patterns regardless of time frame
+    """
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = stc(
+        df_with_signal["close"], window_slow, window_fast, cycle, smooth1, smooth2, fillna=True
+    )
+    return df_with_signal
+
+
+def KAMA(df: pd.DataFrame, window: int = 10, pow1: int = 2, pow2: int = 30) -> pd.DataFrame:
+    """
+    Kaufman's Adaptive Moving Average (KAMA) is an indicator that
+    indicates both the volatility and trend of the market.
+    """
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = kama(df["close"], window, pow1, pow2)
+    return df_with_signal
+
+
+def aroon(df: pd.DataFrame, window: int = 25) -> pd.DataFrame:
+    """
+    The Arron indicator is composed of two lines.
+        1. Aroon_up: line which measures the number of periods since a High, and
+        2. Aroon_down: line which measures the number of periods since a Low.
+    """
+    df_with_signal = df.copy()
+    df_with_signal["aroon_up"] = aroon_up(df["close"], window, fillna=True)
+    df_with_signal["aroon_down"] = aroon_down(df["close"], window, fillna=True)
+    return df_with_signal
+
+
 # creates wrapper classes to fit sci-kit learn interface
 def scikit_signal_factory(signal_function: callable):
     """A class compatible with Sci-Kit Learn containing the signal function."""
@@ -201,7 +326,7 @@ infertrade_export_signals = {
     },
     "exponentially_weighted_moving_average": {
         "function": exponentially_weighted_moving_average,
-        "parameters": {"window": 1},
+        "parameters": {"window": 50},
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L69"
@@ -209,7 +334,7 @@ infertrade_export_signals = {
     },
     "moving_average_convergence_divergence": {
         "function": moving_average_convergence_divergence,
-        "parameters": {"short_period": 12, "long_period": 26, "window_signal": 9},
+        "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9},
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L76"
@@ -237,6 +362,78 @@ infertrade_export_signals = {
         "series": ["high", "low"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L125"
+        },
+    },
+    "bollinger_band": {
+        "function": bollinger_band,
+        "parameters": {"window": 20, "window_dev": 2},
+        "series": ["close", "high", "low"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5f74bdeb99eb26c15df0b5417de837466cefaee1/infertrade/algos/community/signals.py#L155"
+        },
+    },
+    "detrended_price_oscillator": {
+        "function": detrended_price_oscillator,
+        "parameters": {"window": 20},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5f74bdeb99eb26c15df0b5417de837466cefaee1/infertrade/algos/community/signals.py#L186"
+        },
+    },
+    "percentage_price_oscillator": {
+        "function": percentage_price_oscillator,
+        "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L196"
+        },
+    },
+    "percentage_volume_oscillator": {
+        "function": percentage_volume_oscillator,
+        "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9},
+        "series": ["volume"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L204"
+        },
+    },
+    "triple_exponential_average": {
+        "function": triple_exponential_average,
+        "parameters": {"window": 14},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L215"
+        },
+    },
+    "true_strength_index": {
+        "function": true_strength_index,
+        "parameters": {"window_slow": 25, "window_fast": 13},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L228"
+        },
+    },
+    "schaff_trend_cycle": {
+        "function": schaff_trend_cycle,
+        "parameters": {"window_slow": 50, "window_fast": 23, "cycle": 10, "smooth1": 3, "smooth2": 3},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L240"
+        },
+    },
+    "KAMA": {
+        "function": KAMA,
+        "parameters": {"window": 10, "pow1": 2, "pow2": 30},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L257"
+        },
+    },
+    "aroon": {
+        "function": aroon,
+        "parameters": {"window": 10},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L268"
         },
     },
 }
