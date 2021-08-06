@@ -1,0 +1,66 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+\begin{document}
+\logo
+\rulename{True Strength Index} %Argument is name of rule
+\tblofcontents
+
+\ruledescription{The True Strength Index (TSI) is a momentum indicator used to identify overbought and oversold signals. It can also be used to indicate trend reversals using bullish and bearish crossover of the signal line and TSI line.}
+
+\howtotrade
+{The strategy is to identify the oversold and overbought markets and a momentum indicator. \\
+Bullish Momentum: when the TSI line cross above signal line. \\
+Bearish Momentum: when signal line cross above TSI line
+}
+
+
+\ruleparameters
+{Window size for Exponential moving average}{25}{This is the number of time steps over which exponential contributions are sourced.}{$\lookbacklength$}
+{Window size for Exponential moving average}{13}{This is the number of time steps over which exponential contributions are sourced for smoothed momentum.}{$\lookbacklength_{s}$}
+{Smoothing Factor}{2}{Smoothing factor represents the weighting applied to the most recent period’s value.}{$S$}
+\stoptable
+
+\newpage
+\section{Equation}
+\begin{equation}
+    \Delta p_{\currenttime} = p_{\currenttime} - p_{\currenttime - 1}
+\end{equation}
+
+\begin{equation}
+    EMA(\Delta p_{\currenttime}, S, \lookbacklength) = \Big(\Delta p_{\currenttime} * \Big(\frac{S}{1 + \lookbacklength}\Big)\Big) + EMA_{\currenttime-1} * \Big(1-\frac{S}{1 + \lookbacklength}\Big)
+\end{equation}
+
+\begin{equation}
+    EMA(|\Delta p_{\currenttime}|, S, \lookbacklength) = \Big(|\Delta p_{\currenttime}| * \Big(\frac{S}{1 + \lookbacklength}\Big)\Big) + EMA_{\currenttime-1} * \Big(1-\frac{S}{1 + \lookbacklength}\Big)
+\end{equation}
+
+\begin{equation}
+    TSI = 100 \times \frac{EMA(EMA(\Delta p_{\currenttime}, S, \lookbacklength), S, \lookbacklength_{s})}{EMA(EMA(|\Delta p_{\currenttime}|, S, \lookbacklength), S,\lookbacklength_{s})}
+\end{equation}
+\\
+
+where: \\
+
+$TSI$ is True Strength Index. \\
+
+$EMA$ is exponentially weighted moving average. \\
+
+$p_{\currenttime}$ is current stock value. \\
+
+$\Delta p_{\currenttime}$ is change in stock value. \\
+
+$|\Delta p_{\currenttime}|$ is absolute change in stock value. \\
+
+$\lookbacklength$ \ is look back length. \\
+
+$\lookbacklength_{s}$ is look back length for smoothed momentum. \\
+
+$S$ is the smoothing factor.
+
+\hspace{200mm}
+\hspace{200mm}
+\keyterms
+\furtherlinks
+\end{document}
