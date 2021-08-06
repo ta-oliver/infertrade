@@ -45,3 +45,5 @@ def ta_rules_with_regression() -> dict:
         allocation_dictionary.update(dictionary_addition)
         
     return allocation_dictionary
+
+ta_export_regression_allocations = ta_rules_with_regression()
