@@ -23,7 +23,7 @@ import numpy as np
 from pandas.core.frame import DataFrame
 from sklearn.preprocessing import FunctionTransformer
 from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator, dpo, trix, stc, aroon_up, aroon_down
-from ta.momentum import KAMAIndicator, ppo_signal, rsi, stochrsi, pvo_signal, tsi, kama
+from ta.momentum import ppo_signal, rsi, stochrsi, pvo_signal, tsi, kama, roc
 from ta.volatility import (
     AverageTrueRange,
     bollinger_hband,
@@ -276,6 +276,14 @@ def aroon(df: pd.DataFrame, window: int = 25) -> pd.DataFrame:
     df_with_signal["aroon_down"] = aroon_down(df["close"], window, fillna=True)
     return df_with_signal
 
+def rate_of_change(df: pd.DataFrame, window: int = 12) -> pd.DataFrame:
+    """
+    Rate of Change is momentum-based technical indicator that measures the percentage change in price between the current price and the price a certain number of periods ago.
+    """
+    df_with_signal = df.copy()
+    df_with_signal["signal"] = roc(df["close"], window, fillna=True)
+    return df_with_signal
+
 
 # creates wrapper classes to fit sci-kit learn interface
 def scikit_signal_factory(signal_function: callable):
@@ -430,10 +438,18 @@ infertrade_export_signals = {
     },
     "aroon": {
         "function": aroon,
-        "parameters": {"window": 10},
+        "parameters": {"window": 25},
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L268"
+        },
+    },
+    "rate_of_change": {
+        "function": rate_of_change,
+        "parameters": {"window": 12},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L279"
         },
     },
 }

@@ -760,6 +760,20 @@ def aroon_strategy(df: pd.DataFrame, window: int = 25, max_investment: float = 0
 
     return df
 
+def ROC_strategy(df: pd.DataFrame, window: int = 12, max_investment: float = 0.1) -> pd.DataFrame:
+    """
+    A rising ROC above zero typically confirms an uptrend while a falling ROC below zero indicates a downtrend.
+    """
+    df_with_signals = signals.rate_of_change(df, window)
+
+    bearish = df_with_signals["signal"] >= 0
+    bullish = df_with_signals["signal"] < 0
+
+    df.loc[bearish, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[bullish, PandasEnum.ALLOCATION.value] = -max_investment
+
+    return df
+
 
 infertrade_export_allocations = {
     "fifty_fifty": {
@@ -1016,7 +1030,15 @@ infertrade_export_allocations = {
         "parameters": {"window": 25, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L724"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L743"
+        },
+    },
+    "ROC_strategy": {
+        "function": ROC_strategy,
+        "parameters": {"window": 12, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L763"
         },
     },
 }
