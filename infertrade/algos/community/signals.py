@@ -22,13 +22,15 @@ import pandas as pd
 import numpy as np
 from pandas.core.frame import DataFrame
 from sklearn.preprocessing import FunctionTransformer
-from ta.trend import macd_signal, sma_indicator, wma_indicator, ema_indicator, dpo, trix, stc, aroon_up, aroon_down
+from ta.trend import adx, adx_neg, adx_pos, macd_signal, sma_indicator, wma_indicator, ema_indicator, dpo, trix, stc, aroon_up, aroon_down
 from ta.momentum import ppo_signal, rsi, stochrsi, pvo_signal, tsi, kama, roc
 from ta.volatility import (
     AverageTrueRange,
+    UlcerIndex,
     bollinger_hband,
     bollinger_lband,
     bollinger_mavg,
+    ulcer_index as ulcerindex
 )
 from infertrade.algos.external.ta import ta_adaptor
 from infertrade.PandasEnum import PandasEnum
@@ -276,12 +278,28 @@ def aroon(df: pd.DataFrame, window: int = 25) -> pd.DataFrame:
     df_with_signal["aroon_down"] = aroon_down(df["close"], window, fillna=True)
     return df_with_signal
 
+
 def rate_of_change(df: pd.DataFrame, window: int = 12) -> pd.DataFrame:
     """
     Rate of Change is momentum-based technical indicator that measures the percentage change in price between the current price and the price a certain number of periods ago.
     """
     df_with_signal = df.copy()
     df_with_signal["signal"] = roc(df["close"], window, fillna=True)
+    return df_with_signal
+
+
+def average_directional_movement_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
+    """
+    Average Directional Movement Index makes use of three indicators to measure both trend direction and its strength.
+        1. Plus Directional Indicator (+DI)
+        2. Negative Directonal Indicator (-DI)
+        3. Average directional Index (ADX)
+    +DI and -DI measures the trend direction and ADX measures the strength of trend
+    """
+    df_with_signal = df.copy()
+    df_with_signal["ADX_POS"] = adx_pos(df["high"], df["low"], df["close"], window, fillna=True)
+    df_with_signal["ADX_NEG"] = adx_neg(df["high"], df["low"], df["close"], window, fillna=True)
+    df_with_signal["ADX"] = adx(df["high"], df["low"], df["close"], window, fillna=True)
     return df_with_signal
 
 
@@ -450,6 +468,14 @@ infertrade_export_signals = {
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L279"
+        },
+    },
+    "average_directional_movement_index": {
+        "function": average_directional_movement_index,
+        "parameters": {"window": 14},
+        "series": ["close", "high", "low"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L291"
         },
     },
 }
