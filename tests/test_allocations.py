@@ -20,6 +20,8 @@
 Unit tests for allocations
 """
 
+from numpy.core.fromnumeric import argmax
+from numpy.core.numeric import roll
 import infertrade.algos.community.allocations as allocations
 import infertrade.algos.community.signals as signals
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
@@ -286,8 +288,9 @@ def aroon(
     df: pd.DataFrame, window: int = 25
 ) -> pd.DataFrame:
     df_with_signals = df.copy()
-    df_with_signals["aroon_up"] = (window - df_with_signals["close"].rolling(window=window).max())/window
-    df_with_signals["aroon_down"] = (window - df_with_signals["close"].rolling(window=window).min())/window
+    roll_close = df_with_signals["close"].rolling(window=window, min_periods=0)
+    df_with_signals["aroon_up"] = roll_close.apply(lambda x : (np.argmax(x) + 1) / window * 100)
+    df_with_signals["aroon_down"] = roll_close.apply(lambda x : (np.argmin(x) + 1) / window * 100)
         
     return df_with_signals
 
@@ -295,7 +298,7 @@ def rate_of_change(
     df: pd.DataFrame, window: int = 25
 ) -> pd.DataFrame:
     df_with_signals = df.copy()
-    df_with_signals["signal"] = df_with_signals["close"].pct_change(window)
+    df_with_signals["signal"] = df_with_signals["close"].pct_change(window)*100
         
     return df_with_signals
 
@@ -509,21 +512,21 @@ def test_KAMA_strategy():
 
 def test_aroon_strategy():
     df_with_signals = aroon(df, window=25)
-    aroon_up = df_with_signals["aroon_up"]
-    aroon_down = df_with_signals["aroon_down"]
-    df_with_allocations = allocations.aroon_strategy(df, 25)
+    df_with_allocations = allocations.aroon_strategy(df, 25, max_investment)
+    df_with_signals_ta = signals.aroon(df, 25)
 
-    bearish = aroon_up >= aroon_down
-    bullish = aroon_down < aroon_up
+    bullish = df_with_signals["aroon_up"] >= df_with_signals["aroon_down"]
+    bearish = df_with_signals["aroon_down"] < df_with_signals["aroon_up"]
 
-    df_with_signals.loc[bearish, "allocation"] = max_investment
-    df_with_signals.loc[bullish, "allocation"] = -max_investment
+    df_with_signals.loc[bullish, PandasEnum.ALLOCATION.value] = max_investment
+    df_with_signals.loc[bearish, PandasEnum.ALLOCATION.value] = -max_investment
 
-    pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
+    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 def test_ROC_strategy():
     df_with_signals = rate_of_change(df, window=25)
-    df_with_allocations = allocations.ROC_strategy(df, 25, 0.1)
+    df_with_allocations = allocations.ROC_strategy(df, 25, max_investment)
+    df_with_signals_ta = signals.rate_of_change(df, 25)
 
     bullish = df_with_signals["signal"] >= 0
     bearish = df_with_signals["signal"] < 0
@@ -531,4 +534,3 @@ def test_ROC_strategy():
     df_with_signals.loc[bearish, "allocation"] = max_investment
     df_with_signals.loc[bullish, "allocation"] = -max_investment
 
-    pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])

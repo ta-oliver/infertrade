@@ -747,16 +747,16 @@ def aroon_strategy(df: pd.DataFrame, window: int = 25, max_investment: float = 0
         2. Aroon_down: line which measures the number of periods since a Low.
 
     This strategy indicates:
-        1. Bearish: when aroon_up >= aroon_down
-        2. Bullish: when aroon_down < aroon_up
+        1. Bearish: when aroon_up < aroon_down
+        2. Bullish: when aroon_up >= aroon_down
     """
     df_with_signals = signals.aroon(df, window)
 
-    bearish = df_with_signals["aroon_up"] >= df_with_signals["aroon_down"]
-    bullish = df_with_signals["aroon_down"] < df_with_signals["aroon_up"]
+    bullish = df_with_signals["aroon_up"] >= df_with_signals["aroon_down"]
+    bearish = df_with_signals["aroon_down"] < df_with_signals["aroon_up"]
 
-    df.loc[bearish, PandasEnum.ALLOCATION.value] = max_investment
-    df.loc[bullish, PandasEnum.ALLOCATION.value] = -max_investment
+    df.loc[bullish, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[bearish, PandasEnum.ALLOCATION.value] = -max_investment
 
     return df
 
@@ -766,11 +766,11 @@ def ROC_strategy(df: pd.DataFrame, window: int = 12, max_investment: float = 0.1
     """
     df_with_signals = signals.rate_of_change(df, window)
 
-    bearish = df_with_signals["signal"] >= 0
-    bullish = df_with_signals["signal"] < 0
+    uptrend = df_with_signals["signal"] >= 0
+    downtrend = df_with_signals["signal"] < 0
 
-    df.loc[bearish, PandasEnum.ALLOCATION.value] = max_investment
-    df.loc[bullish, PandasEnum.ALLOCATION.value] = -max_investment
+    df.loc[uptrend, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[downtrend, PandasEnum.ALLOCATION.value] = -max_investment
 
     return df
 
