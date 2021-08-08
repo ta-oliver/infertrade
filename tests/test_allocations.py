@@ -298,8 +298,8 @@ def rate_of_change(
     df: pd.DataFrame, window: int = 25
 ) -> pd.DataFrame:
     df_with_signals = df.copy()
-    df_with_signals["signal"] = df_with_signals["close"].pct_change(window)*100
-        
+    df_with_signals["signal"] = df_with_signals["close"].pct_change(window).fillna(0)*100
+    
     return df_with_signals
 
 
@@ -526,11 +526,12 @@ def test_aroon_strategy():
 def test_ROC_strategy():
     df_with_signals = rate_of_change(df, window=25)
     df_with_allocations = allocations.ROC_strategy(df, 25, max_investment)
-    df_with_signals_ta = signals.rate_of_change(df, 25)
 
     bullish = df_with_signals["signal"] >= 0
     bearish = df_with_signals["signal"] < 0
 
     df_with_signals.loc[bearish, "allocation"] = max_investment
     df_with_signals.loc[bullish, "allocation"] = -max_investment
+
+    pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
 
