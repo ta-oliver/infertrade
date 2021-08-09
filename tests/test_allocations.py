@@ -84,12 +84,12 @@ def test_algorithm_functions():
             for ii_parameter in param_dict:
                 assert isinstance(param_dict[ii_parameter], Real)
 
-"""
-Independent implementation of indicators for testing allocation strategies
-"""
+
+#  Independent implementation of indicators for testing allocation strategies
+
 def simple_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     """
-    Calculates smooth signal based on price trends by filtering out the noise from random short-term price fluctuations
+    Calculates smooth signal based on price trends by filtering out the noise from random short-term price fluctuations.
     """
     df["signal"] = df["close"].rolling(window=window).mean()
     return df

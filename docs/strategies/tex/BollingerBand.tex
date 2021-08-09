@@ -1,0 +1,58 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Bollinger Bands} %Argument is name of rule
+\tblofcontents
+
+\ruledescription{Bollinger Bands developed by John Bolinger in the 1980s, is a technical indicator that is used to identify when an asset is overbought and oversold. The bands comprise a volatility indicator that measures the relative high or low of a security’s price in relation to previous trades. It is comprised of the upper, middle, and lower band which envelopes the price range levels. An asset is considered oversold when it breaks below the lower band and considered overbought when it breaks above the upper band.
+}
+
+\howtotrade
+{The strategy is to identify asset's price cycles.
+Bullish Reversal - when Price is above the upper band \&
+Bearish Reversal - when Price is below the lower band.
+}
+
+\ruleparameters %You can include however many arguments (in groups of 4) as you want!
+{Look Back Length}{20}{Look back length used to compute MA.}{$\lookbacklength$}
+{Number of standard deviations}{2}{Number of standard deviation used to compute Bollinger Band limits.}{$m$}
+\stoptable %must be included or Tex engine runs infinitely
+
+\newpage
+\section{Equation}
+Below are the equations which govern how this specific trading rule calculates a trading position.
+
+\begin{equation}
+    P_{n} = \frac{H_{n} + L_{n} + C_{n}}{3}
+\end{equation}
+\begin{equation}
+    MA(P_{n}, n) = \frac{1}{n} \sum_{i = 1}^{n} P_{i}
+\end{equation}
+\begin{equation}
+    B_{u} = MA(P_{n}, \lookbacklength) + m \times \sigma[P_{n}, \lookbacklength]
+\end{equation}
+\begin{equation}
+    B_{l} = MA(P_{n}, \lookbacklength) - m \times \sigma[P_{n}, \lookbacklength]
+\end{equation}
+\\ % creates some space after equation
+where:
+
+$P_{n}$: is the price at $n$th period.
+
+$H_{n}$: is the highest price at $n$th period.
+
+$L_{n}$: is the lowest price at $n$th period.
+
+$C_{n}$: is the closing period at $n$th period.
+
+$m$: is the number of standard deviations.
+
+$\sigma[P_{n}, \lookbacklength]$: is the standard deviation in $P_{n}$ within \lookbacklength \ periods.
+
+\keyterms
+\furtherlinks %The footer
+\end{document}

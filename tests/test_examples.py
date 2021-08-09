@@ -34,15 +34,15 @@ from ta.trend import AroonIndicator, IchimokuIndicator, KSTIndicator
 # Internal imports
 from examples.my_first_infertrade_strategy import buy_on_small_rises
 from infertrade.algos import ta_adaptor
-from infertrade.algos.community import normalised_close, scikit_allocation_factory
+from infertrade.algos.community import normalised_close
 from infertrade.algos.community import scikit_signal_factory
 from infertrade.algos.community.allocations import constant_allocation_size
 from infertrade.base import get_signal_calc
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
+from infertrade.utilities.operations import scikit_allocation_factory, ReturnsFromPositions
 from infertrade.utilities.operations import (
     PositionsFromPricePrediction,
     PricePredictionFromSignalRegression,
-    ReturnsFromPositions,
 )
 from infertrade.utilities.operations import PricePredictionFromPositions
 

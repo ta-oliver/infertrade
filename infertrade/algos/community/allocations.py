@@ -558,7 +558,6 @@ def stochastic_RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: 
 
 
 def EMA_strategy(df: pd.DataFrame, window: int = 50, max_investment: float = 0.1) -> pd.DataFrame:
-
     """
     Exponential moving average strategy which buys when price is above signal and sells when price is below signal
     """
@@ -723,7 +722,7 @@ def STC_strategy(
 
 
 def KAMA_strategy(
-    df: pd.DataFrame, window: int = 10, pow1: int = 2, pow2: int = 30, max_investment: int = 0.1
+    df: pd.DataFrame, window: int = 10, pow1: int = 2, pow2: int = 30, max_investment: float = 0.1
 ) -> pd.DataFrame:
     """
     Kaufman's Adaptive Moving Average (KAMA) strategy indicates
@@ -741,7 +740,7 @@ def KAMA_strategy(
     return df
 
 
-def aroon_strategy(df: pd.DataFrame, window: int = 25, max_investment: int = 0.1) -> pd.DataFrame:
+def aroon_strategy(df: pd.DataFrame, window: int = 25, max_investment: float = 0.1) -> pd.DataFrame:
     """
     The Arron indicator is composed of two lines.
         1. Aroon_up: line which measures the number of periods since a High, and

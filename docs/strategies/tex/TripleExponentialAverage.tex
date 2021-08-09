@@ -1,0 +1,60 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+\begin{document}
+\logo
+\rulename{Triple Exponential Average} %Argument is name of rule
+\tblofcontents
+
+\ruledescription{The triple exponential average, known more commonly as the TRIX is a momentum indicator that is meant to filter out insignificant and unimportant price movements. Many consider it to be similar to the Moving Average Convergence/Divergence (MACD) indicator. The only difference is that the TRIX indicator provides outputs that are smoother due to triple smoothing of the exponential moving averages used to create the indicator. It is an indicator that is usually used for identifying overbought and oversold market conditions.}
+
+\howtotrade
+{The strategy is to identify the oversold and overbought markets and a momentum indicator. \\
+Bullish Momentum: when the TRIX is above zero. \\
+Bearish Momentum: when the TRIX is below zero.
+}
+
+
+\ruleparameters
+{Window size for \break Exponential moving average of series i, \break i $\in \{1,2,3\}$}{14}{This is the number of time steps over which exponential contributions are sourced.}{$\lookbacklength_{i}$}
+{Smoothing Factor for \break Exponential moving average of series i, \break i $\in \{1,2,3\}$}{2}{Smoothing factor represents the weighting applied to the most recent period’s value.}{$S_{i}$}
+\stoptable
+
+\newpage
+\section{Equation}
+\begin{equation}
+    EMA_{\currenttime}^{1} = \Big(V_{\currenttime} * \Big(\frac{S_{1}}{1 + \lookbacklength_{1}}\Big)\Big) + EMA_{\currenttime-1} * \Big(1-\frac{S_{1}}{1 + \lookbacklength_{1}}\Big)
+\end{equation}
+
+\begin{equation}
+    EMA_{\currenttime}^{2} = \Big(EMA_{\currenttime}^{1} * \Big(\frac{S_{2}}{1 + \lookbacklength_{2}}\Big)\Big) + EMA_{\currenttime-1}^{1} * \Big(1-\frac{S_{2}}{1 + \lookbacklength_{2}}\Big)
+\end{equation}
+
+\begin{equation}
+    EMA_{\currenttime}^{3} = \Big(EMA_{\currenttime}^{2} * \Big(\frac{S_{3}}{1 + \lookbacklength_{3}}\Big)\Big) + EMA_{\currenttime-1}^{2} * \Big(1-\frac{S_{3}}{1 + \lookbacklength_{3}}\Big)
+\end{equation}
+
+\begin{equation}
+    TRIX_{\currenttime} = \frac{EMA_{\currenttime}^{3} - EMA_{\currenttime-1}^{3}}{EMA_{\currenttime-1}^{3}}
+\end{equation}
+\\
+
+where: \\
+
+$TRIX$ is Triple exponentially weighted moving average. \\
+
+$EMA$ is exponentially weighted moving average. \\
+
+$V_{\currenttime}$ is current stock value. \\
+
+$\lookbacklength$ \ is look back length. \\
+
+$S$ is the smoothing factor.
+
+\hspace{200mm}
+\hspace{200mm}
+\keyterms
+\furtherlinks
+\end{document}
+

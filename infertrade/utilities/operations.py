@@ -536,6 +536,7 @@ def calculate_regression_with_kelly_optimum(
             -1,
         )
 
+
     # Shift position series  (QUESTION - does not appear to shift?)
     dataframe[PandasEnum.ALLOCATION.value] = dataframe[PandasEnum.ALLOCATION.value].shift(-1)
 
