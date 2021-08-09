@@ -54,7 +54,6 @@ def ta_adaptor(indicator_mixin: Type[IndicatorMixin], function_name: str, **kwar
             parameter_strings.update({name_of_parameter: default_value_of_parameter})
 
     # We override with any supplied arguments.
-    parameter_strings.update(kwargs)
 
     def func(df: pd.DataFrame) -> pd.DataFrame:
         """Inner function to create a Pandas -> Pandas interface."""

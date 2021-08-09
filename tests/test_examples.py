@@ -29,7 +29,7 @@ from sklearn.pipeline import make_pipeline
 
 # Ta package dependencies
 from ta.momentum import AwesomeOscillatorIndicator
-from ta.trend import AroonIndicator
+from ta.trend import AroonIndicator, IchimokuIndicator, KSTIndicator
 
 # Internal imports
 from examples.my_first_infertrade_strategy import buy_on_small_rises
@@ -66,8 +66,22 @@ def test_run_aroon_indicator(test_market_data_4_years):
     df = get_signal(test_market_data_4_years)
     assert isinstance(df, pd.DataFrame)
 
-    adapted_aroon = ta_adaptor(AwesomeOscillatorIndicator, "awesome_oscillator")
+    params = {"window1": 5, "window2": 34}
+
+    adapted_aroon = ta_adaptor(AwesomeOscillatorIndicator, "awesome_oscillator", **params)
     get_signal = get_signal_calc(adapted_aroon)
+    df = get_signal(test_market_data_4_years)
+    assert isinstance(df, pd.DataFrame)
+
+    params = {"window1": 9, "window2": 26, "window3": 52}
+
+    ichimoku_a = ta_adaptor(IchimokuIndicator, "ichimoku_a", **params)
+    get_signal = get_signal_calc(ichimoku_a)
+    df = get_signal(test_market_data_4_years)
+    assert isinstance(df, pd.DataFrame)
+
+    kst = ta_adaptor(KSTIndicator, "kst")
+    get_signal = get_signal_calc(kst)
     df = get_signal(test_market_data_4_years)
     assert isinstance(df, pd.DataFrame)
 
@@ -130,7 +144,6 @@ def test_readme_example_two():
     position_transformer = scikit_allocation_factory(constant_allocation_size)
     df = position_transformer.fit_transform(simulated_market_data_4_years_gen())
     assert isinstance(df, pd.DataFrame)
-
 
 
 def test_readme_example_three():
