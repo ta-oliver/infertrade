@@ -93,7 +93,7 @@ def change_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
 def calculate_change_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
     """Calculates allocations for change relationship."""
     dataframe = df.copy()
-    dataframe[PandasEnum.SIGNAL.value] = dataframe["research"]
+    dataframe[PandasEnum.SIGNAL.value] = dataframe["research_1"]
     forecast_period = 100
     signal_lagged = operations.lag(
         np.reshape(dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values, (-1, 1)), shift=1
@@ -142,7 +142,7 @@ def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
 def calculate_combination_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
     """Calculates allocations for combination relationship."""
     dataframe = df.copy()
-    dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, "research"]
+    dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, "research_1"]
     forecast_period = 100
     signal_lagged = operations.lag(
         np.reshape(dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values, (-1, 1)), shift=1
@@ -214,7 +214,7 @@ def difference_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
 def calculate_difference_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
     """Calculates allocations for difference relationship."""
     dataframe = df.copy()
-    dataframe[PandasEnum.SIGNAL.value] = dataframe["research"]
+    dataframe[PandasEnum.SIGNAL.value] = dataframe["research_1"]
     forecast_period = 100
     signal_differenced = operations.research_over_price_minus_one(
         np.column_stack(
@@ -280,7 +280,7 @@ def level_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
 def calculate_level_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
     """Calculates allocations for level relationship."""
     dataframe = df.copy()
-    dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, "research"]
+    dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, "research_1"]
     forecast_period = 100
     signal_lagged = operations.lag(
         np.reshape(dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values, (-1, 1)), shift=1
@@ -349,7 +349,7 @@ def weighted_moving_averages(
 
     # Splits out the price/research df to individual pandas Series.
     price = dataframe[PandasEnum.MID.value]
-    research = dataframe["research"]
+    research = dataframe["research_1"]
 
     # Calculates the averages.
     avg_price = price.rolling(window=avg_price_length).mean()
@@ -376,7 +376,7 @@ def change_regression(
     change_coefficient: The coefficient for allocation size versus the prior day fractional change in the research.
     change_constant: The coefficient for the constant contribution.
     """
-    research = dataframe["research"]
+    research = dataframe["research_1"]
     position = (research / research.shift(1) - 1) * change_coefficient + change_constant
     dataframe[PandasEnum.ALLOCATION.value] = position
     return dataframe
@@ -393,7 +393,7 @@ def difference_regression(
     difference_coefficient: The coefficient for dependence on the log gap between the signal series and the price series.
     difference_constant: The coefficient for the constant contribution.
     """
-    research = dataframe["research"]
+    research = dataframe["research_1"]
     price = dataframe["price"]
     position = (research / price - 1) * difference_coefficient + difference_constant
     dataframe[PandasEnum.ALLOCATION.value] = position
@@ -411,7 +411,7 @@ def level_regression(
     level_constant: The coefficient for the constant contribution.
     """
 
-    research = dataframe["research"]
+    research = dataframe["research_1"]
     position = research * level_coefficient + level_constant
     dataframe[PandasEnum.ALLOCATION.value] = position
     return dataframe
@@ -433,7 +433,7 @@ def level_and_change_regression(
     level_and_change_constant: The coefficient for the constant contribution.
     """
 
-    research = dataframe["research"]
+    research = dataframe["research_1"]
     position = (
         research * level_coefficient
         + (research / research.shift(1) - 1) * change_coefficient
@@ -850,7 +850,7 @@ infertrade_export_allocations = {
             "avg_price_length": 2,
             "avg_research_length": 2,
         },
-        "series": ["research"],
+        "series": ["research_1"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
@@ -858,7 +858,7 @@ infertrade_export_allocations = {
     "change_regression": {
         "function": change_regression,
         "parameters": {"change_coefficient": 0.1, "change_constant": 0.1},
-        "series": ["research"],
+        "series": ["research_1"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
@@ -866,7 +866,7 @@ infertrade_export_allocations = {
     "difference_regression": {
         "function": difference_regression,
         "parameters": {"difference_coefficient": 0.1, "difference_constant": 0.1},
-        "series": ["price", "research"],
+        "series": ["price", "research_1"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
@@ -874,7 +874,7 @@ infertrade_export_allocations = {
     "level_regression": {
         "function": level_regression,
         "parameters": {"level_coefficient": 0.1, "level_constant": 0.1},
-        "series": ["research"],
+        "series": ["research_1"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
@@ -882,7 +882,7 @@ infertrade_export_allocations = {
     "level_and_change_regression": {
         "function": level_and_change_regression,
         "parameters": {"level_coefficient": 0.1, "change_coefficient": 0.1, "level_and_change_constant": 0.1},
-        "series": ["research"],
+        "series": ["research_1"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
@@ -895,7 +895,7 @@ infertrade_export_allocations = {
             "short_term_moving_avg_length": 50,
             "long_term_moving_avg_length": 200,
         },
-        "series": ["research"],
+        "series": ["research_1"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },

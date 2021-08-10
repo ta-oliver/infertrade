@@ -42,7 +42,7 @@ def simulated_market_data_4_years_gen():
             "high": high,
             "low": low,
             "last": last,
-            "research": research,
+            "research_1": research,
             "turnover": turnover,
             "volume": volume,
         }
