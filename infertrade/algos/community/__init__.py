@@ -20,7 +20,7 @@ from copy import deepcopy
 from infertrade.PandasEnum import PandasEnum
 from infertrade.algos.community.allocations import infertrade_export_allocations
 from infertrade.algos.community.signals import normalised_close, scikit_signal_factory, infertrade_export_signals
-from infertrade.algos.community.ta_regressions import ta_export_regression_allocations
+from infertrade.algos.community.ta_regressions import ta_export_regression_allocations, scikit_allocation_factory
 
 joint_set = deepcopy(infertrade_export_allocations)
 joint_set.update(ta_export_regression_allocations)
