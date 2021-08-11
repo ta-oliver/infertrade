@@ -103,19 +103,19 @@ def test_calculate_portfolio_performance_python():
         df_with_positions=my_dataframe_with_allocations,
         minimum_allocation_change_to_adjust=np.inf
     )
-    assert (returned_df, pd.DataFrame)
+    assert isinstance(returned_df, pd.DataFrame)
 
     returned_df = infertrade.utilities.performance.calculate_portfolio_performance_python(
         df_with_positions=my_dataframe_with_allocations
     )
-    assert (returned_df, pd.DataFrame)
+    assert isinstance(returned_df, pd.DataFrame)
 
     my_dataframe_with_allocations[PandasEnum.MID.value] = [-0.1 for i in range(
         0, len(my_dataframe_with_allocations['price']))]
     returned_df = infertrade.utilities.performance.calculate_portfolio_performance_python(
         df_with_positions=my_dataframe_with_allocations
     )
-    assert (returned_df, pd.DataFrame)
+    assert isinstance(returned_df, pd.DataFrame)
 
 
 def test_get_percentage_bid_offer():
@@ -129,7 +129,7 @@ def test_get_percentage_bid_offer():
         df_with_positions=my_dataframe_with_allocations,
         day=0,
         daily_spread_percent_override=1.0)
-    assert (returned_float, float)
+    assert isinstance(returned_float, float)
 
     try:
         returned_float = infertrade.utilities.performance._get_percentage_bid_offer(
@@ -168,11 +168,11 @@ def test_check_if_should_skip_return_calculation():
         show_absolute_bankruptcies=False,
     )
     returned_tuple_value = returned_tuple[0]
-    assert (returned_tuple_value, bool)
+    assert isinstance(returned_tuple_value, bool)
     returned_tuple_value = returned_tuple[1]
-    assert (returned_tuple_value, str or float)
+    assert isinstance(returned_tuple_value, str or float)
     returned_tuple_value = returned_tuple[2]
-    assert (returned_tuple_value, bool)
+    assert isinstance(returned_tuple_value, bool)
 
     returned_tuple = infertrade.utilities.performance.check_if_should_skip_return_calculation(
         previous_portfolio_return=1,
@@ -182,11 +182,11 @@ def test_check_if_should_skip_return_calculation():
         show_absolute_bankruptcies=False,
     )
     returned_tuple_value = returned_tuple[0]
-    assert (returned_tuple_value, bool)
+    assert isinstance(returned_tuple_value, bool)
     returned_tuple_value = returned_tuple[1]
-    assert (returned_tuple_value, str or float)
+    assert isinstance(returned_tuple_value, str or float)
     returned_tuple_value = returned_tuple[2]
-    assert (returned_tuple_value, bool)
+    assert isinstance(returned_tuple_value, bool)
 
     returned_tuple = infertrade.utilities.performance.check_if_should_skip_return_calculation(
         previous_portfolio_return=1,
@@ -197,18 +197,18 @@ def test_check_if_should_skip_return_calculation():
         bankrupt=True
     )
     returned_tuple_value = returned_tuple[0]
-    assert (returned_tuple_value, bool)
+    assert isinstance(returned_tuple_value, bool)
     returned_tuple_value = returned_tuple[1]
-    assert (returned_tuple_value, str or float)
+    assert isinstance(returned_tuple_value, str or float)
     returned_tuple_value = returned_tuple[2]
-    assert (returned_tuple_value, bool)
+    assert isinstance(returned_tuple_value, bool)
 
 def test_cumulative_return_if_bankrupt():
     """Tests if the returned value is the correct data type"""
     returned_float = infertrade.utilities.performance._cumulative_return_if_bankrupt(prior_portfolio_return=1,
                                                                                      show_absolute_bankruptcies=True
                                                                                      )
-    assert (returned_float, float)
+    assert isinstance(returned_float, float)
 
 
 def test_portfolio_index():
@@ -238,11 +238,11 @@ def test_portfolio_index():
                                                                       last_cash_after_trade_usd=0.5,
                                                                       show_working=True,
                                                                       )
-    assert (returned_tuple[0], float)
+    assert isinstance(returned_tuple[0], float)
     assert not np.isnan(returned_tuple[0])
-    assert (returned_tuple[1], float)
+    assert isinstance(returned_tuple[1], float)
     assert not np.isnan(returned_tuple[1])
-    assert (returned_tuple[2], float)
+    assert isinstance(returned_tuple[2], float)
     assert not np.isnan(returned_tuple[2])
 
     returned_tuple = infertrade.utilities.performance.portfolio_index(position_on_last_good_price=0.5,
@@ -255,11 +255,11 @@ def test_portfolio_index():
                                                                       last_cash_after_trade_usd=0.5,
                                                                       show_working=False,
                                                                       )
-    assert (returned_tuple[0], float)
+    assert isinstance(returned_tuple[0], float)
     assert not np.isnan(returned_tuple[0])
-    assert (returned_tuple[1], float)
+    assert isinstance(returned_tuple[1], float)
     assert not np.isnan(returned_tuple[1])
-    assert (returned_tuple[2], float)
+    assert isinstance(returned_tuple[2], float)
     assert not np.isnan(returned_tuple[2])
 
     returned_tuple = infertrade.utilities.performance.portfolio_index(position_on_last_good_price=np.inf,
@@ -272,11 +272,11 @@ def test_portfolio_index():
                                                                       last_cash_after_trade_usd=0.5,
                                                                       show_working=False,
                                                                       )
-    assert (returned_tuple[0], float)
+    assert isinstance(returned_tuple[0], float)
     assert not np.isnan(returned_tuple[0])
-    assert (returned_tuple[1], float)
+    assert isinstance(returned_tuple[1], float)
     assert not np.isnan(returned_tuple[1])
-    assert (returned_tuple[2], float)
+    assert isinstance(returned_tuple[2], float)
     assert not np.isnan(returned_tuple[2])
 
     returned_tuple = infertrade.utilities.performance.portfolio_index(position_on_last_good_price=-0.5,
@@ -289,11 +289,11 @@ def test_portfolio_index():
                                                                       last_cash_after_trade_usd=-0.5,
                                                                       show_working=False,
                                                                       )
-    assert (returned_tuple[0], float)
+    assert isinstance(returned_tuple[0], float)
     assert not np.isnan(returned_tuple[0])
-    assert (returned_tuple[1], float)
+    assert isinstance(returned_tuple[1], float)
     assert not np.isnan(returned_tuple[1])
-    assert (returned_tuple[2], float)
+    assert isinstance(returned_tuple[2], float)
     assert not np.isnan(returned_tuple[2])
 
 
@@ -305,10 +305,10 @@ def test_rounded_allocation_target():
     returned_float = infertrade.utilities.performance.rounded_allocation_target(
         unconstrained_target_position=np.NAN,
         minimum_allocation_change_to_adjust=np.NAN)
-    assert (returned_float, np.NAN)
+    assert isinstance(returned_float, np.NAN)
 
     returned_float = infertrade.utilities.performance.rounded_allocation_target(
         unconstrained_target_position=1.0,
         minimum_allocation_change_to_adjust=1.0)
-    assert (returned_float, float)
+    assert isinstance(returned_float, float)
     assert (returned_float == 1)
