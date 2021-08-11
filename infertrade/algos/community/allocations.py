@@ -37,9 +37,7 @@ def buy_and_hold(dataframe: pd.DataFrame) -> pd.DataFrame:
     return dataframe
 
 
-def chande_kroll_crossover_strategy(
-    dataframe: pd.DataFrame,
-) -> pd.DataFrame:
+def chande_kroll_crossover_strategy(dataframe: pd.DataFrame,) -> pd.DataFrame:
     """
     This simple all-or-nothing rule:
     (1) allocates 100% of the portofolio to a long position on the asset when the price of the asset is above both the
@@ -760,6 +758,7 @@ def aroon_strategy(df: pd.DataFrame, window: int = 25, max_investment: float = 0
 
     return df
 
+
 def ROC_strategy(df: pd.DataFrame, window: int = 12, max_investment: float = 0.1) -> pd.DataFrame:
     """
     A rising ROC above zero typically confirms an uptrend while a falling ROC below zero indicates a downtrend.
@@ -773,6 +772,7 @@ def ROC_strategy(df: pd.DataFrame, window: int = 12, max_investment: float = 0.1
     df.loc[downtrend, PandasEnum.ALLOCATION.value] = -max_investment
 
     return df
+
 
 def ADX_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1) -> pd.DataFrame:
     """
@@ -800,8 +800,23 @@ def ADX_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1
 
         else:
             df.loc[index, PandasEnum.ALLOCATION.value] = 0
-            
+
         index += 1
+
+    return df
+
+
+def VORTEX_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1) -> pd.DataFrame:
+    """
+    A rising ROC above zero typically confirms an uptrend while a falling ROC below zero indicates a downtrend.
+    """
+    df_with_signals = signals.vortex_indicator(df, window)
+
+    uptrend = df_with_signals["VORTEX_POS"] >= df_with_signals["VORTEX_NEG"]
+    downtrend = df_with_signals["VORTEX_POS"] < df_with_signals["VORTEX_NEG"]
+
+    df.loc[uptrend, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[downtrend, PandasEnum.ALLOCATION.value] = -max_investment
 
     return df
 

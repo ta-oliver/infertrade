@@ -22,7 +22,22 @@ import pandas as pd
 import numpy as np
 from pandas.core.frame import DataFrame
 from sklearn.preprocessing import FunctionTransformer
-from ta.trend import adx, adx_neg, adx_pos, macd_signal, sma_indicator, wma_indicator, ema_indicator, dpo, trix, stc, aroon_up, aroon_down
+from ta.trend import (
+    adx,
+    adx_neg,
+    adx_pos,
+    macd_signal,
+    sma_indicator,
+    wma_indicator,
+    ema_indicator,
+    dpo,
+    trix,
+    stc,
+    aroon_up,
+    aroon_down,
+    vortex_indicator_neg,
+    vortex_indicator_pos,
+)
 from ta.momentum import ppo_signal, rsi, stochrsi, pvo_signal, tsi, kama, roc
 from ta.volatility import (
     AverageTrueRange,
@@ -30,7 +45,7 @@ from ta.volatility import (
     bollinger_hband,
     bollinger_lband,
     bollinger_mavg,
-    ulcer_index as ulcerindex
+    ulcer_index as ulcerindex,
 )
 from infertrade.algos.external.ta import ta_adaptor
 from infertrade.PandasEnum import PandasEnum
@@ -300,6 +315,20 @@ def average_directional_movement_index(df: pd.DataFrame, window: int = 14) -> pd
     df_with_signal["ADX_POS"] = adx_pos(df["high"], df["low"], df["close"], window, fillna=True)
     df_with_signal["ADX_NEG"] = adx_neg(df["high"], df["low"], df["close"], window, fillna=True)
     df_with_signal["ADX"] = adx(df["high"], df["low"], df["close"], window, fillna=True)
+    return df_with_signal
+
+
+def vortex_indicator(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
+    """
+    A vortex indicator is used to detect trend reversals and confirm current trends. 
+    It is composed of two lines:
+        1. an uptrend line (VI+) and 
+        2. a downtrend line (VI-)
+    """
+    df_with_signal = df.copy()
+    df_with_signal["VORTEX_POS"] = vortex_indicator_pos(df["high"], df["low"], df["close"], window, fillna=True)
+    df_with_signal["VORTEX_NEG"] = vortex_indicator_neg(df["high"], df["low"], df["close"], window, fillna=True)
+
     return df_with_signal
 
 
