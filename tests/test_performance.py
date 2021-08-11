@@ -170,7 +170,7 @@ def test_check_if_should_skip_return_calculation():
     returned_tuple_value = returned_tuple[0]
     assert isinstance(returned_tuple_value, bool)
     returned_tuple_value = returned_tuple[1]
-    assert isinstance(returned_tuple_value, str or float)
+    assert isinstance(returned_tuple_value, str) or isinstance(returned_tuple_value, float)
     returned_tuple_value = returned_tuple[2]
     assert isinstance(returned_tuple_value, bool)
 
@@ -184,7 +184,7 @@ def test_check_if_should_skip_return_calculation():
     returned_tuple_value = returned_tuple[0]
     assert isinstance(returned_tuple_value, bool)
     returned_tuple_value = returned_tuple[1]
-    assert isinstance(returned_tuple_value, str or float)
+    assert isinstance(returned_tuple_value, str) or isinstance(returned_tuple_value, float)
     returned_tuple_value = returned_tuple[2]
     assert isinstance(returned_tuple_value, bool)
 
@@ -199,13 +199,13 @@ def test_check_if_should_skip_return_calculation():
     returned_tuple_value = returned_tuple[0]
     assert isinstance(returned_tuple_value, bool)
     returned_tuple_value = returned_tuple[1]
-    assert isinstance(returned_tuple_value, str or float)
+    assert isinstance(returned_tuple_value, str) or isinstance(returned_tuple_value, float)
     returned_tuple_value = returned_tuple[2]
     assert isinstance(returned_tuple_value, bool)
 
 def test_cumulative_return_if_bankrupt():
     """Tests if the returned value is the correct data type"""
-    returned_float = infertrade.utilities.performance._cumulative_return_if_bankrupt(prior_portfolio_return=1,
+    returned_float = infertrade.utilities.performance._cumulative_return_if_bankrupt(prior_portfolio_return=1.0,
                                                                                      show_absolute_bankruptcies=True
                                                                                      )
     assert isinstance(returned_float, float)
@@ -305,7 +305,7 @@ def test_rounded_allocation_target():
     returned_float = infertrade.utilities.performance.rounded_allocation_target(
         unconstrained_target_position=np.NAN,
         minimum_allocation_change_to_adjust=np.NAN)
-    assert isinstance(returned_float, np.NAN)
+    assert np.isnan(returned_float)
 
     returned_float = infertrade.utilities.performance.rounded_allocation_target(
         unconstrained_target_position=1.0,
