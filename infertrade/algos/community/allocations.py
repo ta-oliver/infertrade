@@ -806,7 +806,7 @@ def ADX_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1
     return df
 
 
-def VORTEX_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1) -> pd.DataFrame:
+def vortex_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1) -> pd.DataFrame:
     """
     A rising ROC above zero typically confirms an uptrend while a falling ROC below zero indicates a downtrend.
     """
