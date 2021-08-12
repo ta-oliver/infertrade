@@ -1095,4 +1095,12 @@ infertrade_export_allocations = {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L777"
         },
     },
+    "vortex_strategy": {
+        "function": vortex_strategy,
+        "parameters": {"window": 14, "max_investment": 0.1},
+        "series": ["close", "high", "low"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L777"
+        },
+    },
 }

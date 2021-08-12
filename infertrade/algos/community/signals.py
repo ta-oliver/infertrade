@@ -496,7 +496,15 @@ infertrade_export_signals = {
         "parameters": {"window": 12},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L279"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L285"
+        },
+    },
+    "rate_of_change": {
+        "function": rate_of_change,
+        "parameters": {"window": 12},
+        "series": ["close", "high", "low"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L297"
         },
     },
     "average_directional_movement_index": {
@@ -504,7 +512,15 @@ infertrade_export_signals = {
         "parameters": {"window": 14},
         "series": ["close", "high", "low"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L291"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L306"
+        },
+    },
+    "vortex_indicator": {
+        "function": vortex_indicator,
+        "parameters": {"window": 14},
+        "series": ["close", "high", "low"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L321"
         },
     },
 }
