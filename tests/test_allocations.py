@@ -41,26 +41,26 @@ def test_under_minimum_length_to_calculate():
     df_no_mid = pd.DataFrame(data=dfr)
 
     df_test = allocations.change_relationship(dataframe = df_no_mid)
-    assert(df_test, pd.DataFrame)
+    assert isinstance(df_test, pd.DataFrame)
     for _ in df_test[PandasEnum.ALLOCATION.value]:
         if not _ == 0.0:
             raise ValueError("Allocation value not returned correctly")
 
     df_test = allocations.combination_relationship(dataframe = df_no_mid)
-    assert(df_test, pd.DataFrame)
+    assert isinstance(df_test, pd.DataFrame)
     for _ in df_test[PandasEnum.ALLOCATION.value]:
         if not _ == 0.0:
             raise ValueError("Allocation value not returned correctly")
 
 
     df_test = allocations.difference_relationship(dataframe = df_no_mid)
-    assert (df_test, pd.DataFrame)
+    assert isinstance(df_test, pd.DataFrame)
     for _ in df_test[PandasEnum.ALLOCATION.value]:
         if not _ == 0.0:
             raise ValueError("Allocation value not returned correctly")
 
     df_test = allocations.level_relationship(dataframe = df_no_mid)
-    assert (df_test, pd.DataFrame)
+    assert isinstance(df_test, pd.DataFrame)
     for _ in df_test[PandasEnum.ALLOCATION.value]:
         if not _ == 0.0:
             raise ValueError("Allocation value not returned correctly")

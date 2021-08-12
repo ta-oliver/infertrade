@@ -27,13 +27,13 @@ def test_add_package():
     """Test checks functionality of add_package function and tests it to see if the correct label was returned"""
     dictionary = {}
     returned_dict = add_package(dictionary=dictionary, string_label="label")
-    assert (returned_dict, dict)
+    assert isinstance(returned_dict, dict)
     if returned_dict:
         raise ValueError("Returned dictionary should be empty")
 
     dictionary = {"key": {"package": "preset"}}
     returned_dict = add_package(dictionary=dictionary, string_label="label")
-    assert (returned_dict, dict)
+    assert isinstance(returned_dict, dict)
     if returned_dict:
         for ii_key, package_key in returned_dict.items():
             for nested_key in package_key:
