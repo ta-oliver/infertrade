@@ -1,0 +1,64 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Kaufman's Adaptive Moving Average} %Argument is name of rule
+\tblofcontents
+
+\ruledescription{The Kaufman's Adaptive Moving Average (KAMA), Developed by Perry Kaufman in 1998 is a moving average designed to account for market noise or volatility. The powerful trend-following indicator is based on the Exponential Moving Average (EMA) It closely follows price when noise is low and smooths out the noise when price fluctuates. A bullish crossover is indicated by the fast moving average crossing above the slow moving average. And a bearish crossover is indicated by the fast moving average crossing below the slow moving average.
+}
+
+\howtotrade
+{The strategy is to identify Bullish and Bearish Crossovers. \\
+Bullish Crossover:When the fast moving average cross above the slow moving average. \\
+Bearish Crossover:When the fast moving average cross below the slow moving average
+}
+
+\ruleparameters %You can include however many arguments (in groups of 4) as you want!
+{Slow Look Back Length}{30}{Look back length used to compute slow MA.}{$\lookbacklength_{s}$}
+{Fast Look Back Length}{2}{Look back length used to compute fast MA.}{$\lookbacklength_{f}$}
+{Number of periods}{10}{Number of periods used to compute $\sigma$ and $\Delta_{\currenttime}$.}{$n$}
+\stoptable %must be included or Tex engine runs infinitely
+
+\newpage
+\section{Equation}
+Below are the equations which govern how this specific trading rule calculates a trading position.
+
+\begin{equation}
+    \Delta_{\currenttime} = C_{\currenttime} - C_{\currenttime - n}
+\end{equation}
+\begin{equation}
+    \sigma = \sum_{\currenttime=1}^{n} |{C_{\currenttime} - C_{\currenttime-1}}|
+\end{equation}
+\begin{equation}
+    ER_{\currenttime} = \frac{\Delta_{\currenttime}}{\sigma}
+\end{equation}
+\begin{equation}
+    SC_{\currenttime} = \Big[ER_{\currenttime} \times \Big(\frac{2}{\lookbacklength_{f} + 1}\Big) -
+    \Big(\frac{2}{\lookbacklength_{s} + 1}\Big) + \Big(\frac{2}{\lookbacklength_{s} + 1}\Big)\Big]^2
+\end{equation}
+\begin{equation}
+    KAMA_{\currenttime} = KAMA_{\currenttime-1} + SC_{\currenttime} \times (P_{\currenttime} - KAMA_{\currenttime-1})
+\end{equation}
+
+\\ % creates some space after equation
+where:
+
+$C_{t}$: is the close price of at time \currenttime.
+
+$\Delta_{\currenttime}$: is the change in close price at time \currenttime.
+
+$\sigma$: is the sum of the absolute value of last $n$ changes in close price.
+
+$ER_{t}$: is the efficiency ratio at time \currenttime.
+
+$SC_{\currenttime}$: is the smoothing constant at time \currenttime.
+
+$KAMA_{\currenttime}$: is the Kaufman's Adaptive Moving Average at time \currenttime.
+
+\keyterms
+\furtherlinks %The footer
+\end{document}
