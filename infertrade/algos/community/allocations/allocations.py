@@ -22,19 +22,9 @@ import numpy as np
 import pandas as pd
 from infertrade.PandasEnum import PandasEnum
 import infertrade.utilities.operations as operations
-import infertrade.algos.community.signals as signals
+from .signals import trend, volatility, momentum
 
 
-def fifty_fifty(dataframe) -> pd.DataFrame:
-    """Allocates 50% of strategy budget to asset, 50% to cash."""
-    dataframe["allocation"] = 0.5
-    return dataframe
-
-
-def buy_and_hold(dataframe: pd.DataFrame) -> pd.DataFrame:
-    """Allocates 100% of strategy budget to asset, holding to end of period (or security bankruptcy)."""
-    dataframe[PandasEnum.ALLOCATION.value] = 1.0
-    return dataframe
 
 
 def chande_kroll_crossover_strategy(dataframe: pd.DataFrame,) -> pd.DataFrame:
@@ -48,7 +38,7 @@ def chande_kroll_crossover_strategy(dataframe: pd.DataFrame,) -> pd.DataFrame:
     """
     # Calculate the Chande Kroll lines, which will be added to the DataFrame as columns named "chande_kroll_long" and
     # "chande_kroll_short".
-    dataframe = signals.chande_kroll(dataframe)
+    dataframe = volatility.chande_kroll(dataframe)
 
     # Allocate positions according to the Chande Kroll lines
     is_price_above_lines = (dataframe["price"] > dataframe["chande_kroll_long"]) & (
@@ -67,178 +57,7 @@ def chande_kroll_crossover_strategy(dataframe: pd.DataFrame,) -> pd.DataFrame:
     return dataframe
 
 
-def change_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
-    """
-    Calculates a change relationship, which compares the asset's future price change to the last change in the signal series.
 
-    Notes:
-    - Does not fill NaNs in input, so full data needs to be supplied.
-    - Error estimation uses same window as used for calibrating regression coefficients
-    """
-    df = dataframe.copy()
-    regression_period = 120
-    minimum_length_to_calculate = regression_period + 1
-
-    if len(df[PandasEnum.MID.value]) < minimum_length_to_calculate:
-        df[PandasEnum.ALLOCATION.value] = 0.0
-        return df
-
-    df = calculate_change_relationship(df, regression_period)
-
-    return df
-
-
-def calculate_change_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
-    """Calculates allocations for change relationship."""
-    dataframe = df.copy()
-    dataframe[PandasEnum.SIGNAL.value] = dataframe["research"]
-    forecast_period = 100
-    signal_lagged = operations.lag(
-        np.reshape(dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values, (-1, 1)), shift=1
-    )
-    signal_lagged_pct_change = operations.pct_chg(signal_lagged)
-    signal_lagged_pct_change[0] = [0.0]
-    signal_lagged_pct_change[1] = [0.0]
-    last_feature_row = signal_lagged_pct_change[-1:]
-    signal_lagged_pct_change = signal_lagged_pct_change[:-1]
-    price_pct_chg = operations.pct_chg(dataframe[PandasEnum.MID.value])
-    price_pct_chg[0] = [0.0]
-
-    dataframe = operations.calculate_regression_with_kelly_optimum(
-        dataframe,
-        feature_matrix=signal_lagged_pct_change,
-        last_feature_row=last_feature_row,
-        target_array=price_pct_chg,
-        regression_period=regression_period,
-        forecast_period=forecast_period,
-        kelly_fraction=kelly_fraction,
-    )
-    return dataframe
-
-
-def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
-    """
-    Calculates a combination relationship, which compares the asset's future price change to the multivariate regression of the level of the signal, the last change in the signal and the difference between the signal and the price.
-
-    Notes:
-    - Does not fill NaNs in input, so full data needs to be supplied.
-    - Error estimation uses same window as used for calibrating regression coefficients
-    """
-
-    df = dataframe.copy()
-    regression_period = 120
-    minimum_length_to_calculate = regression_period + 1
-    if len(df[PandasEnum.MID.value]) < minimum_length_to_calculate:
-        df[PandasEnum.ALLOCATION.value] = 0.0
-        return df
-
-    df = calculate_combination_relationship(df, regression_period)
-
-    return df
-
-
-def calculate_combination_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
-    """Calculates allocations for combination relationship."""
-    dataframe = df.copy()
-    dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, "research"]
-    forecast_period = 100
-    signal_lagged = operations.lag(
-        np.reshape(dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values, (-1, 1)), shift=1
-    )
-    signal_lagged[0] = [0.0]
-    signal_lagged_pct_change = operations.pct_chg(signal_lagged)
-    signal_lagged_pct_change[0] = [0.0]
-    signal_lagged_pct_change[1] = [0.0]
-    signal_differenced = operations.research_over_price_minus_one(
-        np.column_stack(
-            (
-                dataframe[PandasEnum.MID.value].append(pd.Series([0])).values,
-                dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values,
-            )
-        ),
-        shift=1,
-    )
-    signal_differenced[0] = [0.0]
-    intermediate_matrix = np.column_stack((signal_lagged, signal_lagged_pct_change, signal_differenced))
-    last_feature_row = intermediate_matrix[-1:]
-    intermediate_matrix = intermediate_matrix[:-1]
-    price_pct_chg = operations.pct_chg(dataframe[PandasEnum.MID.value])
-    price_pct_chg[0] = [0.0]
-
-    dataframe = operations.calculate_regression_with_kelly_optimum(
-        dataframe,
-        feature_matrix=intermediate_matrix,
-        last_feature_row=last_feature_row,
-        target_array=price_pct_chg,
-        regression_period=regression_period,
-        forecast_period=forecast_period,
-        kelly_fraction=kelly_fraction,
-    )
-    return dataframe
-
-
-def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: float = 1.0) -> pd.DataFrame:
-    """
-    Returns a constant allocation, controlled by the fixed_allocation_size parameter.
-
-    parameters:
-    fixed_allocation_size: determines allocation size.
-    """
-    dataframe[PandasEnum.ALLOCATION.value] = fixed_allocation_size
-    return dataframe
-
-
-def difference_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
-    """
-    Calculates a difference relationship, which compares the asset's future price change to the last difference between the signal series and asset price.
-
-    Notes:
-    - Does not fill NaNs in input, so full data needs to be supplied.
-    - Error estimation uses same window as used for calibrating regression coefficients
-    """
-
-    df = dataframe.copy()
-    regression_period = 120
-    minimum_length_to_calculate = regression_period + 1
-    if len(df[PandasEnum.MID.value]) < minimum_length_to_calculate:
-        df[PandasEnum.ALLOCATION.value] = 0.0
-        return df
-
-    df = calculate_difference_relationship(df, regression_period)
-
-    return df
-
-
-def calculate_difference_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
-    """Calculates allocations for difference relationship."""
-    dataframe = df.copy()
-    dataframe[PandasEnum.SIGNAL.value] = dataframe["research"]
-    forecast_period = 100
-    signal_differenced = operations.research_over_price_minus_one(
-        np.column_stack(
-            (
-                dataframe[PandasEnum.MID.value].append(pd.Series([0])).values,
-                dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values,
-            )
-        ),
-        shift=1,
-    )
-    signal_differenced[0] = [0.0]
-    last_feature_row = signal_differenced[-1:]
-    signal_differenced = signal_differenced[:-1]
-    price_pct_chg = operations.pct_chg(dataframe[PandasEnum.MID.value])
-    price_pct_chg[0] = [0.0]
-
-    dataframe = operations.calculate_regression_with_kelly_optimum(
-        dataframe,
-        feature_matrix=signal_differenced,
-        last_feature_row=last_feature_row,
-        target_array=price_pct_chg,
-        regression_period=regression_period,
-        forecast_period=forecast_period,
-        kelly_fraction=kelly_fraction,
-    )
-    return dataframe
 
 
 def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: float = 0.0) -> pd.DataFrame:
@@ -478,7 +297,7 @@ def SMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1)
     """
     Simple simple moving average strategy which buys when price is above signal and sells when price is below signal
     """
-    SMA = signals.simple_moving_average(df, window=window)["signal"]
+    SMA = trend.simple_moving_average(df, window=window)["signal"]
 
     price_above_signal = df["close"] > SMA
     price_below_signal = df["close"] <= SMA
@@ -493,7 +312,7 @@ def WMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1)
     """
     Weighted moving average strategy which buys when price is above signal and sells when price is below signal
     """
-    WMA = signals.weighted_moving_average(df, window=window)["signal"]
+    WMA = trend.weighted_moving_average(df, window=window)["signal"]
 
     price_above_signal = df["close"] > WMA
     price_below_signal = df["close"] <= WMA
@@ -509,7 +328,7 @@ def MACD_strategy(
     """
     Moving average convergence divergence strategy which buys when MACD signal is above 0 and sells when MACD signal is below zero
     """
-    MACD_signal = signals.moving_average_convergence_divergence(df, window_slow, window_fast, window_signal)["signal"]
+    MACD_signal = trend.moving_average_convergence_divergence(df, window_slow, window_fast, window_signal)["signal"]
 
     signal_above_zero_line = MACD_signal > 0
     signal_below_zero_line = MACD_signal <= 0
@@ -524,7 +343,7 @@ def RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1
     Relative Strength Index
     """
     # https://www.investopedia.com/terms/r/rsi.asp
-    RSI = signals.relative_strength_index(df, window=window)["signal"]
+    RSI = momentum.relative_strength_index(df, window=window)["signal"]
 
     over_valued = RSI >= 70
     under_valued = RSI <= 30
@@ -542,7 +361,7 @@ def stochastic_RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: 
     """
     # https://www.investopedia.com/terms/s/stochrsi.asp
 
-    stochRSI = signals.stochastic_relative_strength_index(df, window=window)["signal"]
+    stochRSI = momentum.stochastic_relative_strength_index(df, window=window)["signal"]
 
     over_valued = stochRSI >= 0.8
     under_valued = stochRSI <= 0.2
@@ -559,7 +378,7 @@ def EMA_strategy(df: pd.DataFrame, window: int = 50, max_investment: float = 0.1
     """
     Exponential moving average strategy which buys when price is above signal and sells when price is below signal
     """
-    EMA = signals.exponentially_weighted_moving_average(df, window=window)["signal"]
+    EMA = trend.exponentially_weighted_moving_average(df, window=window)["signal"]
 
     price_above_signal = df["close"] > EMA
     price_below_signal = df["close"] <= EMA
@@ -583,7 +402,7 @@ def bollinger_band_strategy(
     """
     short_position = False
     long_position = False
-    df_with_signal = signals.bollinger_band(df, window=window, window_dev=window_dev)
+    df_with_signal = volatility.bollinger_band(df, window=window, window_dev=window_dev)
     for index, row in df_with_signal.iterrows():
 
         # Check for short position
@@ -619,7 +438,7 @@ def DPO_strategy(df: pd.DataFrame, window: int = 20, max_investment: float = 0.1
     """
     Exponential moving average strategy which buys when price is above signal and sells when price is below signal
     """
-    DPO = signals.detrended_price_oscillator(df, window=window)["signal"]
+    DPO = trend.detrended_price_oscillator(df, window=window)["signal"]
 
     above_zero = DPO > 0
     below_zero = DPO <= 0
@@ -635,7 +454,7 @@ def PPO_strategy(
     """
     Percentage Price Oscillator strategy which buys when signal is above zero and sells when signal is below zero
     """
-    PPO = signals.percentage_price_oscillator(df, window_slow, window_fast, window_signal)["signal"]
+    PPO = momentum.percentage_price_oscillator(df, window_slow, window_fast, window_signal)["signal"]
 
     above_zero = PPO > 0
     below_zero = PPO <= 0
@@ -651,7 +470,7 @@ def PVO_strategy(
     """
     Percentage volume Oscillator strategy which buys when signal is above zero and sells when signal is below zero
     """
-    PVO = signals.percentage_volume_oscillator(df, window_slow, window_fast, window_signal)["signal"]
+    PVO = momentum.percentage_volume_oscillator(df, window_slow, window_fast, window_signal)["signal"]
 
     above_zero = PVO > 0
     below_zero = PVO <= 0
@@ -665,7 +484,7 @@ def TRIX_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.
     """
     This is Triple Exponential Average (TRIX) strategy which buys when signal is above zero and sells when signal is below zero
     """
-    TRIX = signals.triple_exponential_average(df, window)["signal"]
+    TRIX = trend.triple_exponential_average(df, window)["signal"]
 
     above_zero = TRIX > 0
     below_zero = TRIX <= 0
@@ -682,7 +501,7 @@ def TSI_strategy(
     This is True Strength Index (TSI) strategy which buys when TSI is greater than signal and sells when TSI is below signal
     Signal is EMA of TSI
     """
-    df_with_signals = signals.true_strength_index(df, window_slow, window_fast, window_signal)
+    df_with_signals = momentum.true_strength_index(df, window_slow, window_fast, window_signal)
 
     above_signal = df_with_signals["TSI"] > df_with_signals["signal"]
     below_signal = df_with_signals["TSI"] <= df_with_signals["signal"]
@@ -706,7 +525,7 @@ def STC_strategy(
         1. oversold when STC < 25
         2. overbought when STC > 75
     """
-    STC = signals.schaff_trend_cycle(df, window_slow, window_fast, cycle, smooth1, smooth2)["signal"]
+    STC = trend.schaff_trend_cycle(df, window_slow, window_fast, cycle, smooth1, smooth2)["signal"]
 
     oversold = STC <= 25
     overbought = STC >= 75
@@ -727,7 +546,7 @@ def KAMA_strategy(
         1. downtrend when signal < price
         2. uptrend when signal > price
     """
-    df_with_signals = signals.KAMA(df, window, pow1, pow2)
+    df_with_signals = volatility.KAMA(df, window, pow1, pow2)
 
     downtrend = df_with_signals["signal"] <= df_with_signals["close"]
     uptrend = df_with_signals["signal"] > df_with_signals["close"]
@@ -748,7 +567,7 @@ def aroon_strategy(df: pd.DataFrame, window: int = 25, max_investment: float = 0
         1. Bearish: when aroon_up < aroon_down
         2. Bullish: when aroon_up >= aroon_down
     """
-    df_with_signals = signals.aroon(df, window)
+    df_with_signals = trend.aroon(df, window)
 
     bullish = df_with_signals["aroon_up"] >= df_with_signals["aroon_down"]
     bearish = df_with_signals["aroon_down"] < df_with_signals["aroon_up"]
@@ -763,7 +582,7 @@ def ROC_strategy(df: pd.DataFrame, window: int = 12, max_investment: float = 0.1
     """
     A rising ROC above zero typically confirms an uptrend while a falling ROC below zero indicates a downtrend.
     """
-    df_with_signals = signals.rate_of_change(df, window)
+    df_with_signals = momentum.rate_of_change(df, window)
 
     uptrend = df_with_signals["signal"] >= 0
     downtrend = df_with_signals["signal"] < 0
@@ -783,7 +602,7 @@ def ADX_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1
 
     +DI and -DI measures the trend direction and ADX measures the strength of trend
     """
-    df_with_signals = signals.average_directional_movement_index(df, window)
+    df_with_signals = trend.average_directional_movement_index(df, window)
 
     PLUS_DI = df_with_signals["ADX_POS"]
     MINUS_DI = df_with_signals["ADX_NEG"]
@@ -810,7 +629,7 @@ def vortex_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 
     """
     A rising ROC above zero typically confirms an uptrend while a falling ROC below zero indicates a downtrend.
     """
-    df_with_signals = signals.vortex_indicator(df, window)
+    df_with_signals = trend.vortex_indicator(df, window)
 
     uptrend = df_with_signals["VORTEX_POS"] >= df_with_signals["VORTEX_NEG"]
     downtrend = df_with_signals["VORTEX_POS"] < df_with_signals["VORTEX_NEG"]
