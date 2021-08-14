@@ -17,8 +17,10 @@
 """
 Constant allocation functions
 """
+
 import pandas as pd
 from infertrade.PandasEnum import PandasEnum
+
 
 def fifty_fifty(dataframe) -> pd.DataFrame:
     """Allocates 50% of strategy budget to asset, 50% to cash."""
@@ -60,5 +62,4 @@ infertrade_export_constant_strategy = {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L37"
         },
     },
-
 }

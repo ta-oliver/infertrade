@@ -17,3 +17,17 @@
 """
 Allocations strategies algorithms are functions used to compute allocations - % of your portfolio to invest in a market or asset.
 """
+
+from copy import deepcopy
+from .constant_strategy import infertrade_export_constant_strategy
+from .volatility_strategy import infertrade_export_volatility_strategy
+from .trend_strategy import infertrade_export_trend_strategy
+from .momentum_strategy import infertrade_export_momentum_strategies
+from .regression_strategy import infertrade_export_regression_strategy
+
+strategy_dicts = [infertrade_export_constant_strategy, infertrade_export_trend_strategy, infertrade_export_volatility_strategy, infertrade_export_momentum_strategies, infertrade_export_regression_strategy]
+
+infertrade_export_allocations = {}
+for strategy_dict in strategy_dicts:
+    infertrade_export_allocations.update(strategy_dict)
+
