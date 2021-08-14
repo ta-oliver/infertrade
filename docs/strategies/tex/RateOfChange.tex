@@ -1,0 +1,37 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Rate of Change} %Argument is name of rule
+\tblofcontents
+
+\ruledescription{The Rate of Change indicator, is a technical indicator which is mostly used by traders to Identify the momentum of an asset. It measures the percentage change in price between the current price and the price a certain number of periods ago. The ROC indicator is plotted against zero, with the indicator moving upwards into positive territory if price changes are to the upside, and moving into negative territory if price changes are to the downside. An asset is considered bullish when the roc is above zero and considered bearish when the roc is below zero. It can also be used to identify divergences.}
+
+\howtotrade
+{The strategy is to identify asset's price cycles. \\
+Bullish Reversal: when ROC is above zero. \\
+Bearish Reversal: when ROC is below zero
+}
+
+\ruleparameters %You can include however many arguments (in groups of 4) as you want!
+{Number of periods}{1}{Number of periods to look back for previous price.}{$n$}
+\stoptable %must be included or Tex engine runs infinitely
+
+
+\section{Equation}
+Below are the equations which govern how this specific trading rule calculates a trading position.
+
+\begin{equation}
+    ROC = \frac{P_{\currenttime} -          P_{\currenttime-n}}{P_{\currenttime-n}} \times 100
+\end{equation}
+\\
+with:
+
+$P_{\currenttime}$: as price at time $\currenttime$.
+
+\keyterms
+\furtherlinks %The footer
+\end{document}
