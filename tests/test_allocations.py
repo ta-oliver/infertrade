@@ -22,8 +22,7 @@ Unit tests for allocations
 
 from numpy.core.fromnumeric import argmax
 from numpy.core.numeric import roll
-import infertrade.algos.community.allocations as allocations
-import infertrade.algos.community.signals as signals
+from infertrade.algos.community.allocations import constant_strategy, regression_strategy, trend_strategy, momentum_strategy, volatility_strategy
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 from numbers import Real
 from infertrade.algos import algorithm_functions
@@ -42,26 +41,26 @@ def test_under_minimum_length_to_calculate():
     dfr = {'price': np.arange(10),'allocation': [1 for _ in range(0,10)]}
     df_no_mid = pd.DataFrame(data=dfr)
 
-    df_test = allocations.change_relationship(dataframe = df_no_mid)
+    df_test = regression_strategy.change_relationship(dataframe = df_no_mid)
     assert(df_test, pd.DataFrame)
     for _ in df_test[PandasEnum.ALLOCATION.value]:
         if not _ == 0.0:
             raise ValueError("Allocation value not returned correctly")
 
-    df_test = allocations.combination_relationship(dataframe = df_no_mid)
+    df_test = regression_strategy.combination_relationship(dataframe = df_no_mid)
     assert(df_test, pd.DataFrame)
     for _ in df_test[PandasEnum.ALLOCATION.value]:
         if not _ == 0.0:
             raise ValueError("Allocation value not returned correctly")
 
 
-    df_test = allocations.difference_relationship(dataframe = df_no_mid)
+    df_test = regression_strategy.difference_relationship(dataframe = df_no_mid)
     assert (df_test, pd.DataFrame)
     for _ in df_test[PandasEnum.ALLOCATION.value]:
         if not _ == 0.0:
             raise ValueError("Allocation value not returned correctly")
 
-    df_test = allocations.level_relationship(dataframe = df_no_mid)
+    df_test = regression_strategy.level_relationship(dataframe = df_no_mid)
     assert (df_test, pd.DataFrame)
     for _ in df_test[PandasEnum.ALLOCATION.value]:
         if not _ == 0.0:
@@ -72,9 +71,7 @@ def test_algorithm_functions():
     """
     Tests that the strategies have all necessary properties.
     Verifies the algorithm_functions dictionary has all necessary values
-    
     """
-
     # We have imported the list of algorithm functions.
     assert isinstance(algorithm_functions, dict)
 
@@ -294,6 +291,7 @@ def aroon(
         
     return df_with_signals
 
+
 def rate_of_change(
     df: pd.DataFrame, window: int = 25
 ) -> pd.DataFrame:
@@ -301,6 +299,7 @@ def rate_of_change(
     df_with_signals["signal"] = df_with_signals["close"].pct_change(window).fillna(0)*100
     
     return df_with_signals
+
 
 def vortex_indicator(
     df: pd.DataFrame, window: int = 25
@@ -319,16 +318,19 @@ def vortex_indicator(
     vmm = np.abs(low - high.shift(1))
     vip = vmp.rolling(window).sum() / trn
     vin = vmm.rolling(window).sum() / trn
-    df_with_signals["signal"] = vip - vin
+    df_with_signals["signal"] = vin - vip
     return df_with_signals
 
 
 """
 Tests for allocation strategies
 """
+
+# Tests for strategies relying on trend indicators
+
 def test_SMA_strategy():
     window = 50
-    df_with_allocations = allocations.SMA_strategy(df, window, max_investment)
+    df_with_allocations = trend_strategy.SMA_strategy(df, window, max_investment)
     df_with_signals = simple_moving_average(df,window)
  
     price_above_signal=df_with_signals["close"]>df_with_signals["signal"]
@@ -338,9 +340,10 @@ def test_SMA_strategy():
     df_with_signals.loc[price_below_signal, "allocation"]=-max_investment
     assert pd.Series.equals(df_with_signals["allocation"],df_with_allocations["allocation"])
 
+
 def test_WMA_strategy():
     window = 50
-    df_with_allocations = allocations.WMA_strategy(df, window, max_investment)
+    df_with_allocations = trend_strategy.WMA_strategy(df, window, max_investment)
     df_with_signals = weighted_moving_average(df,window)
  
     price_above_signal=df_with_signals["close"]>df_with_signals["signal"]
@@ -351,9 +354,10 @@ def test_WMA_strategy():
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
+
 def test_EMA_strategy():
     window = 50
-    df_with_allocations = allocations.EMA_strategy(df, window, max_investment)
+    df_with_allocations = trend_strategy.EMA_strategy(df, window, max_investment)
     df_with_signals = exponentially_weighted_moving_average(df,window)
  
     price_above_signal=df_with_signals["close"]>df_with_signals["signal"]
@@ -364,8 +368,9 @@ def test_EMA_strategy():
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
+
 def test_MACD_strategy():
-    df_with_allocations = allocations.MACD_strategy(df, 12, 26 ,9, max_investment)
+    df_with_allocations = trend_strategy.MACD_strategy(df, 12, 26 ,9, max_investment)
     df_with_signals = moving_average_convergence_divergence(df,12, 26, 9)
  
     above_zero_line=df_with_signals["signal"]>0
@@ -376,8 +381,103 @@ def test_MACD_strategy():
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
+
+def test_DPO_strategy():
+    df_with_allocations = trend_strategy.DPO_strategy(df, 20, max_investment)
+    df_with_signals = detrended_price_oscillator(df, 20)
+
+    above_zero = df_with_signals["signal"]>0
+    below_zero = df_with_signals["signal"]<=0
+
+    df_with_signals.loc[above_zero, "allocation"] = max_investment
+    df_with_signals.loc[below_zero, "allocation"] = -max_investment
+
+    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
+
+
+def test_TRIX_strategy():
+    df_with_allocations = trend_strategy.TRIX_strategy(df, 14, max_investment)
+    df_with_signals = triple_exponential_average(df, 14)
+    
+    above_zero = df_with_signals["signal"]>0
+    below_zero = df_with_signals["signal"]<=0
+
+    df_with_signals.loc[above_zero, "allocation"] = max_investment
+    df_with_signals.loc[below_zero, "allocation"] = -max_investment
+    
+    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
+
+
+def test_STC_strategy():
+    df_with_allocations = trend_strategy.STC_strategy(df, 50, 23, 10, 3, 3, max_investment=max_investment)
+    df_with_signal = schaff_trend_cycle(df)
+    oversold = df_with_signal["signal"] <= 25
+    overbought = df_with_signal["signal"] >= 75
+    hold = df_with_signal["signal"].between(25, 75)
+
+    df_with_signal.loc[oversold, "allocation"] = max_investment
+    df_with_signal.loc[overbought, "allocation"] = -max_investment
+    df_with_signal.loc[hold, "allocation"] = 0
+
+    assert pd.Series.equals(df_with_signal["allocation"], df_with_allocations["allocation"])
+
+
+def test_vortex_strategy():
+    df_with_signals = vortex_indicator(df, window=25)
+    df_with_allocations = trend_strategy.vortex_strategy(df, 25, max_investment)
+
+    bullish = df_with_signals["signal"] >= 0
+    bearish = df_with_signals["signal"] < 0
+
+    df_with_signals.loc[bearish, "allocation"] = -max_investment
+    df_with_signals.loc[bullish, "allocation"] = max_investment
+
+    assert df_with_allocations["allocation"][8]==df_with_signals["allocation"][8]
+
+
+def test_aroon_strategy():
+    df_with_signals = aroon(df, window=25)
+    df_with_allocations = trend_strategy.aroon_strategy(df, 25, max_investment)
+
+    bullish = df_with_signals["aroon_up"] >= df_with_signals["aroon_down"]
+    bearish = df_with_signals["aroon_down"] < df_with_signals["aroon_up"]
+
+    df_with_signals.loc[bullish, PandasEnum.ALLOCATION.value] = max_investment
+    df_with_signals.loc[bearish, PandasEnum.ALLOCATION.value] = -max_investment
+
+    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
+
+
+# Tests for strategies relying on momentum indicators
+
+def test_ROC_strategy():
+    df_with_signals = rate_of_change(df, window=25)
+    df_with_allocations = momentum_strategy.ROC_strategy(df, 25, max_investment)
+
+    bullish = df_with_signals["signal"] >= 0
+    bearish = df_with_signals["signal"] < 0
+
+    df_with_signals.loc[bearish, "allocation"] = -max_investment
+    df_with_signals.loc[bullish, "allocation"] = max_investment
+
+    assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
+
+
+def test_KAMA_strategy():
+    df_with_signals = KAMA(df, 10, 2, 30)
+    df_with_allocations = momentum_strategy.KAMA_strategy(df, 10, 2, 30, max_investment)
+    
+    downtrend = df_with_signals["signal"] <= df_with_signals["close"]
+    uptrend = df_with_signals["signal"] > df_with_signals["close"]
+
+    df_with_signals.loc[uptrend, "allocation"] = max_investment
+    df_with_signals.loc[downtrend, "allocation"] = -max_investment
+
+    assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
+
+
 def test_RSI_strategy():
-    df_with_allocations = allocations.RSI_strategy(df, 14, max_investment)
+    df_with_allocations = momentum_strategy.RSI_strategy(df, 14, max_investment)
     df_with_signals = relative_strength_index(df,14)
  
     over_valued = df_with_signals["signal"] >= 70
@@ -390,8 +490,9 @@ def test_RSI_strategy():
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
+
 def test_Stochastic_RSI_strategy():
-    df_with_allocations = allocations.stochastic_RSI_strategy(df, 14, max_investment)
+    df_with_allocations = momentum_strategy.stochastic_RSI_strategy(df, 14, max_investment)
     df_with_signals = stochastic_relative_strength_index(df,14)
  
     over_valued = df_with_signals["signal"] >= 0.8
@@ -404,11 +505,55 @@ def test_Stochastic_RSI_strategy():
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
+
+def test_PPO_strategy():
+    series_name = "close"
+    df_with_allocations = momentum_strategy.PPO_strategy(df, 26, 12, 9, max_investment)
+    df_with_signals = percentage_series_oscillator(df, 26, 12, 9, series_name)
+
+    above_zero = df_with_signals["signal"]>0
+    below_zero = df_with_signals["signal"]<0
+
+    df_with_signals.loc[above_zero, "allocation"] = max_investment
+    df_with_signals.loc[below_zero, "allocation"] = -max_investment
+
+    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
+
+
+def test_PVO_strategy():
+    series_name = "volume"
+    df_with_allocations = momentum_strategy.PVO_strategy(df, 26, 12, 9, max_investment)
+    df_with_signals = percentage_series_oscillator(df, 26, 12, 9, series_name)
+    
+    above_zero = df_with_signals["signal"]>0
+    below_zero = df_with_signals["signal"]<=0
+
+    df_with_signals.loc[above_zero, "allocation"] = max_investment
+    df_with_signals.loc[below_zero, "allocation"] = -max_investment
+
+    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
+    
+
+def test_TSI_strategy():
+    df_with_allocations = momentum_strategy.TSI_strategy(df, 25, 13, 13, max_investment=max_investment)
+    df_with_signals = true_strength_index(df, 25, 13, 13)
+    
+    above_signal = df_with_signals["TSI"] > df_with_signals["signal"] 
+    below_signal = df_with_signals["TSI"] <= df_with_signals["signal"]
+
+    df_with_signals.loc[above_signal, "allocation"] = max_investment
+    df_with_signals.loc[below_signal, "allocation"] = -max_investment
+
+    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
+
+
+# Tests for strategies relying on volatility indicators
+
 def test_bollinger_band_strategy():
     # Window_dev is kept lower to make sure prices breaks the band
     window = 20
     window_dev = 2
-    df_with_allocations = allocations.bollinger_band_strategy(df, window, window_dev, max_investment)
+    df_with_allocations = volatility_strategy.bollinger_band_strategy(df, window, window_dev, max_investment)
     df_with_signals = bollinger_band(df,window, window_dev)
     short_position = False
     long_position = False
@@ -443,127 +588,9 @@ def test_bollinger_band_strategy():
     assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
 
 
-def test_DPO_strategy():
-    df_with_allocations = allocations.DPO_strategy(df, 20, max_investment)
-    df_with_signals = detrended_price_oscillator(df, 20)
-
-    above_zero = df_with_signals["signal"]>0
-    below_zero = df_with_signals["signal"]<=0
-
-    df_with_signals.loc[above_zero, "allocation"] = max_investment
-    df_with_signals.loc[below_zero, "allocation"] = -max_investment
-
-    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
-
-def test_PPO_strategy():
-    series_name = "close"
-    df_with_allocations = allocations.PPO_strategy(df, 26, 12, 9, max_investment)
-    df_with_signals = percentage_series_oscillator(df, 26, 12, 9, series_name)
-
-    above_zero = df_with_signals["signal"]>0
-    below_zero = df_with_signals["signal"]<0
-
-    df_with_signals.loc[above_zero, "allocation"] = max_investment
-    df_with_signals.loc[below_zero, "allocation"] = -max_investment
-
-    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
-
-def test_PVO_strategy():
-    series_name = "volume"
-    df_with_allocations = allocations.PVO_strategy(df, 26, 12, 9, max_investment)
-    df_with_signals = percentage_series_oscillator(df, 26, 12, 9, series_name)
-    
-    above_zero = df_with_signals["signal"]>0
-    below_zero = df_with_signals["signal"]<=0
-
-    df_with_signals.loc[above_zero, "allocation"] = max_investment
-    df_with_signals.loc[below_zero, "allocation"] = -max_investment
-
-    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
-
-def test_TRIX_strategy():
-    df_with_allocations = allocations.TRIX_strategy(df, 14, max_investment)
-    df_with_signals = triple_exponential_average(df, 14)
-    
-    above_zero = df_with_signals["signal"]>0
-    below_zero = df_with_signals["signal"]<=0
-
-    df_with_signals.loc[above_zero, "allocation"] = max_investment
-    df_with_signals.loc[below_zero, "allocation"] = -max_investment
-    
-    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
-
-def test_TSI_strategy():
-    df_with_allocations = allocations.TSI_strategy(df, 25, 13, 13, max_investment=max_investment)
-    df_with_signals = true_strength_index(df, 25, 13, 13)
-    
-    above_signal = df_with_signals["TSI"] > df_with_signals["signal"] 
-    below_signal = df_with_signals["TSI"] <= df_with_signals["signal"]
-
-    df_with_signals.loc[above_signal, "allocation"] = max_investment
-    df_with_signals.loc[below_signal, "allocation"] = -max_investment
-
-    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
-
-def test_SCT_strategy():
-    df_with_allocations = allocations.STC_strategy(df, 50, 23, 10, 3, 3, max_investment=max_investment)
-    df_with_signal = schaff_trend_cycle(df)
-    oversold = df_with_signal["signal"] <= 25
-    overbought = df_with_signal["signal"] >= 75
-    hold = df_with_signal["signal"].between(25, 75)
-
-    df_with_signal.loc[oversold, "allocation"] = max_investment
-    df_with_signal.loc[overbought, "allocation"] = -max_investment
-    df_with_signal.loc[hold, "allocation"] = 0
-
-    assert pd.Series.equals(df_with_signal["allocation"], df_with_allocations["allocation"])
-
-def test_KAMA_strategy():
-    df_with_signals = KAMA(df, 10, 2, 30)
-    df_with_allocations = allocations.KAMA_strategy(df, 10, 2, 30, max_investment)
-    
-    downtrend = df_with_signals["signal"] <= df_with_signals["close"]
-    uptrend = df_with_signals["signal"] > df_with_signals["close"]
-
-    df_with_signals.loc[uptrend, "allocation"] = max_investment
-    df_with_signals.loc[downtrend, "allocation"] = -max_investment
-
-    assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
-
-def test_aroon_strategy():
-    df_with_signals = aroon(df, window=25)
-    df_with_allocations = allocations.aroon_strategy(df, 25, max_investment)
-    df_with_signals_ta = signals.aroon(df, 25)
-
-    bullish = df_with_signals["aroon_up"] >= df_with_signals["aroon_down"]
-    bearish = df_with_signals["aroon_down"] < df_with_signals["aroon_up"]
-
-    df_with_signals.loc[bullish, PandasEnum.ALLOCATION.value] = max_investment
-    df_with_signals.loc[bearish, PandasEnum.ALLOCATION.value] = -max_investment
-
-    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
-
-def test_ROC_strategy():
-    df_with_signals = rate_of_change(df, window=25)
-    df_with_allocations = allocations.ROC_strategy(df, 25, max_investment)
-
-    bullish = df_with_signals["signal"] >= 0
-    bearish = df_with_signals["signal"] < 0
-
-    df_with_signals.loc[bearish, "allocation"] = -max_investment
-    df_with_signals.loc[bullish, "allocation"] = max_investment
-
-    assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
 
 
-def test_vortex_strategy():
-    df_with_signals = vortex_indicator(df, window=25)
-    df_with_allocations = allocations.ROC_strategy(df, 25, max_investment)
 
-    bullish = df_with_signals["signal"] >= 0
-    bearish = df_with_signals["signal"] < 0
 
-    df_with_signals.loc[bearish, "allocation"] = -max_investment
-    df_with_signals.loc[bullish, "allocation"] = max_investment
 
-    assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
+

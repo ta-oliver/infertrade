@@ -105,6 +105,25 @@ def TSI_strategy(
     return df
 
 
+def KAMA_strategy(
+    df: pd.DataFrame, window: int = 10, pow1: int = 2, pow2: int = 30, max_investment: float = 0.1
+) -> pd.DataFrame:
+    """
+    Kaufman's Adaptive Moving Average (KAMA) strategy indicates
+        1. downtrend when signal < price
+        2. uptrend when signal > price
+    """
+    df_with_signals = momentum.KAMA(df, window, pow1, pow2)
+
+    downtrend = df_with_signals["signal"] <= df_with_signals["close"]
+    uptrend = df_with_signals["signal"] > df_with_signals["close"]
+
+    df.loc[uptrend, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[downtrend, PandasEnum.ALLOCATION.value] = -max_investment
+
+    return df
+
+
 def ROC_strategy(df: pd.DataFrame, window: int = 12, max_investment: float = 0.1) -> pd.DataFrame:
     """
     A rising ROC above zero typically confirms an uptrend while a falling ROC below zero indicates a downtrend.
@@ -159,6 +178,14 @@ infertrade_export_momentum_strategies = {
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L663"
+        },
+    },
+    "KAMA_strategy": {
+        "function": KAMA_strategy,
+        "parameters": {"window": 10, "pow1": 2, "pow2": 30, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L724"
         },
     },
     "ROC_strategy": {
