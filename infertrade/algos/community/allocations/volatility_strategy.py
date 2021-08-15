@@ -113,9 +113,6 @@ def bollinger_band_strategy(
     return df
 
 
-
-
-
 infertrade_export_volatility_strategy = {
     "high_low_difference": {
         "function": high_low_difference,

@@ -30,7 +30,7 @@ signal_dicts = [
     infertrade_export_trend_signals,
     infertrade_export_volatility_signals,
     infertrade_export_momentum_signals,
-    infertrade_export_other_signals
+    infertrade_export_other_signals,
 ]
 
 # A dictionary providing the list of available signals from InferTrade's community rules and external packages.

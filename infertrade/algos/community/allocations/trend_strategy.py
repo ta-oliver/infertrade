@@ -302,9 +302,6 @@ def vortex_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 
     return df
 
 
-
-
-
 infertrade_export_trend_strategy = {
     "SMA_strategy": {
         "function": SMA_strategy,
