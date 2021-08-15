@@ -161,7 +161,7 @@ def EMA_strategy(df: pd.DataFrame, window: int = 50, max_investment: float = 0.1
     df.loc[price_above_signal, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[price_below_signal, PandasEnum.ALLOCATION.value] = -max_investment
     return df
-    
+
 
 def MACD_strategy(
     df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, max_investment: float = 0.1
@@ -392,7 +392,6 @@ infertrade_export_trend_strategy = {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L663"
         },
     },
-
     "aroon_strategy": {
         "function": aroon_strategy,
         "parameters": {"window": 25, "max_investment": 0.1},
@@ -418,6 +417,3 @@ infertrade_export_trend_strategy = {
         },
     },
 }
-
-
-  

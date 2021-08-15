@@ -44,7 +44,7 @@ def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: flo
     dataframe[PandasEnum.ALLOCATION.value] = fixed_allocation_size
     return dataframe
 
-    
+
 infertrade_export_constant_strategy = {
     "fifty_fifty": {
         "function": fifty_fifty,

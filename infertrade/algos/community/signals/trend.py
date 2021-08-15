@@ -35,16 +35,6 @@ from ta.trend import (
     vortex_indicator_pos,
 )
 
-def normalised_close(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Scales the close by the maximum value of the close across the whole price history.
-
-    Note that this signal cannot be determined until the end of the historical period and so is unlikely to be suitable
-    as an input feature for a trading strategy.
-    """
-    df["signal"] = df["close"] / max(df["close"])
-    return df
-
 
 def simple_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     """
@@ -165,14 +155,6 @@ def triple_exponential_average(df: pd.DataFrame, window: int = 14) -> pd.DataFra
 
 
 infertrade_export_trend_signals = {
-    "normalised_close": {
-        "function": normalised_close,
-        "parameters": {},
-        "series": ["close"],
-        "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L31"
-        },
-    },
     "simple_moving_average": {
         "function": simple_moving_average,
         "parameters": {"window": 1},
@@ -204,7 +186,7 @@ infertrade_export_trend_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L76"
         },
-    },  
+    },
     "detrended_price_oscillator": {
         "function": detrended_price_oscillator,
         "parameters": {"window": 20},
@@ -212,7 +194,7 @@ infertrade_export_trend_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5f74bdeb99eb26c15df0b5417de837466cefaee1/infertrade/algos/community/signals.py#L186"
         },
-    },  
+    },
     "schaff_trend_cycle": {
         "function": schaff_trend_cycle,
         "parameters": {"window_slow": 50, "window_fast": 23, "cycle": 10, "smooth1": 3, "smooth2": 3},

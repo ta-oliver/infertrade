@@ -19,6 +19,7 @@ import numpy as np
 from infertrade.PandasEnum import PandasEnum
 from infertrade.algos.community.signals import momentum
 
+
 def RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1) -> pd.DataFrame:
     """
     Relative Strength Index
@@ -53,6 +54,7 @@ def stochastic_RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: 
 
     df.loc[hold, PandasEnum.ALLOCATION.value] = 0.0
     return df
+
 
 def PPO_strategy(
     df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, max_investment: float = 0.1
@@ -166,5 +168,5 @@ infertrade_export_momentum_strategies = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L763"
         },
-    }, 
+    },
 }

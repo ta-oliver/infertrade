@@ -233,6 +233,7 @@ def calculate_level_relationship(df: pd.DataFrame, regression_period: int = 120,
     )
     return dataframe
 
+
 def change_regression(
     dataframe: pd.DataFrame, change_coefficient: float = 0.1, change_constant: float = 0.1
 ) -> pd.DataFrame:

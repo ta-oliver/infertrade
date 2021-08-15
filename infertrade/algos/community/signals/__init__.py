@@ -21,14 +21,17 @@ from copy import deepcopy
 from .volatility import infertrade_export_volatility_signals
 from .trend import infertrade_export_trend_signals
 from .momentum import infertrade_export_momentum_signals
+from .others import infertrade_export_other_signals
+from .others import scikit_signal_factory, normalised_close
 from sklearn.preprocessing import FunctionTransformer
 
-# creates wrapper classes to fit sci-kit learn interface
-def scikit_signal_factory(signal_function: callable):
-    """A class compatible with Sci-Kit Learn containing the signal function."""
-    return FunctionTransformer(signal_function)
 
-signal_dicts = [infertrade_export_trend_signals, infertrade_export_volatility_signals, infertrade_export_momentum_signals]
+signal_dicts = [
+    infertrade_export_trend_signals,
+    infertrade_export_volatility_signals,
+    infertrade_export_momentum_signals,
+    infertrade_export_other_signals
+]
 
 # A dictionary providing the list of available signals from InferTrade's community rules and external packages.
 infertrade_export_signals = {}

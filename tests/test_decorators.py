@@ -21,7 +21,7 @@ Created date: 28th May 2021
 
 import pandas as pd
 from infertrade.PandasEnum import PandasEnum
-from infertrade.algos.community.allocations import fifty_fifty
+from infertrade.algos.community.allocations.constant_strategy import fifty_fifty
 from infertrade.api import Api
 from infertrade.data.simulate_data import simulated_correlated_equities_4_years_gen
 from infertrade.utilities.operations import restrict_allocation, pct_chg, daily_stop_loss

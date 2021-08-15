@@ -31,8 +31,9 @@ from ta.volatility import (
     bollinger_mavg,
 )
 from infertrade.algos.external.ta import ta_adaptor
-from infertrade.algos.community.signals import scikit_signal_factory
+from .others import scikit_signal_factory
 from infertrade.PandasEnum import PandasEnum
+
 
 def high_low_diff(df: pd.DataFrame) -> pd.DataFrame:
     """Calculates the range between low and high price."""
@@ -86,7 +87,6 @@ def chande_kroll(
     return df
 
 
-
 def bollinger_band(df: pd.DataFrame, window: int = 20, window_dev: int = 2) -> pd.DataFrame:
     """
     This function calculates signal which characterizes the prices and volatility over time.
@@ -126,7 +126,7 @@ infertrade_export_volatility_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L153"
         },
-    },    
+    },
     "bollinger_band": {
         "function": bollinger_band,
         "parameters": {"window": 20, "window_dev": 2},
@@ -134,7 +134,7 @@ infertrade_export_volatility_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5f74bdeb99eb26c15df0b5417de837466cefaee1/infertrade/algos/community/signals.py#L155"
         },
-    },  
+    },
     "chande_kroll": {
         "function": chande_kroll,
         "parameters": {"average_true_range_periods": 10, "average_true_range_multiplier": 1.0, "stop_periods": 9},
@@ -142,5 +142,5 @@ infertrade_export_volatility_signals = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L125"
         },
-    },      
+    },
 }
