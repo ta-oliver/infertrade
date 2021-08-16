@@ -37,9 +37,7 @@ def buy_and_hold(dataframe: pd.DataFrame) -> pd.DataFrame:
     return dataframe
 
 
-def chande_kroll_crossover_strategy(
-    dataframe: pd.DataFrame,
-) -> pd.DataFrame:
+def chande_kroll_crossover_strategy(dataframe: pd.DataFrame,) -> pd.DataFrame:
     """
     This simple all-or-nothing rule:
     (1) allocates 100% of the portofolio to a long position on the asset when the price of the asset is above both the
@@ -747,16 +745,78 @@ def aroon_strategy(df: pd.DataFrame, window: int = 25, max_investment: float = 0
         2. Aroon_down: line which measures the number of periods since a Low.
 
     This strategy indicates:
-        1. Bearish: when aroon_up >= aroon_down
-        2. Bullish: when aroon_down < aroon_up
+        1. Bearish: when aroon_up < aroon_down
+        2. Bullish: when aroon_up >= aroon_down
     """
     df_with_signals = signals.aroon(df, window)
 
-    bearish = df_with_signals["aroon_up"] >= df_with_signals["aroon_down"]
-    bullish = df_with_signals["aroon_down"] < df_with_signals["aroon_up"]
+    bullish = df_with_signals["aroon_up"] >= df_with_signals["aroon_down"]
+    bearish = df_with_signals["aroon_down"] < df_with_signals["aroon_up"]
 
-    df.loc[bearish, PandasEnum.ALLOCATION.value] = max_investment
-    df.loc[bullish, PandasEnum.ALLOCATION.value] = -max_investment
+    df.loc[bullish, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[bearish, PandasEnum.ALLOCATION.value] = -max_investment
+
+    return df
+
+
+def ROC_strategy(df: pd.DataFrame, window: int = 12, max_investment: float = 0.1) -> pd.DataFrame:
+    """
+    A rising ROC above zero typically confirms an uptrend while a falling ROC below zero indicates a downtrend.
+    """
+    df_with_signals = signals.rate_of_change(df, window)
+
+    uptrend = df_with_signals["signal"] >= 0
+    downtrend = df_with_signals["signal"] < 0
+
+    df.loc[uptrend, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[downtrend, PandasEnum.ALLOCATION.value] = -max_investment
+
+    return df
+
+
+def ADX_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1) -> pd.DataFrame:
+    """
+    Average Directional Movement Index makes use of three indicators to measure both trend direction and its strength.
+        1. Plus Directional Indicator (+DI)
+        2. Negative Directonal Indicator (-DI)
+        3. Average directional Index (ADX)
+
+    +DI and -DI measures the trend direction and ADX measures the strength of trend
+    """
+    df_with_signals = signals.average_directional_movement_index(df, window)
+
+    PLUS_DI = df_with_signals["ADX_POS"]
+    MINUS_DI = df_with_signals["ADX_NEG"]
+    ADX = df_with_signals["ADX"]
+
+    index = 0
+    for pdi_value, mdi_value, adx_value in zip(PLUS_DI, MINUS_DI, ADX):
+        # ADX > 25 to avoid risky investment i.e. invest only when trend is strong
+        if adx_value > 25 and pdi_value > mdi_value:
+            df.loc[index, PandasEnum.ALLOCATION.value] = max_investment
+
+        elif adx_value > 25 and pdi_value < mdi_value:
+            df.loc[index, PandasEnum.ALLOCATION.value] = -max_investment
+
+        else:
+            df.loc[index, PandasEnum.ALLOCATION.value] = 0
+
+        index += 1
+
+    return df
+
+
+def vortex_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1) -> pd.DataFrame:
+    """
+    A rising ROC above zero typically confirms an uptrend while a falling ROC below zero indicates a downtrend.
+    """
+    df_with_signals = signals.vortex_indicator(df, window)
+
+    uptrend = df_with_signals["VORTEX_POS"] >= df_with_signals["VORTEX_NEG"]
+    downtrend = df_with_signals["VORTEX_POS"] < df_with_signals["VORTEX_NEG"]
+
+    df.loc[uptrend, PandasEnum.ALLOCATION.value] = max_investment
+    df.loc[downtrend, PandasEnum.ALLOCATION.value] = -max_investment
 
     return df
 
@@ -781,7 +841,7 @@ infertrade_export_allocations = {
     "chande_kroll_crossover_strategy": {
         "function": chande_kroll_crossover_strategy,
         "parameters": {},
-        "series": [],
+        "series": ["high", "low", "price"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L43"
         },
@@ -789,7 +849,7 @@ infertrade_export_allocations = {
     "change_relationship": {
         "function": change_relationship,
         "parameters": {},
-        "series": [],
+        "series": ["price", "research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L59"
         },
@@ -797,7 +857,7 @@ infertrade_export_allocations = {
     "combination_relationship": {
         "function": combination_relationship,
         "parameters": {},
-        "series": [],
+        "series": ["price", "research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
@@ -805,7 +865,7 @@ infertrade_export_allocations = {
     "difference_relationship": {
         "function": difference_relationship,
         "parameters": {},
-        "series": [],
+        "series": ["price", "research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
@@ -813,7 +873,7 @@ infertrade_export_allocations = {
     "level_relationship": {
         "function": level_relationship,
         "parameters": {},
-        "series": [],
+        "series": ["price", "research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
@@ -850,7 +910,7 @@ infertrade_export_allocations = {
             "avg_price_length": 2,
             "avg_research_length": 2,
         },
-        "series": ["research"],
+        "series": ["price", "research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
@@ -895,7 +955,7 @@ infertrade_export_allocations = {
             "short_term_moving_avg_length": 50,
             "long_term_moving_avg_length": 200,
         },
-        "series": ["research"],
+        "series": ["price"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
         },
@@ -1016,7 +1076,31 @@ infertrade_export_allocations = {
         "parameters": {"window": 25, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L724"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L743"
+        },
+    },
+    "ROC_strategy": {
+        "function": ROC_strategy,
+        "parameters": {"window": 12, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L763"
+        },
+    },
+    "ADX_strategy": {
+        "function": ADX_strategy,
+        "parameters": {"window": 14, "max_investment": 0.1},
+        "series": ["close", "high", "low"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L777"
+        },
+    },
+    "vortex_strategy": {
+        "function": vortex_strategy,
+        "parameters": {"window": 14, "max_investment": 0.1},
+        "series": ["close", "high", "low"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L777"
         },
     },
     "DPO_strategy": {

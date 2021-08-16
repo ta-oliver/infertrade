@@ -20,6 +20,8 @@
 Unit tests for allocations
 """
 
+from numpy.core.fromnumeric import argmax
+from numpy.core.numeric import roll
 import infertrade.algos.community.allocations as allocations
 import infertrade.algos.community.signals as signals
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
@@ -286,9 +288,38 @@ def aroon(
     df: pd.DataFrame, window: int = 25
 ) -> pd.DataFrame:
     df_with_signals = df.copy()
-    df_with_signals["aroon_up"] = (window - df_with_signals["close"].rolling(window=window).max())/window
-    df_with_signals["aroon_down"] = (window - df_with_signals["close"].rolling(window=window).min())/window
+    roll_close = df_with_signals["close"].rolling(window=window, min_periods=0)
+    df_with_signals["aroon_up"] = roll_close.apply(lambda x : (np.argmax(x) + 1) / window * 100)
+    df_with_signals["aroon_down"] = roll_close.apply(lambda x : (np.argmin(x) + 1) / window * 100)
         
+    return df_with_signals
+
+def rate_of_change(
+    df: pd.DataFrame, window: int = 25
+) -> pd.DataFrame:
+    df_with_signals = df.copy()
+    df_with_signals["signal"] = df_with_signals["close"].pct_change(window).fillna(0)*100
+    
+    return df_with_signals
+
+def vortex_indicator(
+    df: pd.DataFrame, window: int = 25
+) -> pd.DataFrame:
+    df_with_signals = df.copy()
+    high = df_with_signals["high"]
+    low = df_with_signals["low"]
+    close = df_with_signals["close"]
+    close_shift = df_with_signals["close"].shift(1)
+    tr1 = high - low
+    tr2 = (high - close_shift).abs()
+    tr3 = (low - close_shift).abs()
+    true_range = pd.DataFrame([tr1, tr2, tr3]).max(axis=1)
+    trn = true_range.rolling(window).sum()
+    vmp = np.abs(high - low.shift(1))
+    vmm = np.abs(low - high.shift(1))
+    vip = vmp.rolling(window).sum() / trn
+    vin = vmm.rolling(window).sum() / trn
+    df_with_signals["signal"] = vip - vin
     return df_with_signals
 
 
@@ -501,14 +532,38 @@ def test_KAMA_strategy():
 
 def test_aroon_strategy():
     df_with_signals = aroon(df, window=25)
-    aroon_up = df_with_signals["aroon_up"]
-    aroon_down = df_with_signals["aroon_down"]
-    df_with_allocations = allocations.aroon_strategy(df, 25)
+    df_with_allocations = allocations.aroon_strategy(df, 25, max_investment)
+    df_with_signals_ta = signals.aroon(df, 25)
 
-    bearish = aroon_up >= aroon_down
-    bullish = aroon_down < aroon_up
+    bullish = df_with_signals["aroon_up"] >= df_with_signals["aroon_down"]
+    bearish = df_with_signals["aroon_down"] < df_with_signals["aroon_up"]
 
-    df_with_signals.loc[bearish, "allocation"] = max_investment
-    df_with_signals.loc[bullish, "allocation"] = -max_investment
+    df_with_signals.loc[bullish, PandasEnum.ALLOCATION.value] = max_investment
+    df_with_signals.loc[bearish, PandasEnum.ALLOCATION.value] = -max_investment
 
-    pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
+    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
+
+def test_ROC_strategy():
+    df_with_signals = rate_of_change(df, window=25)
+    df_with_allocations = allocations.ROC_strategy(df, 25, max_investment)
+
+    bullish = df_with_signals["signal"] >= 0
+    bearish = df_with_signals["signal"] < 0
+
+    df_with_signals.loc[bearish, "allocation"] = -max_investment
+    df_with_signals.loc[bullish, "allocation"] = max_investment
+
+    assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
+
+
+def test_vortex_strategy():
+    df_with_signals = vortex_indicator(df, window=25)
+    df_with_allocations = allocations.ROC_strategy(df, 25, max_investment)
+
+    bullish = df_with_signals["signal"] >= 0
+    bearish = df_with_signals["signal"] < 0
+
+    df_with_signals.loc[bearish, "allocation"] = -max_investment
+    df_with_signals.loc[bullish, "allocation"] = max_investment
+
+    assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
