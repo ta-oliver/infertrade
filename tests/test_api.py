@@ -245,10 +245,10 @@ def test_return_representations():
 
     returned_dict = Api.return_representations(name_of_algorithm=name_list[0],
                                    representation_or_list_of_representations=list(algo_information[name_list[0]]["available_representation_types"].keys()))
-    assert (returned_dict, dict)
+    assert isinstance(returned_dict, dict)
 
     returned_dict = Api.return_representations(name_of_algorithm=name_list[0])
-    assert (returned_dict, dict)
+    assert isinstance(returned_dict, dict)
 
 
 def test_get_raw_callable():
