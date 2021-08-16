@@ -25,7 +25,7 @@ infertrade_export_other_signals = {
         "parameters": {},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L31"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/others.py#L5"
         },
     },
 }

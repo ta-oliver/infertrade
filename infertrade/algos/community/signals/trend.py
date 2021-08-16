@@ -160,7 +160,7 @@ infertrade_export_trend_signals = {
         "parameters": {"window": 1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L158"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/trend.py#L39"
         },
     },
     "weighted_moving_average": {
@@ -168,7 +168,7 @@ infertrade_export_trend_signals = {
         "parameters": {"window": 1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L60"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/trend.py#L56"
         },
     },
     "exponentially_weighted_moving_average": {

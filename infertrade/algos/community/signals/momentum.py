@@ -106,7 +106,7 @@ infertrade_export_momentum_signals = {
         "parameters": {"window": 14},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L100"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/momentum.py#L27"
         },
     },
     "stochastic_relative_strength_index": {
@@ -114,7 +114,7 @@ infertrade_export_momentum_signals = {
         "parameters": {"window": 14},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L114"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/momentum.py#L36"
         },
     },
     "percentage_price_oscillator": {
@@ -122,7 +122,7 @@ infertrade_export_momentum_signals = {
         "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L196"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/momentum.py#L46"
         },
     },
     "percentage_volume_oscillator": {
@@ -130,7 +130,7 @@ infertrade_export_momentum_signals = {
         "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9},
         "series": ["volume"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L204"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/momentum.py#L58"
         },
     },
     "true_strength_index": {
@@ -138,7 +138,7 @@ infertrade_export_momentum_signals = {
         "parameters": {"window_slow": 25, "window_fast": 13},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L228"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/momentum.py#L70"
         },
     },
     "KAMA": {
@@ -146,7 +146,7 @@ infertrade_export_momentum_signals = {
         "parameters": {"window": 10, "pow1": 2, "pow2": 30},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L257"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/momentum.py#L84"
         },
     },
     "rate_of_change": {
@@ -154,7 +154,7 @@ infertrade_export_momentum_signals = {
         "parameters": {"window": 12},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L285"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/momentum.py#L94"
         },
     },
 }

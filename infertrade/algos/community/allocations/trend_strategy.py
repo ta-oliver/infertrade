@@ -301,7 +301,7 @@ def vortex_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 
 
     return df
 
-
+# TODO update github_permalink
 infertrade_export_trend_strategy = {
     "SMA_strategy": {
         "function": SMA_strategy,
@@ -368,6 +368,14 @@ infertrade_export_trend_strategy = {
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L296"
         },
+    },
+    "DPO_strategy": {
+        "function": DPO_strategy,
+        "parameters": {"window": 20, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types":{
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L1028"
+        }
     },
     "TRIX_strategy": {
         "function": TRIX_strategy,
