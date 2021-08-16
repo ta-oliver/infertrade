@@ -112,6 +112,7 @@ def bollinger_band_strategy(
 
     return df
 
+github_permalink = "https://github.com/ta-oliver/infertrade/blob/4b094d3d5a6ffef119cc79b68a4e7131b40a2ad7/infertrade/algos/community/allocations/volatility_strategy.py"
 
 infertrade_export_volatility_strategy = {
     "high_low_difference": {
@@ -119,7 +120,7 @@ infertrade_export_volatility_strategy = {
         "parameters": {"scale": 1.0, "constant": 0.0},
         "series": ["high", "low"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
+            "github_permalink": github_permalink + "#L" + str(high_low_difference.__code__.co_firstlineno)
         },
     },
     "chande_kroll_crossover_strategy": {
@@ -127,7 +128,7 @@ infertrade_export_volatility_strategy = {
         "parameters": {},
         "series": ["high", "low", "price"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L43"
+            "github_permalink": github_permalink + "#L" + str(chande_kroll_crossover_strategy.__code__.co_firstlineno)
         },
     },
     "bollinger_band_strategy": {
@@ -135,7 +136,7 @@ infertrade_export_volatility_strategy = {
         "parameters": {"window": 20, "window_dev": 2, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/d13842aaae91afeb22c6631a06d7de4cb723ae23/infertrade/algos/community/allocations.py#L616"
+            "github_permalink": github_permalink + "#L" + str(bollinger_band_strategy.__code__.co_firstlineno)
         },
     },
 }

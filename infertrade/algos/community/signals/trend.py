@@ -17,6 +17,7 @@
 """
 Functions used to compute volatility signals. Signals may be used for visual inspection or as inputs to trading rules.
 """
+from infertrade.algos.community.allocations.trend_strategy import aroon_strategy, weighted_moving_averages
 import pandas as pd
 from ta.trend import (
     adx,
@@ -154,13 +155,15 @@ def triple_exponential_average(df: pd.DataFrame, window: int = 14) -> pd.DataFra
     return df_with_signal
 
 
+github_permalink = "https://github.com/ta-oliver/infertrade/blob/4b094d3d5a6ffef119cc79b68a4e7131b40a2ad7/infertrade/algos/community/signals/trend.py"
+
 infertrade_export_trend_signals = {
     "simple_moving_average": {
         "function": simple_moving_average,
         "parameters": {"window": 1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/trend.py#L39"
+            "github_permalink": github_permalink + "#L" + str(simple_moving_average.__code__.co_firstlineno)
         },
     },
     "weighted_moving_average": {
@@ -168,7 +171,7 @@ infertrade_export_trend_signals = {
         "parameters": {"window": 1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/trend.py#L56"
+            "github_permalink": github_permalink + "#L" + str(weighted_moving_averages.__code__.co_firstlineno)
         },
     },
     "exponentially_weighted_moving_average": {
@@ -176,7 +179,7 @@ infertrade_export_trend_signals = {
         "parameters": {"window": 50},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L69"
+            "github_permalink": github_permalink + "#L" + str(exponentially_weighted_moving_average.__code__.co_firstlineno)
         },
     },
     "moving_average_convergence_divergence": {
@@ -184,7 +187,7 @@ infertrade_export_trend_signals = {
         "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L76"
+            "github_permalink": github_permalink + "#L" + str(moving_average_convergence_divergence.__code__.co_firstlineno)
         },
     },
     "detrended_price_oscillator": {
@@ -192,7 +195,7 @@ infertrade_export_trend_signals = {
         "parameters": {"window": 20},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5f74bdeb99eb26c15df0b5417de837466cefaee1/infertrade/algos/community/signals.py#L186"
+            "github_permalink": github_permalink + "#L" + str(detrended_price_oscillator.__code__.co_firstlineno)
         },
     },
     "schaff_trend_cycle": {
@@ -200,7 +203,7 @@ infertrade_export_trend_signals = {
         "parameters": {"window_slow": 50, "window_fast": 23, "cycle": 10, "smooth1": 3, "smooth2": 3},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L240"
+            "github_permalink": github_permalink + "#L" + str(schaff_trend_cycle.__code__.co_firstlineno)
         },
     },
     "aroon": {
@@ -208,7 +211,7 @@ infertrade_export_trend_signals = {
         "parameters": {"window": 25},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L268"
+            "github_permalink": github_permalink + "#L" + str(aroon.__code__.co_firstlineno)
         },
     },
     "triple_exponential_average": {
@@ -216,7 +219,7 @@ infertrade_export_trend_signals = {
         "parameters": {"window": 14},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L215"
+            "github_permalink": github_permalink + "#L" + str(triple_exponential_average.__code__.co_firstlineno)
         },
     },
 }

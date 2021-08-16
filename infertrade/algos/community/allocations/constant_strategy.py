@@ -20,6 +20,7 @@ Constant allocation functions
 
 import pandas as pd
 from infertrade.PandasEnum import PandasEnum
+import inspect
 
 
 def fifty_fifty(dataframe) -> pd.DataFrame:
@@ -44,6 +45,7 @@ def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: flo
     dataframe[PandasEnum.ALLOCATION.value] = fixed_allocation_size
     return dataframe
 
+github_permalink = "https://github.com/ta-oliver/infertrade/blob/4b094d3d5a6ffef119cc79b68a4e7131b40a2ad7/infertrade/algos/community/allocations/constant_strategy.py"
 
 infertrade_export_constant_strategy = {
     "fifty_fifty": {
@@ -51,7 +53,7 @@ infertrade_export_constant_strategy = {
         "parameters": {},
         "series": [],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L31"
+            "github_permalink": github_permalink + "#L" + str(fifty_fifty.__code__.co_firstlineno) 
         },
     },
     "buy_and_hold": {
@@ -59,7 +61,15 @@ infertrade_export_constant_strategy = {
         "parameters": {},
         "series": [],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L37"
+            "github_permalink": github_permalink + "#L" + str(buy_and_hold.__code__.co_firstlineno)
+        },
+    },
+    "constant_allocation_size": {
+        "function": constant_allocation_size,
+        "parameters": {"fixed_allocation_size": 1.0},
+        "series": [],
+        "available_representation_types": {
+            "github_permalink": github_permalink + "#L" + str(constant_allocation_size.__code__.co_firstlineno)
         },
     },
 }

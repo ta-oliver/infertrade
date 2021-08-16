@@ -19,13 +19,15 @@ def scikit_signal_factory(signal_function: callable):
     return FunctionTransformer(signal_function)
 
 
+github_permalink = "https://github.com/ta-oliver/infertrade/blob/4b094d3d5a6ffef119cc79b68a4e7131b40a2ad7/infertrade/algos/community/signals/others.py"
+
 infertrade_export_other_signals = {
     "normalised_close": {
         "function": normalised_close,
         "parameters": {},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/others.py#L5"
+            "github_permalink": github_permalink + "#L" + str(normalised_close.__code__.co_firstlineno)
         },
     },
 }

@@ -17,7 +17,7 @@
 import pandas as pd
 import numpy as np
 from infertrade.PandasEnum import PandasEnum
-from infertrade.algos.community.signals import momentum
+import infertrade.algos.community.signals.momentum as momentum
 
 
 def RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1) -> pd.DataFrame:
@@ -138,6 +138,7 @@ def ROC_strategy(df: pd.DataFrame, window: int = 12, max_investment: float = 0.1
 
     return df
 
+github_permalink = "https://github.com/ta-oliver/infertrade/blob/4b094d3d5a6ffef119cc79b68a4e7131b40a2ad7/infertrade/algos/community/allocations/momentum_strategy.py"
 
 infertrade_export_momentum_strategies = {
     "RSI_strategy": {
@@ -145,7 +146,7 @@ infertrade_export_momentum_strategies = {
         "parameters": {"window": 14, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L522"
+            "github_permalink": github_permalink + "#L" + str(RSI_strategy.__code__.co_firstlineno)
         },
     },
     "stochastic_RSI_strategy": {
@@ -153,7 +154,7 @@ infertrade_export_momentum_strategies = {
         "parameters": {"window": 14, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L539"
+            "github_permalink": github_permalink + "#L" + str(stochastic_RSI_strategy.__code__.co_firstlineno)
         },
     },
     "PPO_strategy": {
@@ -161,7 +162,7 @@ infertrade_export_momentum_strategies = {
         "parameters": {"window_fast": 26, "window_slow": 12, "window_signal": 9, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L629"
+            "github_permalink": github_permalink + "#L" + str(PPO_strategy.__code__.co_firstlineno)
         },
     },
     "PVO_strategy": {
@@ -169,7 +170,7 @@ infertrade_export_momentum_strategies = {
         "parameters": {"window_fast": 26, "window_slow": 12, "window_signal": 9, "max_investment": 0.1},
         "series": ["volume"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L648"
+            "github_permalink": github_permalink + "#L" + str(PVO_strategy.__code__.co_firstlineno)
         },
     },
     "TSI_strategy": {
@@ -177,7 +178,7 @@ infertrade_export_momentum_strategies = {
         "parameters": {"window_slow": 25, "window_fast": 13, "window_signal": 13, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L663"
+            "github_permalink": github_permalink + "#L" + str(TSI_strategy.__code__.co_firstlineno)
         },
     },
     "KAMA_strategy": {
@@ -185,7 +186,7 @@ infertrade_export_momentum_strategies = {
         "parameters": {"window": 10, "pow1": 2, "pow2": 30, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L724"
+            "github_permalink": github_permalink + "#L" + str(KAMA_strategy.__code__.co_firstlineno)
         },
     },
     "ROC_strategy": {
@@ -193,7 +194,7 @@ infertrade_export_momentum_strategies = {
         "parameters": {"window": 12, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L763"
+            "github_permalink": github_permalink + "#L" + str(ROC_strategy.__code__.co_firstlineno)
         },
     },
 }

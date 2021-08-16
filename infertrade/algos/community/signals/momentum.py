@@ -18,6 +18,7 @@
 Functions used to compute momentum indicators. Signals may be used for visual inspection or as inputs to trading rules.
 """
 
+from infertrade.algos.community.allocations.momentum_strategy import stochastic_RSI_strategy
 import pandas as pd
 import numpy as np
 from ta.momentum import ppo_signal, rsi, stochrsi, pvo_signal, tsi, kama, roc
@@ -100,13 +101,15 @@ def rate_of_change(df: pd.DataFrame, window: int = 12) -> pd.DataFrame:
     return df_with_signal
 
 
+github_permalink = "https://github.com/ta-oliver/infertrade/blob/4b094d3d5a6ffef119cc79b68a4e7131b40a2ad7/infertrade/algos/community/signals/momentum.py"
+
 infertrade_export_momentum_signals = {
     "relative_strength_index": {
         "function": relative_strength_index,
         "parameters": {"window": 14},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/momentum.py#L27"
+            "github_permalink": github_permalink + "#L" + str(relative_strength_index.__code__.co_firstlineno)
         },
     },
     "stochastic_relative_strength_index": {
@@ -114,7 +117,7 @@ infertrade_export_momentum_signals = {
         "parameters": {"window": 14},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/momentum.py#L36"
+            "github_permalink": github_permalink + "#L" + str(stochastic_relative_strength_index.__code__.co_firstlineno)
         },
     },
     "percentage_price_oscillator": {
@@ -122,7 +125,7 @@ infertrade_export_momentum_signals = {
         "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/momentum.py#L46"
+            "github_permalink": github_permalink + "#L" + str(percentage_price_oscillator.__code__.co_firstlineno)
         },
     },
     "percentage_volume_oscillator": {
@@ -130,7 +133,7 @@ infertrade_export_momentum_signals = {
         "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9},
         "series": ["volume"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/momentum.py#L58"
+            "github_permalink": github_permalink + "#L" + str(percentage_volume_oscillator.__code__.co_firstlineno)
         },
     },
     "true_strength_index": {
@@ -138,7 +141,7 @@ infertrade_export_momentum_signals = {
         "parameters": {"window_slow": 25, "window_fast": 13},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/momentum.py#L70"
+            "github_permalink": github_permalink + "#L" + str(true_strength_index.__code__.co_firstlineno)
         },
     },
     "KAMA": {
@@ -146,7 +149,7 @@ infertrade_export_momentum_signals = {
         "parameters": {"window": 10, "pow1": 2, "pow2": 30},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/momentum.py#L84"
+            "github_permalink": github_permalink + "#L" + str(KAMA.__code__.co_firstlineno)
         },
     },
     "rate_of_change": {
@@ -154,7 +157,7 @@ infertrade_export_momentum_signals = {
         "parameters": {"window": 12},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/b611ca7897e08fbda8415471088f6119cc85d317/infertrade/algos/community/signals/momentum.py#L94"
+            "github_permalink": github_permalink + "#L" + str(rate_of_change.__code__.co_firstlineno)
         },
     },
 }

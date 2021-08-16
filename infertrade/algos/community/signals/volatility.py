@@ -110,13 +110,15 @@ def bollinger_band(df: pd.DataFrame, window: int = 20, window_dev: int = 2) -> p
     return df_with_signal
 
 
+github_permalink = "https://github.com/ta-oliver/infertrade/blob/4b094d3d5a6ffef119cc79b68a4e7131b40a2ad7/infertrade/algos/community/signals/volatility.py"
+
 infertrade_export_volatility_signals = {
     "high_low_diff": {
         "function": high_low_diff,
         "parameters": {},
         "series": ["high", "low"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L42"
+            "github_permalink": github_permalink + "#L" + str(high_low_diff.__code__.co_firstlineno)
         },
     },
     "high_low_diff_scaled": {
@@ -124,7 +126,7 @@ infertrade_export_volatility_signals = {
         "parameters": {"amplitude": 1.0},
         "series": ["high", "low"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L153"
+            "github_permalink": github_permalink + "#L" + str(high_low_diff_scaled.__code__.co_firstlineno)
         },
     },
     "bollinger_band": {
@@ -132,7 +134,7 @@ infertrade_export_volatility_signals = {
         "parameters": {"window": 20, "window_dev": 2},
         "series": ["close", "high", "low"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5f74bdeb99eb26c15df0b5417de837466cefaee1/infertrade/algos/community/signals.py#L155"
+            "github_permalink": github_permalink + "#L" + str(bollinger_band.__code__.co_firstlineno)
         },
     },
     "chande_kroll": {
@@ -140,7 +142,7 @@ infertrade_export_volatility_signals = {
         "parameters": {"average_true_range_periods": 10, "average_true_range_multiplier": 1.0, "stop_periods": 9},
         "series": ["high", "low"],
         "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade/algos/community/signals.py#L125"
+            "github_permalink": github_permalink + "#L" + str(chande_kroll.__code__.co_firstlineno)
         },
     },
 }
