@@ -1103,4 +1103,12 @@ infertrade_export_allocations = {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L777"
         },
     },
+    "DPO_strategy": {
+        "function": DPO_strategy,
+        "parameters": {"window": 20, "max_investment": 0.1},
+        "series": ["close"],
+        "available_representation_types":{
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/f571d052d9261b7dedfcd23b72d925e75837ee9c/infertrade/algos/community/allocations.py#L1028"
+        }
+    }
 }

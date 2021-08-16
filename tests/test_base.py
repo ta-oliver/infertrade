@@ -31,6 +31,6 @@ def test_get_signal_calc():
     """Test to confirm the return of a signal after get_signal_calc usage"""
     adapted_aroon = ta_adaptor(AroonIndicator, "aroon_up")
     get_signal = get_signal_calc(func=simulated_market_data_4_years_gen,adapter=adapted_aroon)
-    assert(get_signal, pd.DataFrame)
+    assert isinstance(get_signal, pd.DataFrame)
 
 
