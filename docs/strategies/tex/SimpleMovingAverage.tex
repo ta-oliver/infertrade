@@ -13,33 +13,22 @@
 \tblofcontents
 
 \ruledescription{
-These representations have the position dependent on comparing two moving average windows one is short and the other is Long when the short window average length $\averagelengthshort$ is greater than the long one average length $\averagelengthlong$ so the model will go for the long position and when the short $\averagelengthshort$ is less than the long one $\averagelengthlong$, the position will be short}
-\\
+A simple moving average (SMA) is a technical indicator used by most traders to identify the trend of an asset. It calculates the average of a selected range of prices, usually closing prices, by the number of periods in that range. A crossover is usually used by traders as a signal to buy and sell. It is considered bullish when the SMA cross below the price of an asset and considered bearish when the SMA cross above the price of an asset.}
+
+\howtotrade
+The strategy is to identify bullish and bearish crossovers. \\
+Bullish Crossover: when SMA cross below the asset price. \\
+Bearish Crossover: when SMA cross above the asset price.
 
 \ruleparameters
-{Long Window size}{10}{This is the number of time steps over which exponential contributions are sourced}{$\averagelengthlong$}
-{Short Window Size}{5}{This is the decay factor that reduces older contributions from the price series}{$\averagelengthshort$}
+{Window size}{50}{This is the number of time steps over which contributions are sourced}{$\lookbacklength$}
 \stoptable
 \section{Equation}
 \begin{equation}
-\sum_{\dummyiterator}^{\averagelengthlong} \price_{\currenttime - \dummyiterator} \\
-\label{eq1}
+    SMA = \frac{1}{\lookbacklength} \sum_{n=0}^{\lookbacklength} \price_{t-n}
 \end{equation}
-
-\begin{equation}
-\sum_{\dummyiterator}^{\averagelengthshort} \price_{\currenttime - \dummyiterator} \\
-\label{eq2}
-\end{equation}
-
-\[ \position_\currenttime = \begin{cases} \mbox{1,} & \mbox{if } equ.\ref{eq2}>equ.\ref{eq1} \\ \mbox{0,} & \mbox{if } equ.\ref{eq1}>equ.\ref{eq2} \end{cases} \]
-
-
-\hspace{200mm}
 
 where $\price_\currenttime$ is the price at time $\currenttime$,
-
-\hspace{200mm}
-\hspace{200mm}
 
 \keyterms
 \furtherlinks %The footer
