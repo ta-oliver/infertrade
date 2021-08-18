@@ -1,0 +1,94 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Average Directional Movement Index} %Argument is name of rule
+\tblofcontents
+
+\ruledescription{The Average Directional Index (ADX) introduce by Wells Wilder, is a technical indicator that is used to help measure the overall strength of the trend. This indicator attempts to measure the strength of price movement in positive and negative direction using the $+$DMI and $-$DMI indicators along with the ADX. A trend is considered strong when the value of the ADX is above 25 and considered weak when the value is below 25. A trend is also considered bullish when the $+$DMI is above the $-$DMI and considered bearish when the $+$DMI is below the $-$DMI.
+}
+
+\howtotrade
+{The strategy is to identify the trend and the strength of the trend using the values of ADX, $+$DMI and $-$DMI. \\
+Bullish Trend - When the $+$DMI is above the $-$DMI and the ADX value is above 25. \\
+Bearish Trend - When the $+$DMI is below the $-$DMI and ADX is below 25.
+}
+
+\ruleparameters %You can include however many arguments (in groups of 4) as you want!
+{Look Back Length}{14}{Number of timestamps used to calculate ADX.}{$\lookbacklength$}
+\stoptable %must be included or Tex engine runs infinitely
+
+\newpage
+\section{Equation}
+Below are the equations which govern how this specific trading rule calculates a trading position.
+
+\begin{equation}
+    TR_{\currenttime} = \max{\{P_{\currenttime}^{h}-P_{\currenttime}^{l},\ |P_{\currenttime}^{h} - P_{\currenttime-1}^{c}|, \
+    |P_{\currenttime-1}^{c} - P_{\currenttime}^{h}|}\}
+\end{equation}
+\begin{equation}
+    ATR_{\currenttime} = \frac{1}{\lookbacklength} \sum_{i=1}^{\lookbacklength} TR_{i}
+\end{equation}
+\begin{equation}
+    +DM_{\currenttime} = \begin{cases}
+    0 & P_{\currenttime}^{h}-P_{\currenttime-1}^{h} < 0 \\
+    P_{\currenttime}^{h}-P_{\currenttime-1}^{h} & else
+    \end{cases}
+\end{equation}
+\begin{equation}
+    -DM_{\currenttime} = \begin{cases}
+    0 & P_{\currenttime-1}^{l}-P_{\currenttime}^{l} < 0 \\
+    P_{\currenttime-1}^{l}-P_{\currenttime}^{l} & else
+    \end{cases}
+\end{equation}
+\begin{equation}
+    +/-DM_{\currenttime}^{s} = \sum_{i=1}^{\lookbacklength} DM_{i} + \sum_{i=1}^{\lookbacklength} \frac{DM_{i}}{\lookbacklength} + DM_{c}
+\end{equation}
+\begin{equation}
+    +DI_{\currenttime} = \frac{+DM_{\currenttime}^{s}}{ATR_{\currenttime}} \times 100
+\end{equation}
+\begin{equation}
+    -DI_{\currenttime} = \frac{-DM_{\currenttime}^{s}}{ATR_{\currenttime}} \times 100
+\end{equation}
+\begin{equation}
+    DX_{\currenttime} = \Big( \frac{|+DI_{\currenttime} - -DI_{\currenttime}|}{|+DI_{\currenttime} + -DI_{\currenttime}|}\Big) \times 100
+\end{equation}
+\begin{equation}
+ADX_{t} =
+    \begin{cases}
+        \frac{1}{L} \sum_{i=1}^{\lookbacklength} DX_{i} & \currenttime = 0 \\ \\
+        \frac{(ADX_{\currenttime-1} \times (\lookbacklength -1)) + DX_{\currenttime}}{\lookbacklength} & \currenttime > 0
+    \end{cases}
+\end{equation}
+\\ % creates some space after equation
+where:
+
+$P_{\currenttime}^{h}$: is the asset's high price at time \currenttime.
+
+$P_{\currenttime}^{c}$: is the asset's close price at time \currenttime.
+
+$P_{\currenttime}^{l}$: is the asset's low price at time \currenttime.
+
+$TR_{\currenttime}$: is the True Range at time \currenttime.
+
+$ATR_{\currenttime}$: is the Average True Range at time \currenttime.
+
+$DM_{c}$: is the Directional Movement at current time.
+
+$+/-DM_{\currenttime}$: is the Directional Movement at time \currenttime.
+
+$+/-DM_{\currenttime}^{s}$: is the Smoothed Directional Movement at time \currenttime.
+
+$+/-DI_{\currenttime}$: is the Directional Index at time \currenttime.
+
+$DX_{\currenttime}$: is the Directional Movement Index at time \currenttime.
+
+$ADX_{\currenttime}$: is the Average Directional Movement Index at time \currenttime.
+
+
+\keyterms
+\furtherlinks %The footer
+\end{document}
