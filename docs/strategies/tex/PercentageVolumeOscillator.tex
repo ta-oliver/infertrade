@@ -1,0 +1,52 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Percentage Volume Oscillator} %Argument is name of rule
+\tblofcontents
+
+\ruledescription{The percentage volume oscillator (PVO) is a momentum indicator that measures the difference between two moving averages as a percentage of the larger moving average. The fast moving average uses a lower period, and is thus more reactive to changes in volume. The slow moving average uses a faster period and is therefore less reactive. The PVO is positive when the shorter volume EMA is above the longer volume EMA and negative when the shorter volume EMA is below. This indicator can be used to define the ups and downs for volume, which can then be used to confirm or refute other signals. A bullish reversal of an asset is identify when the PVO cross above zero line. And a bearish reversal when the PVO cross below the zero line.
+}
+
+\howtotrade
+{The strategy is to identify Bullish and Bearish Reversal.
+Bullish Reversal - when PVO is above zero \&
+Bearish Reversal - when PVO is below zero.
+}
+
+\ruleparameters %You can include however many arguments (in groups of 4) as you want!
+{Short term look back Length}{12}{Short term look back length used to compute EMA.}{$\lookbacklength_{s}$}
+{Long term look back Length}{26}{Long term look back length used to compute EMA.}{$\lookbacklength_{l}$}
+{Signal look back Length}{9}{Look back length used to generate Signal line.}{$S_{l}$}
+\stoptable %must be included or Tex engine runs infinitely
+
+\newpage
+\section{Equation}
+Below are the equations which govern how this specific trading rule calculates a trading position.
+
+\begin{equation}
+    PVO = \frac{EMA(\lookbacklength_{s}) -         EMA(\lookbacklength_{l})}{EMA(\lookbacklength_{l})} \times 100
+\end{equation}
+\begin{equation}
+    Signal = EMA(S_{l})
+\end{equation}
+\begin{equation}
+    PVO_{hist} = PVO - Signal
+\end{equation}
+\\ % creates some space after equation
+where:
+
+$EMA(\lookbacklength_{s})$: is the short term exponentially weighted volume average.
+
+$EMA(\lookbacklength_{l})$: is the long term exponentially weighted volume average.
+
+$EMA(S_{l})$: is the exponentially weighted volume average computed to generate signal line.
+
+$PVO_{hist}$: is the Percentage Volume Oscillator histogram.
+
+\keyterms
+\furtherlinks %The footer
+\end{document}
