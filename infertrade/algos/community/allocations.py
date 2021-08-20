@@ -507,7 +507,8 @@ def MACD_strategy(
     df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, max_investment: float = 0.1
 ) -> pd.DataFrame:
     """
-    Moving average convergence divergence strategy which buys when MACD signal is above 0 and sells when MACD signal is below zero
+    Moving average convergence divergence strategy which buys when MACD signal is above 0 and sells when MACD signal
+     is below zero.
     """
     MACD_signal = signals.moving_average_convergence_divergence(df, window_slow, window_fast, window_signal)["signal"]
 
@@ -617,7 +618,7 @@ def bollinger_band_strategy(
 
 def DPO_strategy(df: pd.DataFrame, window: int = 20, max_investment: float = 0.1) -> pd.DataFrame:
     """
-    Exponential moving average strategy which buys when price is above signal and sells when price is below signal
+    Exponential moving average strategy which buys when price is above signal and sells when price is below signal.
     """
     DPO = signals.detrended_price_oscillator(df, window=window)["signal"]
 
