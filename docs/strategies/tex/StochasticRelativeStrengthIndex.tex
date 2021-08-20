@@ -1,0 +1,58 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Stochastic Relative Strength Index} %Argument is name of rule
+\tblofcontents
+
+\ruledescription{The Stochastic RSI (StochRSI) is an indicator used in technical analysis to identify overbought and oversold signals. It ranges between zero and one hundred and is created by applying the Stochastic oscillator formula to a set of relative strength index (RSI) values rather than to standard price data. An asset is considered oversold when the StochRSI values is below 20 and considered overbought when the StochRSI value is above 80.}
+\howtotrade
+The strategy is to identify overbought and oversold signals.
+Bullish Momentum: when StochRSI is above 80.
+Bearish Momentum: when StochRSI is below 20.
+
+\ruleparameters %You can include however many arguments (in groups of 4) as you want!
+{Time Length}{14 Days}{Time frame on which the StochRSI is calculated}{$L$}
+\stoptable %must be included or Tex engine runs infinitely
+
+\newpage
+\section{Equation}
+Below are the equations which govern how this specific trading rule calculates a trading position.
+\begin{equation}
+    RS_{\currenttime} = \frac{AvgU}{AvgD}
+\end{equation}
+\begin{equation}
+RSI_{\currenttime} = 100-\frac{100}{(1+RS_{\currenttime})}
+\end{equation}
+\begin{equation}
+RSI_{min} = \min\{RSI_{\currenttime-\lookbacklength},\ldots,RSI_{\currenttime}\}
+\end{equation}
+\begin{equation}
+RSI_{max} = \max\{RSI_{\currenttime-\lookbacklength},\ldots,RSI_{\currenttime}\}
+\end{equation}
+\begin{equation}
+    StochRSI_{\currenttime} = \frac{RSI_{\currenttime} - RSI_{min}}{RSI_{max} - RSI_{min}}
+\end{equation}
+\\
+with:
+
+$AvgU$ : average of all upward movements in the last $\lookbacklength$ price bars.
+
+$AvgD$ : average of all downward movements in the last $\lookbacklength$ price bars.
+
+$RS_{\currenttime}$: is the relative strength at time $\currenttime$.
+
+$RSI_{\currenttime}$: is the relative strength index at time $\currenttime$.
+
+$RSI_{min}$: Lowest RSI in last $\lookbacklength$ periods.
+
+$RSI_{max}$: Highest RSI in last $\lookbacklength$ periods.
+
+$StochRSI_{\currenttime}$: is the stochastic relative strength index at time $\currenttime$.
+
+\keyterms
+\furtherlinks %The footer
+\end{document}
