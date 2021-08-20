@@ -18,9 +18,8 @@ Overbought : when STC value is at 75. \\
 }
 
 \ruleparameters %You can include however many arguments (in groups of 4) as you want!
-{Slow Look Back Length}{30}{Look back length used to compute slow MA.}{$\lookbacklength_{s}$}
-{Fast Look Back Length}{2}{Look back length used to compute fast MA.}{$\lookbacklength_{f}$}
-{Number of periods}{10}{Number of periods used to compute $\sigma$ and $\Delta_{\currenttime}$.}{$n$}
+{Short term look back length}{23}{Short term look back length used to compute EMA.}{$\lookbacklength_{s}$}
+{Long term look back length}{50}{Long term look back length used to compute EMA.}{$\lookbacklength_{l}$}
 \stoptable %must be included or Tex engine runs infinitely
 
 \newpage
