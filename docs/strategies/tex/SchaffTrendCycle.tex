@@ -1,0 +1,58 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Schaff Trend Cycle} %Argument is name of rule
+\tblofcontents
+
+\ruledescription{The Schaff Trend Cycle (STC) Created by Doug Schaff in 1999 is an oscillator-type indicator that can help you identify positive and negative trends, indicate entry and exit points, as well as provide buy and sell signals. The Schaff Trend Cycle is bounded between 0 and 100, when it surpasses 25, it is considered as a bullish signal and when it breaks 75 it is considered as a bearish signal.
+}
+
+\howtotrade
+{The strategy is to identify the oversold and overbought markets.\\
+Oversold : when STC value is at 25. \\
+Overbought : when STC value is at 75. \\
+}
+
+\ruleparameters %You can include however many arguments (in groups of 4) as you want!
+{Short term look back length}{23}{Short term look back length used to compute EMA.}{$\lookbacklength_{s}$}
+{Long term look back length}{50}{Long term look back length used to compute EMA.}{$\lookbacklength_{l}$}
+\stoptable %must be included or Tex engine runs infinitely
+
+\newpage
+\section{Equation}
+Below are the equations which govern how this specific trading rule calculates a trading position.
+
+\begin{equation}
+    EMA(P_{t}^{c}, \lookbacklength_{s}) = \Big(P_{t}^{c} * \Big(\frac{S}{1 + \lookbacklength_{s}}\Big)\Big) + EMA_{\currenttime-1} * \Big(1-\frac{S}{1 + \lookbacklength_{s}}\Big)
+\end{equation}
+\begin{equation}
+    EMA(P_{t}^{c}, \lookbacklength_{l}) = \Big(P_{t}^{c} * \Big(\frac{S}{1 + \lookbacklength_{l}}\Big)\Big) + EMA_{\currenttime-1} * \Big(1-\frac{S}{1 + \lookbacklength_{l}}\Big)
+\end{equation}
+\begin{equation}
+    MACD = EMA(P_{c}, \lookbacklength_{s}) - EMA(P_{c}, \lookbacklength_{l})
+\end{equation}
+\begin{equation}
+    STC = 100 \times \frac{MACD - \%K(MACD)}{\%D(MACD) - \%K(MACD)}
+\end{equation}
+\\ % creates some space after equation
+where:
+
+$P_{t}^{c}$: is the close price of at time \currenttime.
+
+$L_{s}$: is the short term look back window.
+
+$L_{l}$: is the long term look back window.
+
+$EMA(P_{t}^{c}, \lookbacklength_{s})$: is the short term exponential moving average at time \currenttime.
+
+$\%K$: is the stochastic oscillator whose moving average is $\%D$.
+
+$STC$: is the Schaff Trend Cycle Indicator.
+
+\keyterms
+\furtherlinks %The footer
+\end{document}
