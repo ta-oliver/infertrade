@@ -18,38 +18,24 @@ if __name__ == "__main__":
         "library": "reducerlib",
         "api_method": "algo_calculate",
         "kwargs": {
-            "algorithms": [
-                {
-                    "name": "SharpeRatio"
-                },
-                {
-                    "name": "PriceBasicStatistics"
-                }
-            ],
-            "inputs": [
-                {
-                    "time_series": [
-                        {
-                            "portfolio_return": trading_strategy_returns_df['portfolio_return'].to_list(),
-                            "allocation": trading_strategy_returns_df['allocation'].to_list(),
-                            "price_1": trading_strategy_returns_df['price'].to_list(),
-                            "research_1": trading_strategy_returns_df['research'].to_list()
-                        }
-                    ]
-                }
-            ]
+            "algorithms": [{"name": "SharpeRatio"},{"name": "PriceBasicStatistics"}],
+            "inputs": [{
+                "time_series": [{
+                    "portfolio_return": trading_strategy_returns_df['portfolio_return'].to_list(),
+                    "allocation": trading_strategy_returns_df['allocation'].to_list(),
+                    "price_1": trading_strategy_returns_df['price'].to_list(),
+                    "research_1": trading_strategy_returns_df['research'].to_list()
+                    }]
+                }]
+            }
         }
     }
-}
 
     response = httpx.post(
         'https://prod.api.infertrade.com/',
-        headers=
-        {
+        headers = {
             'content-type': 'application/json',
             'x-api-key': 'your-api-key-here'
-        },
-        json=json_data
-        )
+        }, json=json_data)
 
     print(response.content)

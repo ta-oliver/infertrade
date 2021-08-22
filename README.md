@@ -146,3 +146,48 @@ simulated_correlated_equities_4_years_gen().plot(y=["price", "signal"])
 plt.show()
 ```
 ![image](https://user-images.githubusercontent.com/29981664/111360130-4668a400-8684-11eb-933e-e8f10662b0bb.png)
+
+### Example of use the API for calculations.
+
+- Replace the `your-api-key-here` in `'x-api-key':'your-api-key-here'` with your API key (Contact support@infertrade.com for more information)
+- Change the parameters in `kwargs` according to your needs
+
+*NOTE: You can use any library instead of `httpx` of your own choice to call API.*
+
+```python
+import httpx
+
+from infertrade.data.simulate_data import simulated_market_data_4_years_gen
+from infertrade.algos.community.allocations import change_regression
+from infertrade.utilities.performance import calculate_portfolio_performance_python
+
+json_data = {
+"service": "privateapi",
+"endpoint": "/",
+"session_id": "session_id",
+"payload": {
+    "library":"reducerlib",
+    "api_method":"algo_calculate",
+    "kwargs":{
+        "algorithms":[{"name": "SharpeRatio"},{"name": "PriceBasicStatistics"}],
+        "inputs":[{
+            "time_series": [{
+                "portfolio_return": trading_strategy_returns_df['portfolio_return'].to_list(),
+                "allocation": trading_strategy_returns_df['allocation'].to_list(),
+                "price_1": trading_strategy_returns_df['price'].to_list(),
+                "research_1": trading_strategy_returns_df['research'].to_list()
+                }]
+            }]
+        }
+    }
+}
+
+response = httpx.post(
+    'https://prod.api.infertrade.com/',
+    headers = {
+        'content-type': 'application/json',
+        'x-api-key': 'your-api-key-here'
+    }, json=json_data)
+
+print(response.content)
+```
