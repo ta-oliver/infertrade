@@ -161,6 +161,9 @@ from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 from infertrade.algos.community.allocations import change_regression
 from infertrade.utilities.performance import calculate_portfolio_performance_python
 
+trading_strategy_df = change_regression(simulated_market_data_4_years_gen())
+trading_strategy_returns_df = calculate_portfolio_performance_python(trading_strategy_df)
+
 json_data = {
 "service": "privateapi",
 "endpoint": "/",
