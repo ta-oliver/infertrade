@@ -147,7 +147,7 @@ plt.show()
 ```
 ![image](https://user-images.githubusercontent.com/29981664/111360130-4668a400-8684-11eb-933e-e8f10662b0bb.png)
 
-### Example of use the API for calculations.
+### Example use of API for calculations.
 
 - Replace the `your-api-key-here` in `'x-api-key':'your-api-key-here'` with your API key (Contact support@infertrade.com for more information)
 - Change the parameters in `kwargs` according to your needs
