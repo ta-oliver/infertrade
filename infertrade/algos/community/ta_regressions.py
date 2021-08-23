@@ -13,7 +13,7 @@
 # Copyright 2021 InferStat Ltd
 # Created by: Thomas Oliver
 # Created date: 23/08/2021
-
+from collections import Callable
 
 import pandas as pd
 from sklearn.preprocessing import FunctionTransformer
@@ -26,7 +26,27 @@ from infertrade.utilities.operations import (
 )
 from sklearn.pipeline import make_pipeline
 from infertrade.algos.external.ta import ta_adaptor
-from copy import deepcopy
+
+
+def create_allocation_function(ta_signal_name: str, ta_raw_signal_func: Callable) -> Callable[[pd.DataFrame], pd.DataFrame]:
+    """Creates an allocation function."""
+
+    def allocation_function(time_series_df: pd.DataFrame, *args, **kwargs) -> pd.DataFrame:
+        """Generic regression treatment of ta technical signals."""
+        ta_signal_func = ta_export_signals[ta_raw_signal_func]["class"]
+
+        adapted_allocation_rule_using_regression = ta_adaptor(ta_signal_func, ta_signal_name, *args, **kwargs)
+
+        pipeline = make_pipeline(
+            FunctionTransformer(adapted_allocation_rule_using_regression),
+            PricePredictionFromSignalRegression(),
+            PositionsFromPricePrediction(),
+        )
+
+        time_series_df = pipeline.fit_transform(time_series_df)
+        return time_series_df
+
+    return allocation_function
 
 
 def ta_rules_with_regression() -> dict:
@@ -37,31 +57,13 @@ def ta_rules_with_regression() -> dict:
     for ii_ta_signal in ta_export_signals:
         ta_rule_name = ta_export_signals[ii_ta_signal]["function_names"]
 
-        def allocation_function(time_series_df: pd.DataFrame, *args, **kwargs) -> pd.DataFrame:
-            """Generic regression treatment of ta technical signals."""
-            ta_signal_func = ta_export_signals[ii_ta_signal]["class"]
-
-            adapted_allocation_rule_using_regression = ta_adaptor(ta_signal_func, ta_rule_name, *args, **kwargs)
-
-            pipeline = make_pipeline(
-                FunctionTransformer(adapted_allocation_rule_using_regression),
-                PricePredictionFromSignalRegression(),
-                PositionsFromPricePrediction(),
-            )
-
-            time_series_df = pipeline.fit_transform(time_series_df)
-            return time_series_df
-
-	def create_allocation_function():
-            """Creates an allocation function."""
-            return deepcopy(allocation_function)
-
-
         ta_regression_name = ta_rule_name + "_regression"
+
+        ta_raw_signal_func = ta_export_signals[ii_ta_signal]["class"]
 
         dictionary_addition = {
             ta_regression_name: {
-                "function": create_allocation_function(),
+                "function": create_allocation_function(ta_rule_name, ta_raw_signal_func),
                 "parameters": ta_export_signals[ii_ta_signal]["parameters"],
                 "series": ta_export_signals[ii_ta_signal]["series"],
                 "available_representation_types": {
