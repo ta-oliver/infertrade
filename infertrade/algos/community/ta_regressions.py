@@ -13,23 +13,27 @@
 # Copyright 2021 InferStat Ltd
 # Created by: Thomas Oliver
 # Created date: 23/08/2021
+
+# External packages
 from collections import Callable
 
 import pandas as pd
 from sklearn.preprocessing import FunctionTransformer
+from sklearn.pipeline import make_pipeline
 
+
+# InferStat imports
 from infertrade.algos.external.ta import ta_export_signals
 from infertrade.utilities.operations import (
     PositionsFromPricePrediction,
     PricePredictionFromSignalRegression,
-    scikit_allocation_factory,
 )
-from sklearn.pipeline import make_pipeline
 from infertrade.algos.external.ta import ta_adaptor
 
 
-def create_allocation_function(ta_signal_name: str, ta_raw_signal_func: Callable) -> Callable[[pd.DataFrame], pd.DataFrame]:
-    """Creates an allocation function."""
+def create_allocation_function(ta_signal_name: str, ta_raw_signal_func: Callable) -> Callable[[pd.DataFrame],
+                                                                                              pd.DataFrame]:
+    """Creates an allocation function for a ta library signal by regression against the time step price changes."""
 
     def allocation_function(time_series_df: pd.DataFrame, *args, **kwargs) -> pd.DataFrame:
         """Generic regression treatment of ta technical signals."""
@@ -77,4 +81,5 @@ def ta_rules_with_regression() -> dict:
     return allocation_dictionary
 
 
+# Export the regression format rules.
 ta_export_regression_allocations = ta_rules_with_regression()
