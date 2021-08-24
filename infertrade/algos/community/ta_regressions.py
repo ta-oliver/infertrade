@@ -53,6 +53,7 @@ def create_allocation_function(ta_signal_name: str, ta_raw_signal_func: Callable
 
 github_permalink = "https://github.com/ta-oliver/infertrade/blob/e45fe2b76f9a16c07c48a6739e3173737cb5355c/infertrade/algos/community/ta_regressions.py"
 
+
 def ta_rules_with_regression() -> dict:
     """Creates an equivalent dictionary of allocation rules by regressing signals against future price changes."""
 
@@ -71,7 +72,9 @@ def ta_rules_with_regression() -> dict:
                 "parameters": ta_export_signals[ii_ta_signal]["parameters"],
                 "series": ta_export_signals[ii_ta_signal]["series"],
                 "available_representation_types": {
-                    "github_permalink": github_permalink + "#L" + str(create_allocation_function.__code__.co_firstlineno)
+                    "github_permalink": github_permalink
+                    + "#L"
+                    + str(create_allocation_function.__code__.co_firstlineno)
                 },
             }
         }

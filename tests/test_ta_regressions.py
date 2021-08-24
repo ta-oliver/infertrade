@@ -39,10 +39,3 @@ def test_ta_regressions():
     for i in range(len(allocation_df_list) - 1):
         for j in range(i+1, len(allocation_df_list)):
             assert not pd.Series.equals(allocation_df_list[i],allocation_df_list[j])
-
-    
-    
-     
-    
-    
-    
