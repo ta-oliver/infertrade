@@ -49,16 +49,16 @@
 
 
 - To install infertrade specifically for the required version of python (v3.7).
-```
-python3.7 -m pip install infertrade
-```
+  ```
+  python3.7 -m pip install infertrade
+  ```
 
 - Your python program may give you a dependency related error when running Infertade module or not be loading other relevant modules like pandas, even after installing them with pip3. 
 
-In this case you want to use the same procedure as above.
-```
-python3.7 -m pip install pandas
-```
+  In this case you want to use the same procedure as above.
+  ```
+  python3.7 -m pip install pandas
+  ```
 <br>
 
 ## Testing using PyTest.
