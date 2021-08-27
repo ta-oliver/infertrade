@@ -325,7 +325,6 @@ def test_export_to_csv():
 
 
     for ii_rule_name in ta_export_regression_allocations:
-        print(ii_rule_name)
         csv_data = Api.export_to_csv(dataframe=test_df,
                                      rule_name=ii_rule_name,
                                      relationship=relationship_names[len(relationship_names)-1],
