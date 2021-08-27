@@ -81,7 +81,7 @@ class Api:
 
     @staticmethod
     def available_algorithms(
-        filter_by_package: Union[str, List[str]] = None, filter_by_category: Union[str, List[str]] = None
+            filter_by_package: Union[str, List[str]] = None, filter_by_category: Union[str, List[str]] = None
     ) -> List[str]:
         """Returns a list of strings that are available strategies."""
         if not filter_by_package:
@@ -159,7 +159,7 @@ class Api:
 
     @staticmethod
     def calculate_allocations(
-        df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = PandasEnum.MID.value
+            df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = PandasEnum.MID.value
     ) -> pd.DataFrame:
         """Calculates the allocations using the supplied strategy."""
         if name_of_price_series is not PandasEnum.MID.value:
@@ -176,7 +176,7 @@ class Api:
 
     @staticmethod
     def calculate_allocations_and_returns(
-        df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = PandasEnum.MID.value
+            df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = PandasEnum.MID.value
     ) -> pd.DataFrame:
         """Calculates the returns using the supplied strategy."""
         df_with_positions = Api.calculate_allocations(df, name_of_strategy, name_of_price_series)
@@ -205,7 +205,7 @@ class Api:
 
     @staticmethod
     def return_representations(
-        name_of_algorithm: str, representation_or_list_of_representations: Union[str, List[str]] = None
+            name_of_algorithm: str, representation_or_list_of_representations: Union[str, List[str]] = None
     ) -> dict:
         """Returns the representations (e.g. URLs of relevant documentation)."""
 
@@ -232,3 +232,18 @@ class Api:
             raise TypeError("Input type not supported: ", representation_or_list_of_representations)
 
         return representation_dict
+
+    @staticmethod
+    def export_to_csv(dataframe: pd.DataFrame, rule_name: str, string_return: bool = False, relationship: str = None, second_df: pd.DataFrame = None):
+        "Exports csv file of calculated portfolio performance based on data gained from calculating trading rules and relationships"
+        from infertrade.utilities.export import export_performance_df
+        # imported inside to prevent circular dependency
+        df = export_performance_df(dataframe=dataframe,second_df=second_df, rule_name=rule_name, relationship=relationship)
+        file_name = str(rule_name) + "_performance"
+        if string_return is True:
+            return df.to_csv()
+        else:
+            if relationship is not None:
+                return df.to_csv(file_name + '_relationship' + '.csv')
+            else:
+                return df.to_csv(file_name + '.csv')

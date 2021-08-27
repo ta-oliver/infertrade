@@ -27,6 +27,7 @@ from ta.trend import AroonIndicator
 from infertrade.PandasEnum import PandasEnum
 from infertrade.api import Api
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
+from infertrade.algos import algorithm_functions
 
 api_instance = Api()
 test_dfs = [simulated_market_data_4_years_gen(), simulated_market_data_4_years_gen()]
@@ -262,3 +263,52 @@ def test_get_raw_callable():
     returned_callable = Api._get_raw_callable(name_of_strategy_or_signal=names[0])
     assert callable(returned_callable)
 
+
+def test_export_to_csv():
+    """Test to confirm that correct columns are added to generated csv format string"""
+    test_df = simulated_market_data_4_years_gen()
+    second_test_df = simulated_market_data_4_years_gen()
+    new_columns = [
+        "period_start_cash",
+        "period_start_securities",
+        "start_of_period_allocation",
+        "trade_percentage",
+        "trading_skipped",
+        "period_end_cash",
+        "period_end_securities",
+        "end_of_period_allocation",
+        "security_purchases",
+        "cash_flow",
+        "percent_gain",
+        "portfolio_return"
+    ]
+    csv_data = pd.DataFrame
+    for ii_package in algorithm_functions:
+        for ii_algo_type in algorithm_functions[ii_package]:
+            rule_names = list(algorithm_functions[ii_package][ii_algo_type])
+            if 0 < len(rule_names) < 3:
+                for ii_rule_name in rule_names:
+                    csv_data = Api.export_to_csv(dataframe=test_df,
+                                                 rule_name="weighted_moving_averages",
+                                                 string_return=True)
+
+                    csv_data = Api.export_to_csv(dataframe=test_df,
+                                                 rule_name="weighted_moving_averages",
+                                                 second_df = second_test_df,
+                                                 relationship="combination_relationship",
+                                                 string_return=True)
+            elif len(rule_names) > 0:
+                for i in range(1, 3):
+                    csv_data = Api.export_to_csv(dataframe=test_df,
+                                                 rule_name="weighted_moving_averages",
+                                                 relationship="combination_relationship",
+                                                 string_return=True)
+
+                    csv_data = Api.export_to_csv(dataframe=test_df,
+                                                 rule_name="weighted_moving_averages",
+                                                 second_df=second_test_df,
+                                                 relationship="combination_relationship",
+                                                 string_return=True)
+            for _ in new_columns:
+                if _ not in csv_data:
+                    raise ValueError("Missing expected column information")
