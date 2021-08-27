@@ -23,6 +23,7 @@ import pandas as pd
 from infertrade.PandasEnum import PandasEnum
 import infertrade.utilities.operations as operations
 import infertrade.algos.community.signals as signals
+import git
 
 
 def fifty_fifty(dataframe) -> pd.DataFrame:
@@ -821,7 +822,9 @@ def vortex_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 
 
     return df
 
-github_permalink = "https://github.com/ta-oliver/infertrade/blob/291f54df9cbb318e18debb0d32a10475133341b0/infertrade/algos/community/allocations.py"
+repo = git.Repo()
+commit = repo.head.commit
+github_permalink = "https://github.com/ta-oliver/infertrade/blob/"+str(commit)+"/infertrade/algos/community/allocations.py"
 
 infertrade_export_allocations = {
     "fifty_fifty": {
