@@ -239,11 +239,10 @@ class Api:
         from infertrade.utilities.export import export_performance_df
         # imported inside to prevent circular dependency
         df = export_performance_df(dataframe=dataframe,second_df=second_df, rule_name=rule_name, relationship=relationship)
-        file_name = str(rule_name) + "_performance"
         if string_return is True:
             return df.to_csv()
         else:
             if relationship is not None:
-                return df.to_csv(file_name + '_relationship' + '.csv')
+                return df.to_csv(str(rule_name) + "_performance_" + str(relationship) + '.csv')
             else:
-                return df.to_csv(file_name + '.csv')
+                return df.to_csv(str(rule_name) + '.csv')

@@ -25,6 +25,7 @@ import pytest
 # Internal imports
 from ta.trend import AroonIndicator
 from infertrade.PandasEnum import PandasEnum
+from infertrade.algos.community import ta_export_regression_allocations
 from infertrade.api import Api
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 from infertrade.algos import algorithm_functions
@@ -109,6 +110,7 @@ def test_calculation_positions(test_df, allocation_algorithm):
         df_with_returns[PandasEnum.VALUATION.value], df_with_allocations_and_returns[PandasEnum.VALUATION.value]
     )
 
+
 @pytest.mark.parametrize("test_df", test_dfs)
 @pytest.mark.parametrize("signal_algorithm", available_signal_algorithms)
 def test_signals_creation(test_df, signal_algorithm):
@@ -171,8 +173,8 @@ def test_return_representations(algorithm):
         )
     for representation in dict_of_properties[algorithm]["available_representation_types"]:
         assert (
-            returned_representations[representation]
-            == dict_of_properties[algorithm]["available_representation_types"][representation]
+                returned_representations[representation]
+                == dict_of_properties[algorithm]["available_representation_types"][representation]
         )
 
     # Check if the if the function returns the correct representation when given a string
@@ -184,8 +186,8 @@ def test_return_representations(algorithm):
                 type(returned_representations),
             )
         assert (
-            returned_representations[representation]
-            == dict_of_properties[algorithm]["available_representation_types"][representation]
+                returned_representations[representation]
+                == dict_of_properties[algorithm]["available_representation_types"][representation]
         )
 
     # Check if the function returns the correct representations when given a list
@@ -197,8 +199,8 @@ def test_return_representations(algorithm):
         )
     for representation in algorithm_representations:
         assert (
-            returned_representations[representation]
-            == dict_of_properties[algorithm]["available_representation_types"][representation]
+                returned_representations[representation]
+                == dict_of_properties[algorithm]["available_representation_types"][representation]
         )
 
 
@@ -245,7 +247,9 @@ def test_return_representations():
         pass
 
     returned_dict = Api.return_representations(name_of_algorithm=name_list[0],
-                                   representation_or_list_of_representations=list(algo_information[name_list[0]]["available_representation_types"].keys()))
+                                               representation_or_list_of_representations=list(
+                                                   algo_information[name_list[0]][
+                                                       "available_representation_types"].keys()))
     assert isinstance(returned_dict, dict)
 
     returned_dict = Api.return_representations(name_of_algorithm=name_list[0])
@@ -282,33 +286,58 @@ def test_export_to_csv():
         "percent_gain",
         "portfolio_return"
     ]
+
+    relationship_names = []
     csv_data = pd.DataFrame
+    for rule in algorithm_functions["infertrade"]["allocation"]:
+        if "relationship" in rule:
+            relationship_names.append(rule)
+
     for ii_package in algorithm_functions:
         for ii_algo_type in algorithm_functions[ii_package]:
             rule_names = list(algorithm_functions[ii_package][ii_algo_type])
             if 0 < len(rule_names) < 3:
                 for ii_rule_name in rule_names:
                     csv_data = Api.export_to_csv(dataframe=test_df,
-                                                 rule_name="weighted_moving_averages",
+                                                 rule_name=ii_rule_name,
                                                  string_return=True)
 
-                    csv_data = Api.export_to_csv(dataframe=test_df,
-                                                 rule_name="weighted_moving_averages",
-                                                 second_df = second_test_df,
-                                                 relationship="combination_relationship",
+                    csv_data2 = Api.export_to_csv(dataframe=test_df,
+                                                 rule_name=ii_rule_name,
+                                                 second_df=second_test_df,
+                                                 relationship=relationship_names[len(relationship_names)-1],
                                                  string_return=True)
             elif len(rule_names) > 0:
                 for i in range(1, 3):
                     csv_data = Api.export_to_csv(dataframe=test_df,
-                                                 rule_name="weighted_moving_averages",
-                                                 relationship="combination_relationship",
+                                                 rule_name=rule_names[i],
                                                  string_return=True)
 
-                    csv_data = Api.export_to_csv(dataframe=test_df,
-                                                 rule_name="weighted_moving_averages",
+                    csv_data2 = Api.export_to_csv(dataframe=test_df,
+                                                 rule_name=rule_names[i],
                                                  second_df=second_test_df,
-                                                 relationship="combination_relationship",
+                                                 relationship=relationship_names[len(relationship_names)-1],
                                                  string_return=True)
+
             for _ in new_columns:
-                if _ not in csv_data:
+                if _ not in csv_data or _ not in csv_data2:
                     raise ValueError("Missing expected column information")
+
+
+    for ii_rule_name in ta_export_regression_allocations:
+        print(ii_rule_name)
+        csv_data = Api.export_to_csv(dataframe=test_df,
+                                     rule_name=ii_rule_name,
+                                     relationship=relationship_names[len(relationship_names)-1],
+                                     string_return=True)
+
+        csv_data2 = Api.export_to_csv(dataframe=test_df,
+                                     rule_name=ii_rule_name,
+                                     second_df=second_test_df,
+                                     relationship=relationship_names[len(relationship_names)-1],
+                                     string_return=True)
+        break
+
+    for _ in new_columns:
+        if _ not in csv_data or _ not in csv_data2:
+            raise ValueError("Missing expected column information")
