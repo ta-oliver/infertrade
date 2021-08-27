@@ -4,3 +4,4 @@ ta>=0.7.0
 scikit-learn>=0.23.1
 matplotlib>=3.3.4
 typing_extensions>=3.7.4.3
+GitPython==3.1.18
