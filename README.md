@@ -155,7 +155,7 @@ portfolio performance as a CSV file.
 The function accepts up to two dataframes containing market data, a rule name and a relationship name and the output would be a CSV file containing
 information about the provided rule and relationship perfomance with provided market data.
 
-```
+```python
 from infertrade.api import Api
 
 Api.export_to_csv(dataframe=MarketData, rule_name="weighted_moving_averages")
