@@ -822,7 +822,7 @@ def vortex_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 
 
     return df
 
-repo = git.Repo()
+repo = git.Repo(search_parent_directories=True)
 commit = repo.head.commit
 github_permalink = "https://github.com/ta-oliver/infertrade/blob/" + str(commit) + "/infertrade/algos/community/allocations.py"
 
