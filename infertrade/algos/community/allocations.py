@@ -178,14 +178,14 @@ def calculate_combination_relationship(df: pd.DataFrame, regression_period: int 
     return dataframe
 
 
-def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: float = 1.0) -> pd.DataFrame:
+def constant_allocation_size(dataframe: pd.DataFrame, constant_position_size: float = 1.0) -> pd.DataFrame:
     """
     Returns a constant allocation, controlled by the fixed_allocation_size parameter.
 
     parameters:
     fixed_allocation_size: determines allocation size.
     """
-    dataframe[PandasEnum.ALLOCATION.value] = fixed_allocation_size
+    dataframe[PandasEnum.ALLOCATION.value] = constant_position_size
     return dataframe
 
 
@@ -822,9 +822,9 @@ def vortex_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 
 
     return df
 
-repo = git.Repo()
+repo = git.Repo(search_parent_directories=True)
 commit = repo.head.commit
-github_permalink = "https://github.com/ta-oliver/infertrade/blob/"+str(commit)+"/infertrade/algos/community/allocations.py"
+github_permalink = "https://github.com/ta-oliver/infertrade/blob/" + str(commit) + "/infertrade/algos/community/allocations.py"
 
 infertrade_export_allocations = {
     "fifty_fifty": {
@@ -885,7 +885,7 @@ infertrade_export_allocations = {
     },
     "constant_allocation_size": {
         "function": constant_allocation_size,
-        "parameters": {"fixed_allocation_size": 1.0},
+        "parameters": {"constant_position_size": 1.0},
         "series": [],
         "available_representation_types": {
             "github_permalink": github_permalink + "#L" + str(constant_allocation_size.__code__.co_firstlineno) 
