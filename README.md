@@ -149,7 +149,7 @@ plt.show()
 
 ### Exporting portfolio performance to a CSV file
 
-The "infertrade.api" module contains a Api class with multiple useful functions including "export_to_csv" wich is used to export
+The "infertrade.api" module contains an Api class with multiple useful functions including "export_to_csv" which is used to export
 portfolio performance as a CSV file.
 
 The function accepts up to two dataframes containing market data, a rule name and a relationship name and the output would be a CSV file containing
