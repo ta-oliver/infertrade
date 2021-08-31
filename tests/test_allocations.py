@@ -481,6 +481,7 @@ def test_PVO_strategy():
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
+
 def test_TRIX_strategy():
     df_with_allocations = allocations.TRIX_strategy(df, 14, max_investment)
     df_with_signals = triple_exponential_average(df, 14)
@@ -493,7 +494,8 @@ def test_TRIX_strategy():
     
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
-def test_TSI_strategy():
+
+def test_tsi_strategy():
     df_with_allocations = allocations.TSI_strategy(df, 25, 13, 13, max_investment=max_investment)
     df_with_signals = true_strength_index(df, 25, 13, 13)
     
@@ -505,7 +507,8 @@ def test_TSI_strategy():
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
-def test_SCT_strategy():
+
+def test_sct_strategy():
     df_with_allocations = allocations.STC_strategy(df, 50, 23, 10, 3, 3, max_investment=max_investment)
     df_with_signal = schaff_trend_cycle(df)
     oversold = df_with_signal["signal"] <= 25
@@ -517,6 +520,7 @@ def test_SCT_strategy():
     df_with_signal.loc[hold, "allocation"] = 0
 
     assert pd.Series.equals(df_with_signal["allocation"], df_with_allocations["allocation"])
+
 
 def test_KAMA_strategy():
     df_with_signals = KAMA(df, 10, 2, 30)
@@ -530,6 +534,7 @@ def test_KAMA_strategy():
 
     assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
 
+
 def test_aroon_strategy():
     df_with_signals = aroon(df, window=25)
     df_with_allocations = allocations.aroon_strategy(df, 25, max_investment)
@@ -542,6 +547,7 @@ def test_aroon_strategy():
     df_with_signals.loc[bearish, PandasEnum.ALLOCATION.value] = -max_investment
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
+
 
 def test_ROC_strategy():
     df_with_signals = rate_of_change(df, window=25)
