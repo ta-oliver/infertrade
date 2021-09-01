@@ -6,7 +6,7 @@
 
 InferTrade.com is a free webtool for evaluating signals (features in ML/AI) to determine their ability to predict financial markets.
 
-This Postman collection provides documentation for the main API functionality used to support InferTrade.com.
+This is the guidance for the main API functionality used to support InferTrade.com.
 
 For the underlying Python code used to calculate the trading strategies used on InferTrade.com, please see our open source (Apache 2.0) infertrade package.
 

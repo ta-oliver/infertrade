@@ -180,7 +180,7 @@ def calculate_combination_relationship(df: pd.DataFrame, regression_period: int 
     return dataframe
 
 
-def constant_allocation_size(dataframe: pd.DataFrame, constant_position_size: float = 1.0) -> pd.DataFrame:
+def constant_allocation_size(dataframe: pd.DataFrame, constant_position_size: float = 0.5) -> pd.DataFrame:
     """
     Returns a constant allocation, controlled by the fixed_allocation_size parameter.
 
@@ -890,7 +890,7 @@ infertrade_export_allocations = {
     },
     "constant_allocation_size": {
         "function": constant_allocation_size,
-        "parameters": {"constant_position_size": 1.0},
+        "parameters": {"constant_position_size": 0.5},
         "series": [],
         "available_representation_types": {
             "github_permalink": github_permalink + "#L" + str(constant_allocation_size.__code__.co_firstlineno)
