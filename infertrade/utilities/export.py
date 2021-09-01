@@ -36,7 +36,8 @@ def calculate_ta_regression_allocation(dataframe: pd.DataFrame, rule_name: str):
     df_with_performance = calculate_portfolio_performance_python(df_with_allocations, detailed_output=True)
     for i in range(1, len(df_with_performance["portfolio_return"])):
         percent_gain.append(
-            (df_with_performance["portfolio_return"][i] - df_with_performance["portfolio_return"][i - 1]) * 100)
+            (df_with_performance["portfolio_return"][i] - df_with_performance["portfolio_return"][i - 1]) * 100
+        )
     df_with_performance = df_with_performance.assign(percent_gain=percent_gain)
     return df_with_performance
 
@@ -46,13 +47,12 @@ def calculate_infertrade_allocation(dataframe: pd.DataFrame, rule_name: str):
     df = deepcopy(dataframe)
     percent_gain = [0]
 
-    df_with_allocations = Api.calculate_allocations(df=df,
-                                                    name_of_strategy=rule_name,
-                                                    name_of_price_series="close")
+    df_with_allocations = Api.calculate_allocations(df=df, name_of_strategy=rule_name, name_of_price_series="close")
     df_with_performance = calculate_portfolio_performance_python(df_with_allocations, detailed_output=True)
     for i in range(1, len(df_with_performance["portfolio_return"])):
         percent_gain.append(
-            (df_with_performance["portfolio_return"][i] - df_with_performance["portfolio_return"][i - 1]) * 100)
+            (df_with_performance["portfolio_return"][i] - df_with_performance["portfolio_return"][i - 1]) * 100
+        )
     df_with_performance = df_with_performance.assign(percent_gain=percent_gain)
     return df_with_performance
 
@@ -72,7 +72,8 @@ def calculate_infertrade_signal(dataframe: pd.DataFrame, rule_name: str):
     df_with_performance = calculate_portfolio_performance_python(df, detailed_output=True)
     for i in range(1, len(df_with_performance["portfolio_return"])):
         percent_gain.append(
-            (df_with_performance["portfolio_return"][i] - df_with_performance["portfolio_return"][i - 1]) * 100)
+            (df_with_performance["portfolio_return"][i] - df_with_performance["portfolio_return"][i - 1]) * 100
+        )
     df_with_performance = df_with_performance.assign(percent_gain=percent_gain)
     return df_with_performance
 
@@ -82,13 +83,12 @@ def calculate_ta_allocation(dataframe: pd.DataFrame, rule_name: str):
     df = deepcopy(dataframe)
     percent_gain = [0]
 
-    df_with_allocations = Api.calculate_allocations(df=df,
-                                                    name_of_strategy=rule_name,
-                                                    name_of_price_series="close")
+    df_with_allocations = Api.calculate_allocations(df=df, name_of_strategy=rule_name, name_of_price_series="close")
     df_with_performance = calculate_portfolio_performance_python(df_with_allocations, detailed_output=True)
     for i in range(1, len(df_with_performance["portfolio_return"])):
         percent_gain.append(
-            (df_with_performance["portfolio_return"][i] - df_with_performance["portfolio_return"][i - 1]) * 100)
+            (df_with_performance["portfolio_return"][i] - df_with_performance["portfolio_return"][i - 1]) * 100
+        )
     df_with_performance = df_with_performance.assign(percent_gain=percent_gain)
     return df_with_performance
 
@@ -109,13 +109,15 @@ def calculate_ta_signal(dataframe: pd.DataFrame, rule_name: str):
     df_with_performance = calculate_portfolio_performance_python(df, detailed_output=True)
     for i in range(1, len(df_with_performance["portfolio_return"])):
         percent_gain.append(
-            (df_with_performance["portfolio_return"][i] - df_with_performance["portfolio_return"][i - 1]) * 100)
+            (df_with_performance["portfolio_return"][i] - df_with_performance["portfolio_return"][i - 1]) * 100
+        )
     df_with_performance = df_with_performance.assign(percent_gain=percent_gain)
     return df_with_performance
 
 
-def export_performance_df(dataframe: pd.DataFrame, rule_name: str, second_df: pd.DataFrame = None,
-                          relationship: str = None) -> pd.DataFrame:
+def export_performance_df(
+    dataframe: pd.DataFrame, rule_name: str, second_df: pd.DataFrame = None, relationship: str = None
+) -> pd.DataFrame:
     """Function used to calculate portfolio performance for data after calculating a trading signal/rule and relationship"""
     if rule_name in algorithm_functions["infertrade"]["allocation"].keys():
         used_calculation = calculate_infertrade_allocation
@@ -139,18 +141,20 @@ def export_performance_df(dataframe: pd.DataFrame, rule_name: str, second_df: pd
     if relationship is not None:
         if second_df is not None:
             second_df_with_performance = used_calculation(dataframe=second_df, rule_name=rule_name)
-            second_df_with_relationship = calculate_infertrade_allocation(dataframe=second_df_with_performance,
-                                                                          rule_name=relationship)
+            second_df_with_relationship = calculate_infertrade_allocation(
+                dataframe=second_df_with_performance, rule_name=relationship
+            )
 
-            df_with_relationship = calculate_infertrade_allocation(dataframe=df_with_performance,
-                                                                   rule_name=relationship)
+            df_with_relationship = calculate_infertrade_allocation(
+                dataframe=df_with_performance, rule_name=relationship
+            )
 
             complete_relationship = df_with_relationship.append(second_df_with_relationship, ignore_index=False)
             return complete_relationship
         else:
-            df_with_relationship = calculate_infertrade_allocation(dataframe=df_with_performance,
-                                                                    rule_name=relationship)
+            df_with_relationship = calculate_infertrade_allocation(
+                dataframe=df_with_performance, rule_name=relationship
+            )
             return df_with_relationship
     else:
         return df_with_performance
-

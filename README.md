@@ -43,6 +43,8 @@ If you would like assistance with using the [`infertrade`](https://github.com/ta
 
 If you would like to contribute to the package, e.g. to add support for an additional package or library, please see our [contributing](CONTRIBUTING.md) information.
 
+If you want guidance on infertrade API then please see our [API Guidance](API_GUIDANCE.md) information.
+
 
 ## Quickstart
 
@@ -103,7 +105,6 @@ from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
 position_transformer = scikit_allocation_factory(constant_allocation_size)
 position_transformer.fit_transform(simulated_market_data_4_years_gen())
-# TODO add example with parameters
 ```
 
 ### Example of position calculation via kelly just based on signal generation
@@ -146,6 +147,7 @@ simulated_correlated_equities_4_years_gen().plot(y=["price", "signal"])
 plt.show()
 ```
 ![image](https://user-images.githubusercontent.com/29981664/111360130-4668a400-8684-11eb-933e-e8f10662b0bb.png)
+
 
 ### Exporting portfolio performance to a CSV file
 
