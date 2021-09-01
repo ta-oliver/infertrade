@@ -320,9 +320,9 @@ def average_directional_movement_index(df: pd.DataFrame, window: int = 14) -> pd
 
 def vortex_indicator(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
     """
-    A vortex indicator is used to detect trend reversals and confirm current trends. 
+    A vortex indicator is used to detect trend reversals and confirm current trends.
     It is composed of two lines:
-        1. an uptrend line (VI+) and 
+        1. an uptrend line (VI+) and
         2. a downtrend line (VI-)
     """
     df_with_signal = df.copy()
