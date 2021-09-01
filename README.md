@@ -43,6 +43,8 @@ If you would like assistance with using the [`infertrade`](https://github.com/ta
 
 If you would like to contribute to the package, e.g. to add support for an additional package or library, please see our [contributing](CONTRIBUTING.md) information.
 
+If you want guidance on infertrade API then Please see our [API Guidance](API_GUIDANCE.md) information.
+
 
 ## Quickstart
 
@@ -103,7 +105,6 @@ from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
 position_transformer = scikit_allocation_factory(constant_allocation_size)
 position_transformer.fit_transform(simulated_market_data_4_years_gen())
-# TODO add example with parameters
 ```
 
 ### Example of position calculation via kelly just based on signal generation
@@ -147,52 +148,7 @@ plt.show()
 ```
 ![image](https://user-images.githubusercontent.com/29981664/111360130-4668a400-8684-11eb-933e-e8f10662b0bb.png)
 
-### Example use of API for calculations.
 
-- Replace the `your-api-key-here` in `'x-api-key':'your-api-key-here'` with your API key (Contact support@infertrade.com for more information)
-- Change the parameters in `kwargs` according to your needs
-
-
-```python
-import httpx
-
-from infertrade.data.simulate_data import simulated_market_data_4_years_gen
-from infertrade.algos.community.allocations import change_regression
-from infertrade.utilities.performance import calculate_portfolio_performance_python
-
-trading_strategy_df = change_regression(simulated_market_data_4_years_gen())
-trading_strategy_returns_df = calculate_portfolio_performance_python(trading_strategy_df)
-
-json_data = {
-"service": "privateapi",
-"endpoint": "/",
-"session_id": "session_id",
-"payload": {
-    "library":"reducerlib",
-    "api_method":"algo_calculate",
-    "kwargs":{
-        "algorithms":[{"name": "SharpeRatio"},{"name": "PriceBasicStatistics"}],
-        "inputs":[{
-            "time_series": [{
-                "portfolio_return": trading_strategy_returns_df['portfolio_return'].to_list(),
-                "allocation": trading_strategy_returns_df['allocation'].to_list(),
-                "price_1": trading_strategy_returns_df['price'].to_list(),
-                "research_1": trading_strategy_returns_df['research'].to_list()
-                }]
-            }]
-        }
-    }
-}
-
-response = httpx.post(
-    'https://prod.api.infertrade.com/',
-    headers = {
-        'content-type': 'application/json',
-        'x-api-key': 'your-api-key-here'
-    }, json=json_data)
-
-print(response.content)
-```
 ### Exporting portfolio performance to a CSV file
 
 The "infertrade.api" module contains an Api class with multiple useful functions including "export_to_csv" which is used to export
