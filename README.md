@@ -43,7 +43,7 @@ If you would like assistance with using the [`infertrade`](https://github.com/ta
 
 If you would like to contribute to the package, e.g. to add support for an additional package or library, please see our [contributing](CONTRIBUTING.md) information.
 
-If you want guidance on infertrade API then Please see our [API Guidance](API_GUIDANCE.md) information.
+If you want guidance on infertrade API then please see our [API Guidance](API_GUIDANCE.md) information.
 
 
 ## Quickstart
