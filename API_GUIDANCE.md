@@ -27,6 +27,10 @@ All access is subject to any conditions attached to provision of your API key, s
 Algorithms for calculating strategy performance metrics, such as Sharpe ratio or Granger P-values.
 
 ### POST Get available statistics
+
+<details>
+<summary>Example request</summary>
+
 ```
 import requests
 import json
@@ -51,7 +55,13 @@ response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
 ```
+</details>
+
 ### POST Get statistics metadata
+
+<details>
+<summary>Example request</summary>
+
 ```
 import requests
 import json
@@ -81,7 +91,13 @@ response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
 ```
+</details>
+
 ### POST Calculate statistics
+
+<details>
+<summary>Example request</summary>
+
 ```
 import requests
 import json
@@ -260,9 +276,14 @@ response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
 ```
+</details>
 
 ## **Trading Rules**
 ### POST Get trading rule metadata
+
+<details>
+<summary>Example request</summary>
+
 ```
 import requests
 import json
@@ -286,7 +307,13 @@ response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
 ```
+</details>
+
 ### POST Get available rule representations
+
+<details>
+<summary>Example request</summary>
+
 ```
 import requests
 import json
@@ -311,7 +338,13 @@ response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
 ```
+</details>
+
 ### POST Get rule representation (model, docs, links)
+
+<details>
+<summary>Example request</summary>
+
 ```
 import requests
 import json
@@ -341,9 +374,14 @@ response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
 ```
+</details>
 
 ## **Time Series Simulation**
 ### POST Get available time series simulation models
+
+<details>
+<summary>Example request</summary>
+
 ```
 import requests
 import json
@@ -400,8 +438,13 @@ response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
 ```
+</details>
 
 ### POST Simulate time series
+
+<details>
+<summary>Example request</summary>
+
 ```
 import requests
 import json
@@ -440,8 +483,15 @@ response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
 ```
+</details>
+
 ## **Rule Optimization**
 ### POST Start a rule optimization
+
+<details>
+<summary>Example request</summary>
+
+
 ```
 import requests
 import json
@@ -1934,7 +1984,13 @@ response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
 ```
+</details>
+
 ### POST Retrieve optimization results
+
+<details>
+<summary>Example request</summary>
+
 ```
 import requests
 import json
@@ -1957,8 +2013,13 @@ response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
 ```
+</details>
 
 ## **GET Check API status**
+
+<details>
+<summary>Example request</summary>
+
 ```
 import requests
 import json
@@ -1974,3 +2035,4 @@ response = requests.request("GET", url, headers=headers, data=payload)
 
 print(response.text)
 ```
+</details>
