@@ -949,7 +949,6 @@ def create_infertrade_export_allocations():
         infertrade_export_allocations_raw.update(
             {
                 function.__name__: {
-                    "function": function,
                     "parameters": get_parameters(function),
                     "series": series_dict[function.__name__ + "_series"],
                     "available_representation_types": {"github_permalink": create_permalink_to_allocations(function)},
