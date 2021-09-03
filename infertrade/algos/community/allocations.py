@@ -936,7 +936,10 @@ def create_permalink_to_allocations(function: Callable) -> str:
 def get_parameters(function: Callable) -> dict:
     """Gets the default parameters and its values from the function"""
     signature = inspect.signature(function)
-    return {k: v.default for k, v in signature.parameters.items() if v.default is not inspect.Parameter.empty}
+    parameter_items = signature.parameters.items()
+    is_empty = inspect.Parameter.empty
+    parameters = {key: value.default for key, value in parameter_items if value.default is not is_empty}
+    return parameters
 
 
 def create_infertrade_export_allocations():
@@ -949,6 +952,7 @@ def create_infertrade_export_allocations():
         infertrade_export_allocations_raw.update(
             {
                 function.__name__: {
+                    "function": function,
                     "parameters": get_parameters(function),
                     "series": series_dict[function.__name__ + "_series"],
                     "available_representation_types": {"github_permalink": create_permalink_to_allocations(function)},
