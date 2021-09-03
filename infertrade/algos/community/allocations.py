@@ -831,83 +831,83 @@ def get_functions_list() -> list:
     """Returns list of functions"""
 
     function_list = [
-        fifty_fifty, 
-        buy_and_hold, 
-        chande_kroll_crossover_strategy, 
-        change_relationship, 
-        combination_relationship, 
-        difference_relationship, 
-        level_relationship, 
-        constant_allocation_size, 
-        high_low_difference, 
-        sma_crossover_strategy, 
-        weighted_moving_averages, 
-        change_regression, 
-        difference_regression, 
-        level_regression, 
-        level_and_change_regression, 
-        buy_golden_cross_sell_death_cross, 
-        SMA_strategy, 
-        WMA_strategy, 
-        MACD_strategy, 
-        RSI_strategy, 
-        stochastic_RSI_strategy, 
-        EMA_strategy, 
-        bollinger_band_strategy, 
-        PPO_strategy, 
-        PVO_strategy, 
-        TRIX_strategy, 
-        TSI_strategy, 
-        STC_strategy, 
-        KAMA_strategy, 
-        aroon_strategy, 
-        ROC_strategy, 
-        ADX_strategy, 
-        vortex_strategy, 
-        DPO_strategy
+        fifty_fifty,
+        buy_and_hold,
+        chande_kroll_crossover_strategy,
+        change_relationship,
+        combination_relationship,
+        difference_relationship,
+        level_relationship,
+        constant_allocation_size,
+        high_low_difference,
+        sma_crossover_strategy,
+        weighted_moving_averages,
+        change_regression,
+        difference_regression,
+        level_regression,
+        level_and_change_regression,
+        buy_golden_cross_sell_death_cross,
+        SMA_strategy,
+        WMA_strategy,
+        MACD_strategy,
+        RSI_strategy,
+        stochastic_RSI_strategy,
+        EMA_strategy,
+        bollinger_band_strategy,
+        PPO_strategy,
+        PVO_strategy,
+        TRIX_strategy,
+        TSI_strategy,
+        STC_strategy,
+        KAMA_strategy,
+        aroon_strategy,
+        ROC_strategy,
+        ADX_strategy,
+        vortex_strategy,
+        DPO_strategy,
     ]
-    
+
     return function_list
+
 
 def get_series() -> dict:
     """Returns dictionary of series"""
     return {
-        'fifty_fifty_series': [],
-        'buy_and_hold_series': [],
-        'chande_kroll_crossover_strategy_series': ['high', 'low', 'price'],
-        'change_relationship_series': ['price', 'research'],
-        'combination_relationship_series': ['price', 'research'],
-        'difference_relationship_series': ['price', 'research'],
-        'level_relationship_series': ['price', 'research'],
-        'constant_allocation_size_series': [],
-        'high_low_difference_series': ['high', 'low'],
-        'sma_crossover_strategy_series': ['price'],
-        'weighted_moving_averages_series': ['price', 'research'],
-        'change_regression_series': ['research'],
-        'difference_regression_series': ['price', 'research'],
-        'level_regression_series': ['research'],
-        'level_and_change_regression_series': ['research'],
-        'buy_golden_cross_sell_death_cross_series': ['price'],
-        'SMA_strategy_series': ['close'],
-        'WMA_strategy_series': ['close'],
-        'MACD_strategy_series': ['close'],
-        'RSI_strategy_series': ['close'],
-        'stochastic_RSI_strategy_series': ['close'],
-        'EMA_strategy_series': ['close'],
-        'bollinger_band_strategy_series': ['close'],
-        'PPO_strategy_series': ['close'],
-        'PVO_strategy_series': ['volume'],
-        'TRIX_strategy_series': ['close'],
-        'TSI_strategy_series': ['close'],
-        'STC_strategy_series': ['close'],
-        'KAMA_strategy_series': ['close'],
-        'aroon_strategy_series': ['close'],
-        'ROC_strategy_series': ['close'],
-        'ADX_strategy_series': ['close', 'high', 'low'],
-        'vortex_strategy_series': ['close', 'high', 'low'],
-        'DPO_strategy_series': ['close'],
+        "fifty_fifty_series": [],
+        "buy_and_hold_series": [],
+        "chande_kroll_crossover_strategy_series": ["high", "low", "price"],
+        "change_relationship_series": ["price", "research"],
+        "combination_relationship_series": ["price", "research"],
+        "difference_relationship_series": ["price", "research"],
+        "level_relationship_series": ["price", "research"],
+        "constant_allocation_size_series": [],
+        "high_low_difference_series": ["high", "low"],
+        "sma_crossover_strategy_series": ["price"],
+        "weighted_moving_averages_series": ["price", "research"],
+        "change_regression_series": ["research"],
+        "difference_regression_series": ["price", "research"],
+        "level_regression_series": ["research"],
+        "level_and_change_regression_series": ["research"],
+        "buy_golden_cross_sell_death_cross_series": ["price"],
+        "SMA_strategy_series": ["close"],
+        "WMA_strategy_series": ["close"],
+        "MACD_strategy_series": ["close"],
+        "RSI_strategy_series": ["close"],
+        "stochastic_RSI_strategy_series": ["close"],
+        "EMA_strategy_series": ["close"],
+        "bollinger_band_strategy_series": ["close"],
+        "PPO_strategy_series": ["close"],
+        "PVO_strategy_series": ["volume"],
+        "TRIX_strategy_series": ["close"],
+        "TSI_strategy_series": ["close"],
+        "STC_strategy_series": ["close"],
+        "KAMA_strategy_series": ["close"],
+        "aroon_strategy_series": ["close"],
+        "ROC_strategy_series": ["close"],
+        "ADX_strategy_series": ["close", "high", "low"],
+        "vortex_strategy_series": ["close", "high", "low"],
+        "DPO_strategy_series": ["close"],
     }
-    
 
 
 def get_latest_infertrade_commit() -> str:
@@ -920,7 +920,9 @@ def get_latest_infertrade_commit() -> str:
 def get_latest_infertrade_allocation_file_url() -> str:
     """Gets the latests URL stub for the allocation file."""
     github_permalink = (
-            "https://github.com/ta-oliver/infertrade/blob/" + get_latest_infertrade_commit() + "/infertrade/algos/community/allocations.py"
+        "https://github.com/ta-oliver/infertrade/blob/"
+        + get_latest_infertrade_commit()
+        + "/infertrade/algos/community/allocations.py"
     )
     return github_permalink
 
@@ -934,11 +936,7 @@ def create_permalink_to_allocations(function: Callable) -> str:
 def get_parameters(function: Callable) -> dict:
     """Gets the default parameters and its values from the function"""
     signature = inspect.signature(function)
-    return {
-        k: v.default
-        for k, v in signature.parameters.items()
-        if v.default is not inspect.Parameter.empty
-    }
+    return {k: v.default for k, v in signature.parameters.items() if v.default is not inspect.Parameter.empty}
 
 
 def create_infertrade_export_allocations():
@@ -947,21 +945,20 @@ def create_infertrade_export_allocations():
     function_list = get_functions_list()
     series_dict = get_series()
     for function in function_list:
-        
+
         infertrade_export_allocations_raw.update(
             {
-                function.__name__:{
+                function.__name__: {
                     "function": function,
                     "parameters": get_parameters(function),
-                    "series": series_dict[function.__name__+"_series"],
-                    "available_representation_types": {
-                        "github_permalink": create_permalink_to_allocations(function)
-                    },
+                    "series": series_dict[function.__name__ + "_series"],
+                    "available_representation_types": {"github_permalink": create_permalink_to_allocations(function)},
                 }
             }
         )
 
     return infertrade_export_allocations_raw
+
 
 infertrade_export_allocations = create_infertrade_export_allocations()
 
@@ -969,4 +966,3 @@ infertrade_export_allocations = create_infertrade_export_allocations()
 if __name__ == "__main__":
     """To quickly view rule properties."""
     print(infertrade_export_allocations)
-        
