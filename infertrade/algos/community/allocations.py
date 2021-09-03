@@ -24,6 +24,7 @@ import pandas as pd
 from infertrade.PandasEnum import PandasEnum
 import infertrade.utilities.operations as operations
 import infertrade.algos.community.signals as signals
+import inspect
 import git
 
 
@@ -826,6 +827,89 @@ def vortex_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 
     return df
 
 
+def get_functions_list() -> list:
+    """Returns list of functions"""
+
+    function_list = [
+        fifty_fifty, 
+        buy_and_hold, 
+        chande_kroll_crossover_strategy, 
+        change_relationship, 
+        combination_relationship, 
+        difference_relationship, 
+        level_relationship, 
+        constant_allocation_size, 
+        high_low_difference, 
+        sma_crossover_strategy, 
+        weighted_moving_averages, 
+        change_regression, 
+        difference_regression, 
+        level_regression, 
+        level_and_change_regression, 
+        buy_golden_cross_sell_death_cross, 
+        SMA_strategy, 
+        WMA_strategy, 
+        MACD_strategy, 
+        RSI_strategy, 
+        stochastic_RSI_strategy, 
+        EMA_strategy, 
+        bollinger_band_strategy, 
+        PPO_strategy, 
+        PVO_strategy, 
+        TRIX_strategy, 
+        TSI_strategy, 
+        STC_strategy, 
+        KAMA_strategy, 
+        aroon_strategy, 
+        ROC_strategy, 
+        ADX_strategy, 
+        vortex_strategy, 
+        DPO_strategy
+    ]
+    
+    return function_list
+
+def get_series() -> dict:
+    """Returns dictionary of series"""
+    return {
+        'fifty_fifty_series': [],
+        'buy_and_hold_series': [],
+        'chande_kroll_crossover_strategy_series': ['high', 'low', 'price'],
+        'change_relationship_series': ['price', 'research'],
+        'combination_relationship_series': ['price', 'research'],
+        'difference_relationship_series': ['price', 'research'],
+        'level_relationship_series': ['price', 'research'],
+        'constant_allocation_size_series': [],
+        'high_low_difference_series': ['high', 'low'],
+        'sma_crossover_strategy_series': ['price'],
+        'weighted_moving_averages_series': ['price', 'research'],
+        'change_regression_series': ['research'],
+        'difference_regression_series': ['price', 'research'],
+        'level_regression_series': ['research'],
+        'level_and_change_regression_series': ['research'],
+        'buy_golden_cross_sell_death_cross_series': ['price'],
+        'SMA_strategy_series': ['close'],
+        'WMA_strategy_series': ['close'],
+        'MACD_strategy_series': ['close'],
+        'RSI_strategy_series': ['close'],
+        'stochastic_RSI_strategy_series': ['close'],
+        'EMA_strategy_series': ['close'],
+        'bollinger_band_strategy_series': ['close'],
+        'PPO_strategy_series': ['close'],
+        'PVO_strategy_series': ['volume'],
+        'TRIX_strategy_series': ['close'],
+        'TSI_strategy_series': ['close'],
+        'STC_strategy_series': ['close'],
+        'KAMA_strategy_series': ['close'],
+        'aroon_strategy_series': ['close'],
+        'ROC_strategy_series': ['close'],
+        'ADX_strategy_series': ['close', 'high', 'low'],
+        'vortex_strategy_series': ['close', 'high', 'low'],
+        'DPO_strategy_series': ['close'],
+    }
+    
+
+
 def get_latest_infertrade_commit() -> str:
     """Gets the latest commit for InferTrade as a string."""
     repo = git.Repo(search_parent_directories=True)
@@ -847,303 +931,37 @@ def create_permalink_to_allocations(function: Callable) -> str:
     return full_link
 
 
-def create_infertrade_export_allocations():
-    """Creates a dictionary for export."""
-
-    infertrade_export_allocations_raw = {
-        "fifty_fifty": {
-            "function": fifty_fifty,
-            "parameters": {},
-            "series": [],
-            "available_representation_types": {
-                "github_permalink": create_permalink_to_allocations(fifty_fifty)
-            },
-        },
-        "buy_and_hold": {
-            "function": buy_and_hold,
-            "parameters": {},
-            "series": [],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(buy_and_hold.__code__.co_firstlineno)
-            },
-        },
-        "chande_kroll_crossover_strategy": {
-            "function": chande_kroll_crossover_strategy,
-            "parameters": {},
-            "series": ["high", "low", "price"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(chande_kroll_crossover_strategy.__code__.co_firstlineno)
-            },
-        },
-        "change_relationship": {
-            "function": change_relationship,
-            "parameters": {},
-            "series": ["price", "research"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(change_relationship.__code__.co_firstlineno)
-            },
-        },
-        "combination_relationship": {
-            "function": combination_relationship,
-            "parameters": {},
-            "series": ["price", "research"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(combination_relationship.__code__.co_firstlineno)
-            },
-        },
-        "difference_relationship": {
-            "function": difference_relationship,
-            "parameters": {},
-            "series": ["price", "research"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(difference_relationship.__code__.co_firstlineno)
-            },
-        },
-        "level_relationship": {
-            "function": level_relationship,
-            "parameters": {},
-            "series": ["price", "research"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(level_relationship.__code__.co_firstlineno)
-            },
-        },
-        "constant_allocation_size": {
-            "function": constant_allocation_size,
-            "parameters": {"constant_position_size": 0.5},
-            "series": [],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(constant_allocation_size.__code__.co_firstlineno)
-            },
-        },
-        "high_low_difference": {
-            "function": high_low_difference,
-            "parameters": {"scale": 1.0, "constant": 0.0},
-            "series": ["high", "low"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(high_low_difference.__code__.co_firstlineno)
-            },
-        },
-        "sma_crossover_strategy": {
-            "function": sma_crossover_strategy,
-            "parameters": {"fast": 0, "slow": 0},
-            "series": ["price"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(sma_crossover_strategy.__code__.co_firstlineno)
-            },
-        },
-        "weighted_moving_averages": {
-            "function": weighted_moving_averages,
-            "parameters": {
-                "avg_price_coeff": 1.0,
-                "avg_research_coeff": 1.0,
-                "avg_price_length": 2,
-                "avg_research_length": 2,
-            },
-            "series": ["price", "research"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(weighted_moving_averages.__code__.co_firstlineno)
-            },
-        },
-        "change_regression": {
-            "function": change_regression,
-            "parameters": {"change_coefficient": 0.1, "change_constant": 0.1},
-            "series": ["research"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(change_regression.__code__.co_firstlineno)
-            },
-        },
-        "difference_regression": {
-            "function": difference_regression,
-            "parameters": {"difference_coefficient": 0.1, "difference_constant": 0.1},
-            "series": ["price", "research"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(difference_regression.__code__.co_firstlineno)
-            },
-        },
-        "level_regression": {
-            "function": level_regression,
-            "parameters": {"level_coefficient": 0.1, "level_constant": 0.1},
-            "series": ["research"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(level_regression.__code__.co_firstlineno)
-            },
-        },
-        "level_and_change_regression": {
-            "function": level_and_change_regression,
-            "parameters": {"level_coefficient": 0.1, "change_coefficient": 0.1, "level_and_change_constant": 0.1},
-            "series": ["research"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(level_and_change_regression.__code__.co_firstlineno)
-            },
-        },
-        "buy_golden_cross_sell_death_cross": {
-            "function": buy_golden_cross_sell_death_cross,
-            "parameters": {
-                "allocation_size": 0.5,
-                "deallocation_size": 0.5,
-                "short_term_moving_avg_length": 50,
-                "long_term_moving_avg_length": 200,
-            },
-            "series": ["price"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(buy_golden_cross_sell_death_cross.__code__.co_firstlineno)
-            },
-        },
-        "SMA_strategy": {
-            "function": SMA_strategy,
-            "parameters": {"window": 1, "max_investment": 0.1},
-            "series": ["close"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(SMA_strategy.__code__.co_firstlineno)
-            },
-        },
-        "WMA_strategy": {
-            "function": WMA_strategy,
-            "parameters": {"window": 1, "max_investment": 0.1},
-            "series": ["close"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(WMA_strategy.__code__.co_firstlineno)
-            },
-        },
-        "MACD_strategy": {
-            "function": MACD_strategy,
-            "parameters": {"window_fast": 26, "window_slow": 12, "window_signal": 9, "max_investment": 0.1},
-            "series": ["close"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(MACD_strategy.__code__.co_firstlineno)
-            },
-        },
-        "RSI_strategy": {
-            "function": RSI_strategy,
-            "parameters": {"window": 14, "max_investment": 0.1},
-            "series": ["close"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(RSI_strategy.__code__.co_firstlineno)
-            },
-        },
-        "stochastic_RSI_strategy": {
-            "function": stochastic_RSI_strategy,
-            "parameters": {"window": 14, "max_investment": 0.1},
-            "series": ["close"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(stochastic_RSI_strategy.__code__.co_firstlineno)
-            },
-        },
-        "EMA_strategy": {
-            "function": EMA_strategy,
-            "parameters": {"window": 50, "max_investment": 0.1},
-            "series": ["close"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(EMA_strategy.__code__.co_firstlineno)
-            },
-        },
-        "bollinger_band_strategy": {
-            "function": bollinger_band_strategy,
-            "parameters": {"window": 20, "window_dev": 2, "max_investment": 0.1},
-            "series": ["close"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(bollinger_band_strategy.__code__.co_firstlineno)
-            },
-        },
-        "PPO_strategy": {
-            "function": PPO_strategy,
-            "parameters": {"window_fast": 26, "window_slow": 12, "window_signal": 9, "max_investment": 0.1},
-            "series": ["close"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(PPO_strategy.__code__.co_firstlineno)
-            },
-        },
-        "PVO_strategy": {
-            "function": PVO_strategy,
-            "parameters": {"window_fast": 26, "window_slow": 12, "window_signal": 9, "max_investment": 0.1},
-            "series": ["volume"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(PVO_strategy.__code__.co_firstlineno)
-            },
-        },
-        "TRIX_strategy": {
-            "function": TRIX_strategy,
-            "parameters": {"window": 14, "max_investment": 0.1},
-            "series": ["close"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(TRIX_strategy.__code__.co_firstlineno)
-            },
-        },
-        "TSI_strategy": {
-            "function": TSI_strategy,
-            "parameters": {"window_slow": 25, "window_fast": 13, "window_signal": 13, "max_investment": 0.1},
-            "series": ["close"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(TSI_strategy.__code__.co_firstlineno)
-            },
-        },
-        "STC_strategy": {
-            "function": STC_strategy,
-            "parameters": {
-                "window_slow": 50,
-                "window_fast": 23,
-                "cycle": 10,
-                "smooth1": 3,
-                "smooth2": 3,
-                "max_investment": 0.1,
-            },
-            "series": ["close"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(STC_strategy.__code__.co_firstlineno)
-            },
-        },
-        "KAMA_strategy": {
-            "function": KAMA_strategy,
-            "parameters": {"window": 10, "pow1": 2, "pow2": 30, "max_investment": 0.1},
-            "series": ["close"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(KAMA_strategy.__code__.co_firstlineno)
-            },
-        },
-        "aroon_strategy": {
-            "function": aroon_strategy,
-            "parameters": {"window": 25, "max_investment": 0.1},
-            "series": ["close"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(aroon_strategy.__code__.co_firstlineno)
-            },
-        },
-        "ROC_strategy": {
-            "function": ROC_strategy,
-            "parameters": {"window": 12, "max_investment": 0.1},
-            "series": ["close"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(ROC_strategy.__code__.co_firstlineno)
-            },
-        },
-        "ADX_strategy": {
-            "function": ADX_strategy,
-            "parameters": {"window": 14, "max_investment": 0.1},
-            "series": ["close", "high", "low"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(ADX_strategy.__code__.co_firstlineno)
-            },
-        },
-        "vortex_strategy": {
-            "function": vortex_strategy,
-            "parameters": {"window": 14, "max_investment": 0.1},
-            "series": ["close", "high", "low"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(vortex_strategy.__code__.co_firstlineno)
-            },
-        },
-        "DPO_strategy": {
-            "function": DPO_strategy,
-            "parameters": {"window": 20, "max_investment": 0.1},
-            "series": ["close"],
-            "available_representation_types": {
-                "github_permalink": get_latest_infertrade_allocation_file_url() + "#L" + str(DPO_strategy.__code__.co_firstlineno)
-            },
-        },
+def get_parameters(function: Callable) -> dict:
+    """Gets the default parameters and its values from the function"""
+    signature = inspect.signature(function)
+    return {
+        k: v.default
+        for k, v in signature.parameters.items()
+        if v.default is not inspect.Parameter.empty
     }
 
-    return infertrade_export_allocations_raw
 
+def create_infertrade_export_allocations():
+    """Creates a dictionary for export."""
+    infertrade_export_allocations_raw = {}
+    function_list = get_functions_list()
+    series_dict = get_series()
+    for function in function_list:
+        
+        infertrade_export_allocations_raw.update(
+            {
+                function.__name__:{
+                    "function": function,
+                    "parameters": get_parameters(function),
+                    "series": series_dict[function.__name__+"_series"],
+                    "available_representation_types": {
+                        "github_permalink": create_permalink_to_allocations(function)
+                    },
+                }
+            }
+        )
+
+    return infertrade_export_allocations_raw
 
 infertrade_export_allocations = create_infertrade_export_allocations()
 
@@ -1151,3 +969,4 @@ infertrade_export_allocations = create_infertrade_export_allocations()
 if __name__ == "__main__":
     """To quickly view rule properties."""
     print(infertrade_export_allocations)
+        
