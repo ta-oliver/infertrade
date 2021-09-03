@@ -26,6 +26,7 @@ import infertrade.utilities.operations as operations
 import infertrade.algos.community.signals as signals
 import inspect
 import git
+from typing import List, Callable, Dict
 
 
 def fifty_fifty(dataframe) -> pd.DataFrame:
@@ -827,8 +828,8 @@ def vortex_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 
     return df
 
 
-def get_functions_list() -> list:
-    """Returns list of functions"""
+def get_functions_list() -> List[Callable]:
+    """Returns list of functions."""
 
     function_list = [
         fifty_fifty,
@@ -870,7 +871,7 @@ def get_functions_list() -> list:
     return function_list
 
 
-def get_series() -> dict:
+def get_series() -> Dict[str, list]:
     """Returns dictionary of series"""
     return {
         "fifty_fifty_series": [],
@@ -908,6 +909,13 @@ def get_series() -> dict:
         "vortex_strategy_series": ["close", "high", "low"],
         "DPO_strategy_series": ["close"],
     }
+
+
+def get_functions_names() -> List[str]:
+    """Returns list of functions"""
+    series_dict = get_series()
+    function_list = list(series_dict.keys())
+    return function_list
 
 
 def get_latest_infertrade_commit() -> str:
