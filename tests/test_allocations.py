@@ -325,16 +325,16 @@ def vortex_indicator(
     high = df_with_signals["high"]
     low = df_with_signals["low"]
     close = df_with_signals["close"]
-    close_shift = df_with_signals["close"].shift(1)
+    close_shift = close.shift(1, fill_value=close.mean())
     tr1 = high - low
     tr2 = (high - close_shift).abs()
     tr3 = (low - close_shift).abs()
-    true_range = pd.DataFrame([tr1, tr2, tr3]).max(axis=1)
-    trn = true_range.rolling(window).sum()
+    true_range = pd.DataFrame([tr1, tr2, tr3]).max(axis=0)
+    trn = true_range.rolling(window, min_periods=1).sum()
     vmp = np.abs(high - low.shift(1))
     vmm = np.abs(low - high.shift(1))
-    vip = vmp.rolling(window).sum() / trn
-    vin = vmm.rolling(window).sum() / trn
+    vip = vmp.rolling(window, min_periods=1).sum() / trn
+    vin = vmm.rolling(window, min_periods=1).sum() / trn
     df_with_signals["signal"] = vip - vin
     return df_with_signals
 
@@ -601,7 +601,6 @@ def test_ROC_strategy():
     assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
 
 
-@pytest.mark.skip("TODO - this test is failing. Needs investigation.")
 def test_vortex_strategy():
     """Checks Vortex strategy calculates correctly."""
     df_with_signals = vortex_indicator(df, window=25)
