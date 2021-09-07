@@ -29,7 +29,10 @@ import numpy as np
 import pytest
 from infertrade.PandasEnum import PandasEnum 
 
-df = simulated_market_data_4_years_gen()
+
+num_simulated_market_data = 10
+np.random.seed(1)
+dataframes = [simulated_market_data_4_years_gen() for i in range(num_simulated_market_data)]
 max_investment = 0.2
 
 
@@ -343,8 +346,9 @@ def vortex_indicator(
 Tests for allocation strategies
 """
 
-
-def test_SMA_strategy():
+@pytest.mark.parametrize("df", dataframes)
+def test_SMA_strategy(df):
+    """Checks SMA strategy calculates correctly."""
     window = 50
     df_with_allocations = allocations.SMA_strategy(df, window, max_investment)
     df_with_signals = simple_moving_average(df,window)
@@ -356,9 +360,9 @@ def test_SMA_strategy():
     df_with_signals.loc[price_below_signal, "allocation"]=-max_investment
     assert pd.Series.equals(df_with_signals["allocation"],df_with_allocations["allocation"])
 
-
-def test_WMA_strategy():
-    """TODO - description."""
+@pytest.mark.parametrize("df", dataframes)
+def test_WMA_strategy(df):
+    """Checks WMA strategy calculates correctly."""
     window = 50
     df_with_allocations = allocations.WMA_strategy(df, window, max_investment)
     df_with_signals = weighted_moving_average(df,window)
@@ -372,8 +376,9 @@ def test_WMA_strategy():
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 
-def test_EMA_strategy():
-    """TODO - description."""
+@pytest.mark.parametrize("df", dataframes)
+def test_EMA_strategy(df):
+    """Checks EMA strategy calculates correctly."""
     window = 50
     df_with_allocations = allocations.EMA_strategy(df, window, max_investment)
     df_with_signals = exponentially_weighted_moving_average(df,window)
@@ -387,8 +392,9 @@ def test_EMA_strategy():
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 
-def test_MACD_strategy():
-    """TODO - description."""
+@pytest.mark.parametrize("df", dataframes)
+def test_MACD_strategy(df):
+    """Checks MACD strategy calculates correctly."""
     df_with_allocations = allocations.MACD_strategy(df, 12, 26 ,9, max_investment)
     df_with_signals = moving_average_convergence_divergence(df,12, 26, 9)
  
@@ -401,8 +407,9 @@ def test_MACD_strategy():
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 
-def test_RSI_strategy():
-    """TODO - description."""
+@pytest.mark.parametrize("df", dataframes)
+def test_RSI_strategy(df):
+    """Checks RSI strategy calculates correctly."""
     df_with_allocations = allocations.RSI_strategy(df, 14, max_investment)
     df_with_signals = relative_strength_index(df,14)
  
@@ -417,8 +424,9 @@ def test_RSI_strategy():
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 
-def test_Stochastic_RSI_strategy():
-    """TODO - description."""
+@pytest.mark.parametrize("df", dataframes)
+def test_Stochastic_RSI_strategy(df):
+    """Checks stochastic RSI strategy calculates correctly."""
     df_with_allocations = allocations.stochastic_RSI_strategy(df, 14, max_investment)
     df_with_signals = stochastic_relative_strength_index(df,14)
  
@@ -433,8 +441,9 @@ def test_Stochastic_RSI_strategy():
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 
-def test_bollinger_band_strategy():
-    """TODO - description."""
+@pytest.mark.parametrize("df", dataframes)
+def test_bollinger_band_strategy(df):
+    """Checks bollinger band strategy calculates correctly."""
     # Window_dev is kept lower to make sure prices breaks the band
     window = 20
     window_dev = 2
@@ -473,8 +482,9 @@ def test_bollinger_band_strategy():
     assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
 
 
-def test_DPO_strategy():
-    """TODO - description."""
+@pytest.mark.parametrize("df", dataframes)
+def test_DPO_strategy(df):
+    """Checks DPO strategy calculates correctly."""
     df_with_allocations = allocations.DPO_strategy(df, 20, max_investment)
     df_with_signals = detrended_price_oscillator(df, 20)
 
@@ -486,8 +496,10 @@ def test_DPO_strategy():
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
-def test_PPO_strategy():
-    """TODO - description."""
+
+@pytest.mark.parametrize("df", dataframes)
+def test_PPO_strategy(df):
+    """Checks PPO strategy calculates correctly."""
     series_name = "close"
     df_with_allocations = allocations.PPO_strategy(df, 26, 12, 9, max_investment)
     df_with_signals = percentage_series_oscillator(df, 26, 12, 9, series_name)
@@ -500,8 +512,9 @@ def test_PPO_strategy():
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
-def test_PVO_strategy():
-    """TODO - description."""
+@pytest.mark.parametrize("df", dataframes)
+def test_PVO_strategy(df):
+    """Checks PVO strategy calculates correctly."""
     series_name = "volume"
     df_with_allocations = allocations.PVO_strategy(df, 26, 12, 9, max_investment)
     df_with_signals = percentage_series_oscillator(df, 26, 12, 9, series_name)
@@ -515,8 +528,9 @@ def test_PVO_strategy():
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 
-def test_TRIX_strategy():
-    """TODO - description."""
+@pytest.mark.parametrize("df", dataframes)
+def test_TRIX_strategy(df):
+    """Checks TRIX strategy calculates correctly."""
     df_with_allocations = allocations.TRIX_strategy(df, 14, max_investment)
     df_with_signals = triple_exponential_average(df, 14)
     
@@ -529,8 +543,9 @@ def test_TRIX_strategy():
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 
-def test_tsi_strategy():
-    """TODO - description."""
+@pytest.mark.parametrize("df", dataframes)
+def test_tsi_strategy(df):
+    """Checks TSI strategy calculates correctly."""
     df_with_allocations = allocations.TSI_strategy(df, 25, 13, 13, max_investment=max_investment)
     df_with_signals = true_strength_index(df, 25, 13, 13)
     
@@ -543,8 +558,9 @@ def test_tsi_strategy():
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 
-def test_sct_strategy():
-    """TODO - description."""
+@pytest.mark.parametrize("df", dataframes)
+def test_stc_strategy(df):
+    """Checks STC strategy calculates correctly."""
     df_with_allocations = allocations.STC_strategy(df, 50, 23, 10, 3, 3, max_investment=max_investment)
     df_with_signal = schaff_trend_cycle(df)
     oversold = df_with_signal["signal"] <= 25
@@ -558,8 +574,9 @@ def test_sct_strategy():
     assert pd.Series.equals(df_with_signal["allocation"], df_with_allocations["allocation"])
 
 
-def test_KAMA_strategy():
-    """TODO - description."""
+@pytest.mark.parametrize("df", dataframes)
+def test_KAMA_strategy(df):
+    """Checks KAMA strategy calculates correctly."""
     df_with_signals = KAMA(df, 10, 2, 30)
     df_with_allocations = allocations.KAMA_strategy(df, 10, 2, 30, max_investment)
     
@@ -572,7 +589,8 @@ def test_KAMA_strategy():
     assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
 
 
-def test_aroon_strategy():
+@pytest.mark.parametrize("df", dataframes)
+def test_aroon_strategy(df):
     """Checks the Aroon Indicator strategy calculates correctly."""
     df_with_signals = aroon(df, window=25)
     df_with_allocations = allocations.aroon_strategy(df, 25, max_investment)
@@ -587,7 +605,8 @@ def test_aroon_strategy():
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 
-def test_ROC_strategy():
+@pytest.mark.parametrize("df", dataframes)
+def test_ROC_strategy(df):
     """Checks the Rate of Change strategy calculates correctly."""
     df_with_signals = rate_of_change(df, window=25)
     df_with_allocations = allocations.ROC_strategy(df, 25, max_investment)
@@ -601,7 +620,8 @@ def test_ROC_strategy():
     assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
 
 
-def test_vortex_strategy():
+@pytest.mark.parametrize("df", dataframes)
+def test_vortex_strategy(df):
     """Checks Vortex strategy calculates correctly."""
     df_with_signals = vortex_indicator(df, window=25)
     df_with_allocations = allocations.vortex_strategy(df, 25, max_investment)
