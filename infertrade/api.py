@@ -241,9 +241,11 @@ class Api:
         relationship: str = None,
         second_df: pd.DataFrame = None,
     ):
-        "Exports csv file of calculated portfolio performance based on data gained from calculating trading rules and relationships"
+        """
+        Exports csv file of calculated portfolio performance based on data gained from calculating trading rules and
+         relationships.
+        """
         from infertrade.utilities.export import export_performance_df
-
         # imported inside to prevent circular dependency
         df = export_performance_df(
             dataframe=dataframe, second_df=second_df, rule_name=rule_name, relationship=relationship
