@@ -22,18 +22,20 @@ Unit tests that apply to all allocation strategies.
 Tests for specific rules should go into test_allocations_specific_rules.py
 """
 
-from infertrade.data.simulate_data import simulated_market_data_4_years_gen
+# External packages
 from numbers import Real
-from infertrade.algos import algorithm_functions
-from infertrade.algos.community import allocations
+from typing import Callable
+
 import pandas as pd
 import numpy as np
-from infertrade.PandasEnum import PandasEnum
 
-num_simulated_market_data = 10
-np.random.seed(1)
-dataframes = [simulated_market_data_4_years_gen() for i in range(num_simulated_market_data)]
-max_investment = 0.2
+
+# InferStat imports
+import pytest
+
+from infertrade.PandasEnum import PandasEnum
+from infertrade.algos import algorithm_functions
+from infertrade.algos.community import allocations
 
 
 def test_under_minimum_length_to_calculate():
@@ -85,3 +87,24 @@ def test_algorithm_functions():
                 assert isinstance(param_dict[ii_parameter], Real)
 
 
+@pytest.mark.parametrize("rule", allocations.get_functions_list())
+def test_series_details_for_all_functions(rule: Callable):
+    """Checks that for every listed function we have the required series specified."""
+    dict_of_series = allocations.get_required_series()
+    list_of_names = allocations.get_functions_names()
+
+    name_of_function = rule.__name__
+    assert name_of_function in list_of_names
+
+    try:
+        ii_required_series = dict_of_series[name_of_function]
+        assert isinstance(ii_required_series, list)
+        for jj_required_column_name in ii_required_series:
+            assert isinstance(jj_required_column_name, str)
+    except KeyError:
+        raise KeyError("The function is not listed in the dictionary of required series: " + str(name_of_function))
+
+
+def test_rule_lengths_match():
+    """We check we have the same number of listed rules as functions, so that no functions are missing."""
+    assert len(allocations.get_functions_names()) == len(allocations.get_functions_list())

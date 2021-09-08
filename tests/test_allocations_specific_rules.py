@@ -23,18 +23,26 @@ Tests universal to all rules should go into test_allocations.py
 """
 
 # Standard Python packages
+import numpy as np
 import pandas as pd
 import pytest
 
 # InferStat packages
 from infertrade.PandasEnum import PandasEnum
 from infertrade.algos.community import allocations, signals as signals
-from tests.test_allocations import dataframes, max_investment
+from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 from tests.utilities.independent_rule_implementations import simple_moving_average, weighted_moving_average, \
     exponentially_weighted_moving_average, moving_average_convergence_divergence, relative_strength_index, \
     stochastic_relative_strength_index, bollinger_band, detrended_price_oscillator, percentage_series_oscillator, \
     triple_exponential_average, true_strength_index, schaff_trend_cycle, kama_indicator, aroon, rate_of_change, \
     vortex_indicator
+
+
+# Variables for tests.
+np.random.seed(1)
+num_simulated_market_data = 10
+dataframes = [simulated_market_data_4_years_gen() for i in range(num_simulated_market_data)]
+max_investment = 0.2
 
 
 @pytest.mark.parametrize("df", dataframes)
