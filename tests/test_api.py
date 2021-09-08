@@ -25,8 +25,10 @@ import pytest
 # Internal imports
 from ta.trend import AroonIndicator
 from infertrade.PandasEnum import PandasEnum
+from infertrade.algos.community import ta_export_regression_allocations
 from infertrade.api import Api
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
+from infertrade.algos import algorithm_functions
 
 api_instance = Api()
 test_dfs = [simulated_market_data_4_years_gen(), simulated_market_data_4_years_gen()]
@@ -108,6 +110,7 @@ def test_calculation_positions(test_df, allocation_algorithm):
         df_with_returns[PandasEnum.VALUATION.value], df_with_allocations_and_returns[PandasEnum.VALUATION.value]
     )
 
+
 @pytest.mark.parametrize("test_df", test_dfs)
 @pytest.mark.parametrize("signal_algorithm", available_signal_algorithms)
 def test_signals_creation(test_df, signal_algorithm):
@@ -170,8 +173,8 @@ def test_return_representations(algorithm):
         )
     for representation in dict_of_properties[algorithm]["available_representation_types"]:
         assert (
-            returned_representations[representation]
-            == dict_of_properties[algorithm]["available_representation_types"][representation]
+                returned_representations[representation]
+                == dict_of_properties[algorithm]["available_representation_types"][representation]
         )
 
     # Check if the if the function returns the correct representation when given a string
@@ -183,8 +186,8 @@ def test_return_representations(algorithm):
                 type(returned_representations),
             )
         assert (
-            returned_representations[representation]
-            == dict_of_properties[algorithm]["available_representation_types"][representation]
+                returned_representations[representation]
+                == dict_of_properties[algorithm]["available_representation_types"][representation]
         )
 
     # Check if the function returns the correct representations when given a list
@@ -196,8 +199,8 @@ def test_return_representations(algorithm):
         )
     for representation in algorithm_representations:
         assert (
-            returned_representations[representation]
-            == dict_of_properties[algorithm]["available_representation_types"][representation]
+                returned_representations[representation]
+                == dict_of_properties[algorithm]["available_representation_types"][representation]
         )
 
 
@@ -244,7 +247,9 @@ def test_return_representations():
         pass
 
     returned_dict = Api.return_representations(name_of_algorithm=name_list[0],
-                                   representation_or_list_of_representations=list(algo_information[name_list[0]]["available_representation_types"].keys()))
+                                               representation_or_list_of_representations=list(
+                                                   algo_information[name_list[0]][
+                                                       "available_representation_types"].keys()))
     assert isinstance(returned_dict, dict)
 
     returned_dict = Api.return_representations(name_of_algorithm=name_list[0])

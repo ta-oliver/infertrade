@@ -43,19 +43,42 @@
   ```
   pip3 list
   ```
-## Testing using PyTest
+<br>
+
+## When Python 3.7 is not your latest version.
+
+
+- To install infertrade specifically for the required version of python (v3.7).
+  ```
+  python3.7 -m pip install infertrade
+  ```
+
+- Your python program may give you a dependency related error when running Infertade module or not be loading other relevant modules like pandas, even after installing them with pip3. 
+
+  In this case you want to use the same procedure as above.
+  ```
+  python3.7 -m pip install pandas
+  ```
+<br>
+
+## Testing using PyTest.
+
 
   - Navigate to [`infertrade-main/tests`](https://github.com/ta-oliver/infertrade/tree/main/tests) directory using `terminal`  and run [`pytest`](https://pytest.org/en/stable/) command.
+
     ```
     pytest
     ```
   - To run specific tests add filename after [`pytest`](https://pytest.org/en/stable/) command. Replace `test_filename.py` with your required filename.
+
     ```
     pytest test_filename.py
     ```
+ <br>
+
+# Alternative Installation Method from source.
  
-## Alternative Installation Method from source.
- 
+
 - Clone Repo. 
   - Using `terminal`.
     ```
