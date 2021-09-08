@@ -15,15 +15,22 @@
 # Created date: 11/03/2021
 
 """
-Allocation algorithms are functions used to compute allocations - % of your portfolio to invest in a market or asset.
+Allocation algorithms are functions used to compute allocations - % of your portfolio or maximum investment size to
+ invest in a market or asset.
 """
 
+# External packages
 import numpy as np
 import pandas as pd
+import inspect
+import git
+from typing import List, Callable, Dict
+
+
+# InferStat packages
 from infertrade.PandasEnum import PandasEnum
 import infertrade.utilities.operations as operations
 import infertrade.algos.community.signals as signals
-import git
 
 
 def fifty_fifty(dataframe) -> pd.DataFrame:
@@ -285,7 +292,8 @@ def calculate_level_relationship(df: pd.DataFrame, regression_period: int = 120,
     forecast_period = 100
     signal_lagged = operations.lag(
         np.reshape(dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values, (-1, 1)), shift=1
-    )  # revert back to manually calculating last row? doing it manually seems awkward, doing it this way seems wasteful, altering the the lag (or other) function seems hacky
+    )  # revert back to manually calculating last row? doing it manually seems awkward, doing it this way seems
+    # wasteful, altering the the lag (or other) function seems hacky
     signal_lagged[0] = [0.0]
     last_feature_row = signal_lagged[-1:]
     signal_lagged = signal_lagged[:-1]
@@ -481,10 +489,10 @@ def SMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1)
     """
     Simple simple moving average strategy which buys when price is above signal and sells when price is below signal
     """
-    SMA = signals.simple_moving_average(df, window=window)["signal"]
+    sma = signals.simple_moving_average(df, window=window)["signal"]
 
-    price_above_signal = df["close"] > SMA
-    price_below_signal = df["close"] <= SMA
+    price_above_signal = df["close"] > sma
+    price_below_signal = df["close"] <= sma
 
     df.loc[price_above_signal, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[price_below_signal, PandasEnum.ALLOCATION.value] = -max_investment
@@ -496,10 +504,10 @@ def WMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1)
     """
     Weighted moving average strategy which buys when price is above signal and sells when price is below signal
     """
-    WMA = signals.weighted_moving_average(df, window=window)["signal"]
+    wma = signals.weighted_moving_average(df, window=window)["signal"]
 
-    price_above_signal = df["close"] > WMA
-    price_below_signal = df["close"] <= WMA
+    price_above_signal = df["close"] > wma
+    price_below_signal = df["close"] <= wma
 
     df.loc[price_above_signal, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[price_below_signal, PandasEnum.ALLOCATION.value] = -max_investment
@@ -513,10 +521,10 @@ def MACD_strategy(
     Moving average convergence divergence strategy which buys when MACD signal is above 0 and sells when MACD signal
      is below zero.
     """
-    MACD_signal = signals.moving_average_convergence_divergence(df, window_slow, window_fast, window_signal)["signal"]
+    macd_signal = signals.moving_average_convergence_divergence(df, window_slow, window_fast, window_signal)["signal"]
 
-    signal_above_zero_line = MACD_signal > 0
-    signal_below_zero_line = MACD_signal <= 0
+    signal_above_zero_line = macd_signal > 0
+    signal_below_zero_line = macd_signal <= 0
 
     df.loc[signal_above_zero_line, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[signal_below_zero_line, PandasEnum.ALLOCATION.value] = -max_investment
@@ -528,11 +536,11 @@ def RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1
     Relative Strength Index
     """
     # https://www.investopedia.com/terms/r/rsi.asp
-    RSI = signals.relative_strength_index(df, window=window)["signal"]
+    rsi = signals.relative_strength_index(df, window=window)["signal"]
 
-    over_valued = RSI >= 70
-    under_valued = RSI <= 30
-    hold = RSI.between(30, 70)
+    over_valued = rsi >= 70
+    under_valued = rsi <= 30
+    hold = rsi.between(30, 70)
 
     df.loc[over_valued, PandasEnum.ALLOCATION.value] = -max_investment
     df.loc[under_valued, PandasEnum.ALLOCATION.value] = max_investment
@@ -546,11 +554,11 @@ def stochastic_RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: 
     """
     # https://www.investopedia.com/terms/s/stochrsi.asp
 
-    stochRSI = signals.stochastic_relative_strength_index(df, window=window)["signal"]
+    stoch_rsi = signals.stochastic_relative_strength_index(df, window=window)["signal"]
 
-    over_valued = stochRSI >= 0.8
-    under_valued = stochRSI <= 0.2
-    hold = stochRSI.between(0.2, 0.8)
+    over_valued = stoch_rsi >= 0.8
+    under_valued = stoch_rsi <= 0.2
+    hold = stoch_rsi.between(0.2, 0.8)
 
     df.loc[over_valued, PandasEnum.ALLOCATION.value] = -max_investment
     df.loc[under_valued, PandasEnum.ALLOCATION.value] = max_investment
@@ -563,10 +571,10 @@ def EMA_strategy(df: pd.DataFrame, window: int = 50, max_investment: float = 0.1
     """
     Exponential moving average strategy which buys when price is above signal and sells when price is below signal
     """
-    EMA = signals.exponentially_weighted_moving_average(df, window=window)["signal"]
+    ema = signals.exponentially_weighted_moving_average(df, window=window)["signal"]
 
-    price_above_signal = df["close"] > EMA
-    price_below_signal = df["close"] <= EMA
+    price_above_signal = df["close"] > ema
+    price_below_signal = df["close"] <= ema
 
     df.loc[price_above_signal, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[price_below_signal, PandasEnum.ALLOCATION.value] = -max_investment
@@ -603,13 +611,13 @@ def bollinger_band_strategy(
             long_position = False
 
         # Both short position and long position can't be true
-        assert not (short_position == True and long_position == True)
+        assert not (short_position and long_position)
 
         # allocation conditions
-        if short_position == True:
+        if short_position:
             df.loc[index, PandasEnum.ALLOCATION.value] = max_investment
 
-        elif long_position == True:
+        elif long_position:
             df.loc[index, PandasEnum.ALLOCATION.value] = -max_investment
 
         else:
@@ -623,10 +631,10 @@ def DPO_strategy(df: pd.DataFrame, window: int = 20, max_investment: float = 0.1
     """
     Exponential moving average strategy which buys when price is above signal and sells when price is below signal.
     """
-    DPO = signals.detrended_price_oscillator(df, window=window)["signal"]
+    dpo = signals.detrended_price_oscillator(df, window=window)["signal"]
 
-    above_zero = DPO > 0
-    below_zero = DPO <= 0
+    above_zero = dpo > 0
+    below_zero = dpo <= 0
 
     df.loc[above_zero, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
@@ -639,10 +647,10 @@ def PPO_strategy(
     """
     Percentage Price Oscillator strategy which buys when signal is above zero and sells when signal is below zero
     """
-    PPO = signals.percentage_price_oscillator(df, window_slow, window_fast, window_signal)["signal"]
+    ppo = signals.percentage_price_oscillator(df, window_slow, window_fast, window_signal)["signal"]
 
-    above_zero = PPO > 0
-    below_zero = PPO <= 0
+    above_zero = ppo > 0
+    below_zero = ppo <= 0
 
     df.loc[above_zero, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
@@ -669,10 +677,10 @@ def TRIX_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.
     """
     This is Triple Exponential Average (TRIX) strategy which buys when signal is above zero and sells when signal is below zero
     """
-    TRIX = signals.triple_exponential_average(df, window)["signal"]
+    trix = signals.triple_exponential_average(df, window)["signal"]
 
-    above_zero = TRIX > 0
-    below_zero = TRIX <= 0
+    above_zero = trix > 0
+    below_zero = trix <= 0
 
     df.loc[above_zero, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
@@ -710,11 +718,11 @@ def STC_strategy(
         1. oversold when STC < 25
         2. overbought when STC > 75
     """
-    STC = signals.schaff_trend_cycle(df, window_slow, window_fast, cycle, smooth1, smooth2)["signal"]
+    stc = signals.schaff_trend_cycle(df, window_slow, window_fast, cycle, smooth1, smooth2)["signal"]
 
-    oversold = STC <= 25
-    overbought = STC >= 75
-    hold = STC.between(25, 75)
+    oversold = stc <= 25
+    overbought = stc >= 75
+    hold = stc.between(25, 75)
 
     df.loc[oversold, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[overbought, PandasEnum.ALLOCATION.value] = -max_investment
@@ -789,12 +797,12 @@ def ADX_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1
     """
     df_with_signals = signals.average_directional_movement_index(df, window)
 
-    PLUS_DI = df_with_signals["ADX_POS"]
-    MINUS_DI = df_with_signals["ADX_NEG"]
-    ADX = df_with_signals["ADX"]
+    plus_di = df_with_signals["ADX_POS"]
+    minus_di = df_with_signals["ADX_NEG"]
+    adx = df_with_signals["ADX"]
 
     index = 0
-    for pdi_value, mdi_value, adx_value in zip(PLUS_DI, MINUS_DI, ADX):
+    for pdi_value, mdi_value, adx_value in zip(plus_di, minus_di, adx):
         # ADX > 25 to avoid risky investment i.e. invest only when trend is strong
         if adx_value > 25 and pdi_value > mdi_value:
             df.loc[index, PandasEnum.ALLOCATION.value] = max_investment
@@ -825,300 +833,156 @@ def vortex_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 
     return df
 
 
-repo = git.Repo(search_parent_directories=True)
-commit = repo.head.commit
-github_permalink = (
-    "https://github.com/ta-oliver/infertrade/blob/" + str(commit) + "/infertrade/algos/community/allocations.py"
-)
+# Below we populate a function list and a required series list. This needs to be updated when adding new rules.
 
-infertrade_export_allocations = {
-    "fifty_fifty": {
-        "function": fifty_fifty,
-        "parameters": {},
-        "series": [],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(fifty_fifty.__code__.co_firstlineno)
-        },
-    },
-    "buy_and_hold": {
-        "function": buy_and_hold,
-        "parameters": {},
-        "series": [],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(buy_and_hold.__code__.co_firstlineno)
-        },
-    },
-    "chande_kroll_crossover_strategy": {
-        "function": chande_kroll_crossover_strategy,
-        "parameters": {},
-        "series": ["high", "low", "price"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(chande_kroll_crossover_strategy.__code__.co_firstlineno)
-        },
-    },
-    "change_relationship": {
-        "function": change_relationship,
-        "parameters": {},
-        "series": ["price", "research"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(change_relationship.__code__.co_firstlineno)
-        },
-    },
-    "combination_relationship": {
-        "function": combination_relationship,
-        "parameters": {},
-        "series": ["price", "research"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(combination_relationship.__code__.co_firstlineno)
-        },
-    },
-    "difference_relationship": {
-        "function": difference_relationship,
-        "parameters": {},
-        "series": ["price", "research"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(difference_relationship.__code__.co_firstlineno)
-        },
-    },
-    "level_relationship": {
-        "function": level_relationship,
-        "parameters": {},
-        "series": ["price", "research"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(level_relationship.__code__.co_firstlineno)
-        },
-    },
-    "constant_allocation_size": {
-        "function": constant_allocation_size,
-        "parameters": {"constant_position_size": 0.5},
-        "series": [],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(constant_allocation_size.__code__.co_firstlineno)
-        },
-    },
-    "high_low_difference": {
-        "function": high_low_difference,
-        "parameters": {"scale": 1.0, "constant": 0.0},
-        "series": ["high", "low"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(high_low_difference.__code__.co_firstlineno)
-        },
-    },
-    "sma_crossover_strategy": {
-        "function": sma_crossover_strategy,
-        "parameters": {"fast": 0, "slow": 0},
-        "series": ["price"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(sma_crossover_strategy.__code__.co_firstlineno)
-        },
-    },
-    "weighted_moving_averages": {
-        "function": weighted_moving_averages,
-        "parameters": {
-            "avg_price_coeff": 1.0,
-            "avg_research_coeff": 1.0,
-            "avg_price_length": 2,
-            "avg_research_length": 2,
-        },
-        "series": ["price", "research"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(weighted_moving_averages.__code__.co_firstlineno)
-        },
-    },
-    "change_regression": {
-        "function": change_regression,
-        "parameters": {"change_coefficient": 0.1, "change_constant": 0.1},
-        "series": ["research"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(change_regression.__code__.co_firstlineno)
-        },
-    },
-    "difference_regression": {
-        "function": difference_regression,
-        "parameters": {"difference_coefficient": 0.1, "difference_constant": 0.1},
-        "series": ["price", "research"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(difference_regression.__code__.co_firstlineno)
-        },
-    },
-    "level_regression": {
-        "function": level_regression,
-        "parameters": {"level_coefficient": 0.1, "level_constant": 0.1},
-        "series": ["research"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(level_regression.__code__.co_firstlineno)
-        },
-    },
-    "level_and_change_regression": {
-        "function": level_and_change_regression,
-        "parameters": {"level_coefficient": 0.1, "change_coefficient": 0.1, "level_and_change_constant": 0.1},
-        "series": ["research"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(level_and_change_regression.__code__.co_firstlineno)
-        },
-    },
-    "buy_golden_cross_sell_death_cross": {
-        "function": buy_golden_cross_sell_death_cross,
-        "parameters": {
-            "allocation_size": 0.5,
-            "deallocation_size": 0.5,
-            "short_term_moving_avg_length": 50,
-            "long_term_moving_avg_length": 200,
-        },
-        "series": ["price"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(buy_golden_cross_sell_death_cross.__code__.co_firstlineno)
-        },
-    },
-    "SMA_strategy": {
-        "function": SMA_strategy,
-        "parameters": {"window": 1, "max_investment": 0.1},
-        "series": ["close"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(SMA_strategy.__code__.co_firstlineno)
-        },
-    },
-    "WMA_strategy": {
-        "function": WMA_strategy,
-        "parameters": {"window": 1, "max_investment": 0.1},
-        "series": ["close"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(WMA_strategy.__code__.co_firstlineno)
-        },
-    },
-    "MACD_strategy": {
-        "function": MACD_strategy,
-        "parameters": {"window_fast": 26, "window_slow": 12, "window_signal": 9, "max_investment": 0.1},
-        "series": ["close"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(MACD_strategy.__code__.co_firstlineno)
-        },
-    },
-    "RSI_strategy": {
-        "function": RSI_strategy,
-        "parameters": {"window": 14, "max_investment": 0.1},
-        "series": ["close"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(RSI_strategy.__code__.co_firstlineno)
-        },
-    },
-    "stochastic_RSI_strategy": {
-        "function": stochastic_RSI_strategy,
-        "parameters": {"window": 14, "max_investment": 0.1},
-        "series": ["close"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(stochastic_RSI_strategy.__code__.co_firstlineno)
-        },
-    },
-    "EMA_strategy": {
-        "function": EMA_strategy,
-        "parameters": {"window": 50, "max_investment": 0.1},
-        "series": ["close"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(EMA_strategy.__code__.co_firstlineno)
-        },
-    },
-    "bollinger_band_strategy": {
-        "function": bollinger_band_strategy,
-        "parameters": {"window": 20, "window_dev": 2, "max_investment": 0.1},
-        "series": ["close"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(bollinger_band_strategy.__code__.co_firstlineno)
-        },
-    },
-    "PPO_strategy": {
-        "function": PPO_strategy,
-        "parameters": {"window_fast": 26, "window_slow": 12, "window_signal": 9, "max_investment": 0.1},
-        "series": ["close"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(PPO_strategy.__code__.co_firstlineno)
-        },
-    },
-    "PVO_strategy": {
-        "function": PVO_strategy,
-        "parameters": {"window_fast": 26, "window_slow": 12, "window_signal": 9, "max_investment": 0.1},
-        "series": ["volume"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(PVO_strategy.__code__.co_firstlineno)
-        },
-    },
-    "TRIX_strategy": {
-        "function": TRIX_strategy,
-        "parameters": {"window": 14, "max_investment": 0.1},
-        "series": ["close"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(TRIX_strategy.__code__.co_firstlineno)
-        },
-    },
-    "TSI_strategy": {
-        "function": TSI_strategy,
-        "parameters": {"window_slow": 25, "window_fast": 13, "window_signal": 13, "max_investment": 0.1},
-        "series": ["close"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(TSI_strategy.__code__.co_firstlineno)
-        },
-    },
-    "STC_strategy": {
-        "function": STC_strategy,
-        "parameters": {
-            "window_slow": 50,
-            "window_fast": 23,
-            "cycle": 10,
-            "smooth1": 3,
-            "smooth2": 3,
-            "max_investment": 0.1,
-        },
-        "series": ["close"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(STC_strategy.__code__.co_firstlineno)
-        },
-    },
-    "KAMA_strategy": {
-        "function": KAMA_strategy,
-        "parameters": {"window": 10, "pow1": 2, "pow2": 30, "max_investment": 0.1},
-        "series": ["close"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(KAMA_strategy.__code__.co_firstlineno)
-        },
-    },
-    "aroon_strategy": {
-        "function": aroon_strategy,
-        "parameters": {"window": 25, "max_investment": 0.1},
-        "series": ["close"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(aroon_strategy.__code__.co_firstlineno)
-        },
-    },
-    "ROC_strategy": {
-        "function": ROC_strategy,
-        "parameters": {"window": 12, "max_investment": 0.1},
-        "series": ["close"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(ROC_strategy.__code__.co_firstlineno)
-        },
-    },
-    "ADX_strategy": {
-        "function": ADX_strategy,
-        "parameters": {"window": 14, "max_investment": 0.1},
-        "series": ["close", "high", "low"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(ADX_strategy.__code__.co_firstlineno)
-        },
-    },
-    "vortex_strategy": {
-        "function": vortex_strategy,
-        "parameters": {"window": 14, "max_investment": 0.1},
-        "series": ["close", "high", "low"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(vortex_strategy.__code__.co_firstlineno)
-        },
-    },
-    "DPO_strategy": {
-        "function": DPO_strategy,
-        "parameters": {"window": 20, "max_investment": 0.1},
-        "series": ["close"],
-        "available_representation_types": {
-            "github_permalink": github_permalink + "#L" + str(DPO_strategy.__code__.co_firstlineno)
-        },
-    },
-}
+function_list = [
+    fifty_fifty,
+    buy_and_hold,
+    chande_kroll_crossover_strategy,
+    change_relationship,
+    combination_relationship,
+    difference_relationship,
+    level_relationship,
+    constant_allocation_size,
+    high_low_difference,
+    sma_crossover_strategy,
+    weighted_moving_averages,
+    change_regression,
+    difference_regression,
+    level_regression,
+    level_and_change_regression,
+    buy_golden_cross_sell_death_cross,
+    SMA_strategy,
+    WMA_strategy,
+    MACD_strategy,
+    RSI_strategy,
+    stochastic_RSI_strategy,
+    EMA_strategy,
+    bollinger_band_strategy,
+    PPO_strategy,
+    PVO_strategy,
+    TRIX_strategy,
+    TSI_strategy,
+    STC_strategy,
+    KAMA_strategy,
+    aroon_strategy,
+    ROC_strategy,
+    ADX_strategy,
+    vortex_strategy,
+    DPO_strategy,
+]
+
+required_series_dict = {
+        "fifty_fifty": [],
+        "buy_and_hold": [],
+        "chande_kroll_crossover_strategy": ["high", "low", "price"],
+        "change_relationship": ["price", "research"],
+        "combination_relationship": ["price", "research"],
+        "difference_relationship": ["price", "research"],
+        "level_relationship": ["price", "research"],
+        "constant_allocation_size": [],
+        "high_low_difference": ["high", "low"],
+        "sma_crossover_strategy": ["price"],
+        "weighted_moving_averages": ["price", "research"],
+        "change_regression": ["research"],
+        "difference_regression": ["price", "research"],
+        "level_regression": ["research"],
+        "level_and_change_regression": ["research"],
+        "buy_golden_cross_sell_death_cross": ["price"],
+        "SMA_strategy": ["close"],
+        "WMA_strategy": ["close"],
+        "MACD_strategy": ["close"],
+        "RSI_strategy": ["close"],
+        "stochastic_RSI_strategy": ["close"],
+        "EMA_strategy": ["close"],
+        "bollinger_band_strategy": ["close"],
+        "PPO_strategy": ["close"],
+        "PVO_strategy": ["volume"],
+        "TRIX_strategy": ["close"],
+        "TSI_strategy": ["close"],
+        "STC_strategy": ["close"],
+        "KAMA_strategy": ["close"],
+        "aroon_strategy": ["close"],
+        "ROC_strategy": ["close"],
+        "ADX_strategy": ["close", "high", "low"],
+        "vortex_strategy": ["close", "high", "low"],
+        "DPO_strategy": ["close"],
+    }
+
+
+def get_functions_list() -> List[Callable]:
+    """Returns list of functions."""
+    return function_list
+
+
+def get_required_series() -> Dict[str, list]:
+    """Returns dictionary of series"""
+    return required_series_dict
+
+
+def get_functions_names() -> List[str]:
+    """Returns list of functions"""
+    series_dict = get_required_series()
+    list_of_functions = list(series_dict.keys())
+    return list_of_functions
+
+
+def get_latest_infertrade_commit() -> str:
+    """Gets the latest commit for InferTrade as a string."""
+    repo = git.Repo(search_parent_directories=True)
+    commit = str(repo.head.commit)
+    return commit
+
+
+def get_latest_infertrade_allocation_file_url() -> str:
+    """Gets the latest URL stub for the allocation file."""
+    github_permalink = (
+        "https://github.com/ta-oliver/infertrade/blob/"
+        + get_latest_infertrade_commit()
+        + "/infertrade/algos/community/allocations.py"
+    )
+    return github_permalink
+
+
+def create_permalink_to_allocations(function: Callable) -> str:
+    """Creates a permalink to the referenced function."""
+    full_link = get_latest_infertrade_allocation_file_url() + "#L" + str(function.__code__.co_firstlineno)
+    return full_link
+
+
+def get_parameters(function: Callable) -> dict:
+    """Gets the default parameters and its values from the function"""
+    signature = inspect.signature(function)
+    parameter_items = signature.parameters.items()
+    is_empty = inspect.Parameter.empty
+    parameters = {key: value.default for key, value in parameter_items if value.default is not is_empty}
+    return parameters
+
+
+def create_infertrade_export_allocations():
+    """Creates a dictionary for export."""
+    infertrade_export_allocations_raw = {}
+    list_of_functions = get_functions_list()
+    series_dict = get_required_series()
+    for function in list_of_functions:
+
+        infertrade_export_allocations_raw.update(
+            {
+                function.__name__: {
+                    "function": function,
+                    "parameters": get_parameters(function),
+                    "series": series_dict[function.__name__],
+                    "available_representation_types": {"github_permalink": create_permalink_to_allocations(function)},
+                }
+            }
+        )
+
+    return infertrade_export_allocations_raw
+
+
+infertrade_export_allocations = create_infertrade_export_allocations()
+
+
+if __name__ == "__main__":
+    """To quickly view rule properties."""
+    print(infertrade_export_allocations)
