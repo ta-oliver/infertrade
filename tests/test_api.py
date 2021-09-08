@@ -267,3 +267,76 @@ def test_get_raw_callable():
     returned_callable = Api._get_raw_callable(name_of_strategy_or_signal=names[0])
     assert callable(returned_callable)
 
+
+def test_export_to_csv():
+    """Test to confirm that correct columns are added to generated csv format string"""
+    test_df = simulated_market_data_4_years_gen()
+    second_test_df = simulated_market_data_4_years_gen()
+    new_columns = [
+        "period_start_cash",
+        "period_start_securities",
+        "start_of_period_allocation",
+        "trade_percentage",
+        "trading_skipped",
+        "period_end_cash",
+        "period_end_securities",
+        "end_of_period_allocation",
+        "security_purchases",
+        "cash_flow",
+        "percent_gain",
+        "portfolio_return"
+    ]
+
+    relationship_names = []
+    csv_data = pd.DataFrame
+    for rule in algorithm_functions["infertrade"]["allocation"]:
+        if "relationship" in rule:
+            relationship_names.append(rule)
+
+    for ii_package in algorithm_functions:
+        for ii_algo_type in algorithm_functions[ii_package]:
+            rule_names = list(algorithm_functions[ii_package][ii_algo_type])
+            if 0 < len(rule_names) < 3:
+                for ii_rule_name in rule_names:
+                    csv_data = Api.export_to_csv(dataframe=test_df,
+                                                 rule_name=ii_rule_name,
+                                                 string_return=True)
+
+                    csv_data2 = Api.export_to_csv(dataframe=test_df,
+                                                 rule_name=ii_rule_name,
+                                                 second_df=second_test_df,
+                                                 relationship=relationship_names[len(relationship_names)-1],
+                                                 string_return=True)
+            elif len(rule_names) > 0:
+                for i in range(1, 3):
+                    csv_data = Api.export_to_csv(dataframe=test_df,
+                                                 rule_name=rule_names[i],
+                                                 string_return=True)
+
+                    csv_data2 = Api.export_to_csv(dataframe=test_df,
+                                                 rule_name=rule_names[i],
+                                                 second_df=second_test_df,
+                                                 relationship=relationship_names[len(relationship_names)-1],
+                                                 string_return=True)
+
+            for _ in new_columns:
+                if _ not in csv_data or _ not in csv_data2:
+                    raise ValueError("Missing expected column information")
+
+
+    for ii_rule_name in ta_export_regression_allocations:
+        csv_data = Api.export_to_csv(dataframe=test_df,
+                                     rule_name=ii_rule_name,
+                                     relationship=relationship_names[len(relationship_names)-1],
+                                     string_return=True)
+
+        csv_data2 = Api.export_to_csv(dataframe=test_df,
+                                     rule_name=ii_rule_name,
+                                     second_df=second_test_df,
+                                     relationship=relationship_names[len(relationship_names)-1],
+                                     string_return=True)
+        break
+
+    for _ in new_columns:
+        if _ not in csv_data or _ not in csv_data2:
+            raise ValueError("Missing expected column information")

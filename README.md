@@ -147,3 +147,26 @@ simulated_correlated_equities_4_years_gen().plot(y=["price", "signal"])
 plt.show()
 ```
 ![image](https://user-images.githubusercontent.com/29981664/111360130-4668a400-8684-11eb-933e-e8f10662b0bb.png)
+
+
+### Exporting portfolio performance to a CSV file
+
+The "infertrade.api" module contains an Api class with multiple useful functions including "export_to_csv" which is used to export
+portfolio performance as a CSV file.
+
+The function accepts up to two dataframes containing market data, a rule name and a relationship name and the output would be a CSV file containing
+information about the provided rule and relationship perfomance with provided market data.
+
+```python
+from infertrade.api import Api
+
+Api.export_to_csv(dataframe=MarketData, rule_name="weighted_moving_averages")
+"""Resulting CSV file would contain portfolio performance of supplied MarketData 
+after trading using weighted moving averages"""
+
+Api.export_to_csv(dataframe=MarketData1, second_df=MarketData2, rule_name="weighted_moving_averages", relationship="change_relationship")
+"""Resulting CSV file would contain portfolio performance of supplied MarketData1 and MarketData2 
+after trading using weighted moving averages and calculating the change relationship"""
+```
+
+![image](https://user-images.githubusercontent.com/74156271/131223361-6a3ba607-57ea-4826-b03f-5bb337f7f497.png)

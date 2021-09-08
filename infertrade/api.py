@@ -232,3 +232,28 @@ class Api:
             raise TypeError("Input type not supported: ", representation_or_list_of_representations)
 
         return representation_dict
+
+    @staticmethod
+    def export_to_csv(
+        dataframe: pd.DataFrame,
+        rule_name: str,
+        string_return: bool = False,
+        relationship: str = None,
+        second_df: pd.DataFrame = None,
+    ):
+        """
+        Exports csv file of calculated portfolio performance based on data gained from calculating trading rules and
+         relationships.
+        """
+        from infertrade.utilities.export import export_performance_df
+        # imported inside to prevent circular dependency
+        df = export_performance_df(
+            dataframe=dataframe, second_df=second_df, rule_name=rule_name, relationship=relationship
+        )
+        if string_return is True:
+            return df.to_csv()
+        else:
+            if relationship is not None:
+                return df.to_csv(str(rule_name) + "_performance_" + str(relationship) + ".csv")
+            else:
+                return df.to_csv(str(rule_name) + ".csv")
