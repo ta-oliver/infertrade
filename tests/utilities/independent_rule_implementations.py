@@ -95,9 +95,9 @@ def stochastic_relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd
     than to standard price data.
     """
     df_with_signals = df.copy()
-    RSI = relative_strength_index(df, window)["signal"]
-    stochRSI = (RSI - RSI.rolling(window).min()) / (RSI.rolling(window).max() - RSI.rolling(window).min())
-    df_with_signals["signal"] = stochRSI
+    rsi = relative_strength_index(df, window)["signal"]
+    stoch_rsi = (rsi - rsi.rolling(window).min()) / (rsi.rolling(window).max() - rsi.rolling(window).min())
+    df_with_signals["signal"] = stoch_rsi
     return df_with_signals
 
 
@@ -279,7 +279,7 @@ def vortex_indicator(
     tr1 = high - low
     tr2 = (high - close_shift).abs()
     tr3 = (low - close_shift).abs()
-    true_range = pd.DataFrame([tr1, tr2, tr3]).max(axis=0)
+    true_range = pd.DataFrame([tr1, tr2, tr3]).max()
     trn = true_range.rolling(window, min_periods=1).sum()
     vmp = np.abs(high - low.shift(1))
     vmm = np.abs(low - high.shift(1))
