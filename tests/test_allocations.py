@@ -16,24 +16,23 @@
 # Created by: Bikash Timsina
 # Created date: 07/07/2021
 
-"""
-Unit tests for allocations
-"""
+"""Unit tests for allocation strategies."""
 
-from numpy.core.fromnumeric import argmax
-from numpy.core.numeric import roll
-import infertrade.algos.community.allocations as allocations
+
 import infertrade.algos.community.signals as signals
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 from numbers import Real
 from infertrade.algos import algorithm_functions
-from infertrade.PandasEnum import PandasEnum
 from infertrade.algos.community import allocations
 import pandas as pd
 import numpy as np
+import pytest
 from infertrade.PandasEnum import PandasEnum 
 
-df = simulated_market_data_4_years_gen()
+
+num_simulated_market_data = 10
+np.random.seed(1)
+dataframes = [simulated_market_data_4_years_gen() for i in range(num_simulated_market_data)]
 max_investment = 0.2
 
 
@@ -99,7 +98,8 @@ def simple_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
 
 def weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     """
-    Weighted moving averages assign a heavier weighting to more current data points since they are more relevant than data points in the distant past.
+    Weighted moving averages assign a heavier weighting to more current data points since they are more relevant than
+     data points in the distant past.
     """
     df_with_signals = df.copy()
     weights = np.arange(1, window + 1)
@@ -109,9 +109,7 @@ def weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
 
 
 def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 50, series_name: str = "close") -> pd.DataFrame:
-    """
-    This function uses an exponentially weighted multiplier to give more weight to recent prices.
-    """
+    """This function uses an exponentially weighted multiplier to give more weight to recent prices."""
     df_with_signals = df.copy()
     df_with_signals["signal"] = df_with_signals[series_name].ewm(span = window, adjust = False).mean()
     return df_with_signals
@@ -121,8 +119,9 @@ def moving_average_convergence_divergence(
     df: pd.DataFrame, window_slow: int = 50, window_fast: int = 26, window_signal: int = 9
 ) -> pd.DataFrame:
     """
-    This function is a trend-following momentum indicator that shows the relationship between two moving averages at different windows:
-    The MACD is usually calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA.
+    This function is a trend-following momentum indicator that shows the relationship between two moving averages at
+     different windows: the MACD is usually calculated by subtracting the 26-period exponential moving average (EMA)
+      from the 12-period EMA.
     """
     df_with_signals = df.copy()
     # ewma for two different spans
@@ -139,7 +138,8 @@ def moving_average_convergence_divergence(
 
 def relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
     """
-    This function measures the magnitude of recent price changes to evaluate overbought or oversold conditions in the price.
+    This function measures the magnitude of recent price changes to evaluate overbought or oversold conditions in the
+     price.
     """
     df_with_signals = df.copy()
     daily_difference = df_with_signals["close"].diff()
@@ -155,13 +155,15 @@ def relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
 
 def stochastic_relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
     """
-    This function applies the Stochastic oscillator formula to a set of relative strength index (RSI) values rather than to standard price data.
+    This function applies the Stochastic oscillator formula to a set of relative strength index (RSI) values rather
+    than to standard price data.
     """
     df_with_signals = df.copy()
     RSI = relative_strength_index(df, window)["signal"]
     stochRSI = (RSI - RSI.rolling(window).min()) / (RSI.rolling(window).max() - RSI.rolling(window).min())
     df_with_signals["signal"] = stochRSI
     return df_with_signals
+
 
 def bollinger_band(df: pd.DataFrame, window: int = 20, window_dev: int = 2) -> pd.DataFrame:
     # Implementation of bollinger band
@@ -175,6 +177,7 @@ def bollinger_band(df: pd.DataFrame, window: int = 20, window_dev: int = 2) -> p
 
     return df_with_signals
 
+
 def detrended_price_oscillator(df: pd.DataFrame, window: int = 20) -> pd.DataFrame:
     # Implementation of detrended price oscillator
     df_with_signals = df.copy()
@@ -185,6 +188,7 @@ def detrended_price_oscillator(df: pd.DataFrame, window: int = 20) -> pd.DataFra
         DPO.loc[i] = df_with_signals.loc[i - displacement, "close"] - SMA.loc[i]
     df_with_signals["signal"] = DPO
     return df_with_signals
+
 
 def percentage_series_oscillator(
     df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, series_name: str="close"
@@ -202,9 +206,11 @@ def percentage_series_oscillator(
     df_with_signals["signal"] = ppo.ewm(span = window_signal, adjust = False).mean()
     return df_with_signals
 
+
 def triple_exponential_average(
     df: pd.DataFrame, window: int = 14
 ) -> pd.DataFrame:
+    """TODO - description."""
     df_with_signals = df.copy()
     # ema1
     df_with_signals = exponentially_weighted_moving_average(df_with_signals, window, "close")
@@ -213,21 +219,27 @@ def triple_exponential_average(
     # ema3
     df_with_signals = exponentially_weighted_moving_average(df_with_signals, window, "signal")
     # 1 period percent change
-    df_with_signals["signal"] = df_with_signals["signal"].pct_change(fill_method = "pad") * 100
+    df_with_signals["signal"] = df_with_signals["signal"].pct_change(fill_method="pad") * 100
 
     return df_with_signals
+
 
 def true_strength_index(
     df: pd.DataFrame, window_slow: int = 25, window_fast: int = 13, window_signal: int = 13
 ) -> pd.DataFrame:
+    """TODO - description."""
     df_with_signals = df.copy()
-    #price change
+
+    # price change
     PC = df_with_signals["close"].diff()
-    #single smoothing
+
+    # single smoothing
     PCS = PC.ewm(span = window_slow, adjust = False).mean()
-    #double smoothing
+
+    # double smoothing
     PCDS = PCS.ewm(span = window_fast, adjust = False).mean()
-    #absolute price change
+
+    # absolute price change
     APC = PC.abs()
     APCS = APC.ewm(span = window_slow, adjust = False).mean()
     APCDS = APCS.ewm(span = window_fast, adjust = False).mean()
@@ -238,9 +250,11 @@ def true_strength_index(
 
     return df_with_signals
 
+
 def schaff_trend_cycle(
     df: pd.DataFrame, window_slow: int = 50, window_fast: int = 23, cycle: int = 10, smooth1: int = 3, smooth2: int = 3
 ) -> pd.DataFrame:
+    """TODO - description."""
     df_with_signals = df.copy()
     # calculate EMAs
     ewm_slow = df_with_signals["close"].ewm(span = window_slow, adjust = False, ignore_na = False).mean()
@@ -260,9 +274,11 @@ def schaff_trend_cycle(
     df_with_signals["signal"] = STC.fillna(0)
     return df_with_signals
 
+
 def KAMA(
     df: pd.DataFrame, window: int = 10, pow1: int = 2, pow2: int = 30
 ) -> pd.DataFrame:
+    """TODO - description."""
     df_with_signals = df.copy()
     change = df_with_signals["close"].diff(periods=window).abs()
     vol =df_with_signals["close"].diff().abs()
@@ -287,12 +303,14 @@ def KAMA(
 def aroon(
     df: pd.DataFrame, window: int = 25
 ) -> pd.DataFrame:
+    """TODO - description."""
     df_with_signals = df.copy()
     roll_close = df_with_signals["close"].rolling(window=window, min_periods=0)
     df_with_signals["aroon_up"] = roll_close.apply(lambda x : (np.argmax(x) + 1) / window * 100)
     df_with_signals["aroon_down"] = roll_close.apply(lambda x : (np.argmin(x) + 1) / window * 100)
         
     return df_with_signals
+
 
 def rate_of_change(
     df: pd.DataFrame, window: int = 25
@@ -302,6 +320,7 @@ def rate_of_change(
     
     return df_with_signals
 
+
 def vortex_indicator(
     df: pd.DataFrame, window: int = 25
 ) -> pd.DataFrame:
@@ -309,16 +328,16 @@ def vortex_indicator(
     high = df_with_signals["high"]
     low = df_with_signals["low"]
     close = df_with_signals["close"]
-    close_shift = df_with_signals["close"].shift(1)
+    close_shift = close.shift(1, fill_value=close.mean())
     tr1 = high - low
     tr2 = (high - close_shift).abs()
     tr3 = (low - close_shift).abs()
-    true_range = pd.DataFrame([tr1, tr2, tr3]).max(axis=1)
-    trn = true_range.rolling(window).sum()
+    true_range = pd.DataFrame([tr1, tr2, tr3]).max(axis=0)
+    trn = true_range.rolling(window, min_periods=1).sum()
     vmp = np.abs(high - low.shift(1))
     vmm = np.abs(low - high.shift(1))
-    vip = vmp.rolling(window).sum() / trn
-    vin = vmm.rolling(window).sum() / trn
+    vip = vmp.rolling(window, min_periods=1).sum() / trn
+    vin = vmm.rolling(window, min_periods=1).sum() / trn
     df_with_signals["signal"] = vip - vin
     return df_with_signals
 
@@ -326,7 +345,10 @@ def vortex_indicator(
 """
 Tests for allocation strategies
 """
-def test_SMA_strategy():
+
+@pytest.mark.parametrize("df", dataframes)
+def test_SMA_strategy(df):
+    """Checks SMA strategy calculates correctly."""
     window = 50
     df_with_allocations = allocations.SMA_strategy(df, window, max_investment)
     df_with_signals = simple_moving_average(df,window)
@@ -338,7 +360,9 @@ def test_SMA_strategy():
     df_with_signals.loc[price_below_signal, "allocation"]=-max_investment
     assert pd.Series.equals(df_with_signals["allocation"],df_with_allocations["allocation"])
 
-def test_WMA_strategy():
+@pytest.mark.parametrize("df", dataframes)
+def test_WMA_strategy(df):
+    """Checks WMA strategy calculates correctly."""
     window = 50
     df_with_allocations = allocations.WMA_strategy(df, window, max_investment)
     df_with_signals = weighted_moving_average(df,window)
@@ -351,7 +375,10 @@ def test_WMA_strategy():
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
-def test_EMA_strategy():
+
+@pytest.mark.parametrize("df", dataframes)
+def test_EMA_strategy(df):
+    """Checks EMA strategy calculates correctly."""
     window = 50
     df_with_allocations = allocations.EMA_strategy(df, window, max_investment)
     df_with_signals = exponentially_weighted_moving_average(df,window)
@@ -364,7 +391,10 @@ def test_EMA_strategy():
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
-def test_MACD_strategy():
+
+@pytest.mark.parametrize("df", dataframes)
+def test_MACD_strategy(df):
+    """Checks MACD strategy calculates correctly."""
     df_with_allocations = allocations.MACD_strategy(df, 12, 26 ,9, max_investment)
     df_with_signals = moving_average_convergence_divergence(df,12, 26, 9)
  
@@ -376,7 +406,10 @@ def test_MACD_strategy():
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
-def test_RSI_strategy():
+
+@pytest.mark.parametrize("df", dataframes)
+def test_RSI_strategy(df):
+    """Checks RSI strategy calculates correctly."""
     df_with_allocations = allocations.RSI_strategy(df, 14, max_investment)
     df_with_signals = relative_strength_index(df,14)
  
@@ -390,7 +423,10 @@ def test_RSI_strategy():
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
-def test_Stochastic_RSI_strategy():
+
+@pytest.mark.parametrize("df", dataframes)
+def test_Stochastic_RSI_strategy(df):
+    """Checks stochastic RSI strategy calculates correctly."""
     df_with_allocations = allocations.stochastic_RSI_strategy(df, 14, max_investment)
     df_with_signals = stochastic_relative_strength_index(df,14)
  
@@ -404,7 +440,10 @@ def test_Stochastic_RSI_strategy():
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
-def test_bollinger_band_strategy():
+
+@pytest.mark.parametrize("df", dataframes)
+def test_bollinger_band_strategy(df):
+    """Checks bollinger band strategy calculates correctly."""
     # Window_dev is kept lower to make sure prices breaks the band
     window = 20
     window_dev = 2
@@ -443,7 +482,9 @@ def test_bollinger_band_strategy():
     assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
 
 
-def test_DPO_strategy():
+@pytest.mark.parametrize("df", dataframes)
+def test_DPO_strategy(df):
+    """Checks DPO strategy calculates correctly."""
     df_with_allocations = allocations.DPO_strategy(df, 20, max_investment)
     df_with_signals = detrended_price_oscillator(df, 20)
 
@@ -455,7 +496,10 @@ def test_DPO_strategy():
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
-def test_PPO_strategy():
+
+@pytest.mark.parametrize("df", dataframes)
+def test_PPO_strategy(df):
+    """Checks PPO strategy calculates correctly."""
     series_name = "close"
     df_with_allocations = allocations.PPO_strategy(df, 26, 12, 9, max_investment)
     df_with_signals = percentage_series_oscillator(df, 26, 12, 9, series_name)
@@ -468,7 +512,9 @@ def test_PPO_strategy():
 
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
-def test_PVO_strategy():
+@pytest.mark.parametrize("df", dataframes)
+def test_PVO_strategy(df):
+    """Checks PVO strategy calculates correctly."""
     series_name = "volume"
     df_with_allocations = allocations.PVO_strategy(df, 26, 12, 9, max_investment)
     df_with_signals = percentage_series_oscillator(df, 26, 12, 9, series_name)
@@ -482,7 +528,9 @@ def test_PVO_strategy():
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 
-def test_TRIX_strategy():
+@pytest.mark.parametrize("df", dataframes)
+def test_TRIX_strategy(df):
+    """Checks TRIX strategy calculates correctly."""
     df_with_allocations = allocations.TRIX_strategy(df, 14, max_investment)
     df_with_signals = triple_exponential_average(df, 14)
     
@@ -495,7 +543,9 @@ def test_TRIX_strategy():
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 
-def test_tsi_strategy():
+@pytest.mark.parametrize("df", dataframes)
+def test_tsi_strategy(df):
+    """Checks TSI strategy calculates correctly."""
     df_with_allocations = allocations.TSI_strategy(df, 25, 13, 13, max_investment=max_investment)
     df_with_signals = true_strength_index(df, 25, 13, 13)
     
@@ -508,7 +558,9 @@ def test_tsi_strategy():
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 
-def test_sct_strategy():
+@pytest.mark.parametrize("df", dataframes)
+def test_stc_strategy(df):
+    """Checks STC strategy calculates correctly."""
     df_with_allocations = allocations.STC_strategy(df, 50, 23, 10, 3, 3, max_investment=max_investment)
     df_with_signal = schaff_trend_cycle(df)
     oversold = df_with_signal["signal"] <= 25
@@ -522,7 +574,9 @@ def test_sct_strategy():
     assert pd.Series.equals(df_with_signal["allocation"], df_with_allocations["allocation"])
 
 
-def test_KAMA_strategy():
+@pytest.mark.parametrize("df", dataframes)
+def test_KAMA_strategy(df):
+    """Checks KAMA strategy calculates correctly."""
     df_with_signals = KAMA(df, 10, 2, 30)
     df_with_allocations = allocations.KAMA_strategy(df, 10, 2, 30, max_investment)
     
@@ -535,7 +589,9 @@ def test_KAMA_strategy():
     assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
 
 
-def test_aroon_strategy():
+@pytest.mark.parametrize("df", dataframes)
+def test_aroon_strategy(df):
+    """Checks the Aroon Indicator strategy calculates correctly."""
     df_with_signals = aroon(df, window=25)
     df_with_allocations = allocations.aroon_strategy(df, 25, max_investment)
     df_with_signals_ta = signals.aroon(df, 25)
@@ -549,7 +605,9 @@ def test_aroon_strategy():
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
 
-def test_ROC_strategy():
+@pytest.mark.parametrize("df", dataframes)
+def test_ROC_strategy(df):
+    """Checks the Rate of Change strategy calculates correctly."""
     df_with_signals = rate_of_change(df, window=25)
     df_with_allocations = allocations.ROC_strategy(df, 25, max_investment)
 
@@ -562,9 +620,11 @@ def test_ROC_strategy():
     assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
 
 
-def test_vortex_strategy():
+@pytest.mark.parametrize("df", dataframes)
+def test_vortex_strategy(df):
+    """Checks Vortex strategy calculates correctly."""
     df_with_signals = vortex_indicator(df, window=25)
-    df_with_allocations = allocations.ROC_strategy(df, 25, max_investment)
+    df_with_allocations = allocations.vortex_strategy(df, 25, max_investment)
 
     bullish = df_with_signals["signal"] >= 0
     bearish = df_with_signals["signal"] < 0
