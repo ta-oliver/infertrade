@@ -27,7 +27,7 @@ from infertrade.api import Api
 
 
 def calculate_ta_regression_allocation(dataframe: pd.DataFrame, rule_name: str):
-    "Used to implement ta regression allocations with market data"
+    """Used to implement ta regression allocations with market data."""
     df = deepcopy(dataframe)
     percent_gain = [0]
 
@@ -43,7 +43,7 @@ def calculate_ta_regression_allocation(dataframe: pd.DataFrame, rule_name: str):
 
 
 def calculate_infertrade_allocation(dataframe: pd.DataFrame, rule_name: str):
-    "Used to implement infertrade allocations with market data"
+    """Used to implement infertrade allocations with market data."""
     df = deepcopy(dataframe)
     percent_gain = [0]
 
@@ -58,7 +58,7 @@ def calculate_infertrade_allocation(dataframe: pd.DataFrame, rule_name: str):
 
 
 def calculate_infertrade_signal(dataframe: pd.DataFrame, rule_name: str):
-    "Used to implement infertrade signals with market data"
+    """Used to implement infertrade signals with market data."""
     df = deepcopy(dataframe)
     percent_gain = [0]
 
@@ -118,7 +118,9 @@ def calculate_ta_signal(dataframe: pd.DataFrame, rule_name: str):
 def export_performance_df(
     dataframe: pd.DataFrame, rule_name: str, second_df: pd.DataFrame = None, relationship: str = None
 ) -> pd.DataFrame:
-    """Function used to calculate portfolio performance for data after calculating a trading signal/rule and relationship"""
+    """
+    Function used to calculate portfolio performance for data after calculating a trading signal/rule and relationship.
+    """
     if rule_name in algorithm_functions["infertrade"]["allocation"].keys():
         used_calculation = calculate_infertrade_allocation
 
