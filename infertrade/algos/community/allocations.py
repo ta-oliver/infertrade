@@ -15,11 +15,19 @@
 # Created date: 11/03/2021
 
 """
-Allocation algorithms are functions used to compute allocations - % of your portfolio to invest in a market or asset.
+Allocation algorithms are functions used to compute allocations - % of your portfolio or maximum investment size to
+ invest in a market or asset.
 """
 
+# External packages
 import numpy as np
 import pandas as pd
+import inspect
+import git
+from typing import List, Callable, Dict
+
+
+# InferStat packages
 from infertrade.PandasEnum import PandasEnum
 import infertrade.utilities.operations as operations
 import infertrade.algos.community.signals as signals
@@ -37,7 +45,9 @@ def buy_and_hold(dataframe: pd.DataFrame) -> pd.DataFrame:
     return dataframe
 
 
-def chande_kroll_crossover_strategy(dataframe: pd.DataFrame,) -> pd.DataFrame:
+def chande_kroll_crossover_strategy(
+    dataframe: pd.DataFrame,
+) -> pd.DataFrame:
     """
     This simple all-or-nothing rule:
     (1) allocates 100% of the portofolio to a long position on the asset when the price of the asset is above both the
@@ -282,7 +292,8 @@ def calculate_level_relationship(df: pd.DataFrame, regression_period: int = 120,
     forecast_period = 100
     signal_lagged = operations.lag(
         np.reshape(dataframe[PandasEnum.SIGNAL.value].append(pd.Series([0])).values, (-1, 1)), shift=1
-    )  # revert back to manually calculating last row? doing it manually seems awkward, doing it this way seems wasteful, altering the the lag (or other) function seems hacky
+    )  # revert back to manually calculating last row? doing it manually seems awkward, doing it this way seems
+    # wasteful, altering the the lag (or other) function seems hacky
     signal_lagged[0] = [0.0]
     last_feature_row = signal_lagged[-1:]
     signal_lagged = signal_lagged[:-1]
@@ -478,10 +489,10 @@ def SMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1)
     """
     Simple simple moving average strategy which buys when price is above signal and sells when price is below signal
     """
-    SMA = signals.simple_moving_average(df, window=window)["signal"]
+    sma = signals.simple_moving_average(df, window=window)["signal"]
 
-    price_above_signal = df["close"] > SMA
-    price_below_signal = df["close"] <= SMA
+    price_above_signal = df["close"] > sma
+    price_below_signal = df["close"] <= sma
 
     df.loc[price_above_signal, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[price_below_signal, PandasEnum.ALLOCATION.value] = -max_investment
@@ -493,10 +504,10 @@ def WMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1)
     """
     Weighted moving average strategy which buys when price is above signal and sells when price is below signal
     """
-    WMA = signals.weighted_moving_average(df, window=window)["signal"]
+    wma = signals.weighted_moving_average(df, window=window)["signal"]
 
-    price_above_signal = df["close"] > WMA
-    price_below_signal = df["close"] <= WMA
+    price_above_signal = df["close"] > wma
+    price_below_signal = df["close"] <= wma
 
     df.loc[price_above_signal, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[price_below_signal, PandasEnum.ALLOCATION.value] = -max_investment
@@ -510,10 +521,10 @@ def MACD_strategy(
     Moving average convergence divergence strategy which buys when MACD signal is above 0 and sells when MACD signal
      is below zero.
     """
-    MACD_signal = signals.moving_average_convergence_divergence(df, window_slow, window_fast, window_signal)["signal"]
+    macd_signal = signals.moving_average_convergence_divergence(df, window_slow, window_fast, window_signal)["signal"]
 
-    signal_above_zero_line = MACD_signal > 0
-    signal_below_zero_line = MACD_signal <= 0
+    signal_above_zero_line = macd_signal > 0
+    signal_below_zero_line = macd_signal <= 0
 
     df.loc[signal_above_zero_line, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[signal_below_zero_line, PandasEnum.ALLOCATION.value] = -max_investment
@@ -525,11 +536,11 @@ def RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1
     Relative Strength Index
     """
     # https://www.investopedia.com/terms/r/rsi.asp
-    RSI = signals.relative_strength_index(df, window=window)["signal"]
+    rsi = signals.relative_strength_index(df, window=window)["signal"]
 
-    over_valued = RSI >= 70
-    under_valued = RSI <= 30
-    hold = RSI.between(30, 70)
+    over_valued = rsi >= 70
+    under_valued = rsi <= 30
+    hold = rsi.between(30, 70)
 
     df.loc[over_valued, PandasEnum.ALLOCATION.value] = -max_investment
     df.loc[under_valued, PandasEnum.ALLOCATION.value] = max_investment
@@ -543,11 +554,11 @@ def stochastic_RSI_strategy(df: pd.DataFrame, window: int = 14, max_investment: 
     """
     # https://www.investopedia.com/terms/s/stochrsi.asp
 
-    stochRSI = signals.stochastic_relative_strength_index(df, window=window)["signal"]
+    stoch_rsi = signals.stochastic_relative_strength_index(df, window=window)["signal"]
 
-    over_valued = stochRSI >= 0.8
-    under_valued = stochRSI <= 0.2
-    hold = stochRSI.between(0.2, 0.8)
+    over_valued = stoch_rsi >= 0.8
+    under_valued = stoch_rsi <= 0.2
+    hold = stoch_rsi.between(0.2, 0.8)
 
     df.loc[over_valued, PandasEnum.ALLOCATION.value] = -max_investment
     df.loc[under_valued, PandasEnum.ALLOCATION.value] = max_investment
@@ -560,10 +571,10 @@ def EMA_strategy(df: pd.DataFrame, window: int = 50, max_investment: float = 0.1
     """
     Exponential moving average strategy which buys when price is above signal and sells when price is below signal
     """
-    EMA = signals.exponentially_weighted_moving_average(df, window=window)["signal"]
+    ema = signals.exponentially_weighted_moving_average(df, window=window)["signal"]
 
-    price_above_signal = df["close"] > EMA
-    price_below_signal = df["close"] <= EMA
+    price_above_signal = df["close"] > ema
+    price_below_signal = df["close"] <= ema
 
     df.loc[price_above_signal, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[price_below_signal, PandasEnum.ALLOCATION.value] = -max_investment
@@ -600,13 +611,13 @@ def bollinger_band_strategy(
             long_position = False
 
         # Both short position and long position can't be true
-        assert not (short_position == True and long_position == True)
+        assert not (short_position and long_position)
 
         # allocation conditions
-        if short_position == True:
+        if short_position:
             df.loc[index, PandasEnum.ALLOCATION.value] = max_investment
 
-        elif long_position == True:
+        elif long_position:
             df.loc[index, PandasEnum.ALLOCATION.value] = -max_investment
 
         else:
@@ -620,10 +631,10 @@ def DPO_strategy(df: pd.DataFrame, window: int = 20, max_investment: float = 0.1
     """
     Exponential moving average strategy which buys when price is above signal and sells when price is below signal.
     """
-    DPO = signals.detrended_price_oscillator(df, window=window)["signal"]
+    dpo = signals.detrended_price_oscillator(df, window=window)["signal"]
 
-    above_zero = DPO > 0
-    below_zero = DPO <= 0
+    above_zero = dpo > 0
+    below_zero = dpo <= 0
 
     df.loc[above_zero, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
@@ -636,10 +647,10 @@ def PPO_strategy(
     """
     Percentage Price Oscillator strategy which buys when signal is above zero and sells when signal is below zero
     """
-    PPO = signals.percentage_price_oscillator(df, window_slow, window_fast, window_signal)["signal"]
+    ppo = signals.percentage_price_oscillator(df, window_slow, window_fast, window_signal)["signal"]
 
-    above_zero = PPO > 0
-    below_zero = PPO <= 0
+    above_zero = ppo > 0
+    below_zero = ppo <= 0
 
     df.loc[above_zero, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
@@ -666,10 +677,10 @@ def TRIX_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.
     """
     This is Triple Exponential Average (TRIX) strategy which buys when signal is above zero and sells when signal is below zero
     """
-    TRIX = signals.triple_exponential_average(df, window)["signal"]
+    trix = signals.triple_exponential_average(df, window)["signal"]
 
-    above_zero = TRIX > 0
-    below_zero = TRIX <= 0
+    above_zero = trix > 0
+    below_zero = trix <= 0
 
     df.loc[above_zero, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[below_zero, PandasEnum.ALLOCATION.value] = -max_investment
@@ -707,11 +718,11 @@ def STC_strategy(
         1. oversold when STC < 25
         2. overbought when STC > 75
     """
-    STC = signals.schaff_trend_cycle(df, window_slow, window_fast, cycle, smooth1, smooth2)["signal"]
+    stc = signals.schaff_trend_cycle(df, window_slow, window_fast, cycle, smooth1, smooth2)["signal"]
 
-    oversold = STC <= 25
-    overbought = STC >= 75
-    hold = STC.between(25, 75)
+    oversold = stc <= 25
+    overbought = stc >= 75
+    hold = stc.between(25, 75)
 
     df.loc[oversold, PandasEnum.ALLOCATION.value] = max_investment
     df.loc[overbought, PandasEnum.ALLOCATION.value] = -max_investment
@@ -786,12 +797,12 @@ def ADX_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1
     """
     df_with_signals = signals.average_directional_movement_index(df, window)
 
-    PLUS_DI = df_with_signals["ADX_POS"]
-    MINUS_DI = df_with_signals["ADX_NEG"]
-    ADX = df_with_signals["ADX"]
+    plus_di = df_with_signals["ADX_POS"]
+    minus_di = df_with_signals["ADX_NEG"]
+    adx = df_with_signals["ADX"]
 
     index = 0
-    for pdi_value, mdi_value, adx_value in zip(PLUS_DI, MINUS_DI, ADX):
+    for pdi_value, mdi_value, adx_value in zip(plus_di, minus_di, adx):
         # ADX > 25 to avoid risky investment i.e. invest only when trend is strong
         if adx_value > 25 and pdi_value > mdi_value:
             df.loc[index, PandasEnum.ALLOCATION.value] = max_investment
