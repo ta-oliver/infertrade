@@ -187,14 +187,14 @@ def calculate_combination_relationship(df: pd.DataFrame, regression_period: int 
     return dataframe
 
 
-def constant_allocation_size(dataframe: pd.DataFrame, constant_position_size: float = 0.5) -> pd.DataFrame:
+def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: float = 1.0) -> pd.DataFrame:
     """
     Returns a constant allocation, controlled by the fixed_allocation_size parameter.
 
     parameters:
     fixed_allocation_size: determines allocation size.
     """
-    dataframe[PandasEnum.ALLOCATION.value] = constant_position_size
+    dataframe[PandasEnum.ALLOCATION.value] = fixed_allocation_size
     return dataframe
 
 
