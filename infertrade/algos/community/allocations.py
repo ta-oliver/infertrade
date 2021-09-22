@@ -998,7 +998,7 @@ def make_permalinks_py_file():
         obj.write("%s = %s\n" % ("data_dictionary", (data)))
 
 
-def convert_string_func_to_func():
+def algorithm_dictionary_with_functions():
     """This method here updates the value of the str function to a callable"""
     list_of_functions = get_functions_list()
     for function in list_of_functions:
