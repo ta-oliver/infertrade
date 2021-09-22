@@ -964,7 +964,7 @@ def get_parameters(function: Callable) -> dict:
 def create_infertrade_export_allocations():
     """Creates a dictionary for export."""
     infertrade_export_allocations_raw = {}
-    list_of_functions = f()
+    list_of_functions = get_functions_list()
     series_dict = get_required_series()
     for function in list_of_functions:
 
