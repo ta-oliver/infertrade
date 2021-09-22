@@ -23,7 +23,7 @@ Allocation algorithms are functions used to compute allocations - % of your port
 import numpy as np
 import pandas as pd
 import inspect
-import git
+import os
 from typing import List, Callable, Dict
 
 
@@ -929,6 +929,8 @@ def get_functions_names() -> List[str]:
 
 def get_latest_infertrade_commit() -> str:
     """Gets the latest commit for InferTrade as a string."""
+    os.environ['GIT_PYTHON_REFRESH'] = "quiet"
+    import git
     repo = git.Repo(search_parent_directories=True)
     commit = str(repo.head.commit)
     return commit
@@ -962,7 +964,7 @@ def get_parameters(function: Callable) -> dict:
 def create_infertrade_export_allocations():
     """Creates a dictionary for export."""
     infertrade_export_allocations_raw = {}
-    list_of_functions = get_functions_list()
+    list_of_functions = f()
     series_dict = get_required_series()
     for function in list_of_functions:
 
