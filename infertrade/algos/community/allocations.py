@@ -999,7 +999,7 @@ def make_permalinks_py_file():
 
 
 def algorithm_dictionary_with_functions():
-    """This method here updates the value of the str function to a callable"""
+    """This function returns a dictionary of algorithms."""
     list_of_functions = get_functions_list()
     for function in list_of_functions:
         data_dictionary[function.__name__]['function'] = function
