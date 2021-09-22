@@ -111,5 +111,6 @@ def test_rule_lengths_match():
     assert len(allocations.get_functions_names()) == len(allocations.get_functions_list())
 
 def test_latest_git_commit():
-    print(create_infertrade_export_allocations())
+    dictionary_algorithms = create_infertrade_export_allocations()
+    assert isinstance(dictionary_algorithms)  # could add checks for contents too
 
