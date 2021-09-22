@@ -990,7 +990,7 @@ def make_permalinks_py_file():
     """This function creates a file in the current working directory
     which creates a dictionary of avaliable representation types and callable"""
     file_dir = os.getcwd()
-    file_name = "permalinks.json"
+    file_name = "permalinks.py"
     file_path = file_dir + "/" + file_name
     data = create_infertrade_export_allocations()
 
