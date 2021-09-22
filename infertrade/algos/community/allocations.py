@@ -20,6 +20,8 @@ Allocation algorithms are functions used to compute allocations - % of your port
 """
 
 # External packages
+import json
+
 import numpy as np
 import pandas as pd
 import inspect
@@ -31,6 +33,8 @@ from typing import List, Callable, Dict
 from infertrade.PandasEnum import PandasEnum
 import infertrade.utilities.operations as operations
 import infertrade.algos.community.signals as signals
+from infertrade.algos.community.permalinks import data_dictionary
+
 
 
 def fifty_fifty(dataframe) -> pd.DataFrame:
@@ -982,7 +986,27 @@ def create_infertrade_export_allocations():
     return infertrade_export_allocations_raw
 
 
-infertrade_export_allocations = create_infertrade_export_allocations()
+def make_permalinks_py_file():
+    """This function creates a file in the current working directory
+    which creates a dictionary of avaliable representation types and callable"""
+    file_dir = os.getcwd()
+    file_name = "permalinks.json"
+    file_path = file_dir + "/" + file_name
+    data = create_infertrade_export_allocations()
+
+    with open(file_path, 'w') as obj:
+        obj.write("%s = %s\n" % ("data_dictionary", (data)))
+
+
+def convert_string_func_to_func():
+    """This method here updates the value of the str function to a callable"""
+    list_of_functions = get_functions_list()
+    for function in list_of_functions:
+        data_dictionary[function.__name__]['function'] = function
+    return data_dictionary
+
+
+infertrade_export_allocations = convert_string_func_to_func()
 
 
 if __name__ == "__main__":
