@@ -931,7 +931,7 @@ def get_latest_infertrade_commit() -> str:
     """Gets the latest commit for InferTrade as a string."""
     os.environ['GIT_PYTHON_REFRESH'] = "quiet"
     import git
-    repo = git.Repo(search_parent_directories=True)
+    repo = git.Repo(".", search_parent_directories=True)
     commit = str(repo.head.commit)
     return commit
 
