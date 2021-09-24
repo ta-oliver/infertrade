@@ -36,6 +36,7 @@ import pytest
 from infertrade.PandasEnum import PandasEnum
 from infertrade.algos import algorithm_functions
 from infertrade.algos.community import allocations
+from infertrade.algos.community.allocations import create_infertrade_export_allocations
 
 
 def test_under_minimum_length_to_calculate():
@@ -108,3 +109,10 @@ def test_series_details_for_all_functions(rule: Callable):
 def test_rule_lengths_match():
     """We check we have the same number of listed rules as functions, so that no functions are missing."""
     assert len(allocations.get_functions_names()) == len(allocations.get_functions_list())
+
+
+def test_create_infertrade_export_allocations():
+    """Checks that a valid dictionary can be created."""
+    dictionary_algorithms = create_infertrade_export_allocations()
+    assert isinstance(dictionary_algorithms, dict)  # could add checks for contents too
+
