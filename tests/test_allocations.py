@@ -114,5 +114,5 @@ def test_rule_lengths_match():
 def test_create_infertrade_export_allocations():
     """Checks that a valid dictionary can be created."""
     dictionary_algorithms = create_infertrade_export_allocations()
-    assert isinstance(dictionary_algorithms)  # could add checks for contents too
+    assert isinstance(dictionary_algorithms, dict)  # could add checks for contents too
 
