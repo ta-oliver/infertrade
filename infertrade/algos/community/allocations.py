@@ -914,18 +914,20 @@ required_series_dict = {
     }
 
 
+# UTILITY FUNCTIONS BELOW
+
 def get_functions_list() -> List[Callable]:
     """Returns list of functions."""
     return function_list
 
 
 def get_required_series() -> Dict[str, list]:
-    """Returns dictionary of series"""
+    """Returns dictionary of series."""
     return required_series_dict
 
 
 def get_functions_names() -> List[str]:
-    """Returns list of functions"""
+    """Returns list of functions."""
     series_dict = get_required_series()
     list_of_functions = list(series_dict.keys())
     return list_of_functions
@@ -957,7 +959,7 @@ def create_permalink_to_allocations(function: Callable) -> str:
 
 
 def get_parameters(function: Callable) -> dict:
-    """Gets the default parameters and its values from the function"""
+    """Gets the default parameters and its values from the function."""
     signature = inspect.signature(function)
     parameter_items = signature.parameters.items()
     is_empty = inspect.Parameter.empty
@@ -987,26 +989,32 @@ def create_infertrade_export_allocations():
 
 
 def make_permalinks_py_file():
-    """This function creates a file in the current working directory
-    which creates a dictionary of avaliable representation types and callable"""
+    """
+    This function creates a file in the current working directory which creates a dictionary of available
+    representation types and callable functions.
+    """
     file_dir = os.getcwd()
     file_name = "permalinks.py"
     file_path = file_dir + "/" + file_name
     data = create_infertrade_export_allocations()
 
     with open(file_path, 'w') as obj:
-        obj.write("%s = %s\n" % ("data_dictionary", (data)))
+        obj.write("%s = %s\n" % ("data_dictionary", data))
+
+
+def augment_algorithm_dictionary_with_functions(dictionary_without_functions: dict, list_of_functions: list) -> dict:
+    """This function returns a dictionary of algorithms."""
+    for function in list_of_functions:
+        dictionary_without_functions[function.__name__]['function'] = function
+    return dictionary_without_functions
 
 
 def algorithm_dictionary_with_functions():
-    """This function returns a dictionary of algorithms."""
-    list_of_functions = get_functions_list()
-    for function in list_of_functions:
-        data_dictionary[function.__name__]['function'] = function
-    return data_dictionary
+    """Creates a dictionary of algorithms with functions."""
+    return augment_algorithm_dictionary_with_functions(data_dictionary, get_functions_list())
 
 
-infertrade_export_allocations = convert_string_func_to_func()
+infertrade_export_allocations = algorithm_dictionary_with_functions()
 
 
 if __name__ == "__main__":

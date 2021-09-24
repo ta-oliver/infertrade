@@ -110,7 +110,9 @@ def test_rule_lengths_match():
     """We check we have the same number of listed rules as functions, so that no functions are missing."""
     assert len(allocations.get_functions_names()) == len(allocations.get_functions_list())
 
-def test_latest_git_commit():
+
+def test_create_infertrade_export_allocations():
+    """Checks that a valid dictionary can be created."""
     dictionary_algorithms = create_infertrade_export_allocations()
     assert isinstance(dictionary_algorithms)  # could add checks for contents too
 
