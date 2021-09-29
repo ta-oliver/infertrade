@@ -20,8 +20,6 @@ Allocation algorithms are functions used to compute allocations - % of your port
 """
 
 # External packages
-import json
-
 import numpy as np
 import pandas as pd
 import inspect
@@ -34,7 +32,6 @@ from infertrade.PandasEnum import PandasEnum
 import infertrade.utilities.operations as operations
 import infertrade.algos.community.signals as signals
 from infertrade.algos.community.permalinks import data_dictionary
-
 
 
 def fifty_fifty(dataframe) -> pd.DataFrame:
