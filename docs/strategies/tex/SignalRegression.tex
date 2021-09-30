@@ -1,0 +1,34 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Signal Regression} %Argument is name of rule
+\tblofcontents
+
+\ruledescription{A regression based approach to forecast price change in asset using signals generated from technical indicators.}
+
+\ruleparameters %You can include however many arguments (in groups of 4) as you want!
+{Regression Period}{120}{Previous data points used to fit a regression line.}{\lookbacklength}
+\stoptable %must be included or Tex engine runs infinitely
+
+\section{Equation}
+Below is the equations which govern how this specific trading rule calculates a trading position.
+
+\begin{equation}
+\Delta \price_{\currenttime} = S_{\currenttime} + c
+\end{equation}
+\\
+with:
+
+$\Delta \price_{t}$: is the change in price at time $\currenttime$.
+
+$S_{t}$: is the signal value at time $\currenttime$.
+
+$c$ is a constant bias.
+
+\keyterms
+\furtherlinks %The footer
+\end{document}
