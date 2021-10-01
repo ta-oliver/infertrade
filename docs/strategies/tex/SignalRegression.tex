@@ -10,24 +10,45 @@
 
 \ruledescription{A regression based approach to forecast price change in asset using signals generated from technical indicators.}
 
+\howtotrade
+{Any of the available technical indicators can be used as signal to forecast price change in asset. As an example we can consider Money Flow Index. By using this trading strategy we compute the MFI of underlying asset using it's historical High, Low, Close \& Volume. A forecast is generated for change in price using MFI as a signal. The mathematical formulation for this particular example would be as follows:
+\begin{equation}
+    \Delta \price_{\currenttime} = MFI_{\currenttime-1} + c
+\end{equation}
+
+Forecast for the asset using above formulation is then used to generate fractional portfolio investment using formulation mentioned in Equation \ref{eqn:portfolioallocation}.
+}
+
 \ruleparameters %You can include however many arguments (in groups of 4) as you want!
 {Regression Period}{120}{Previous data points used to fit a regression line.}{\lookbacklength}
+{Kelly fraction}{1}{Amplitude weighting. $1.0$ is maximum growth if regression is exact.
+$<1.0$ scales down positions taken.}{$\kellyfraction$}
+{Volatility}{0.1}{Volatility used to compute the Kelly recommended optimum.}{$\sigma$}
 \stoptable %must be included or Tex engine runs infinitely
 
 \section{Equation}
 Below is the equations which govern how this specific trading rule calculates a trading position.
 
 \begin{equation}
-\Delta \price_{\currenttime} = S_{\currenttime} + c
+\Delta \price_{\currenttime} = S_{\currenttime-1} + c
+\end{equation}
+\begin{equation}
+\label{eqn:portfolioallocation}
+    \position_{\currenttime} = \kellyfraction \, \frac{\Delta \price_{\currenttime}}{\sigma^{2}}
 \end{equation}
 \\
 with:
 
 $\Delta \price_{t}$: is the change in price at time $\currenttime$.
 
-$S_{t}$: is the signal value at time $\currenttime$.
+$S_{t}$: is the signal value at time $\currenttime -1$.
 
-$c$ is a constant bias.
+$c$: is a constant bias.
+
+$\kellyfraction$: is the Kelly fraction.
+
+$\position_{\currenttime}$: is the resultant fractional portfolio investment at time \currenttime.
+
 
 \keyterms
 \furtherlinks %The footer
