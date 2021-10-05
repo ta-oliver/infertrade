@@ -132,7 +132,6 @@ def test_readme_example_two():
     assert isinstance(df, pd.DataFrame)
 
 
-
 def test_readme_example_three():
     """Get price prediction and positions from a signal transformer"""
     pipeline = make_pipeline(

@@ -532,9 +532,7 @@ def calculate_regression_with_kelly_optimum(
             rule_recommended_allocation = kelly_fraction * kelly_recommended_optimum
 
         # Apply the calculated allocation to the dataframe.
-        dataframe.loc[prediction_idx, PandasEnum.ALLOCATION.value] = rule_recommended_allocation.reshape(
-            -1,
-        )
+        dataframe.loc[prediction_idx, PandasEnum.ALLOCATION.value] = rule_recommended_allocation.reshape(-1,)
 
     # Shift position series  (QUESTION - does not appear to shift?)
     dataframe[PandasEnum.ALLOCATION.value] = dataframe[PandasEnum.ALLOCATION.value].shift(-1)

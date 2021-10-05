@@ -59,7 +59,7 @@ def get_version(filename: str = "_version.py") -> str:
     gitignore = []
     for dirpath, _, filenames in walk(this_directory):
         if ".gitignore" in filenames:
-            with open(join(this_directory,".gitignore")) as _f:
+            with open(join(this_directory, ".gitignore")) as _f:
                 gitignore = [file.strip() for file in _f.readlines() if not re.search(r"\#|\*", file)]
 
         if any(pattern for pattern in gitignore + BLACKLIST_DIRS if re.search(pattern, dirpath)):

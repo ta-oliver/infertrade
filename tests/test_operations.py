@@ -39,7 +39,9 @@ def test_limit_allocation():
     """Test checks the functionality of limit test inside of limit_allocation"""
     df = pd.DataFrame()
     try:
-        infertrade.utilities.operations.limit_allocation(dataframe=df,allocation_lower_limit=2,allocation_upper_limit=1)
+        infertrade.utilities.operations.limit_allocation(
+            dataframe=df, allocation_lower_limit=2, allocation_upper_limit=1
+        )
         raise ValueError("Upper limit is supposed to always be bigger than the lower limit")
     except ValueError:
         pass
@@ -52,13 +54,14 @@ def test_calculate_regression_with_kelly_optimum():
     test_ndarray = np.ndarray(1)
     test_target = pd.Series()
     try:
-        infertrade.utilities.operations.calculate_regression_with_kelly_optimum(df=pd.DataFrame(),
-                                            feature_matrix=pd.Series(),
-                                            last_feature_row=np.ndarray(1),
-                                            target_array=pd.Series,
-                                            regression_period=0,
-                                            forecast_period=1,
-                                            )
+        infertrade.utilities.operations.calculate_regression_with_kelly_optimum(
+            df=pd.DataFrame(),
+            feature_matrix=pd.Series(),
+            last_feature_row=np.ndarray(1),
+            target_array=pd.Series,
+            regression_period=0,
+            forecast_period=1,
+        )
         raise ValueError("The function was supposed to raise a IndexError as prediction_indices are 0 in length")
     except IndexError:
         pass

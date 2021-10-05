@@ -28,7 +28,7 @@ from infertrade.utilities.operations import restrict_allocation, pct_chg, daily_
 
 # constrain fifty fifty allocation
 @restrict_allocation
-def restricted_fifty_fifty(df: pd.DataFrame,**kwargs) -> pd.DataFrame:
+def restricted_fifty_fifty(df: pd.DataFrame, **kwargs) -> pd.DataFrame:
     """Restrict fifty-fifty to limits."""
     return fifty_fifty(df)
 
@@ -36,7 +36,7 @@ def restricted_fifty_fifty(df: pd.DataFrame,**kwargs) -> pd.DataFrame:
 def test_min_and_max_allocation():
     """Checks the limit allocation restriction"""
     df = simulated_correlated_equities_4_years_gen()
-    
+
     allocations = Api.calculate_allocations(df, "fifty_fifty", PandasEnum.MID.value)
     assert isinstance(allocations, pd.DataFrame)
 
@@ -48,50 +48,49 @@ def test_min_and_max_allocation():
     for ii_item in calculated_allocations["allocation"]:
         assert ii_item > 0.25
 
-    calculated_allocations = restricted_fifty_fifty(df,allocation_lower_limit=0,allocation_upper_limit=0.25)
+    calculated_allocations = restricted_fifty_fifty(df, allocation_lower_limit=0, allocation_upper_limit=0.25)
     for ii_item in calculated_allocations["allocation"]:
         assert ii_item == 0.25
-    
+
     # Test also negative values.
     def temp_func(df: pd.DataFrame) -> pd.DataFrame:
-        df[PandasEnum.ALLOCATION.value] = [-3]*10 + [.10]*10
+        df[PandasEnum.ALLOCATION.value] = [-3] * 10 + [0.10] * 10
         return df
 
     @restrict_allocation
-    def restricted_temp_func(df: pd.DataFrame,**kwargs) -> pd.DataFrame:
+    def restricted_temp_func(df: pd.DataFrame, **kwargs) -> pd.DataFrame:
         return temp_func(df)
 
     # Verify that the lower limit works as expected
     df = pd.DataFrame()
-    df[PandasEnum.MID.value] = [3]*20
-    calculated_allocations = restricted_temp_func(df,allocation_lower_limit=0,allocation_upper_limit=0.25)
+    df[PandasEnum.MID.value] = [3] * 20
+    calculated_allocations = restricted_temp_func(df, allocation_lower_limit=0, allocation_upper_limit=0.25)
     assert (df.loc[0:9, PandasEnum.ALLOCATION.value] == 0).all()
-    assert (df.loc[10:19, PandasEnum.ALLOCATION.value] == .10).all()
+    assert (df.loc[10:19, PandasEnum.ALLOCATION.value] == 0.10).all()
+
 
 def test_daily_stop_loss():
     """Checks the limit allocation restriction"""
     df = simulated_correlated_equities_4_years_gen()
 
-    calculated_allocations = restricted_fifty_fifty(df,loss_limit=0.001)
-    
-    # Boolean to check if loss > loss limit exist
-    stop_loss_triggered=False
-    prev_alloc=0
-    prev_price=0
-    for index, row in calculated_allocations.iterrows():
-        price_change=row.price-prev_price
-        loss= -price_change*prev_alloc
-        if loss>0.001 or stop_loss_triggered:
-            assert row.allocation==0.0
-            stop_loss_triggered=True
-        else:
-            assert row.allocation==0.5
-        prev_alloc=row.allocation
-        prev_price=row.price
-    
-    assert stop_loss_triggered
-  
+    calculated_allocations = restricted_fifty_fifty(df, loss_limit=0.001)
 
+    # Boolean to check if loss > loss limit exist
+    stop_loss_triggered = False
+    prev_alloc = 0
+    prev_price = 0
+    for index, row in calculated_allocations.iterrows():
+        price_change = row.price - prev_price
+        loss = -price_change * prev_alloc
+        if loss > 0.001 or stop_loss_triggered:
+            assert row.allocation == 0.0
+            stop_loss_triggered = True
+        else:
+            assert row.allocation == 0.5
+        prev_alloc = row.allocation
+        prev_price = row.price
+
+    assert stop_loss_triggered
 
 
 def test_multiple_restrictions():
@@ -99,21 +98,23 @@ def test_multiple_restrictions():
     """Checks the limit allocation restriction"""
     df = simulated_correlated_equities_4_years_gen()
 
-    calculated_allocations = restricted_fifty_fifty(df, allocation_lower_limit=0.0, allocation_upper_limit=0.25, loss_limit=0.001)
-    
-    prev_alloc=0
-    prev_price=0
+    calculated_allocations = restricted_fifty_fifty(
+        df, allocation_lower_limit=0.0, allocation_upper_limit=0.25, loss_limit=0.001
+    )
+
+    prev_alloc = 0
+    prev_price = 0
     # Boolean to trigger stop_loss if loss> loss limit exist
     stop_loss_triggered = False
     for index, row in calculated_allocations.iterrows():
-        price_change=row.price-prev_price
-        loss= -price_change*prev_alloc
-        if loss>0.001 or stop_loss_triggered:
-            assert row.allocation==0.0
+        price_change = row.price - prev_price
+        loss = -price_change * prev_alloc
+        if loss > 0.001 or stop_loss_triggered:
+            assert row.allocation == 0.0
             stop_loss_triggered = True
         else:
-            assert row.allocation==0.25
-        prev_alloc=row.allocation
-        prev_price=row.price
-  
+            assert row.allocation == 0.25
+        prev_alloc = row.allocation
+        prev_price = row.price
+
     assert stop_loss_triggered

@@ -55,7 +55,7 @@ def test_get_available_algorithms(algorithm):
     assert Api.determine_package_of_algorithm(algorithm) in Api.available_packages()
     try:
         Api.determine_package_of_algorithm("not_available_algo")
-    except(NameError):
+    except (NameError):
         pass
 
     inputs = Api.required_inputs_for_algorithm(algorithm)
@@ -86,9 +86,9 @@ def test_calculation_positions(test_df, allocation_algorithm):
     """Checks algorithms calculate positions and returns."""
     test_df_copy = test_df.copy()
     # We check for split calculations.
-    df_with_allocations = Api.calculate_allocations(df=test_df_copy,
-                                                    name_of_strategy=allocation_algorithm,
-                                                    name_of_price_series="close")
+    df_with_allocations = Api.calculate_allocations(
+        df=test_df_copy, name_of_strategy=allocation_algorithm, name_of_price_series="close"
+    )
 
     assert isinstance(df_with_allocations, pd.DataFrame)
     assert "allocation" in df_with_allocations.columns
@@ -173,8 +173,8 @@ def test_return_representations(algorithm):
         )
     for representation in dict_of_properties[algorithm]["available_representation_types"]:
         assert (
-                returned_representations[representation]
-                == dict_of_properties[algorithm]["available_representation_types"][representation]
+            returned_representations[representation]
+            == dict_of_properties[algorithm]["available_representation_types"][representation]
         )
 
     # Check if the if the function returns the correct representation when given a string
@@ -186,8 +186,8 @@ def test_return_representations(algorithm):
                 type(returned_representations),
             )
         assert (
-                returned_representations[representation]
-                == dict_of_properties[algorithm]["available_representation_types"][representation]
+            returned_representations[representation]
+            == dict_of_properties[algorithm]["available_representation_types"][representation]
         )
 
     # Check if the function returns the correct representations when given a list
@@ -199,8 +199,8 @@ def test_return_representations(algorithm):
         )
     for representation in algorithm_representations:
         assert (
-                returned_representations[representation]
-                == dict_of_properties[algorithm]["available_representation_types"][representation]
+            returned_representations[representation]
+            == dict_of_properties[algorithm]["available_representation_types"][representation]
         )
 
 
@@ -235,21 +235,23 @@ def test_return_representations():
     name_list = list(algo_names)
     returned_rep_info = Api.get_available_representations(name_of_algorithm=name_list[0])
     try:
-        Api.return_representations(name_of_algorithm=name_list[1],
-                                   representation_or_list_of_representations=name_list[0])
+        Api.return_representations(
+            name_of_algorithm=name_list[1], representation_or_list_of_representations=name_list[0]
+        )
     except NameError:
         pass
 
     try:
-        Api.return_representations(name_of_algorithm=name_list[0],
-                                   representation_or_list_of_representations=1)
+        Api.return_representations(name_of_algorithm=name_list[0], representation_or_list_of_representations=1)
     except TypeError:
         pass
 
-    returned_dict = Api.return_representations(name_of_algorithm=name_list[0],
-                                               representation_or_list_of_representations=list(
-                                                   algo_information[name_list[0]][
-                                                       "available_representation_types"].keys()))
+    returned_dict = Api.return_representations(
+        name_of_algorithm=name_list[0],
+        representation_or_list_of_representations=list(
+            algo_information[name_list[0]]["available_representation_types"].keys()
+        ),
+    )
     assert isinstance(returned_dict, dict)
 
     returned_dict = Api.return_representations(name_of_algorithm=name_list[0])
@@ -284,7 +286,7 @@ def test_export_to_csv():
         "security_purchases",
         "cash_flow",
         "percent_gain",
-        "portfolio_return"
+        "portfolio_return",
     ]
 
     relationship_names = []
@@ -298,43 +300,46 @@ def test_export_to_csv():
             rule_names = list(algorithm_functions[ii_package][ii_algo_type])
             if 0 < len(rule_names) < 3:
                 for ii_rule_name in rule_names:
-                    csv_data = Api.export_to_csv(dataframe=test_df,
-                                                 rule_name=ii_rule_name,
-                                                 string_return=True)
+                    csv_data = Api.export_to_csv(dataframe=test_df, rule_name=ii_rule_name, string_return=True)
 
-                    csv_data2 = Api.export_to_csv(dataframe=test_df,
-                                                 rule_name=ii_rule_name,
-                                                 second_df=second_test_df,
-                                                 relationship=relationship_names[len(relationship_names)-1],
-                                                 string_return=True)
+                    csv_data2 = Api.export_to_csv(
+                        dataframe=test_df,
+                        rule_name=ii_rule_name,
+                        second_df=second_test_df,
+                        relationship=relationship_names[len(relationship_names) - 1],
+                        string_return=True,
+                    )
             elif len(rule_names) > 0:
                 for i in range(1, 3):
-                    csv_data = Api.export_to_csv(dataframe=test_df,
-                                                 rule_name=rule_names[i],
-                                                 string_return=True)
+                    csv_data = Api.export_to_csv(dataframe=test_df, rule_name=rule_names[i], string_return=True)
 
-                    csv_data2 = Api.export_to_csv(dataframe=test_df,
-                                                 rule_name=rule_names[i],
-                                                 second_df=second_test_df,
-                                                 relationship=relationship_names[len(relationship_names)-1],
-                                                 string_return=True)
+                    csv_data2 = Api.export_to_csv(
+                        dataframe=test_df,
+                        rule_name=rule_names[i],
+                        second_df=second_test_df,
+                        relationship=relationship_names[len(relationship_names) - 1],
+                        string_return=True,
+                    )
 
             for _ in new_columns:
                 if _ not in csv_data or _ not in csv_data2:
                     raise ValueError("Missing expected column information")
 
-
     for ii_rule_name in ta_export_regression_allocations:
-        csv_data = Api.export_to_csv(dataframe=test_df,
-                                     rule_name=ii_rule_name,
-                                     relationship=relationship_names[len(relationship_names)-1],
-                                     string_return=True)
+        csv_data = Api.export_to_csv(
+            dataframe=test_df,
+            rule_name=ii_rule_name,
+            relationship=relationship_names[len(relationship_names) - 1],
+            string_return=True,
+        )
 
-        csv_data2 = Api.export_to_csv(dataframe=test_df,
-                                     rule_name=ii_rule_name,
-                                     second_df=second_test_df,
-                                     relationship=relationship_names[len(relationship_names)-1],
-                                     string_return=True)
+        csv_data2 = Api.export_to_csv(
+            dataframe=test_df,
+            rule_name=ii_rule_name,
+            second_df=second_test_df,
+            relationship=relationship_names[len(relationship_names) - 1],
+            string_return=True,
+        )
         break
 
     for _ in new_columns:

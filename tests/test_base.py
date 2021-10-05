@@ -17,7 +17,6 @@
 # Created date: 27/7/2021
 
 
-
 """Tests for the basic functionality of functions found in base.py"""
 
 import pandas as pd
@@ -27,10 +26,9 @@ from infertrade.algos import ta_adaptor
 from infertrade.base import get_signal_calc
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
+
 def test_get_signal_calc():
     """Test to confirm the return of a signal after get_signal_calc usage"""
     adapted_aroon = ta_adaptor(AroonIndicator, "aroon_up")
-    get_signal = get_signal_calc(func=simulated_market_data_4_years_gen,adapter=adapted_aroon)
+    get_signal = get_signal_calc(func=simulated_market_data_4_years_gen, adapter=adapted_aroon)
     assert isinstance(get_signal, pd.DataFrame)
-
-

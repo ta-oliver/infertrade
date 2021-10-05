@@ -101,9 +101,7 @@ def calculate_ta_signal(dataframe: pd.DataFrame, rule_name: str):
     adapted_rule = ta_adaptor(algorithm_functions["ta"]["signal"][rule_name]["class"], rule_name)
 
     pipeline = make_pipeline(
-        scikit_signal_factory(adapted_rule),
-        PricePredictionFromSignalRegression(),
-        PositionsFromPricePrediction(),
+        scikit_signal_factory(adapted_rule), PricePredictionFromSignalRegression(), PositionsFromPricePrediction(),
     )
     df = pipeline.fit_transform(df)
     df_with_performance = calculate_portfolio_performance_python(df, detailed_output=True)

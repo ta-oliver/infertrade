@@ -41,7 +41,7 @@ from infertrade.algos.community.allocations import create_infertrade_export_allo
 
 def test_under_minimum_length_to_calculate():
     """Checks the expected output if MID value is under the minimum length to calculate"""
-    dfr = {'price': np.arange(10), 'allocation': [1 for _ in range(0, 10)]}
+    dfr = {"price": np.arange(10), "allocation": [1 for _ in range(0, 10)]}
     df_no_mid = pd.DataFrame(data=dfr)
 
     df_test = allocations.change_relationship(dataframe=df_no_mid)
@@ -115,4 +115,3 @@ def test_create_infertrade_export_allocations():
     """Checks that a valid dictionary can be created."""
     dictionary_algorithms = create_infertrade_export_allocations()
     assert isinstance(dictionary_algorithms, dict)  # could add checks for contents too
-

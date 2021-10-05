@@ -43,8 +43,9 @@ def weighted_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     return df_with_signals
 
 
-def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 50,
-                                          series_name: str = "close") -> pd.DataFrame:
+def exponentially_weighted_moving_average(
+    df: pd.DataFrame, window: int = 50, series_name: str = "close"
+) -> pd.DataFrame:
     """This function uses an exponentially weighted multiplier to give more weight to recent prices."""
     df_with_signals = df.copy()
     df_with_signals["signal"] = df_with_signals[series_name].ewm(span=window, adjust=False).mean()
@@ -52,7 +53,7 @@ def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 50,
 
 
 def moving_average_convergence_divergence(
-        df: pd.DataFrame, window_slow: int = 50, window_fast: int = 26, window_signal: int = 9
+    df: pd.DataFrame, window_slow: int = 50, window_fast: int = 26, window_signal: int = 9
 ) -> pd.DataFrame:
     """
     This function is a trend-following momentum indicator that shows the relationship between two moving averages at
@@ -127,16 +128,17 @@ def detrended_price_oscillator(df: pd.DataFrame, window: int = 20) -> pd.DataFra
 
 
 def percentage_series_oscillator(
-        df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9,
-        series_name: str = "close"
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, series_name: str = "close"
 ) -> pd.DataFrame:
     """Implementation of percentage price oscillator."""
     df_with_signals = df.copy()
     # EWMA for two different spans
     ewma_26 = exponentially_weighted_moving_average(df_with_signals, window=window_slow, series_name=series_name)[
-        "signal"]
+        "signal"
+    ]
     ewma_12 = exponentially_weighted_moving_average(df_with_signals, window=window_fast, series_name=series_name)[
-        "signal"]
+        "signal"
+    ]
 
     # MACD calculation
     ppo = ((ewma_12 - ewma_26) / ewma_26) * 100
@@ -146,9 +148,7 @@ def percentage_series_oscillator(
     return df_with_signals
 
 
-def triple_exponential_average(
-        df: pd.DataFrame, window: int = 14
-) -> pd.DataFrame:
+def triple_exponential_average(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
     """Independent implementation of triple exponential average for testing purposes."""
     df_with_signals = df.copy()
     # ema1
@@ -164,7 +164,7 @@ def triple_exponential_average(
 
 
 def true_strength_index(
-        df: pd.DataFrame, window_slow: int = 25, window_fast: int = 13, window_signal: int = 13
+    df: pd.DataFrame, window_slow: int = 25, window_fast: int = 13, window_signal: int = 13
 ) -> pd.DataFrame:
     """Independent implementation of the TSI indicator for testing purposes."""
     df_with_signals = df.copy()
@@ -191,8 +191,7 @@ def true_strength_index(
 
 
 def schaff_trend_cycle(
-        df: pd.DataFrame, window_slow: int = 50, window_fast: int = 23, cycle: int = 10, smooth1: int = 3,
-        smooth2: int = 3
+    df: pd.DataFrame, window_slow: int = 50, window_fast: int = 23, cycle: int = 10, smooth1: int = 3, smooth2: int = 3
 ) -> pd.DataFrame:
     """Independent implementation of STC for testing purposes."""
     df_with_signals = df.copy()
@@ -218,9 +217,7 @@ def schaff_trend_cycle(
     return df_with_signals
 
 
-def kama_indicator(
-        df: pd.DataFrame, window: int = 10, pow1: int = 2, pow2: int = 30
-) -> pd.DataFrame:
+def kama_indicator(df: pd.DataFrame, window: int = 10, pow1: int = 2, pow2: int = 30) -> pd.DataFrame:
     """Independent implementation of KAMA for testing purposes."""
     df_with_signals = df.copy()
     change = df_with_signals["close"].diff(periods=window).abs()
@@ -245,9 +242,7 @@ def kama_indicator(
     return df_with_signals
 
 
-def aroon(
-        df: pd.DataFrame, window: int = 25
-) -> pd.DataFrame:
+def aroon(df: pd.DataFrame, window: int = 25) -> pd.DataFrame:
     """Independent implementation of Aroon indicator for testing purposes."""
     df_with_signals = df.copy()
     roll_close = df_with_signals["close"].rolling(window=window, min_periods=0)
@@ -257,9 +252,7 @@ def aroon(
     return df_with_signals
 
 
-def rate_of_change(
-        df: pd.DataFrame, window: int = 25
-) -> pd.DataFrame:
+def rate_of_change(df: pd.DataFrame, window: int = 25) -> pd.DataFrame:
     """Independent implementation of Rate of Change indicator for testing purposes."""
     df_with_signals = df.copy()
     df_with_signals["signal"] = df_with_signals["close"].pct_change(window).fillna(0) * 100
@@ -267,9 +260,7 @@ def rate_of_change(
     return df_with_signals
 
 
-def vortex_indicator(
-        df: pd.DataFrame, window: int = 25
-) -> pd.DataFrame:
+def vortex_indicator(df: pd.DataFrame, window: int = 25) -> pd.DataFrame:
     """Independent implementation of vortex indicator for testing purposes."""
     df_with_signals = df.copy()
     high = df_with_signals["high"]
