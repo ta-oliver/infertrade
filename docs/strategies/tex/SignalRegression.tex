@@ -1,0 +1,59 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Regression of Technical Signal} %Argument is name of rule
+\tblofcontents
+
+\ruledescription{Technical indicators are metrics used by traders to determine opportune times to enter and exit trades. To use a technical indicator for trading you both need to know how to calculate the indicator and the interpretation of how the resultant signal should be used. For a given technical indicator, different traders may agree on how to calculate the signal and the indicator's definition, but disagree on how to use the signal for trading. As a security's price history is widely available to all market participants, popular technical strategies can become crowded. \\ \\ This strategy is a regression based approach to forecasting price change in assets using a signal generated from a technical indicator. This particular strategy, Regression of Technical Signal, uses a simple mathematical regression (120 step length) to size trade positioning based on the strength of the recent relationship between the technical indicator and future price changes. The first stage is to calculate the technical indicator: for this InferTrade uses the versions of technical indicators defined by the \href{https://pypi.org/project/ta/}{TA} open source library. For the second stage - interpretation of when to trade - InferTrade regresses the history of returns in the price series against the 1-step lagged level of the technical indicator. The trade size taken then uses a simplified version of the Kelly Criterion, calculating investment size as a ratio of the expected return for the next time step to a fixed assumption of volatility. The resultant trading rule is therefore sensitive to the type of market conditions evaluated by the technical signal, but uses a statistical approach for implementation and sizing, rather than more conventional interpretations. As a single input signal is used, this also means technical indicators with multiple signal time series - such as Bollinger Bands, with lower and upper bands - must have one of the signals selected for this strategy. As the window length used for the regression is fixed (120 steps) and the Kthe strategy will have the same number of free parameters as the signal creation function itself. \\ \\ This form of regression strategy provides a way to evaluate the raw signals different technical indicators for information content in a consistent way, using them as potential predictive features rather than following their usual implementation recipe. InferTrade also supports the usual implementations for some technical indicators but these would be separate strategies. The rationale for also offering these regression-based approach is from two benefits: 1) regression sized technical rules give continuous size recommendations, rather than discrete entry/exit points. This makes them easier to optimize, as small changes in the parameters result in small change in positions and thus performance. Some technical indicator interpretations take discontinuous positions, whereby a small change results in a large position taken, which can increase overfitting during optimisation. 2) regression sized technical rules embed automatic adjustment for regimes where the strategy is not performing - if the technical indicator stops providing a significant prediction of price changes then the sized positions will be minimal.}
+
+\howtotrade
+{Any of the technical indicators supported by InferTrade can be used as signal to forecast price change in asset. \\ \\ As an example we can consider Money Flow Index. MFI indicator is a momentum indicator which varies between 0 and 100 and is used to define an overbought and oversold conditions. Usually MFI value above 80 is considered overbought and a sell signal is generated while a value below 20 is considered oversold and a buy signal is generated.\\ \\
+By using this trading strategy we compute the MFI of underlying asset using it's historical High, Low, Close \& Volume. Instead of using the MFI value to generate buy/sell signal as explained above, a forecast is made for expected change in price using MFI as a signal governed by Equation \ref{eqn:SignalRegression}. $\beta$ coefficient determines the relationship and impact of Signal $S$ on change in price of asset $\Delta \price$.\\ \\
+Forecast generated as described above is then used to generate fractional portfolio investment using formulation mentioned in Equation \ref{eqn:portfolioallocation}.
+}
+
+\ruleparameters %You can include however many arguments (in groups of 4) as you want!
+{Regression Period}{120}{Previous data points used to fit a regression line.}{\lookbacklength}
+{Kelly fraction}{1.0}{Amplitude weighting. $1.0$ is maximum growth if regression is exact.
+$<1.0$ scales down positions taken.}{$\kellyfraction$}
+{Volatility}{0.1}{Volatility used to compute the Kelly recommended optimum.}{$\sigma$}
+\stoptable %must be included or Tex engine runs infinitely
+
+\section{Equation}
+Below is the equations which govern how this specific trading rule calculates a trading position. Equation 1 is the regression equation used to determine $\beta$ and $c$. Equation 2 is the subsequent calculation of position sizing.
+
+\begin{equation}
+\label{eqn:SignalRegression}
+\Delta \price_{\currenttime} = \beta \, S_{\currenttime-1} + c + \varepsilon_{\currenttime}
+\end{equation}
+\begin{equation}
+\label{eqn:portfolioallocation}
+    \position_{\currenttime} = \kellyfraction \, \frac{E[\Delta \price_{\currenttime}]}{\sigma^{2}} = \kellyfraction \, \frac{S_{\currenttime-1} + c}{\sigma^{2}}
+\end{equation}
+\\
+with:
+
+$\Delta \price_{\currenttime}:$ is the change in asset price at time $\currenttime$.
+
+$E[\Delta \price_{\currenttime}]$: is the expected change in price at time $\currenttime$.
+
+$S_{\currenttime-1}$: is the signal value at time $\currenttime-1$.
+
+$\beta$: is the relationship coefficient between $S_{\currenttime-1}$ and $\Delta \price_{\currenttime}$.
+
+$c$: is a constant bias.
+
+$\varepsilon_{\currenttime}$: is the error term.
+
+$\kellyfraction$: is the Kelly fraction.
+
+$\position_{\currenttime}$: is the resultant fractional portfolio investment at time \currenttime.
+
+
+\keyterms
+\furtherlinks %The footer
+\end{document}
