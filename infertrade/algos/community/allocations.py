@@ -20,8 +20,6 @@ Allocation algorithms are functions used to compute allocations - % of your port
 """
 
 # External packages
-import json
-
 import numpy as np
 import pandas as pd
 import inspect
@@ -34,7 +32,6 @@ from infertrade.PandasEnum import PandasEnum
 import infertrade.utilities.operations as operations
 import infertrade.algos.community.signals as signals
 from infertrade.algos.community.permalinks import data_dictionary
-
 
 
 def fifty_fifty(dataframe) -> pd.DataFrame:
@@ -83,7 +80,8 @@ def chande_kroll_crossover_strategy(
 
 def change_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
-    Calculates a change relationship, which compares the asset's future price change to the last change in the signal series.
+    Calculates a change relationship, which compares the asset's future price change to the last change in the signal
+    series.
 
     Notes:
     - Does not fill NaNs in input, so full data needs to be supplied.
@@ -102,7 +100,8 @@ def change_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def calculate_change_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
+def calculate_change_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0) ->\
+        pd.DataFrame:
     """Calculates allocations for change relationship."""
     dataframe = df.copy()
     dataframe[PandasEnum.SIGNAL.value] = dataframe["research"]
@@ -132,7 +131,9 @@ def calculate_change_relationship(df: pd.DataFrame, regression_period: int = 120
 
 def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
-    Calculates a combination relationship, which compares the asset's future price change to the multivariate regression of the level of the signal, the last change in the signal and the difference between the signal and the price.
+    Calculates a combination relationship, which compares the asset's future price change to the multivariate
+    regression of the level of the signal, the last change in the signal and the difference between the signal and the
+     price.
 
     Notes:
     - Does not fill NaNs in input, so full data needs to be supplied.
