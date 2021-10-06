@@ -7,7 +7,7 @@ sudo apt-get install python3.7-tk -y
 sudo apt-get install --only-upgrade python3.7-tk -y
 
 # Install wheel for ta-lib installation dependency
-pip install wheel
+# pip install wheel
 
 # Install other packages
 pip install -r requirements.txt
