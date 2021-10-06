@@ -20,8 +20,6 @@ Allocation algorithms are functions used to compute allocations - % of your port
 """
 
 # External packages
-import json
-
 import numpy as np
 import pandas as pd
 import inspect
@@ -36,7 +34,6 @@ import infertrade.algos.community.signals as signals
 from infertrade.algos.community.permalinks import data_dictionary
 
 
-
 def fifty_fifty(dataframe) -> pd.DataFrame:
     """Allocates 50% of strategy budget to asset, 50% to cash."""
     dataframe["allocation"] = 0.5
@@ -49,9 +46,7 @@ def buy_and_hold(dataframe: pd.DataFrame) -> pd.DataFrame:
     return dataframe
 
 
-def chande_kroll_crossover_strategy(
-    dataframe: pd.DataFrame,
-) -> pd.DataFrame:
+def chande_kroll_crossover_strategy(dataframe: pd.DataFrame,) -> pd.DataFrame:
     """
     This simple all-or-nothing rule:
     (1) allocates 100% of the portofolio to a long position on the asset when the price of the asset is above both the
@@ -83,7 +78,8 @@ def chande_kroll_crossover_strategy(
 
 def change_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
-    Calculates a change relationship, which compares the asset's future price change to the last change in the signal series.
+    Calculates a change relationship, which compares the asset's future price change to the last change in the signal
+    series.
 
     Notes:
     - Does not fill NaNs in input, so full data needs to be supplied.
@@ -102,7 +98,9 @@ def change_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def calculate_change_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
+def calculate_change_relationship(
+    df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0
+) -> pd.DataFrame:
     """Calculates allocations for change relationship."""
     dataframe = df.copy()
     dataframe[PandasEnum.SIGNAL.value] = dataframe["research"]
@@ -132,7 +130,9 @@ def calculate_change_relationship(df: pd.DataFrame, regression_period: int = 120
 
 def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
-    Calculates a combination relationship, which compares the asset's future price change to the multivariate regression of the level of the signal, the last change in the signal and the difference between the signal and the price.
+    Calculates a combination relationship, which compares the asset's future price change to the multivariate
+    regression of the level of the signal, the last change in the signal and the difference between the signal and the
+     price.
 
     Notes:
     - Does not fill NaNs in input, so full data needs to be supplied.
@@ -877,44 +877,45 @@ function_list = [
 ]
 
 required_series_dict = {
-        "fifty_fifty": [],
-        "buy_and_hold": [],
-        "chande_kroll_crossover_strategy": ["high", "low", "price"],
-        "change_relationship": ["price", "research"],
-        "combination_relationship": ["price", "research"],
-        "difference_relationship": ["price", "research"],
-        "level_relationship": ["price", "research"],
-        "constant_allocation_size": [],
-        "high_low_difference": ["high", "low"],
-        "sma_crossover_strategy": ["price"],
-        "weighted_moving_averages": ["price", "research"],
-        "change_regression": ["research"],
-        "difference_regression": ["price", "research"],
-        "level_regression": ["research"],
-        "level_and_change_regression": ["research"],
-        "buy_golden_cross_sell_death_cross": ["price"],
-        "SMA_strategy": ["close"],
-        "WMA_strategy": ["close"],
-        "MACD_strategy": ["close"],
-        "RSI_strategy": ["close"],
-        "stochastic_RSI_strategy": ["close"],
-        "EMA_strategy": ["close"],
-        "bollinger_band_strategy": ["close"],
-        "PPO_strategy": ["close"],
-        "PVO_strategy": ["volume"],
-        "TRIX_strategy": ["close"],
-        "TSI_strategy": ["close"],
-        "STC_strategy": ["close"],
-        "KAMA_strategy": ["close"],
-        "aroon_strategy": ["close"],
-        "ROC_strategy": ["close"],
-        "ADX_strategy": ["close", "high", "low"],
-        "vortex_strategy": ["close", "high", "low"],
-        "DPO_strategy": ["close"],
-    }
+    "fifty_fifty": [],
+    "buy_and_hold": [],
+    "chande_kroll_crossover_strategy": ["high", "low", "price"],
+    "change_relationship": ["price", "research"],
+    "combination_relationship": ["price", "research"],
+    "difference_relationship": ["price", "research"],
+    "level_relationship": ["price", "research"],
+    "constant_allocation_size": [],
+    "high_low_difference": ["high", "low"],
+    "sma_crossover_strategy": ["price"],
+    "weighted_moving_averages": ["price", "research"],
+    "change_regression": ["research"],
+    "difference_regression": ["price", "research"],
+    "level_regression": ["research"],
+    "level_and_change_regression": ["research"],
+    "buy_golden_cross_sell_death_cross": ["price"],
+    "SMA_strategy": ["close"],
+    "WMA_strategy": ["close"],
+    "MACD_strategy": ["close"],
+    "RSI_strategy": ["close"],
+    "stochastic_RSI_strategy": ["close"],
+    "EMA_strategy": ["close"],
+    "bollinger_band_strategy": ["close"],
+    "PPO_strategy": ["close"],
+    "PVO_strategy": ["volume"],
+    "TRIX_strategy": ["close"],
+    "TSI_strategy": ["close"],
+    "STC_strategy": ["close"],
+    "KAMA_strategy": ["close"],
+    "aroon_strategy": ["close"],
+    "ROC_strategy": ["close"],
+    "ADX_strategy": ["close", "high", "low"],
+    "vortex_strategy": ["close", "high", "low"],
+    "DPO_strategy": ["close"],
+}
 
 
 # UTILITY FUNCTIONS BELOW
+
 
 def get_functions_list() -> List[Callable]:
     """Returns list of functions."""
@@ -935,8 +936,9 @@ def get_functions_names() -> List[str]:
 
 def get_latest_infertrade_commit() -> str:
     """Gets the latest commit for InferTrade as a string."""
-    os.environ['GIT_PYTHON_REFRESH'] = "quiet"
+    os.environ["GIT_PYTHON_REFRESH"] = "quiet"
     import git
+
     repo = git.Repo(".", search_parent_directories=True)
     commit = str(repo.head.commit)
     return commit
@@ -998,14 +1000,14 @@ def make_permalinks_py_file():
     file_path = file_dir + "/" + file_name
     data = create_infertrade_export_allocations()
 
-    with open(file_path, 'w') as obj:
+    with open(file_path, "w") as obj:
         obj.write("%s = %s\n" % ("data_dictionary", data))
 
 
 def augment_algorithm_dictionary_with_functions(dictionary_without_functions: dict, list_of_functions: list) -> dict:
     """This function returns a dictionary of algorithms."""
     for function in list_of_functions:
-        dictionary_without_functions[function.__name__]['function'] = function
+        dictionary_without_functions[function.__name__]["function"] = function
     return dictionary_without_functions
 
 

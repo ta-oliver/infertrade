@@ -26,7 +26,6 @@ from infertrade.utilities.performance import calculate_portfolio_performance_pyt
 import matplotlib
 
 
-
 def buy_on_small_rises(df: pd.DataFrame) -> pd.DataFrame:
     """A rules that buys when the market rose between 2% and 10% from previous close."""
     df["allocation"] = 0.0

@@ -246,6 +246,7 @@ class Api:
          relationships.
         """
         from infertrade.utilities.export import export_performance_df
+
         # imported inside to prevent circular dependency
         df = export_performance_df(
             dataframe=dataframe, second_df=second_df, rule_name=rule_name, relationship=relationship

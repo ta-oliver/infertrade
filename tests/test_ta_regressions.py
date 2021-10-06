@@ -28,14 +28,15 @@ from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
 df = simulated_market_data_4_years_gen()
 
+
 def test_ta_regressions():
     allocation_df_list = []
     for rule_name in ta_export_regression_allocations:
         # deep copy df
         df_copy = df.copy()
         allocation_df_list.append(ta_export_regression_allocations[rule_name]["function"](df_copy))
-    
+
     # check if output of each regression allocation is unique
     for i in range(len(allocation_df_list) - 1):
-        for j in range(i+1, len(allocation_df_list)):
-            assert not pd.Series.equals(allocation_df_list[i],allocation_df_list[j])
+        for j in range(i + 1, len(allocation_df_list)):
+            assert not pd.Series.equals(allocation_df_list[i], allocation_df_list[j])
