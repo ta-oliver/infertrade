@@ -19,7 +19,7 @@ External algorithms directory.
 """
 
 from infertrade.algos.community import infertrade_export
-from infertrade.algos.external.ta import ta_adaptor, ta_export
+from infertrade.algos.external import ta_export, ta_adaptor
 
 # A dictionary providing the list of available rules from InferTrade's community rules and external packages.
 algorithm_functions = {"infertrade": infertrade_export, "ta": ta_export}

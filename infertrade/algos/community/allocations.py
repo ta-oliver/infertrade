@@ -46,7 +46,9 @@ def buy_and_hold(dataframe: pd.DataFrame) -> pd.DataFrame:
     return dataframe
 
 
-def chande_kroll_crossover_strategy(dataframe: pd.DataFrame,) -> pd.DataFrame:
+def chande_kroll_crossover_strategy(
+    dataframe: pd.DataFrame,
+) -> pd.DataFrame:
     """
     This simple all-or-nothing rule:
     (1) allocates 100% of the portofolio to a long position on the asset when the price of the asset is above both the
