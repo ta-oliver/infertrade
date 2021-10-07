@@ -23,5 +23,3 @@ from infertrade.algos.external import ta_export, ta_adaptor
 
 # A dictionary providing the list of available rules from InferTrade's community rules and external packages.
 algorithm_functions = {"infertrade": infertrade_export, "ta": ta_export}
-
-print(algorithm_functions["ta"]["allocation"])
