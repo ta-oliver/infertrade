@@ -17,6 +17,7 @@
 # External packages
 from collections import Callable
 
+from infertrade.PandasEnum import PandasEnum
 import pandas as pd
 from sklearn.preprocessing import FunctionTransformer
 from sklearn.pipeline import make_pipeline

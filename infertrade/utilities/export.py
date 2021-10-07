@@ -22,7 +22,7 @@ from infertrade.algos.community import scikit_signal_factory
 from infertrade.algos import algorithm_functions, ta_adaptor
 from infertrade.utilities.operations import PricePredictionFromSignalRegression, PositionsFromPricePrediction
 from infertrade.utilities.performance import calculate_portfolio_performance_python
-from infertrade.algos.community.ta_regressions import ta_export_regression_allocations
+from infertrade.algos.external.ta_regressions import ta_export_regression_allocations
 from infertrade.api import Api
 
 

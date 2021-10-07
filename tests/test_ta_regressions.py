@@ -21,7 +21,7 @@ Unit tests for ta regression allocation functions
 """
 
 from infertrade.algos.external.ta import ta_export_signals
-from infertrade.algos.community.ta_regressions import ta_export_regression_allocations
+from infertrade.algos.external.ta_regressions import ta_export_regression_allocations
 import pandas as pd
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 

@@ -25,7 +25,7 @@ import pytest
 # Internal imports
 from ta.trend import AroonIndicator
 from infertrade.PandasEnum import PandasEnum
-from infertrade.algos.community import ta_export_regression_allocations
+from infertrade.algos.external import ta_export_regression_allocations
 from infertrade.api import Api
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 from infertrade.algos import algorithm_functions

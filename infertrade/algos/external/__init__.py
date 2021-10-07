@@ -17,3 +17,8 @@
 """
 Functionality to adapt external libraries for usage with InferTrade.
 """
+from infertrade.algos.external.ta_regressions import ta_adaptor, ta_export_regression_allocations, ta_export_signals
+from infertrade.PandasEnum import PandasEnum
+
+ta_export = {PandasEnum.SIGNAL.value: ta_export_signals,
+             PandasEnum.ALLOCATION.value: ta_export_regression_allocations}
