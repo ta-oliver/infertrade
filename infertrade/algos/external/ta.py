@@ -974,4 +974,3 @@ ta_export_signals = {
         },
     },
 }
-
