@@ -467,6 +467,22 @@ def restrict_allocation(allocation_function: callable) -> callable:
     return restricted_function
 
 
+def add_two_possibly_zero_length_arrays(regression_period_signal_error_end, regression_period_signal_error_start):
+    """Adds two arrays which may be zero length."""
+    some_start_data = len(regression_period_signal_error_start) > 0
+    some_end_data = len(regression_period_signal_error_end) > 0
+    if some_start_data and some_end_data:
+        regression_period_signal_error = regression_period_signal_error_start + \
+            regression_period_signal_error_end
+    elif some_start_data:
+        regression_period_signal_error = regression_period_signal_error_start
+    elif some_end_data:
+        regression_period_signal_error = regression_period_signal_error_end
+    else:
+        raise IndexError("No error data was provided.")
+    return regression_period_signal_error
+    
+
 def calculate_regression_with_kelly_optimum(
     df: pd.DataFrame,
     feature_matrix: pd.Series,
@@ -475,6 +491,7 @@ def calculate_regression_with_kelly_optimum(
     regression_period: int,
     forecast_period: int,
     kelly_fraction: float = 1.0,
+    out_of_sample_error: bool = False,
 ):
 
     # Refactor to make original method static.
@@ -491,7 +508,53 @@ def calculate_regression_with_kelly_optimum(
         prediction_idx = prediction_indices[ii_day]["prediction_idx"]
         regression_period_signal = feature_matrix[model_idx, :]
         regression_period_price_change = target_array[model_idx]
+        
+        if out_of_sample_error:
+            # In this mode we calculate the error out of sample rather than using the calibration error.
+            start_error_pct = 0.0
+            end_error_pct = 0.25  # unused as fits to remaining values in series
+            fit_pct = 1.0 - start_error_pct - end_error_pct
+            if fit_pct <= 0.0:
+                raise IndexError("No data selected for calibration.")
+            elif fit_pct <= 0.1:
+                print("WARNING - very low fit percentage for calibration.")
+            elif fit_pct >= 1.0:
+                raise IndexError("No data selected for error calculation.")
+            elif fit_pct >= 0.99:
+                print("WARNING - very little data provided for error calculation.")
 
+            (
+                regression_period_signal_error_start,
+                regression_period_signal_fit,
+                regression_period_signal_error_end,
+            ) = np.split(
+                regression_period_signal,
+                [
+                    int(len(regression_period_signal) * start_error_pct),
+                    int(len(regression_period_signal) * (fit_pct + start_error_pct)),
+                ],
+            )
+            regression_period_signal_fit = regression_period_signal_fit
+
+            regression_period_signal_error = add_two_possibly_zero_length_arrays(
+                regression_period_signal_error_end, regression_period_signal_error_start
+            )
+
+            (
+                regression_period_price_change_error_start,
+                regression_period_price_change_fit,
+                regression_period_price_change_error_end,
+            ) = np.split(
+                regression_period_price_change,
+                [
+                    int(len(regression_period_price_change) * start_error_pct),
+                    int(len(regression_period_price_change) * (start_error_pct + fit_pct)),
+                ],
+            )
+            regression_period_price_change_fit = regression_period_price_change_fit
+            regression_period_price_change_error = add_two_possibly_zero_length_arrays(
+                regression_period_price_change_error_start, regression_period_price_change_error_end
+            )
         std_price = np.std(regression_period_price_change)
         std_signal = np.std(regression_period_signal)
 
