@@ -472,8 +472,7 @@ def add_two_possibly_zero_length_arrays(regression_period_signal_error_end, regr
     some_start_data = len(regression_period_signal_error_start) > 0
     some_end_data = len(regression_period_signal_error_end) > 0
     if some_start_data and some_end_data:
-        regression_period_signal_error = regression_period_signal_error_start + \
-            regression_period_signal_error_end
+        regression_period_signal_error = regression_period_signal_error_start + regression_period_signal_error_end
     elif some_start_data:
         regression_period_signal_error = regression_period_signal_error_start
     elif some_end_data:
@@ -501,7 +500,7 @@ def calculate_regression_with_kelly_optimum(
     )
 
     bad_inputs = False
-    if(len(prediction_indices)>0):
+    if len(prediction_indices) > 0:
         for ii_day in range(len(prediction_indices)):
             model_idx = prediction_indices[ii_day]["model_idx"]
             prediction_idx = prediction_indices[ii_day]["prediction_idx"]
@@ -511,7 +510,7 @@ def calculate_regression_with_kelly_optimum(
             regression_period_signal_error = regression_period_signal
             regression_period_price_change_fit = regression_period_price_change
             regression_period_price_change_error = regression_period_price_change
-            
+
             if out_of_sample_error:
                 # In this mode we calculate the error out of sample rather than using the calibration error.
                 start_error_pct = 0.0
@@ -558,12 +557,12 @@ def calculate_regression_with_kelly_optimum(
                 regression_period_price_change_error = add_two_possibly_zero_length_arrays(
                     regression_period_price_change_error_start, regression_period_price_change_error_end
                 )
-            
+
             try:
                 # We check if either input has zero changes - if so there is no regression relationship.
                 std_price = np.std(regression_period_price_change_fit)
                 std_signal = np.std(regression_period_signal_fit)
-                
+
                 if not std_price > 0.0:
                     print("WARNING - price had no variation: ", std_price)
                 elif not std_signal > 0.0:
@@ -574,18 +573,22 @@ def calculate_regression_with_kelly_optimum(
                     )
                     bad_inputs = True
                 else:
-                    bad_inputs= False
+                    bad_inputs = False
 
                 if bad_inputs:
                     # Assuming no bad inputs we calculate the recommended allocation
                     rule_recommended_allocation = 0.0
                     volatility = 1.0
                 else:
-                    rolling_regression_model = LinearRegression().fit(regression_period_signal_fit, regression_period_price_change_fit)
+                    rolling_regression_model = LinearRegression().fit(
+                        regression_period_signal_fit, regression_period_price_change_fit
+                    )
 
                     # Calculate model error
                     predictions = rolling_regression_model.predict(regression_period_signal_error)
-                    forecast_horizon_model_error = np.sqrt(mean_squared_error(regression_period_price_change_error, predictions))
+                    forecast_horizon_model_error = np.sqrt(
+                        mean_squared_error(regression_period_price_change_error, predictions)
+                    )
 
                     # Predictions
                     forecast_distance = 1
@@ -603,7 +606,7 @@ def calculate_regression_with_kelly_optimum(
 
                     kelly_recommended_optimum = forecast_price_change / volatility ** 2
                     rule_recommended_allocation = kelly_fraction * kelly_recommended_optimum
-                
+
             except IndentationError:  # KeyError:
                 # QUESTION - not clear why there is KeyError catch here? Changing to IndentationError to see cases.
                 # np.zeros(len(prediction_idx))

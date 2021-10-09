@@ -100,7 +100,7 @@ def change_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def change_relationshipOOS(dataframe: pd.DataFrame) -> pd.DataFrame:
+def change_relationship_OOS(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
     Calculates a change relationship, which compares the asset's future price change to the last change in the signal
     series.
@@ -176,7 +176,8 @@ def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
-def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
+
+def combination_relationship_OOS(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
     Calculates a combination relationship, which compares the asset's future price change to the multivariate
     regression of the level of the signal, the last change in the signal and the difference between the signal and the
@@ -188,18 +189,21 @@ def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
 
     df = dataframe.copy()
+    out_of_sample_error = True
     regression_period = 120
     minimum_length_to_calculate = regression_period + 1
     if len(df[PandasEnum.MID.value]) < minimum_length_to_calculate:
         df[PandasEnum.ALLOCATION.value] = 0.0
         return df
 
-    df = calculate_combination_relationship(df, regression_period)
+    df = calculate_combination_relationship(df, regression_period, out_of_sample_error=out_of_sample_error)
 
     return df
 
 
-def calculate_combination_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
+def calculate_combination_relationship(
+    df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0, out_of_sample_error: bool = False
+):
     """Calculates allocations for combination relationship."""
     dataframe = df.copy()
     dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, "research"]
@@ -235,6 +239,7 @@ def calculate_combination_relationship(df: pd.DataFrame, regression_period: int 
         regression_period=regression_period,
         forecast_period=forecast_period,
         kelly_fraction=kelly_fraction,
+        out_of_sample_error=out_of_sample_error,
     )
     return dataframe
 
@@ -271,7 +276,31 @@ def difference_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def calculate_difference_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
+def difference_relationship_OOS(dataframe: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calculates a difference relationship, which compares the asset's future price change to the last difference between the signal series and asset price.
+
+    Notes:
+    - Does not fill NaNs in input, so full data needs to be supplied.
+    - Error estimation uses same window as used for calibrating regression coefficients
+    """
+
+    df = dataframe.copy()
+    out_of_sample_error = True
+    regression_period = 120
+    minimum_length_to_calculate = regression_period + 1
+    if len(df[PandasEnum.MID.value]) < minimum_length_to_calculate:
+        df[PandasEnum.ALLOCATION.value] = 0.0
+        return df
+
+    df = calculate_difference_relationship(df, regression_period, out_of_sample_error=out_of_sample_error)
+
+    return df
+
+
+def calculate_difference_relationship(
+    df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0, out_of_sample_error: bool = False
+):
     """Calculates allocations for difference relationship."""
     dataframe = df.copy()
     dataframe[PandasEnum.SIGNAL.value] = dataframe["research"]
@@ -299,6 +328,7 @@ def calculate_difference_relationship(df: pd.DataFrame, regression_period: int =
         regression_period=regression_period,
         forecast_period=forecast_period,
         kelly_fraction=kelly_fraction,
+        out_of_sample_error=out_of_sample_error,
     )
     return dataframe
 
@@ -337,7 +367,31 @@ def level_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def calculate_level_relationship(df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0):
+def level_relationship_OOS(dataframe: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calculates a level relationship, which compares the asset's future price change to the last value of the signal series.
+
+    Notes:
+    - Does not fill NaNs in input, so full data needs to be supplied.
+    - Error estimation uses same window as used for calibrating regression coefficients
+    """
+
+    df = dataframe.copy()
+    out_of_sample_error = True
+    regression_period = 120
+    minimum_length_to_calculate = regression_period + 1
+    if len(df[PandasEnum.MID.value]) < minimum_length_to_calculate:
+        df[PandasEnum.ALLOCATION.value] = 0.0
+        return df
+
+    df = calculate_level_relationship(df, regression_period, out_of_sample_error=out_of_sample_error)
+
+    return df
+
+
+def calculate_level_relationship(
+    df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0, out_of_sample_error: bool = False
+):
     """Calculates allocations for level relationship."""
     dataframe = df.copy()
     dataframe[PandasEnum.SIGNAL.value] = dataframe.loc[:, "research"]
@@ -360,6 +414,7 @@ def calculate_level_relationship(df: pd.DataFrame, regression_period: int = 120,
         regression_period=regression_period,
         forecast_period=forecast_period,
         kelly_fraction=kelly_fraction,
+        out_of_sample_error=out_of_sample_error,
     )
     return dataframe
 
