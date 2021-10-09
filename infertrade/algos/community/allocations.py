@@ -100,8 +100,31 @@ def change_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def change_relationshipOOS(dataframe: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calculates a change relationship, which compares the asset's future price change to the last change in the signal
+    series.
+
+    Notes:
+    - Does not fill NaNs in input, so full data needs to be supplied.
+    - Error estimation uses same window as used for calibrating regression coefficients
+    """
+    df = dataframe.copy()
+    out_of_sample_error = True
+    regression_period = 120
+    minimum_length_to_calculate = regression_period + 1
+
+    if len(df[PandasEnum.MID.value]) < minimum_length_to_calculate:
+        df[PandasEnum.ALLOCATION.value] = 0.0
+        return df
+
+    df = calculate_change_relationship(df, regression_period, out_of_sample_error)
+
+    return df
+
+
 def calculate_change_relationship(
-    df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0
+    df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0, out_of_sample_error: bool = False
 ) -> pd.DataFrame:
     """Calculates allocations for change relationship."""
     dataframe = df.copy()
@@ -126,9 +149,32 @@ def calculate_change_relationship(
         regression_period=regression_period,
         forecast_period=forecast_period,
         kelly_fraction=kelly_fraction,
+        out_of_sample_error=out_of_sample_error,
     )
     return dataframe
 
+
+def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calculates a combination relationship, which compares the asset's future price change to the multivariate
+    regression of the level of the signal, the last change in the signal and the difference between the signal and the
+     price.
+
+    Notes:
+    - Does not fill NaNs in input, so full data needs to be supplied.
+    - Error estimation uses same window as used for calibrating regression coefficients
+    """
+
+    df = dataframe.copy()
+    regression_period = 120
+    minimum_length_to_calculate = regression_period + 1
+    if len(df[PandasEnum.MID.value]) < minimum_length_to_calculate:
+        df[PandasEnum.ALLOCATION.value] = 0.0
+        return df
+
+    df = calculate_combination_relationship(df, regression_period)
+
+    return df
 
 def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
