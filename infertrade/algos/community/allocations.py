@@ -118,7 +118,7 @@ def change_relationshipOOS(dataframe: pd.DataFrame) -> pd.DataFrame:
         df[PandasEnum.ALLOCATION.value] = 0.0
         return df
 
-    df = calculate_change_relationship(df, regression_period, out_of_sample_error)
+    df = calculate_change_relationship(df, regression_period, out_of_sample_error=out_of_sample_error)
 
     return df
 
