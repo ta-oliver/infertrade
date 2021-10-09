@@ -151,8 +151,6 @@ def calculate_change_relationship(
         kelly_fraction=kelly_fraction,
         out_of_sample_error=out_of_sample_error,
     )
-
-    dataframe[PandasEnum.ALLOCATION] = dataframe[PandasEnum.ALLOCATION].fillna(0.0)
     
     return dataframe
 
@@ -245,7 +243,6 @@ def calculate_combination_relationship(
         out_of_sample_error=out_of_sample_error,
     )
 
-    dataframe[PandasEnum.ALLOCATION] = dataframe[PandasEnum.ALLOCATION].fillna(0.0)
     return dataframe
 
 
@@ -335,7 +332,6 @@ def calculate_difference_relationship(
         kelly_fraction=kelly_fraction,
         out_of_sample_error=out_of_sample_error,
     )
-    dataframe[PandasEnum.ALLOCATION] = dataframe[PandasEnum.ALLOCATION].fillna(0.0)
     return dataframe
 
 
@@ -422,6 +418,7 @@ def calculate_level_relationship(
         kelly_fraction=kelly_fraction,
         out_of_sample_error=out_of_sample_error,
     )
+    
     return dataframe
 
 
