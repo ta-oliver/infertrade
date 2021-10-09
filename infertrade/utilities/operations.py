@@ -481,7 +481,7 @@ def add_two_possibly_zero_length_arrays(regression_period_signal_error_end, regr
     else:
         raise IndexError("No error data was provided.")
     return regression_period_signal_error
-    
+
 
 def calculate_regression_with_kelly_optimum(
     df: pd.DataFrame,
@@ -508,7 +508,10 @@ def calculate_regression_with_kelly_optimum(
         prediction_idx = prediction_indices[ii_day]["prediction_idx"]
         regression_period_signal = feature_matrix[model_idx, :]
         regression_period_price_change = target_array[model_idx]
-        
+        regression_period_signal_fit = regression_period_signal
+        regression_period_signal_error = regression_period_signal
+        regression_period_price_change_fit = regression_period_price_change
+        regression_period_price_change_error = regression_period_price_change
         if out_of_sample_error:
             # In this mode we calculate the error out of sample rather than using the calibration error.
             start_error_pct = 0.0
@@ -555,8 +558,10 @@ def calculate_regression_with_kelly_optimum(
             regression_period_price_change_error = add_two_possibly_zero_length_arrays(
                 regression_period_price_change_error_start, regression_period_price_change_error_end
             )
-        std_price = np.std(regression_period_price_change)
-        std_signal = np.std(regression_period_signal)
+        
+        
+        std_price = np.std(regression_period_price_change_fit)
+        std_signal = np.std(regression_period_signal_fit)
 
         if not std_price > 0.0 or not std_signal > 0.0:
             if not std_price > 0.0:
@@ -571,11 +576,11 @@ def calculate_regression_with_kelly_optimum(
             volatility = 1.0
         else:
             # Assuming no bad inputs we calculate the recommended allocation.
-            rolling_regression_model = LinearRegression().fit(regression_period_signal, regression_period_price_change)
+            rolling_regression_model = LinearRegression().fit(regression_period_signal_fit, regression_period_price_change_fit)
 
             # Calculate model error
-            predictions = rolling_regression_model.predict(regression_period_signal)
-            forecast_horizon_model_error = np.sqrt(mean_squared_error(regression_period_price_change, predictions))
+            predictions = rolling_regression_model.predict(regression_period_signal_error)
+            forecast_horizon_model_error = np.sqrt(mean_squared_error(regression_period_price_change_error, predictions))
 
             # Predictions
             forecast_distance = 1
