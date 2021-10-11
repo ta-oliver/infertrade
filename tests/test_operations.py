@@ -48,20 +48,17 @@ def test_limit_allocation():
 
 
 def test_calculate_regression_with_kelly_optimum():
-    """Test used to check if correct errors would be raised corresponding to the passed values"""
-    feature_matrix = pd.Series()
-    test_df = simulated_market_data_4_years_gen()
-    test_ndarray = np.ndarray(1)
-    test_target = pd.Series()
-    try:
-        infertrade.utilities.operations.calculate_regression_with_kelly_optimum(
-            df=pd.DataFrame(),
-            feature_matrix=pd.Series(),
-            last_feature_row=np.ndarray(1),
-            target_array=pd.Series,
-            regression_period=0,
-            forecast_period=1,
-        )
-        raise ValueError("The function was supposed to raise a IndexError as prediction_indices are 0 in length")
-    except IndexError:
-        pass
+    """Test used to check if correct errors would be raised corresponding to the passed values."""
+    output = infertrade.utilities.operations.calculate_regression_with_kelly_optimum(
+        df=simulated_market_data_4_years_gen(),
+        feature_matrix=pd.Series(),
+        last_feature_row=np.ndarray(1),
+        target_array=pd.Series,
+        regression_period=50,
+        forecast_period=5,
+    )
+    assert isinstance(output, pd.DataFrame)
+
+    # As we passing a blank feature matrix, we expect all allocations to be zero.
+    for ii_entry in output["allocation"]:
+        assert ii_entry == 0.0

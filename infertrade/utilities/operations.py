@@ -23,16 +23,14 @@ from copy import deepcopy
 from typing import List, Tuple, Union
 import numpy as np
 import pandas as pd
-from pandas.core.frame import DataFrame
 
 from sklearn.base import TransformerMixin, BaseEstimator
 from sklearn.compose import ColumnTransformer
-from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 
 from sklearn.pipeline import make_pipeline, FeatureUnion
-from sklearn.preprocessing import FunctionTransformer, Binarizer
+from sklearn.preprocessing import FunctionTransformer
 from infertrade.utilities.performance import calculate_portfolio_performance_python
 from infertrade.PandasEnum import PandasEnum, create_price_column_from_synonym
 
@@ -211,7 +209,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
         feat_tar = FeatureUnion(transformer_list=[("features", features), ("target", target)])
         self.fitted_features_and_target_ = feat_tar.fit(X)
 
-    def _get_target_array_transformer(self):
+    def _get_target_array_transformer(self) -> ColumnTransformer:
         """Use level of price series as target (dependant) variable."""
         percent_change_trans = FunctionTransformer(pct_chg)
         target = ColumnTransformer([("historical_price_moves", percent_change_trans, [self.market_to_trade])])
@@ -303,7 +301,10 @@ class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
 
 
 class PricePredictionFromPositions(TransformerMixin, BaseEstimator):
-    """This class converts positions into implicit price predictions based on the Kelly Criterion and an assumed volatility."""
+    """
+    This class converts positions into implicit price predictions based on the Kelly Criterion and an assumed
+     volatility.
+     """
 
     def __init__(self):
         """Construction method for class PricePredictionFromPositions.
@@ -433,11 +434,15 @@ def daily_stop_loss(dataframe: pd.DataFrame, loss_limit: float) -> pd.DataFrame:
 
 def restrict_allocation(allocation_function: callable) -> callable:
     """
-    This function is intended to be used as a decorator that may apply one or more restrictions to functions that calculate
-    allocation values.
+    This function is intended to be used as a decorator that may apply one or more restrictions to functions that
+    calculate allocation values.
     """
 
     def restricted_function(*args, **kwargs) -> pd.DataFrame:
+        """
+        An allocation function that also incorporates portfolio restrictions, such as maximum allocation size and
+         stop loss limits.
+         """
 
         # Get allocation dataframe from allocation function
         dataframe = allocation_function(*args, **kwargs)
@@ -467,6 +472,22 @@ def restrict_allocation(allocation_function: callable) -> callable:
     return restricted_function
 
 
+def add_two_possibly_zero_length_arrays(regression_period_signal_error_end: np.array,
+                                        regression_period_signal_error_start: np.array) -> np.array:
+    """Adds two arrays which may be zero length."""
+    some_start_data = len(regression_period_signal_error_start) > 0
+    some_end_data = len(regression_period_signal_error_end) > 0
+    if some_start_data and some_end_data:
+        regression_period_signal_error = regression_period_signal_error_start + regression_period_signal_error_end
+    elif some_start_data:
+        regression_period_signal_error = regression_period_signal_error_start
+    elif some_end_data:
+        regression_period_signal_error = regression_period_signal_error_end
+    else:
+        raise IndexError("No error data was provided.")
+    return regression_period_signal_error
+
+
 def calculate_regression_with_kelly_optimum(
     df: pd.DataFrame,
     feature_matrix: pd.Series,
@@ -475,91 +496,163 @@ def calculate_regression_with_kelly_optimum(
     regression_period: int,
     forecast_period: int,
     kelly_fraction: float = 1.0,
-):
-
-    # Refactor to make original method static.
+    out_of_sample_error: bool = False,
+) -> pd.DataFrame:
+    """
+    Calculate the optimum portfolio allocation using a forecast of price change based on regression versus historic
+    price changes.
+    """
     dataframe = df.copy()
     prediction_indices = PricePredictionFromSignalRegression._get_model_prediction_indices(
         series_length=len(feature_matrix), reg_period=regression_period, forecast_period=forecast_period
     )
 
-    if not len(prediction_indices) > 0:
-        raise IndexError("Unexpected error: Prediction indices are zero in length.")
+    bad_inputs = False
+    if len(prediction_indices) > 0:
+        for ii_day in range(len(prediction_indices)):
+            model_idx = prediction_indices[ii_day]["model_idx"]
+            prediction_idx = prediction_indices[ii_day]["prediction_idx"]
+            regression_period_signal = feature_matrix[model_idx, :]
+            regression_period_price_change = target_array[model_idx]
+            regression_period_signal_fit = regression_period_signal
+            regression_period_signal_error = regression_period_signal
+            regression_period_price_change_fit = regression_period_price_change
+            regression_period_price_change_error = regression_period_price_change
 
-    for ii_day in range(len(prediction_indices)):
-        model_idx = prediction_indices[ii_day]["model_idx"]
-        prediction_idx = prediction_indices[ii_day]["prediction_idx"]
-        regression_period_signal = feature_matrix[model_idx, :]
-        regression_period_price_change = target_array[model_idx]
+            if out_of_sample_error:
+                # In this mode we calculate the error out of sample rather than using the calibration error.
+                start_error_pct = 0.0
+                end_error_pct = 0.25  # unused as fits to remaining values in series
+                fit_pct = 1.0 - start_error_pct - end_error_pct
+                if fit_pct <= 0.0:
+                    raise IndexError("No data selected for calibration.")
+                elif fit_pct <= 0.1:
+                    print("WARNING - very low fit percentage for calibration.")
+                elif fit_pct >= 1.0:
+                    raise IndexError("No data selected for error calculation.")
+                elif fit_pct >= 0.99:
+                    print("WARNING - very little data provided for error calculation.")
 
-        std_price = np.std(regression_period_price_change)
-        std_signal = np.std(regression_period_signal)
-
-        if not std_price > 0.0 or not std_signal > 0.0:
-            if not std_price > 0.0:
-                print("WARNING - price had no variation: ", std_price)
-            if not std_signal > 0.0:
-                print(
-                    "WARNING - signal had no variation. Usually this means the lookback period was too short"
-                    " for the data sample: ",
-                    std_signal,
+                (
+                    regression_period_signal_error_start,
+                    regression_period_signal_fit,
+                    regression_period_signal_error_end,
+                ) = np.split(
+                    regression_period_signal,
+                    [
+                        int(len(regression_period_signal) * start_error_pct),
+                        int(len(regression_period_signal) * (fit_pct + start_error_pct)),
+                    ],
                 )
-            rule_recommended_allocation = 0.0
-            volatility = 1.0
+                regression_period_signal_fit = regression_period_signal_fit
+
+                regression_period_signal_error = add_two_possibly_zero_length_arrays(
+                    regression_period_signal_error_end, regression_period_signal_error_start
+                )
+
+                (
+                    regression_period_price_change_error_start,
+                    regression_period_price_change_fit,
+                    regression_period_price_change_error_end,
+                ) = np.split(
+                    regression_period_price_change,
+                    [
+                        int(len(regression_period_price_change) * start_error_pct),
+                        int(len(regression_period_price_change) * (start_error_pct + fit_pct)),
+                    ],
+                )
+                regression_period_price_change_fit = regression_period_price_change_fit
+                regression_period_price_change_error = add_two_possibly_zero_length_arrays(
+                    regression_period_price_change_error_start, regression_period_price_change_error_end
+                )
+
+            try:
+                # We check if either input has zero changes - if so there is no regression relationship.
+                std_price = np.std(regression_period_price_change_fit)
+                std_signal = np.std(regression_period_signal_fit)
+
+                if not std_price > 0.0:
+                    print("WARNING - price had no variation: ", std_price)
+                elif not std_signal > 0.0:
+                    print(
+                        "WARNING - signal had no variation. Usually this means the lookback period was too short"
+                        " for the data sample: ",
+                        std_signal,
+                    )
+                    bad_inputs = True
+                else:
+                    bad_inputs = False
+
+                if bad_inputs:
+                    # Assuming no bad inputs we calculate the recommended allocation
+                    rule_recommended_allocation = 0.0
+                    volatility = 1.0
+                else:
+                    rolling_regression_model = LinearRegression().fit(
+                        regression_period_signal_fit, regression_period_price_change_fit
+                    )
+
+                    # Calculate model error
+                    predictions = rolling_regression_model.predict(regression_period_signal_error)
+                    forecast_horizon_model_error = np.sqrt(
+                        mean_squared_error(regression_period_price_change_error, predictions)
+                    )
+
+                    # Predictions
+                    forecast_distance = 1
+                    current_research = feature_matrix[prediction_idx, :]
+                    forecast_price_change = rolling_regression_model.predict(current_research)
+
+                    # Calculate drift and volatility
+                    volatility = ((1 + forecast_horizon_model_error) * (forecast_distance ** -0.5)) - 1
+
+                    # Kelly recommended optimum
+                    if volatility < 0:
+                        raise ZeroDivisionError("Volatility needs to be positive value.")
+                    if volatility == 0:
+                        volatility = 0.01
+
+                    kelly_recommended_optimum = forecast_price_change / volatility ** 2
+                    rule_recommended_allocation = kelly_fraction * kelly_recommended_optimum
+
+            except IndentationError:  # KeyError:
+                # QUESTION - not clear why there is KeyError catch here? Changing to IndentationError to see cases.
+                # np.zeros(len(prediction_idx))
+                rule_recommended_allocation = 0.0
+
+            # Apply the calculated allocation to the dataframe.
+            dataframe.loc[prediction_idx, PandasEnum.ALLOCATION.value] = rule_recommended_allocation.reshape(
+                -1,
+            )
+
+        # Shift position series  (QUESTION - does not appear to shift?)
+        dataframe[PandasEnum.ALLOCATION.value] = dataframe[PandasEnum.ALLOCATION.value].shift(-1)
+
+        # Calculate price forecast for last research value
+        if std_price > 0.0 and std_signal > 0.0:
+            # last_research = [[dataframe[PandasEnum.SIGNAL.value].iloc[-1]]]
+            last_research = last_feature_row
+            last_forecast_price = rolling_regression_model.predict(last_research)[0]
+            value_to_update = kelly_fraction * (last_forecast_price / volatility ** 2)
         else:
-            # Assuming no bad inputs we calculate the recommended allocation.
-            rolling_regression_model = LinearRegression().fit(regression_period_signal, regression_period_price_change)
+            value_to_update = 0.0
+        dataframe.iloc[-1, dataframe.columns.get_loc(PandasEnum.ALLOCATION.value)] = value_to_update
 
-            # Calculate model error
-            predictions = rolling_regression_model.predict(regression_period_signal)
-            forecast_horizon_model_error = np.sqrt(mean_squared_error(regression_period_price_change, predictions))
-
-            # Predictions
-            forecast_distance = 1
-            current_research = feature_matrix[prediction_idx, :]
-            forecast_price_change = rolling_regression_model.predict(current_research)
-
-            # Calculate drift and volatility
-            volatility = ((1 + forecast_horizon_model_error) * (forecast_distance ** -0.5)) - 1
-
-            # Kelly recommended optimum
-            if volatility < 0:
-                raise ZeroDivisionError("Volatility needs to be positive value.")
-            if volatility == 0:
-                volatility = 0.01
-
-            kelly_recommended_optimum = forecast_price_change / volatility ** 2
-            rule_recommended_allocation = kelly_fraction * kelly_recommended_optimum
-
-        # Apply the calculated allocation to the dataframe.
-        dataframe.loc[prediction_idx, PandasEnum.ALLOCATION.value] = rule_recommended_allocation.reshape(
-            -1,
-        )
-
-    # Shift position series  (QUESTION - does not appear to shift?)
-    dataframe[PandasEnum.ALLOCATION.value] = dataframe[PandasEnum.ALLOCATION.value].shift(-1)
-
-    # Calculate price forecast for last research value
-    if std_price > 0.0 and std_signal > 0.0:
-        # last_research = [[dataframe[PandasEnum.SIGNAL.value].iloc[-1]]]
-        last_research = last_feature_row
-        last_forecast_price = rolling_regression_model.predict(last_research)[0]
-        value_to_update = kelly_fraction * (last_forecast_price / volatility ** 2)
     else:
-        value_to_update = 0.0
-    dataframe.iloc[-1, dataframe.columns.get_loc(PandasEnum.ALLOCATION.value)] = value_to_update
+        # If length of prediction indices is zero we set all positions to zero.
+        dataframe[PandasEnum.ALLOCATION.value] = 0.0
 
     return dataframe
 
 
 def scikit_allocation_factory(allocation_function: callable) -> FunctionTransformer:
-    """This function creates a SciKit Learn compatible Transformer embedding the position calculation.
+    """
+    This function creates a SciKit Learn compatible Transformer embedding the position calculation.
 
     Args:
         allocation_function: A function to be turned into a sklearn.preprocessing.FunctionTransformer
 
     Returns:
         A sklearn.preprocessing.FunctionTransformer
-
     """
     return FunctionTransformer(allocation_function)
