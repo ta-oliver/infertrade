@@ -38,8 +38,8 @@ coverage: ## check code coverage quickly with pytest
 
 .PHONY: install
 install:
-	python3.7 -c "import $(PACKAGE_NAME)" >/dev/null 2>&1 || python3 -m pip install . && \
-    python3.7 setup.py build_ext --inplace;
+	python3 -c "import $(PACKAGE_NAME)" >/dev/null 2>&1 || python3 -m pip install . && \
+    python3 setup.py build_ext --inplace;
 
 .PHONY: clean
 clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
@@ -75,12 +75,12 @@ venv:  ## create virtualenv environment on local directory.
 
 .PHONY: dev
 dev: clean ## install the package in development mode including all dependencies
-	python3.7 -m pip install .[dev]
+	python3 -m pip install .[dev]
 
 .PHONY: dev-venv
 dev-venv: venv ## install the package in development mode including all dependencies inside a virtualenv (container).
 	source ".$(PACKAGE_NAME)_venv"/bin/activate && \
-	python3.7 -m pip install .[dev] 
+	python3 -m pip install .[dev] 
 
 .PHONY: autoformat
 autoformat: ## formats code
