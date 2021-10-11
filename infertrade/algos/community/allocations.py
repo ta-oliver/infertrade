@@ -100,7 +100,7 @@ def change_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def change_relationship_OOS(dataframe: pd.DataFrame) -> pd.DataFrame:
+def change_relationship_oos(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
     Calculates a change relationship, which compares the asset's future price change to the last change in the signal
     series.
@@ -178,7 +178,7 @@ def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def combination_relationship_OOS(dataframe: pd.DataFrame) -> pd.DataFrame:
+def combination_relationship_oos(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
     Calculates a combination relationship, which compares the asset's future price change to the multivariate
     regression of the level of the signal, the last change in the signal and the difference between the signal and the
@@ -278,7 +278,7 @@ def difference_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def difference_relationship_OOS(dataframe: pd.DataFrame) -> pd.DataFrame:
+def difference_relationship_oos(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
     Calculates a difference relationship, which compares the asset's future price change to the last difference between the signal series and asset price.
 
@@ -369,7 +369,7 @@ def level_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def level_relationship_OOS(dataframe: pd.DataFrame) -> pd.DataFrame:
+def level_relationship_oos(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
     Calculates a level relationship, which compares the asset's future price change to the last value of the signal series.
 
