@@ -51,9 +51,9 @@ def chande_kroll_crossover_strategy(
 ) -> pd.DataFrame:
     """
     This simple all-or-nothing rule:
-    (1) allocates 100% of the portofolio to a long position on the asset when the price of the asset is above both the
+    (1) allocates 100% of the portfolio to a long position on the asset when the price of the asset is above both the
     Chande Kroll stop long line and Chande Kroll stop short line, and
-    (2) according to the value set for the allow_short_selling parameter, either allocates 0% of the portofiolio to
+    (2) according to the value set for the allow_short_selling parameter, either allocates 0% of the portfiolio to
     the asset or allocates 100% of the portfolio to a short position on the asset when the price of the asset is below
     both the Chande Kroll stop long line and the Chande Kroll stop short line.
     """
@@ -100,7 +100,7 @@ def change_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def change_relationship_OOS(dataframe: pd.DataFrame) -> pd.DataFrame:
+def change_relationship_oos(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
     Calculates a change relationship, which compares the asset's future price change to the last change in the signal
     series.
@@ -178,7 +178,7 @@ def combination_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def combination_relationship_OOS(dataframe: pd.DataFrame) -> pd.DataFrame:
+def combination_relationship_oos(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
     Calculates a combination relationship, which compares the asset's future price change to the multivariate
     regression of the level of the signal, the last change in the signal and the difference between the signal and the
@@ -278,7 +278,7 @@ def difference_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def difference_relationship_OOS(dataframe: pd.DataFrame) -> pd.DataFrame:
+def difference_relationship_oos(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
     Calculates a difference relationship, which compares the asset's future price change to the last difference between the signal series and asset price.
 
@@ -369,7 +369,7 @@ def level_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def level_relationship_OOS(dataframe: pd.DataFrame) -> pd.DataFrame:
+def level_relationship_oos(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
     Calculates a level relationship, which compares the asset's future price change to the last value of the signal series.
 

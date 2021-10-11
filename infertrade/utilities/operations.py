@@ -23,16 +23,14 @@ from copy import deepcopy
 from typing import List, Tuple, Union
 import numpy as np
 import pandas as pd
-from pandas.core.frame import DataFrame
 
 from sklearn.base import TransformerMixin, BaseEstimator
 from sklearn.compose import ColumnTransformer
-from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 
 from sklearn.pipeline import make_pipeline, FeatureUnion
-from sklearn.preprocessing import FunctionTransformer, Binarizer
+from sklearn.preprocessing import FunctionTransformer
 from infertrade.utilities.performance import calculate_portfolio_performance_python
 from infertrade.PandasEnum import PandasEnum, create_price_column_from_synonym
 
@@ -211,7 +209,7 @@ class PricePredictionFromSignalRegression(TransformerMixin, BaseEstimator):
         feat_tar = FeatureUnion(transformer_list=[("features", features), ("target", target)])
         self.fitted_features_and_target_ = feat_tar.fit(X)
 
-    def _get_target_array_transformer(self):
+    def _get_target_array_transformer(self) -> ColumnTransformer:
         """Use level of price series as target (dependant) variable."""
         percent_change_trans = FunctionTransformer(pct_chg)
         target = ColumnTransformer([("historical_price_moves", percent_change_trans, [self.market_to_trade])])
@@ -303,7 +301,10 @@ class PositionsFromPricePrediction(TransformerMixin, BaseEstimator):
 
 
 class PricePredictionFromPositions(TransformerMixin, BaseEstimator):
-    """This class converts positions into implicit price predictions based on the Kelly Criterion and an assumed volatility."""
+    """
+    This class converts positions into implicit price predictions based on the Kelly Criterion and an assumed
+     volatility.
+     """
 
     def __init__(self):
         """Construction method for class PricePredictionFromPositions.
@@ -433,11 +434,15 @@ def daily_stop_loss(dataframe: pd.DataFrame, loss_limit: float) -> pd.DataFrame:
 
 def restrict_allocation(allocation_function: callable) -> callable:
     """
-    This function is intended to be used as a decorator that may apply one or more restrictions to functions that calculate
-    allocation values.
+    This function is intended to be used as a decorator that may apply one or more restrictions to functions that
+    calculate allocation values.
     """
 
     def restricted_function(*args, **kwargs) -> pd.DataFrame:
+        """
+        An allocation function that also incorporates portfolio restrictions, such as maximum allocation size and
+         stop loss limits.
+         """
 
         # Get allocation dataframe from allocation function
         dataframe = allocation_function(*args, **kwargs)
@@ -467,7 +472,8 @@ def restrict_allocation(allocation_function: callable) -> callable:
     return restricted_function
 
 
-def add_two_possibly_zero_length_arrays(regression_period_signal_error_end, regression_period_signal_error_start):
+def add_two_possibly_zero_length_arrays(regression_period_signal_error_end: np.array,
+                                        regression_period_signal_error_start: np.array) -> np.array:
     """Adds two arrays which may be zero length."""
     some_start_data = len(regression_period_signal_error_start) > 0
     some_end_data = len(regression_period_signal_error_end) > 0
@@ -491,9 +497,11 @@ def calculate_regression_with_kelly_optimum(
     forecast_period: int,
     kelly_fraction: float = 1.0,
     out_of_sample_error: bool = False,
-):
-
-    # Refactor to make original method static.
+) -> pd.DataFrame:
+    """
+    Calculate the optimum portfolio allocation using a forecast of price change based on regression versus historic
+    price changes.
+    """
     dataframe = df.copy()
     prediction_indices = PricePredictionFromSignalRegression._get_model_prediction_indices(
         series_length=len(feature_matrix), reg_period=regression_period, forecast_period=forecast_period
@@ -632,23 +640,19 @@ def calculate_regression_with_kelly_optimum(
 
     else:
         # If length of prediction indices is zero we set all positions to zero.
-        # QUESTION - why not fail here? Should have excluded if outside lookback length. So lookback length must be
-        # wrong.
-        raise IndexError(
-            "Prediction indices are zero in length. Should have stopped calculation via lookback" " check."
-        )
+        dataframe[PandasEnum.ALLOCATION.value] = 0.0
 
     return dataframe
 
 
 def scikit_allocation_factory(allocation_function: callable) -> FunctionTransformer:
-    """This function creates a SciKit Learn compatible Transformer embedding the position calculation.
+    """
+    This function creates a SciKit Learn compatible Transformer embedding the position calculation.
 
     Args:
         allocation_function: A function to be turned into a sklearn.preprocessing.FunctionTransformer
 
     Returns:
         A sklearn.preprocessing.FunctionTransformer
-
     """
     return FunctionTransformer(allocation_function)
