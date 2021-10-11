@@ -81,7 +81,7 @@ class Api:
 
     @staticmethod
     def available_algorithms(
-            filter_by_package: Union[str, List[str]] = None, filter_by_category: Union[str, List[str]] = None
+        filter_by_package: Union[str, List[str]] = None, filter_by_category: Union[str, List[str]] = None
     ) -> List[str]:
         """Returns a list of strings that are available strategies."""
         if not filter_by_package:
@@ -159,7 +159,7 @@ class Api:
 
     @staticmethod
     def calculate_allocations(
-            df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = PandasEnum.MID.value
+        df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = PandasEnum.MID.value
     ) -> pd.DataFrame:
         """Calculates the allocations using the supplied strategy."""
         if name_of_price_series is not PandasEnum.MID.value:
@@ -176,7 +176,7 @@ class Api:
 
     @staticmethod
     def calculate_allocations_and_returns(
-            df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = PandasEnum.MID.value
+        df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = PandasEnum.MID.value
     ) -> pd.DataFrame:
         """Calculates the returns using the supplied strategy."""
         df_with_positions = Api.calculate_allocations(df, name_of_strategy, name_of_price_series)
@@ -205,7 +205,7 @@ class Api:
 
     @staticmethod
     def return_representations(
-            name_of_algorithm: str, representation_or_list_of_representations: Union[str, List[str]] = None
+        name_of_algorithm: str, representation_or_list_of_representations: Union[str, List[str]] = None
     ) -> dict:
         """Returns the representations (e.g. URLs of relevant documentation)."""
 
@@ -235,11 +235,11 @@ class Api:
 
     @staticmethod
     def export_to_csv(
-            dataframe: pd.DataFrame,
-            rule_name: str,
-            string_return: bool = False,
-            relationship: str = None,
-            second_df: pd.DataFrame = None,
+        dataframe: pd.DataFrame,
+        rule_name: str,
+        string_return: bool = False,
+        relationship: str = None,
+        second_df: pd.DataFrame = None,
     ):
         """
         Exports csv file of calculated portfolio performance based on data gained from calculating trading rules and
@@ -261,16 +261,19 @@ class Api:
 
     @staticmethod
     def export_cross_prediction(
-            list_of_dfs_of_asset_prices: list,
-            column_to_sort: str = "percent_gain",
-            number_of_results: int = False,
-            export_as_csv: bool = True
+        list_of_dfs_of_asset_prices: list,
+        column_to_sort: str = "percent_gain",
+        number_of_results: int = False,
+        export_as_csv: bool = True,
     ):
         """Function that sequentially calculates the performance of trading strategy using pairwise combinations and
         saves them as CSV files or returns rankings"""
         from infertrade.utilities.export import evaluate_cross_prediction
+
         # infertrade.utilities.export experiencing circular dependency issues
-        return (evaluate_cross_prediction(list_of_dfs_of_asset_prices,
-                                  number_of_results=number_of_results,
-                                  column_to_sort=column_to_sort,
-                                  export_as_csv=export_as_csv))
+        return evaluate_cross_prediction(
+            list_of_dfs_of_asset_prices,
+            number_of_results=number_of_results,
+            column_to_sort=column_to_sort,
+            export_as_csv=export_as_csv,
+        )

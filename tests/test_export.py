@@ -58,6 +58,7 @@ def test_export_performance_df():
 
 
 def test_evaluate_cross_prediction():
+    """Test confirms if returned value is a dict and compares ranked values to assure descending order"""
     test_df_two = simulated_market_data_4_years_gen()
     test_df_one = simulated_market_data_4_years_gen()
     test_df = simulated_market_data_4_years_gen()

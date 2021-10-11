@@ -181,9 +181,12 @@ def sort_dict_desc(dict_of_dfs: dict, column_name: str) -> dict:
     return sorted_dict_of_dfs
 
 
-
-
-def evaluate_cross_prediction(list_of_dfs_of_asset_prices: list,column_to_sort: str = "percent_gain", number_of_results: int = 0, export_as_csv: bool = True) -> list:
+def evaluate_cross_prediction(
+    list_of_dfs_of_asset_prices: list,
+    column_to_sort: str = "percent_gain",
+    number_of_results: int = 0,
+    export_as_csv: bool = True,
+) -> list:
     """A function to evaluate any predictive relationships between the supplied asset time series, with rankings exported to CSV.
     Supplied time series are evaluated and sorted in descending order with return percentage being the compared value"""
 
@@ -199,22 +202,22 @@ def evaluate_cross_prediction(list_of_dfs_of_asset_prices: list,column_to_sort: 
         raise ValueError("At least 2 time series needed to evaluate predictive relationships")
     else:
         for relationship in relationship_names:
-            for first_asset_df_index in range(0,len(list_of_dfs_of_asset_prices)):
-                for second_asset_df_index in range(0,len(list_of_dfs_of_asset_prices)):
+            for first_asset_df_index in range(0, len(list_of_dfs_of_asset_prices)):
+                for second_asset_df_index in range(0, len(list_of_dfs_of_asset_prices)):
                     if first_asset_df_index == second_asset_df_index:
                         continue
-                    name = str(first_asset_df_index)+"_"+str(second_asset_df_index)+"_"+str(relationship)
+                    name = str(first_asset_df_index) + "_" + str(second_asset_df_index) + "_" + str(relationship)
                     dict_of_relationship_performance[str(name)] = export_performance_df(
-                                        dataframe=list_of_dfs_of_asset_prices[first_asset_df_index],
-                                        second_df=list_of_dfs_of_asset_prices[second_asset_df_index],
-                                        relationship=relationship)
+                        dataframe=list_of_dfs_of_asset_prices[first_asset_df_index],
+                        second_df=list_of_dfs_of_asset_prices[second_asset_df_index],
+                        relationship=relationship,
+                    )
 
-    sorted_dict_return_only = sort_dict_desc(dict_of_relationship_performance,column_to_sort)
+    sorted_dict_return_only = sort_dict_desc(dict_of_relationship_performance, column_to_sort)
     sorted_dict = dict()
 
     for _ in sorted_dict_return_only.keys():
         sorted_dict[_] = dict_of_relationship_performance[_]
-
 
     # number_of_results is used to only export top X number of evaluations, it will export all combinations if set to 0
     if number_of_results is not 0:
@@ -228,9 +231,6 @@ def evaluate_cross_prediction(list_of_dfs_of_asset_prices: list,column_to_sort: 
         for _ in sorted_dict.keys():
             if list_of_keys.index(_) == number_of_exports:
                 break
-            sorted_dict[_].to_csv(str(_) + "_performance_" + "#" + str(list_of_keys.index(_)+1) + ".csv")
+            sorted_dict[_].to_csv(str(_) + "_performance_" + "#" + str(list_of_keys.index(_) + 1) + ".csv")
     else:
         return sorted_dict_return_only
-
-
-

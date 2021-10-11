@@ -342,6 +342,7 @@ def test_export_to_csv():
 
 
 def test_export_cross_prediction():
+    """Test ensures that returned item is dictionary in the case of export_to_csv being false"""
     test_df_two = simulated_market_data_4_years_gen()
     test_df_one = simulated_market_data_4_years_gen()
     test_df = simulated_market_data_4_years_gen()
@@ -349,7 +350,7 @@ def test_export_cross_prediction():
     sorted_dict = Api.export_cross_prediction([test_df,test_df_one,test_df_two],
                                             number_of_results=3,
                                             column_to_sort="percent_gain",
-                                            export_as_csv=True)
+                                            export_as_csv=False)
 
-    #
+    assert isinstance(sorted_dict, dict)
 

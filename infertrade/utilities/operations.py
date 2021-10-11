@@ -304,7 +304,7 @@ class PricePredictionFromPositions(TransformerMixin, BaseEstimator):
     """
     This class converts positions into implicit price predictions based on the Kelly Criterion and an assumed
      volatility.
-     """
+    """
 
     def __init__(self):
         """Construction method for class PricePredictionFromPositions.
@@ -442,7 +442,7 @@ def restrict_allocation(allocation_function: callable) -> callable:
         """
         An allocation function that also incorporates portfolio restrictions, such as maximum allocation size and
          stop loss limits.
-         """
+        """
 
         # Get allocation dataframe from allocation function
         dataframe = allocation_function(*args, **kwargs)
@@ -472,8 +472,9 @@ def restrict_allocation(allocation_function: callable) -> callable:
     return restricted_function
 
 
-def add_two_possibly_zero_length_arrays(regression_period_signal_error_end: np.array,
-                                        regression_period_signal_error_start: np.array) -> np.array:
+def add_two_possibly_zero_length_arrays(
+    regression_period_signal_error_end: np.array, regression_period_signal_error_start: np.array
+) -> np.array:
     """Adds two arrays which may be zero length."""
     some_start_data = len(regression_period_signal_error_start) > 0
     some_end_data = len(regression_period_signal_error_end) > 0
