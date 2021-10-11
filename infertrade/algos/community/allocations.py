@@ -51,9 +51,9 @@ def chande_kroll_crossover_strategy(
 ) -> pd.DataFrame:
     """
     This simple all-or-nothing rule:
-    (1) allocates 100% of the portofolio to a long position on the asset when the price of the asset is above both the
+    (1) allocates 100% of the portfolio to a long position on the asset when the price of the asset is above both the
     Chande Kroll stop long line and Chande Kroll stop short line, and
-    (2) according to the value set for the allow_short_selling parameter, either allocates 0% of the portofiolio to
+    (2) according to the value set for the allow_short_selling parameter, either allocates 0% of the portfiolio to
     the asset or allocates 100% of the portfolio to a short position on the asset when the price of the asset is below
     both the Chande Kroll stop long line and the Chande Kroll stop short line.
     """
