@@ -76,7 +76,6 @@ venv:  ## create virtualenv environment on local directory.
 .PHONY: dev
 dev: clean ## install the package in development mode including all dependencies
 	python3 -m pip install .[dev]
-	#python3 -m pip install .[dev]
 
 .PHONY: dev-venv
 dev-venv: venv ## install the package in development mode including all dependencies inside a virtualenv (container).
