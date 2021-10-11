@@ -170,3 +170,32 @@ after trading using weighted moving averages and calculating the change relation
 ```
 
 ![image](https://user-images.githubusercontent.com/74156271/131223361-6a3ba607-57ea-4826-b03f-5bb337f7f497.png)
+
+
+### Calculate multiple combinations of relationships between supplied data and export to CSV
+
+Besides the "infertrade.api.export_to_csv" method out api module contains
+"infertrade.api.export_cross_prediction"
+
+The function accepts a list of dataframes containing market data and
+sequentially calculates the performance of trading strategy using pairwise combination
+
+```python
+from infertrade.api import Api
+
+Api.export_cross_prediction(listOfDataframes)
+                                            
+""" The result of this would be CSV files of every possible combination of supplied data
+with relationship calculations of every relationship ranked using the "percent_gain" column """
+
+Api.export_cross_prediction(listOfDataframes,
+                            column_to_sort="percent_gain",
+                            export_as_csv=False)
+
+""" If export_as_csv is set to false the return will only be ranked indexes of dataframes
+along with total sum of supplied column used to sort """
+
+Api.export_cross_prediction(listOfDataframes,
+                            number_of_results=3,)
+
+""" number_of_results is used to only save/return top X ranked combinations """
