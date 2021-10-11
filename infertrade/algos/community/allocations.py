@@ -151,7 +151,7 @@ def calculate_change_relationship(
         kelly_fraction=kelly_fraction,
         out_of_sample_error=out_of_sample_error,
     )
-    
+
     return dataframe
 
 
@@ -418,7 +418,7 @@ def calculate_level_relationship(
         kelly_fraction=kelly_fraction,
         out_of_sample_error=out_of_sample_error,
     )
-    
+
     return dataframe
 
 
@@ -950,9 +950,13 @@ function_list = [
     buy_and_hold,
     chande_kroll_crossover_strategy,
     change_relationship,
+    change_relationship_OOS,
     combination_relationship,
+    combination_relationship_OOS,
     difference_relationship,
+    difference_relationship_OOS,
     level_relationship,
+    level_relationship_OOS,
     constant_allocation_size,
     high_low_difference,
     sma_crossover_strategy,
@@ -987,9 +991,13 @@ required_series_dict = {
     "buy_and_hold": [],
     "chande_kroll_crossover_strategy": ["high", "low", "price"],
     "change_relationship": ["price", "research"],
+    "change_relationship_OOS": ["price", "research"],
     "combination_relationship": ["price", "research"],
+    "combination_relationship_OOS": ["price", "research"],
     "difference_relationship": ["price", "research"],
+    "difference_relationship_OOS": ["price", "research"],
     "level_relationship": ["price", "research"],
+    "level_relationship_OOS": ["price", "research"],
     "constant_allocation_size": [],
     "high_low_difference": ["high", "low"],
     "sma_crossover_strategy": ["price"],
