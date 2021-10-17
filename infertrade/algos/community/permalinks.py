@@ -100,7 +100,9 @@ data_dictionary = {
     },
     "constant_allocation_size": {
         "function": "<function constant_allocation_size at 0x11951cb70>",
-        "parameters": {"fixed_allocation_size": 1.0},
+        "parameters": {
+            "fixed_allocation_size": 1.0
+        },
         "series": [],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -109,7 +111,10 @@ data_dictionary = {
     },
     "high_low_difference": {
         "function": "<function high_low_difference at 0x11951cd08>",
-        "parameters": {"scale": 1.0, "constant": 0.0},
+        "parameters": {
+            "scale": 1.0, 
+            "constant": 0.0
+        },
         "series": ["high", "low"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -118,7 +123,10 @@ data_dictionary = {
     },
     "sma_crossover_strategy": {
         "function": "<function sma_crossover_strategy at 0x11951cea0>",
-        "parameters": {"fast": 0, "slow": 0},
+        "parameters": {
+            "fast": 0, 
+            "slow": 0
+        },
         "series": ["price"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -141,7 +149,10 @@ data_dictionary = {
     },
     "change_regression": {
         "function": "<function change_regression at 0x119520048>",
-        "parameters": {"change_coefficient": 0.1, "change_constant": 0.1},
+        "parameters": {
+            "change_coefficient": 0.1, 
+            "change_constant": 0.1
+        },
         "series": ["research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -150,7 +161,10 @@ data_dictionary = {
     },
     "difference_regression": {
         "function": "<function difference_regression at 0x1195200d0>",
-        "parameters": {"difference_coefficient": 0.1, "difference_constant": 0.1},
+        "parameters": {
+            "difference_coefficient": 0.1, 
+            "difference_constant": 0.1
+        },
         "series": ["price", "research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -159,7 +173,10 @@ data_dictionary = {
     },
     "level_regression": {
         "function": "<function level_regression at 0x119520158>",
-        "parameters": {"level_coefficient": 0.1, "level_constant": 0.1},
+        "parameters": {
+            "level_coefficient": 0.1, 
+            "level_constant": 0.1
+        },
         "series": ["research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -168,7 +185,11 @@ data_dictionary = {
     },
     "level_and_change_regression": {
         "function": "<function level_and_change_regression at 0x1195201e0>",
-        "parameters": {"level_coefficient": 0.1, "change_coefficient": 0.1, "level_and_change_constant": 0.1},
+        "parameters": {
+            "level_coefficient": 0.1, 
+            "change_coefficient": 0.1, 
+            "level_and_change_constant": 0.1
+        },
         "series": ["research"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -191,7 +212,10 @@ data_dictionary = {
     },
     "SMA_strategy": {
         "function": "<function SMA_strategy at 0x1195202f0>",
-        "parameters": {"window": 1, "max_investment": 0.1},
+        "parameters": {
+            "window": 1, 
+            "max_investment": 0.1
+        },
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -200,7 +224,10 @@ data_dictionary = {
     },
     "WMA_strategy": {
         "function": "<function WMA_strategy at 0x119520378>",
-        "parameters": {"window": 1, "max_investment": 0.1},
+        "parameters": {
+            "window": 1, 
+            "max_investment": 0.1
+        },
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -209,7 +236,12 @@ data_dictionary = {
     },
     "MACD_strategy": {
         "function": "<function MACD_strategy at 0x119520400>",
-        "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9, "max_investment": 0.1},
+        "parameters": {
+            "window_slow": 26, 
+            "window_fast": 12, 
+            "window_signal": 9, 
+            "max_investment": 0.1
+        },
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -218,7 +250,10 @@ data_dictionary = {
     },
     "RSI_strategy": {
         "function": "<function RSI_strategy at 0x119520488>",
-        "parameters": {"window": 14, "max_investment": 0.1},
+        "parameters": {
+            "window": 14, 
+            "max_investment": 0.1
+        },
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -227,7 +262,10 @@ data_dictionary = {
     },
     "stochastic_RSI_strategy": {
         "function": "<function stochastic_RSI_strategy at 0x119520510>",
-        "parameters": {"window": 14, "max_investment": 0.1},
+        "parameters": {
+            "window": 14, 
+            "max_investment": 0.1
+        },
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -236,7 +274,10 @@ data_dictionary = {
     },
     "EMA_strategy": {
         "function": "<function EMA_strategy at 0x119520598>",
-        "parameters": {"window": 50, "max_investment": 0.1},
+        "parameters": {
+            "window": 50, 
+            "max_investment": 0.1
+        },
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -245,7 +286,11 @@ data_dictionary = {
     },
     "bollinger_band_strategy": {
         "function": "<function bollinger_band_strategy at 0x119520620>",
-        "parameters": {"window": 20, "window_dev": 2, "max_investment": 0.1},
+        "parameters": {
+            "window": 20, 
+            "window_dev": 2, 
+            "max_investment": 0.1
+        },
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -254,7 +299,12 @@ data_dictionary = {
     },
     "PPO_strategy": {
         "function": "<function PPO_strategy at 0x119520730>",
-        "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9, "max_investment": 0.1},
+        "parameters": {
+            "window_slow": 26, 
+            "window_fast": 12, 
+            "window_signal": 9, 
+            "max_investment": 0.1
+        },
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -263,7 +313,12 @@ data_dictionary = {
     },
     "PVO_strategy": {
         "function": "<function PVO_strategy at 0x1195207b8>",
-        "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9, "max_investment": 0.1},
+        "parameters": {
+            "window_slow": 26, 
+            "window_fast": 12, 
+            "window_signal": 9, 
+            "max_investment": 0.1
+        },
         "series": ["volume"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -272,7 +327,10 @@ data_dictionary = {
     },
     "TRIX_strategy": {
         "function": "<function TRIX_strategy at 0x119520840>",
-        "parameters": {"window": 14, "max_investment": 0.1},
+        "parameters": {
+            "window": 14, 
+            "max_investment": 0.1
+        },
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -281,7 +339,12 @@ data_dictionary = {
     },
     "TSI_strategy": {
         "function": "<function TSI_strategy at 0x1195208c8>",
-        "parameters": {"window_slow": 25, "window_fast": 13, "window_signal": 13, "max_investment": 0.1},
+        "parameters": {
+            "window_slow": 25, 
+            "window_fast": 13, 
+            "window_signal": 13, 
+            "max_investment": 0.1
+        },
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -306,7 +369,12 @@ data_dictionary = {
     },
     "KAMA_strategy": {
         "function": "<function KAMA_strategy at 0x1195209d8>",
-        "parameters": {"window": 10, "pow1": 2, "pow2": 30, "max_investment": 0.1},
+        "parameters": {
+            "window": 10, 
+            "pow1": 2, 
+            "pow2": 30, 
+            "max_investment": 0.1
+        },
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -315,7 +383,10 @@ data_dictionary = {
     },
     "aroon_strategy": {
         "function": "<function aroon_strategy at 0x119520a60>",
-        "parameters": {"window": 25, "max_investment": 0.1},
+        "parameters": {
+            "window": 25, 
+            "max_investment": 0.1
+        },
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -324,7 +395,10 @@ data_dictionary = {
     },
     "ROC_strategy": {
         "function": "<function ROC_strategy at 0x119520ae8>",
-        "parameters": {"window": 12, "max_investment": 0.1},
+        "parameters": {
+            "window": 12, 
+            "max_investment": 0.1
+        },
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -333,7 +407,10 @@ data_dictionary = {
     },
     "ADX_strategy": {
         "function": "<function ADX_strategy at 0x119520b70>",
-        "parameters": {"window": 14, "max_investment": 0.1},
+        "parameters": {
+            "window": 14, 
+            "max_investment": 0.1
+        },
         "series": ["close", "high", "low"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -342,7 +419,10 @@ data_dictionary = {
     },
     "vortex_strategy": {
         "function": "<function vortex_strategy at 0x119520bf8>",
-        "parameters": {"window": 14, "max_investment": 0.1},
+        "parameters": {
+            "window": 14, 
+            "max_investment": 0.1
+        },
         "series": ["close", "high", "low"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
@@ -351,7 +431,10 @@ data_dictionary = {
     },
     "DPO_strategy": {
         "function": "<function DPO_strategy at 0x1195206a8>",
-        "parameters": {"window": 20, "max_investment": 0.1},
+        "parameters": {
+            "window": 20, 
+            "max_investment": 0.1
+        },
         "series": ["close"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/7b8b24bafd1b0a5ba46ba5481432501ea4d83234/infertrade"
