@@ -31,7 +31,7 @@ Tom Oliver
 InferStat Founder and CEO
 
 - https://github.com/ta-oliver
-- https://www.linkedin.com/in/thomas-oliver-09487b9/
+- https://www.linkedin.com/in/thomas-a-oliver/
 
 
 
