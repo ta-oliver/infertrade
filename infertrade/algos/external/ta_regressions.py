@@ -12,7 +12,7 @@
 #
 # Copyright 2021 InferStat Ltd
 # Created by: Thomas Oliver
-# Created date: 23/08/2021
+# Created date: 23rd Aug 2021
 
 # External packages
 from collections import Callable
@@ -32,13 +32,22 @@ from infertrade.utilities.operations import (
 from infertrade.algos.external.ta import ta_adaptor
 
 
-def create_allocation_function(ta_signal_name: str, ta_raw_signal_func: Callable) -> Callable:
+def create_allocation_function(
+    ta_signal_name: str, 
+    ta_raw_signal_func: Callable
+) -> Callable:
     """Creates an allocation function for a ta library signal by regression against the time step price changes."""
 
-    def allocation_function(time_series_df: pd.DataFrame, *args, **kwargs) -> pd.DataFrame:
+    def allocation_function(
+        time_series_df: pd.DataFrame, 
+        *args, 
+        **kwargs
+    ) -> pd.DataFrame:
         """Generic regression treatment of ta technical signals."""
 
-        adapted_allocation_rule_using_regression = ta_adaptor(ta_raw_signal_func, ta_signal_name, *args, **kwargs)
+        adapted_allocation_rule_using_regression = ta_adaptor(ta_raw_signal_func, 
+                                                              ta_signal_name, 
+                                                              *args, **kwargs)
 
         pipeline = make_pipeline(
             FunctionTransformer(adapted_allocation_rule_using_regression),
