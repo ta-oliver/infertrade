@@ -12,7 +12,7 @@
 #
 # Copyright 2021 InferStat Ltd
 # Created by: Thomas Oliver
-# Created date: 23/08/2021
+# Created date: 23rd Aug 2021
 
 # External packages
 from collections import Callable

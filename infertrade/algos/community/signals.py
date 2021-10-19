@@ -12,7 +12,7 @@
 #
 # Copyright 2021 InferStat Ltd
 # Created by: Joshua Mason
-# Created date: 11/03/2021
+# Created date: 11th March 2021
 
 """
 Functions used to compute signals. Signals may be used for visual inspection or as inputs to trading rules.
