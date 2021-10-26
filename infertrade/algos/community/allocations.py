@@ -46,7 +46,9 @@ def buy_and_hold(dataframe: pd.DataFrame) -> pd.DataFrame:
     return dataframe
 
 
-def chande_kroll_crossover_strategy(dataframe: pd.DataFrame,) -> pd.DataFrame:
+def chande_kroll_crossover_strategy(
+    dataframe: pd.DataFrame,
+) -> pd.DataFrame:
     """
     This simple all-or-nothing rule:
     (1) allocates 100% of the portfolio to a long position on the asset when the price of the asset is above both the
@@ -1107,7 +1109,7 @@ def make_permalinks_py_file():
     This function creates a file in the current working directory which creates a dictionary of available
     representation types and callable functions.
     """
-    file_dir = os.getcwd()
+    file_dir = os.path.dirname(os.path.abspath(__file__))
     file_name = "permalinks.py"
     file_path = file_dir + "/" + file_name
     data = create_infertrade_export_allocations()
