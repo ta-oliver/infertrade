@@ -22,6 +22,69 @@ The URL for all requests should be: https://prod.api.infertrade.com
 
 All access is subject to any conditions attached to provision of your API key, such as fair usage.
 
+### Using the InferTrade API
+
+The "api_automation" module contains the "execute_it_api_request" function,
+by supplying the function with a request name from the API_GUIDANCE.md file
+and your API key it is able to execute any call mentioned in the guidance.
+
+```
+execute_it_api_request( request_name="Get trading rule metadata", 
+                        api_key="YourApiKey")
+```
+
+Calls that contain data inside of lists ("[]") need you to provide the specified 
+data.In this example, the API request ("Get available time series simulation models")
+contains two lists and those are : "research_1" and "price"
+To supply this data we simply pass the lists inside a dictionary as 
+"additional_data"
+
+```
+additional_data{"price":[0,1,2,3,4,5,6,7,8,9],"research_1":[0,1,2,3,4,5,6,7,8,9]}
+execute_it_api_request( request_name="Get available time series simulation models", 
+                        api_key="YourApiKey",
+                        additional_data = additional_data)
+```
+
+The passed data does not have to replace data inside a list, you can replace any
+key listed in the JSON body of the request by using the same feature as before.
+
+If you wish to use your own body or header you can do that by passing them to 
+the function:
+
+```
+execute_it_api_request( request_name="Get available time series simulation models", 
+                        api_key="YourApiKey",
+                        request_body = "YourRequestBody"
+                        header = "YourHeader")
+```
+
+The default headers are set to:
+```
+        headers = {
+            'Content-Type': 'application/json',
+            'x-api-key': 'YourApiKey'
+        }
+```
+
+You can also pass a specific Content Type to the function:
+
+```
+execute_it_api_request( request_name="Get trading rule metadata", 
+                        api_key="YourApiKey"
+                        Content_Type="YourContentType")
+```
+
+The default request are executed using the "request" module but if you prefer
+using the "http.client" you can use the "selected_module" argument inside
+the function call
+
+```
+execute_it_api_request( request_name="Get trading rule metadata", 
+                        api_key="YourApiKey"
+                        selected_module="http.client")
+```
+
 # Example Requests
 ## **Statistics**
 Algorithms for calculating strategy performance metrics, such as Sharpe ratio or Granger P-values.
