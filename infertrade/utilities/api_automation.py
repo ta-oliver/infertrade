@@ -30,16 +30,16 @@ def remove_at(i, s):
 
 
 def parse_csv_file(file_name: str = None, file_location: str = None):
+    """Function reads provided CSV file (found in package folder) and returns data parsed to dict"""
     if file_name is None and file_location is None:
         raise ValueError("Please provide file name or file location")
-    """Function reads provided CSV file (found in package folder) and returns data parsed to dict"""
     if file_name is not None:
         if ".csv" not in str(file_name):
-            raise ValueError("Please provide CSV file")
+            raise ValueError("Please provide CSV file or add .csv to file name")
         file_path = str(pathlib.Path(__file__).parent.parent.parent.resolve()) + "/" + file_name
     elif file_location is not None:
         if ".csv" not in str(file_location):
-            file_location + ".csv"
+            raise ValueError("Please provide CSV file or add .csv to file location")
         file_path = file_location
     dataframe = pd.read_csv(file_path)
     dictionary = dataframe.to_dict('list')

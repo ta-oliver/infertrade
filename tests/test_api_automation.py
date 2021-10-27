@@ -26,6 +26,21 @@ def test_parse_csv_file():
     parsed_dict = infertrade.utilities.api_automation.parse_csv_file(file_location=lbma_gold_location)
     assert isinstance(parsed_dict,dict)
 
+    try:
+        infertrade.utilities.api_automation.parse_csv_file()
+    except ValueError:
+        pass
+
+    try:
+        infertrade.utilities.api_automation.parse_csv_file(file_name="name")
+    except ValueError:
+        pass
+
+    try:
+        infertrade.utilities.api_automation.parse_csv_file(file_location="name")
+    except ValueError:
+        pass
+
 
 def test_check_float():
     """Test checks if provided string represents number"""
