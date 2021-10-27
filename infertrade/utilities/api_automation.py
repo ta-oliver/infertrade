@@ -16,6 +16,7 @@
 
 import http.client
 import json
+import pandas as pd
 import requests
 import markdown
 import pathlib
@@ -26,6 +27,23 @@ import pathlib
 def remove_at(i, s):
     """Removes character from string at provided position"""
     return s[:i] + s[i + 1 :]
+
+
+def parse_csv_file(file_name: str = None, file_location: str = None):
+    if file_name is None and file_location is None:
+        raise ValueError("Please provide file name or file location")
+    """Function reads provided CSV file (found in package folder) and returns data parsed to dict"""
+    if file_name is not None:
+        if ".csv" not in str(file_name):
+            raise ValueError("Please provide CSV file")
+        file_path = str(pathlib.Path(__file__).parent.parent.parent.resolve()) + "/" + file_name
+    elif file_location is not None:
+        if ".csv" not in str(file_location):
+            file_location + ".csv"
+        file_path = file_location
+    dataframe = pd.read_csv(file_path)
+    dictionary = dataframe.to_dict('list')
+    return dictionary
 
 
 def find_request_method(html, request_name: str):
@@ -228,7 +246,8 @@ def execute_it_api_request(
     header: dict() = None,
     additional_data: list() = None,
     Content_Type: str = "application/json",
-    selected_module: str = "requests"
+    selected_module: str = "requests",
+    execute_request: bool = True
 ):
     """Combines data and execute InferTrade API request, returns response"""
 
@@ -245,6 +264,10 @@ def execute_it_api_request(
         new_body = scraped_body
 
     payload = json.dumps(new_body)
+
+    if execute_request is False:
+        return payload
+
     if header is None:
         headers = {"Content-Type": Content_Type, "x-api-key": api_key}
     else:

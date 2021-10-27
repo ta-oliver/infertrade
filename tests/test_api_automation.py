@@ -16,7 +16,16 @@
 # Created by: Nikola Rokvic
 # Created date: 18/10/2021
 
+from pathlib import Path
+import pandas as pd
 import infertrade.utilities.api_automation
+
+
+def test_parse_csv_file():
+    lbma_gold_location = Path(Path(__file__).absolute().parent.parent, "examples", "LBMA_Gold.csv")
+    parsed_dict = infertrade.utilities.api_automation.parse_csv_file(file_location=lbma_gold_location)
+    assert isinstance(parsed_dict,dict)
+
 
 def test_check_float():
     """Test checks if provided string represents number"""
@@ -99,6 +108,22 @@ def test_execute_it_api_request():
         api_key="None",
         selected_module="http.client")
     assert "Invalid API-Key provided" in response
-    additional_data = {"price": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], "research_1": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]}
-    print(additional_data.keys())
+    response = infertrade.utilities.api_automation.execute_it_api_request(
+        request_name="Get available time series simulation models",
+        api_key="None",
+        execute_request=False)
+    assert isinstance(response,str)
 
+
+def test_example():
+    data = infertrade.utilities.api_automation.parse_csv_file("LBMA_Gold.csv")
+    additional = {"trailing_stop_loss_maximum_daily_loss": 0.4,
+        "price": data["LBMA/GOLD usd (pm)"],
+        "research_1": data["LBMA/GOLD usd (pm)"]}
+    response = infertrade.utilities.api_automation.execute_it_api_request(
+                request_name="Get available time series simulation models",
+                api_key="e9732143c1aaeafc82e614c713912fe4479d7372",
+                additional_data=additional,
+                execute_request=False
+    )
+    print(response)
