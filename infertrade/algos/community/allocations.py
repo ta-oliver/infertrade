@@ -1107,7 +1107,7 @@ def make_permalinks_py_file():
     This function creates a file in the current working directory which creates a dictionary of available
     representation types and callable functions.
     """
-    file_dir = os.getcwd()
+    file_dir = os.path.dirname(os.path.abspath(__file__))
     file_name = "permalinks.py"
     file_path = file_dir + "/" + file_name
     data = create_infertrade_export_allocations()
