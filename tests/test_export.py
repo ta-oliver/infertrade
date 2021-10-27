@@ -15,9 +15,10 @@
 #
 # Created by: Nikola Rokvic
 # Created date: 17/8/2021
+import numpy as np
 
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
-from infertrade.utilities.export import export_performance_df
+from infertrade.utilities.export import export_performance_df, evaluate_cross_prediction
 from infertrade.algos import algorithm_functions
 
 """Tests designed to ensure functionality of infertrade.utilities.export.py functions"""
@@ -49,6 +50,39 @@ def test_export_performance_df():
             elif len(rule_names) > 0:
                 for i in range(1, 3):
                     df_with_portfolio_performance = export_performance_df(dataframe=test_df, rule_name=rule_names[i])
+            else:
+                raise ValueError("rule_names not loaded correctly")
             for _ in new_columns:
                 if _ not in df_with_portfolio_performance.keys():
                     raise ValueError("Missing expected column information")
+
+
+def test_evaluate_cross_prediction():
+    """Test confirms if returned value is a dict and compares ranked values to assure descending order"""
+    test_df_two = simulated_market_data_4_years_gen()
+    test_df_one = simulated_market_data_4_years_gen()
+    test_df = simulated_market_data_4_years_gen()
+    sorted_dict = evaluate_cross_prediction([test_df, test_df_one, test_df_two],
+                                            number_of_results=3,
+                                            column_to_sort="percent_gain",
+                                            export_as_csv=False)
+    
+    assert isinstance(sorted_dict,dict)
+    
+    temp = np.NaN
+    for _ in sorted_dict.keys():
+        if temp is not np.NaN:
+            if sorted_dict[_] > sorted_dict[temp]:
+                raise ValueError("Not sorted correctly")
+        temp = _
+
+    try:
+        sorted_dict = evaluate_cross_prediction([test_df], column_to_sort="percent_gain", export_as_csv=False)
+    except ValueError:
+        pass
+
+    sorted_dict = evaluate_cross_prediction([test_df, test_df_one, test_df_two],
+                                            column_to_sort="percent_gain",
+                                            export_as_csv=False)
+    assert isinstance(sorted_dict, dict)
+
