@@ -23,12 +23,14 @@ The URL for all requests should be: https://prod.api.infertrade.com
 All access is subject to any conditions attached to provision of your API key, such as fair usage.
 
 ### Using the InferTrade API
-
 The "api_automation" module contains the "execute_it_api_request" function,
 by supplying the function with a request name from the API_GUIDANCE.md file
 and your API key it is able to execute any call mentioned in the guidance.
 
-```
+
+```python
+from infertrade.utilities.api_automation import execute_it_api_request
+
 execute_it_api_request( request_name="Get trading rule metadata", 
                         api_key="YourApiKey")
 ```
@@ -39,8 +41,10 @@ contains two lists and those are : "research_1" and "price"
 To supply this data we simply pass the lists inside a dictionary as 
 "additional_data"
 
-```
-additional_data{"price":[0,1,2,3,4,5,6,7,8,9],"research_1":[0,1,2,3,4,5,6,7,8,9]}
+```python
+from infertrade.utilities.api_automation import execute_it_api_request
+
+additional_data = {"price":[0,1,2,3,4,5,6,7,8,9],"research_1":[0,1,2,3,4,5,6,7,8,9]}
 execute_it_api_request( request_name="Get available time series simulation models", 
                         api_key="YourApiKey",
                         additional_data = additional_data)
@@ -52,26 +56,30 @@ key listed in the JSON body of the request by using the same feature as before.
 If you wish to use your own body or header you can do that by passing them to 
 the function:
 
-```
+```python
+from infertrade.utilities.api_automation import execute_it_api_request
+
 execute_it_api_request( request_name="Get available time series simulation models", 
                         api_key="YourApiKey",
-                        request_body = "YourRequestBody"
+                        request_body = "YourRequestBody",
                         header = "YourHeader")
 ```
 
 The default headers are set to:
-```
-        headers = {
-            'Content-Type': 'application/json',
-            'x-api-key': 'YourApiKey'
-        }
+```python
+headers = {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YourApiKey'
+}
 ```
 
 You can also pass a specific Content Type to the function:
 
-```
+```python
+from infertrade.utilities.api_automation import execute_it_api_request
+
 execute_it_api_request( request_name="Get trading rule metadata", 
-                        api_key="YourApiKey"
+                        api_key="YourApiKey",
                         Content_Type="YourContentType")
 ```
 
@@ -79,11 +87,57 @@ The default request are executed using the "request" module but if you prefer
 using the "http.client" you can use the "selected_module" argument inside
 the function call
 
-```
+```python
+from infertrade.utilities.api_automation import execute_it_api_request
+
 execute_it_api_request( request_name="Get trading rule metadata", 
-                        api_key="YourApiKey"
+                        api_key="YourApiKey",
                         selected_module="http.client")
 ```
+
+You can also use the "parse_to_csv" function to read data from a csv file either
+located on your computer or the InferTrade package:
+
+```python
+from infertrade.utilities.api_automation import execute_it_api_request, parse_csv_file
+
+data = parse_csv_file(file_name="File_Name")
+additional = {"trailing_stop_loss_maximum_daily_loss": "value",
+            "price": data["Column_Name"],
+            "research_1": data["Column_Name"]}
+response = execute_it_api_request(
+            request_name="Get available time series simulation models",
+            api_key="YourApiKey",
+            additional_data=additional,
+            )
+print(response.txt)
+```
+
+If you are only providing the file name, the function presumes that it is located in
+"/infertrade/".
+
+The same functions can be used alongside postman to generate request bodies,
+if you set "execute_request" to false in the function parameters it will return
+the request body with additional data:
+
+```python
+from infertrade.utilities.api_automation import execute_it_api_request, parse_csv_file
+
+data = parse_csv_file(file_location="File_Location")
+additional = {"trailing_stop_loss_maximum_daily_loss": "value",
+            "price": data["Column_Name"],
+            "research_1": data["Column_Name"]}
+response = execute_it_api_request(
+            request_name="Get available time series simulation models",
+            api_key="YourApiKey",
+            additional_data=additional,
+            execute_request=False
+            )
+print(response)
+```
+
+The result of this will be the request body with "price", "research_1" and 
+"trailing_stop_loss_maximum_daily_loss" set to provided data.
 
 # Example Requests
 ## **Statistics**

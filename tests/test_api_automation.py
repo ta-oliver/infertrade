@@ -113,17 +113,3 @@ def test_execute_it_api_request():
         api_key="None",
         execute_request=False)
     assert isinstance(response,str)
-
-
-def test_example():
-    data = infertrade.utilities.api_automation.parse_csv_file("LBMA_Gold.csv")
-    additional = {"trailing_stop_loss_maximum_daily_loss": 0.4,
-        "price": data["LBMA/GOLD usd (pm)"],
-        "research_1": data["LBMA/GOLD usd (pm)"]}
-    response = infertrade.utilities.api_automation.execute_it_api_request(
-                request_name="Get available time series simulation models",
-                api_key="e9732143c1aaeafc82e614c713912fe4479d7372",
-                additional_data=additional,
-                execute_request=False
-    )
-    print(response)
