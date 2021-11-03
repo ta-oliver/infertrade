@@ -26,21 +26,24 @@ import pathlib
 
 def remove_at(i, s):
     """Removes character from string at provided position"""
-    return s[:i] + s[i + 1 :]
+    return s[:i] + s[i + 1:]
 
 
 def parse_csv_file(file_name: str = None, file_location: str = None):
     """Function reads provided CSV file (found in package folder) and returns data parsed to dict"""
     if file_name is None and file_location is None:
         raise ValueError("Please provide file name or file location")
+
     if file_name is not None:
         if ".csv" not in str(file_name):
             raise ValueError("Please provide CSV file or add .csv to file name")
         file_path = pathlib.Path(pathlib.Path(__file__).absolute().parent.parent, file_name)
+
     elif file_location is not None:
         if ".csv" not in str(file_location):
             raise ValueError("Please provide CSV file or add .csv to file location")
         file_path = file_location
+
     dataframe = pd.read_csv(file_path)
     dictionary = dataframe.to_dict('list')
     return dictionary
@@ -129,18 +132,18 @@ def find_and_replace_bracket(test_str):
                 b = test_str.find("[")
                 open_positions[b] = _
                 ordered_keys.append(b)
-                test_str = test_str[:b] + "]" + test_str[b + 1 :]
+                test_str = test_str[:b] + "]" + test_str[b + 1:]
 
     for i in range(0, (len(ordered_keys))):
         test_str = (
-            test_str[: ordered_keys[(len(ordered_keys) - 1) - i]]
-            + "placeholder"
-            + test_str[(open_positions[ordered_keys[(len(ordered_keys) - 1) - i]] + 1) :]
+                test_str[: ordered_keys[(len(ordered_keys) - 1) - i]]
+                + "placeholder"
+                + test_str[(open_positions[ordered_keys[(len(ordered_keys) - 1) - i]] + 1):]
         )
     return test_str
 
 
-def string_to_dict(string, in_recursion: int = 0, fillers: dict() = None):
+def string_to_dict(string, in_recursion: int = 0, fillers: dict = None):
     """Function turns scraped request body into a dictionary"""
     dictionary = dict()
     value = None
@@ -159,15 +162,15 @@ def string_to_dict(string, in_recursion: int = 0, fillers: dict() = None):
         if _ == ":":
             if string.find(_) != 0:
                 key = string[: (string.find(_))]
-            string = string[(string.find(_) + 1) :]
+            string = string[(string.find(_) + 1):]
         elif _ == ",":
             if string.find(_) != 0:
                 value = string[: string.find(_)]
-            string = string[(string.find(_) + 1) :]
+            string = string[(string.find(_) + 1):]
         elif _ == "}":
             if string.find(_) != 0:
                 value = string[: string.find(_)]
-            string = string[(string.find(_) + 1) :]
+            string = string[(string.find(_) + 1):]
             if value is not None and key is not None:
                 list_value.append(value)
                 list_key.append(key)
@@ -184,7 +187,7 @@ def string_to_dict(string, in_recursion: int = 0, fillers: dict() = None):
                     dictionary[key] = fillers[key]
             return dictionary, string, i
         elif _ == "{":
-            string = string[(string.find(_) + 1) :]
+            string = string[(string.find(_) + 1):]
             in_recursion += 1
             value, string, position = string_to_dict(string, in_recursion=in_recursion, fillers=fillers)
             in_recursion -= 1
@@ -227,7 +230,32 @@ def string_to_dict(string, in_recursion: int = 0, fillers: dict() = None):
     return dictionary, string, i
 
 
-def convert_string(string: str, fillers: dict() = None):
+def retrieve_optimisation_results(selected_module: str,
+                                  data_id: dict,
+                                  api_key: str,
+                                  execute_request: bool = True):
+    """Function retrieves results of "Start a rule optimization" endpoint"""
+
+    if selected_module == "http.client":
+        response = execute_it_api_request(request_name="Retrieve optimization results",
+                                          api_key=api_key,
+                                          additional_data=data_id,
+                                          selected_module="http.client",
+                                          execute_request=execute_request)
+
+    elif selected_module == "requests":
+        response = execute_it_api_request(request_name="Retrieve optimization results",
+                                          api_key=api_key,
+                                          additional_data=data_id,
+                                          selected_module="requests",
+                                          execute_request=execute_request)
+    else:
+        raise ValueError("Not supported request module")
+
+    return response
+
+
+def convert_string(string: str, fillers: dict = None):
     """Makes retrieved string compatible with "string_to_dict" method and passes converted string to "string_to_dict" """
     body = remove_at(0, string)
     new_body = "".join(body.splitlines())
@@ -240,14 +268,16 @@ def convert_string(string: str, fillers: dict() = None):
 
 
 def execute_it_api_request(
-    request_name: str,
-    api_key: str,
-    request_body: dict() = None,
-    header: dict() = None,
-    additional_data: list() = None,
-    Content_Type: str = "application/json",
-    selected_module: str = "requests",
-    execute_request: bool = True
+        request_name: str,
+        api_key: str,
+        request_body: dict = None,
+        header: dict = None,
+        additional_data: dict = None,
+        Content_Type: str = "application/json",
+        selected_module: str = "requests",
+        execute_request: bool = True,
+        retrieve_results: bool = True,
+        test_parameter: bool = False
 ):
     """Combines data and execute InferTrade API request, returns response"""
 
@@ -282,5 +312,18 @@ def execute_it_api_request(
     elif selected_module == "requests":
         url = "https://prod.api.infertrade.com/"
         response = requests.request(method, url, headers=headers, data=payload)
+        response = response.text
+    else:
+        raise ValueError("Not supported request module")
+
+    if request_name == "Start a rule optimization" and retrieve_results is True:
+        dict_response = convert_string(response)
+        if test_parameter is not True:
+            data_id = {"data-id": dict_response["data_id"]}
+        else:
+            data_id = {"data-id": "false_data_id"}
+        response = retrieve_optimisation_results(selected_module=selected_module,
+                                                 data_id=data_id,
+                                                 api_key=api_key)
 
     return response
