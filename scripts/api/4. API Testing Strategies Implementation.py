@@ -9,7 +9,7 @@ import math
 import requests
 import json
 import os
-InsertYourApiKeyHere = os.environ.get('API_KEY')
+InferTradeApiKey = os.environ.get('API_KEY')
 
 
 
@@ -24,7 +24,7 @@ payload = json.dumps({
 })
 headers = {
   'Content-Type': 'application/json',
-  'x-api-key': InsertYourApiKeyHere
+  'x-api-key': InferTradeApiKey
 }
 response = requests.request("POST", url, headers=headers, data=payload)
 res = response.json()

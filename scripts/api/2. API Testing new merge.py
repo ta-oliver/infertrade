@@ -2,7 +2,7 @@ from infertrade.utilities.api_automation import execute_it_api_request
 import os
 
 
-InsertYourApiKeyHere = os.environ.get('API_KEY')
+InferTradeApiKey = os.environ.get('API_KEY')
 
 response = execute_it_api_request(request_name="Get trading rule metadata",
                         api_key="myapi")
@@ -31,7 +31,7 @@ print(response.text)
 from infertrade.utilities.api_automation import execute_it_api_request
 additional_data = {"price":[0,1,2,3,4,5,6,7,8,9],"research_1":[0,1,2,3,4,5,6,7,8,9]}
 execute_it_api_request( request_name="Get available time series simulation models",
-                        api_key = InsertYourApiKeyHere,
+                        api_key = InferTradeApiKey,
                         additional_data = additional_data)
 
 

@@ -1,6 +1,6 @@
 
 import os
-InsertYourApiKeyHere = os.environ.get('API_KEY')
+InferTradeApiKey = os.environ.get('API_KEY')
 
 import requests
 
@@ -9,7 +9,7 @@ auth_url = "%s/auth" % api_root_url
 login_url = "%s/referral/login" % api_root_url
 
 key_id = 'add dev key here'
-secret = InsertYourApiKeyHere
+secret = InferTradeApiKey
 referral_code = "add dev referral code here"
 
 auth_payload = {

@@ -1,7 +1,7 @@
 
 
 import os
-InsertYourApiKeyHere = os.environ.get('API_KEY')
+InferTradeApiKey = os.environ.get('API_KEY')
 
 
 '--------------------- POST Get available statistics ---------------------------'
@@ -26,7 +26,7 @@ payload = json.dumps({
 })
 headers = {
   'Content-Type': 'application/json',
-  'x-api-key': InsertYourApiKeyHere
+  'x-api-key': InferTradeApiKey
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
@@ -57,7 +57,7 @@ payload = json.dumps({
 })
 headers = {
   'Content-Type': 'application/json',
-  'x-api-key': InsertYourApiKeyHere
+  'x-api-key': InferTradeApiKey
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
@@ -236,7 +236,7 @@ payload = json.dumps({
 })
 headers = {
   'Content-Type': 'application/json',
-  'x-api-key': InsertYourApiKeyHere
+  'x-api-key': InferTradeApiKey
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
@@ -260,7 +260,7 @@ payload = json.dumps({
 })
 headers = {
   'Content-Type': 'application/json',
-  'x-api-key': InsertYourApiKeyHere
+  'x-api-key': InferTradeApiKey
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
@@ -285,7 +285,7 @@ payload = json.dumps({
 })
 headers = {
   'Content-Type': 'application/json',
-  'x-api-key': InsertYourApiKeyHere
+  'x-api-key': InferTradeApiKey
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
@@ -315,7 +315,7 @@ payload = json.dumps({
 })
 headers = {
   'Content-Type': 'application/json',
-  'x-api-key': InsertYourApiKeyHere
+  'x-api-key': InferTradeApiKey
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
@@ -372,7 +372,7 @@ payload = json.dumps({
 })
 headers = {
   'Content-Type': 'application/json',
-  'x-api-key': InsertYourApiKeyHere
+  'x-api-key': InferTradeApiKey
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
@@ -412,7 +412,7 @@ payload = json.dumps({
 })
 headers = {
   'Content-Type': 'application/json',
-  'x-api-key': InsertYourApiKeyHere
+  'x-api-key': InferTradeApiKey
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
@@ -1906,7 +1906,7 @@ payload = json.dumps({
   }
 })
 headers = {
-  'x-api-key': InsertYourApiKeyHere,
+  'x-api-key': InferTradeApiKey,
   'Content-Type': 'application/json'
 }
 
@@ -1930,7 +1930,7 @@ payload = json.dumps({
 })
 headers = {
   'Content-Type': 'application/json',
-  'x-api-key': InsertYourApiKeyHere
+  'x-api-key': InferTradeApiKey
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
