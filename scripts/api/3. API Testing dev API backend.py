@@ -1,6 +1,6 @@
 
 import os
-InferTradeApiKey = os.environ.get('API_KEY')
+InsertYourApiKey = os.environ.get('INFERTRADE_API_KEY')
 
 import requests
 

@@ -2,7 +2,7 @@ from infertrade.utilities.api_automation import execute_it_api_request
 import os
 
 
-InferTradeApiKey = os.environ.get('API_KEY')
+InsertYourApiKey = os.environ.get('INFERTRADE_API_KEY')
 
 response = execute_it_api_request(request_name="Get trading rule metadata",
                         api_key="myapi")
