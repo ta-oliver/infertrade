@@ -36,7 +36,7 @@ def parse_csv_file(file_name: str = None, file_location: str = None):
     if file_name is not None:
         if ".csv" not in str(file_name):
             raise ValueError("Please provide CSV file or add .csv to file name")
-        file_path = str(pathlib.Path(__file__).parent.parent.parent.resolve()) + "/" + file_name
+        file_path = pathlib.Path(pathlib.Path(__file__).absolute().parent.parent, file_name)
     elif file_location is not None:
         if ".csv" not in str(file_location):
             raise ValueError("Please provide CSV file or add .csv to file location")
@@ -64,7 +64,7 @@ def find_request_method(html, request_name: str):
 
 def scrape_request_body(request_name: str):
     """Converts API_GUIDANCE.md file into HTML"""
-    md_location = str(pathlib.Path(__file__).parent.parent.parent.resolve()) + "/API_GUIDANCE.md"
+    md_location = pathlib.Path(pathlib.Path(__file__).absolute().parent.parent.parent, "API_GUIDANCE.md")
     with open(md_location, "r") as f:
         text = f.read()
         html = markdown.markdown(text)

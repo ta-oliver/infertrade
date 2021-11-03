@@ -1,185 +1,10 @@
-<p align="center"><img src="https://www.infertrade.com/static/media/InferTradeLogo.5c2cc437.svg" alt="InferTrade"/>
-</p>
-
-# InferTrade API Guidance
 
 
-InferTrade.com is a free webtool for evaluating signals (features in ML/AI) to determine their ability to predict financial markets.
-
-This is the guidance for the main API functionality used to support InferTrade.com.
-
-For the underlying Python code used to calculate the trading strategies used on InferTrade.com, please see our open source (Apache 2.0) infertrade package.
-
-## Authentication
-
-An API key is needed to access the InferTrade API. Please contact support@infertrade.com for access.
-
-Once you have an API key, you will need to add it to the header of your requests as the keyword argument 'x-api-key'.
-
-The URL for all requests should be: https://prod.api.infertrade.com
-
-## Rate limit
-
-All access is subject to any conditions attached to provision of your API key, such as fair usage.
-
-### Using the InferTrade API
-The "api_automation" module contains the "execute_it_api_request" function.
-By supplying the function with a request name from the API_GUIDANCE.md file
-and your API key, it can execute any call mentioned in the guidance.
+import os
+InsertYourApiKeyHere = os.environ.get('API_KEY')
 
 
-```python
-from infertrade.utilities.api_automation import execute_it_api_request
-
-execute_it_api_request( request_name="Get trading rule metadata", 
-                        api_key="YourApiKey")
-```
-
-Calls that contain data inside of lists ("[]") need you to provide the specified 
-data. In this example, the API request ("Get available time series simulation models")
-contains two lists, and those are: "research_1" and "price"
-To supply this data, we simply pass the lists inside a dictionary as 
-"additional_data".
-
-```python
-from infertrade.utilities.api_automation import execute_it_api_request
-
-additional_data = {"price":[0,1,2,3,4,5,6,7,8,9],"research_1":[0,1,2,3,4,5,6,7,8,9]}
-execute_it_api_request( request_name="Get available time series simulation models", 
-                        api_key="YourApiKey",
-                        additional_data = additional_data)
-```
-
-The passed data does not have to replace data inside a list, you can replace any
-key listed in the JSON body of the request by using the same feature as before.
-
-If you wish to use your own body or header you can do that by passing them to 
-the function:
-
-```python
-from infertrade.utilities.api_automation import execute_it_api_request
-
-execute_it_api_request( request_name="Get available time series simulation models", 
-                        api_key="YourApiKey",
-                        request_body = "YourRequestBody",
-                        header = "YourHeader")
-```
-
-The default headers are set to:
-```python
-headers = {
-    'Content-Type': 'application/json',
-    'x-api-key': 'YourApiKey'
-}
-```
-
-You can also pass a specific Content Type to the function:
-
-```python
-from infertrade.utilities.api_automation import execute_it_api_request
-
-execute_it_api_request( request_name="Get trading rule metadata", 
-                        api_key="YourApiKey",
-                        Content_Type="YourContentType")
-```
-
-The default request are executed using the "request" module but if you prefer
-using the "http.client" you can use the "selected_module" argument inside
-the function call:
-
-```python
-from infertrade.utilities.api_automation import execute_it_api_request
-
-execute_it_api_request( request_name="Get trading rule metadata", 
-                        api_key="YourApiKey",
-                        selected_module="http.client")
-```
-
-You can also use the "parse_to_csv" function to read data from a csv file either
-located on your computer or the InferTrade package:
-
-```python
-from infertrade.utilities.api_automation import execute_it_api_request, parse_csv_file
-
-data = parse_csv_file(file_name="File_Name")
-additional = {"trailing_stop_loss_maximum_daily_loss": "value",
-            "price": data["Column_Name"],
-            "research_1": data["Column_Name"]}
-response = execute_it_api_request(
-            request_name="Get available time series simulation models",
-            api_key="YourApiKey",
-            additional_data=additional,
-            )
-print(response.txt)
-```
-
-If you are only providing the file name, the function presumes that it is located in
-"/infertrade/".
-
-The same functions can be used alongside postman to generate request bodies,
-if you set "execute_request" to false in the function parameters it will return
-the request body with additional data:
-
-```python
-from infertrade.utilities.api_automation import execute_it_api_request, parse_csv_file
-
-data = parse_csv_file(file_location="File_Location")
-additional = {"trailing_stop_loss_maximum_daily_loss": "value",
-            "price": data["Column_Name"],
-            "research_1": data["Column_Name"]}
-response = execute_it_api_request(
-            request_name="Get available time series simulation models",
-            api_key="YourApiKey",
-            additional_data=additional,
-            execute_request=False
-            )
-print(response)
-```
-
-The result of this will be the request body with "price", "research_1" and 
-"trailing_stop_loss_maximum_daily_loss" set to provided data.
-
-# Example Requests
-## **Statistics**
-Algorithms for calculating strategy performance metrics, such as Sharpe ratio or Granger P-values.
-
-### POST Get available statistics
-
-<details>
-<summary>Example request</summary>
-
-```
-import requests
-import json
-
-url = "https://prod.api.infertrade.com/"
-
-payload = json.dumps({
-  "service": "privateapi",
-  "endpoint": "/",
-  "session_id": "session_id",
-  "payload": {
-    "library": "reducerlib",
-    "api_method": "get_names_as_dict"
-  }
-})
-headers = {
-  'Content-Type': 'application/json',
-  'x-api-key': 'InsertYourApiKeyHere'
-}
-
-response = requests.request("POST", url, headers=headers, data=payload)
-
-print(response.text)
-```
-</details>
-
-### POST Get statistics metadata
-
-<details>
-<summary>Example request</summary>
-
-```
+'--------------------- POST Get available statistics ---------------------------'
 import requests
 import json
 
@@ -201,21 +26,46 @@ payload = json.dumps({
 })
 headers = {
   'Content-Type': 'application/json',
-  'x-api-key': 'InsertYourApiKeyHere'
+  'x-api-key': InsertYourApiKeyHere
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
-```
-</details>
 
-### POST Calculate statistics
 
-<details>
-<summary>Example request</summary>
+'--------------------- POST Get statistics metadata ---------------------------'
 
-```
+import requests
+import json
+
+url = "https://prod.api.infertrade.com/"
+
+payload = json.dumps({
+  "service": "privateapi",
+  "endpoint": "/",
+  "session_id": "session_id",
+  "payload": {
+    "library": "reducerlib",
+    "api_method": "statistics_details",
+    "kwargs": {
+      "list_of_names": [
+        "SharpeRatio"
+      ]
+    }
+  }
+})
+headers = {
+  'Content-Type': 'application/json',
+  'x-api-key': InsertYourApiKeyHere
+}
+
+response = requests.request("POST", url, headers=headers, data=payload)
+
+print(response.text)
+
+
+'--------------------- POST Calculate statistics ---------------------------'
 import requests
 import json
 
@@ -386,22 +236,15 @@ payload = json.dumps({
 })
 headers = {
   'Content-Type': 'application/json',
-  'x-api-key': 'InsertYourApiKeyHere'
+  'x-api-key': InsertYourApiKeyHere
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
-```
-</details>
 
-## **Trading Rules**
-### POST Get trading rule metadata
 
-<details>
-<summary>Example request</summary>
-
-```
+'--------------------- POST Get trading rule metadata ---------------------------'
 import requests
 import json
 
@@ -417,21 +260,15 @@ payload = json.dumps({
 })
 headers = {
   'Content-Type': 'application/json',
-  'x-api-key': 'InsertYourApiKeyHere'
+  'x-api-key': InsertYourApiKeyHere
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
-```
-</details>
 
-### POST Get available rule representations
 
-<details>
-<summary>Example request</summary>
-
-```
+'--------------------- POST Get available rule representations ---------------------------'
 import requests
 import json
 
@@ -448,21 +285,15 @@ payload = json.dumps({
 })
 headers = {
   'Content-Type': 'application/json',
-  'x-api-key': 'InsertYourApiKeyHere'
+  'x-api-key': InsertYourApiKeyHere
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
-```
-</details>
 
-### POST Get rule representation (model, docs, links)
 
-<details>
-<summary>Example request</summary>
-
-```
+'--------------------- POST Get rule representation (model, docs, links) ---------------------------'
 import requests
 import json
 
@@ -484,22 +315,15 @@ payload = json.dumps({
 })
 headers = {
   'Content-Type': 'application/json',
-  'x-api-key': 'InsertYourApiKeyHere'
+  'x-api-key': InsertYourApiKeyHere
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
-```
-</details>
 
-## **Time Series Simulation**
-### POST Get available time series simulation models
 
-<details>
-<summary>Example request</summary>
-
-```
+'--------------------- POST Get available time series simulation models ---------------------------'
 import requests
 import json
 
@@ -548,21 +372,16 @@ payload = json.dumps({
 })
 headers = {
   'Content-Type': 'application/json',
-  'x-api-key': 'InsertYourApiKeyHere'
+  'x-api-key': InsertYourApiKeyHere
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
-```
-</details>
 
-### POST Simulate time series
 
-<details>
-<summary>Example request</summary>
 
-```
+'--------------------- POST Simulate time series ---------------------------'
 import requests
 import json
 
@@ -593,23 +412,17 @@ payload = json.dumps({
 })
 headers = {
   'Content-Type': 'application/json',
-  'x-api-key': 'InsertYourApiKeyHere'
+  'x-api-key': InsertYourApiKeyHere
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
-```
-</details>
-
-## **Rule Optimization**
-### POST Start a rule optimization
-
-<details>
-<summary>Example request</summary>
 
 
-```
+
+'--------------------- POST Start a rule optimization ---------------------------'
+
 import requests
 import json
 
@@ -2093,22 +1906,16 @@ payload = json.dumps({
   }
 })
 headers = {
-  'x-api-key': '',
+  'x-api-key': InsertYourApiKeyHere,
   'Content-Type': 'application/json'
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
-```
-</details>
 
-### POST Retrieve optimization results
 
-<details>
-<summary>Example request</summary>
-
-```
+'--------------------- POST Retrieve optimization results ---------------------------'
 import requests
 import json
 
@@ -2123,21 +1930,16 @@ payload = json.dumps({
 })
 headers = {
   'Content-Type': 'application/json',
-  'x-api-key': ''
+  'x-api-key': InsertYourApiKeyHere
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
-```
-</details>
 
-## **GET Check API status**
 
-<details>
-<summary>Example request</summary>
 
-```
+'--------------------- GET Check API status ---------------------------'
 import requests
 import json
 
@@ -2151,5 +1953,9 @@ headers = {
 response = requests.request("GET", url, headers=headers, data=payload)
 
 print(response.text)
-```
-</details>
+
+
+
+'---------------------  ---------------------------'
+
+
