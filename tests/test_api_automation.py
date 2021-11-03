@@ -116,38 +116,38 @@ def test_execute_it_api_request():
     """Test checks if correct exception is returned and correctly decoded"""
     response = infertrade.utilities.api_automation.execute_it_api_request(
         request_name="Get available time series simulation models",
-        api_key="None")
+        infertrade_api_key="None")
     assert "Invalid API-Key provided" in response
     response = infertrade.utilities.api_automation.execute_it_api_request(
         request_name="Get available time series simulation models",
-        api_key="None",
+        infertrade_api_key="None",
         selected_module="http.client")
     assert "Invalid API-Key provided" in response
     response = infertrade.utilities.api_automation.execute_it_api_request(
         request_name="Get available time series simulation models",
-        api_key="None",
+        infertrade_api_key="None",
         execute_request=False)
     assert isinstance(response, str)
     response = infertrade.utilities.api_automation.execute_it_api_request(
         request_name="Start a rule optimization",
-        api_key="None",
+        infertrade_api_key="None",
         test_parameter=True)
     assert "Invalid API-Key provided" in response
     response = infertrade.utilities.api_automation.execute_it_api_request(
         request_name="Start a rule optimization",
-        api_key="None",
+        infertrade_api_key="None",
         execute_request=False,
         test_parameter=True)
     assert isinstance(response, str)
     response = infertrade.utilities.api_automation.execute_it_api_request(
         request_name="Start a rule optimization",
-        api_key="None",
+        infertrade_api_key="None",
         test_parameter=True,
         selected_module="http.client")
     assert "Invalid API-Key provided" in response
     response = infertrade.utilities.api_automation.execute_it_api_request(
         request_name="Start a rule optimization",
-        api_key="None",
+        infertrade_api_key="None",
         execute_request=False,
         test_parameter=True,
         selected_module="http.client")
@@ -155,7 +155,7 @@ def test_execute_it_api_request():
     try:
         response = infertrade.utilities.api_automation.execute_it_api_request(
             request_name="Get available time series simulation models",
-            api_key="None",
+            infertrade_api_key="None",
             selected_module="false")
     except ValueError:
         pass
@@ -165,27 +165,27 @@ def test_retrieve_optimisation_results():
     data_id = {"data-id": "false_id"}
     response = infertrade.utilities.api_automation.retrieve_optimisation_results(selected_module="requests",
                                                                                  data_id=data_id,
-                                                                                 api_key="false_api_key")
+                                                                                 infertrade_api_key="false_infertrade_api_key")
     assert "Invalid API-Key provided" in response
 
     response = infertrade.utilities.api_automation.retrieve_optimisation_results(selected_module="http.client",
                                                                                  data_id=data_id,
-                                                                                 api_key="false_api_key")
+                                                                                 infertrade_api_key="false_infertrade_api_key")
     assert "Invalid API-Key provided" in response
 
     response = infertrade.utilities.api_automation.retrieve_optimisation_results(selected_module="http.client",
                                                                                  data_id=data_id,
-                                                                                 api_key="false_api_key")
+                                                                                 infertrade_api_key="false_infertrade_api_key")
     assert isinstance(response,str)
 
     response = infertrade.utilities.api_automation.retrieve_optimisation_results(selected_module="requests",
                                                                                  data_id=data_id,
-                                                                                 api_key="false_api_key")
+                                                                                 infertrade_api_key="false_infertrade_api_key")
     assert isinstance(response, str)
 
     try:
         response = infertrade.utilities.api_automation.retrieve_optimisation_results(selected_module="none",
                                                                                      data_id=data_id,
-                                                                                     api_key="false_api_key")
+                                                                                     infertrade_api_key="false_infertrade_api_key")
     except ValueError:
         pass

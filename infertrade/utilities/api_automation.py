@@ -232,20 +232,20 @@ def string_to_dict(string, in_recursion: int = 0, fillers: dict = None):
 
 def retrieve_optimisation_results(selected_module: str,
                                   data_id: dict,
-                                  api_key: str,
+                                  infertrade_api_key: str,
                                   execute_request: bool = True):
     """Function retrieves results of "Start a rule optimization" endpoint"""
 
     if selected_module == "http.client":
         response = execute_it_api_request(request_name="Retrieve optimization results",
-                                          api_key=api_key,
+                                          infertrade_api_key=infertrade_api_key,
                                           additional_data=data_id,
                                           selected_module="http.client",
                                           execute_request=execute_request)
 
     elif selected_module == "requests":
         response = execute_it_api_request(request_name="Retrieve optimization results",
-                                          api_key=api_key,
+                                          infertrade_api_key=infertrade_api_key,
                                           additional_data=data_id,
                                           selected_module="requests",
                                           execute_request=execute_request)
@@ -269,7 +269,7 @@ def convert_string(string: str, fillers: dict = None):
 
 def execute_it_api_request(
         request_name: str,
-        api_key: str,
+        infertrade_api_key: str,
         request_body: dict = None,
         header: dict = None,
         additional_data: dict = None,
@@ -299,7 +299,7 @@ def execute_it_api_request(
         return payload
 
     if header is None:
-        headers = {"Content-Type": Content_Type, "x-api-key": api_key}
+        headers = {"Content-Type": Content_Type, "x-api-key": infertrade_api_key}
     else:
         headers = header
 
@@ -324,6 +324,6 @@ def execute_it_api_request(
             data_id = {"data-id": "false_data_id"}
         response = retrieve_optimisation_results(selected_module=selected_module,
                                                  data_id=data_id,
-                                                 api_key=api_key)
+                                                 infertrade_api_key=infertrade_api_key)
 
     return response
