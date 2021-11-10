@@ -337,6 +337,7 @@ def test_roc_strategy(df):
 @pytest.mark.parametrize("df", dataframes)
 def test_vortex_strategy(df):
     """Checks Vortex strategy calculates correctly."""
+    max_investment = 0.1
     df_with_signals = vortex_indicator(df, window=25)
     df_with_allocations = allocations.vortex_strategy(df, 25, max_investment)
 
