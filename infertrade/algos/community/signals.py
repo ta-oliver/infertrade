@@ -338,6 +338,28 @@ def scikit_signal_factory(signal_function: callable):
     return FunctionTransformer(signal_function)
 
 
+# Trend following MACD, +DI and -DI strategy
+def macd_adx_system(df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9,
+            window_adx: int =14) ->pd.DataFrame:
+    """
+    This is trend following strategy and it s a combination of
+    Moving average convergence divergence (MACD) and
+    Plus directional indicator (+DI)  and  Plus directional indicator (-DI)  from
+    average directional movement indeex (ADX).
+
+    """
+    df_macsig = df.copy()
+    # Macd line and Signal line
+    df_macsig["SlowEMA"] = ema_indicator(close=df_macsig["close"], window=window_slow, fillna=True)
+    df_macsig["FastEMA"] = ema_indicator(close=df_macsig["close"], window=window_fast, fillna=True)
+    df_macsig["MACD_Line"] = df_macsig["FastEMA"]-df_macsig["SlowEMA"]
+    df_macsig["SIGNAL_Line"] = ema_indicator(close=df_macsig["MACD_Line"], window=window_signal, fillna=True)
+    # ADX
+    df_macsig = average_directional_movement_index(df_macsig, window=window_adx)
+    df_macsig = df_macsig[["date", "close", "MACD_Line", "SIGNAL_Line", "ADX_POS", "ADX_NEG"]]
+    return (df_macsig)
+
+
 infertrade_export_signals = {
     "normalised_close": {
         "function": normalised_close,
