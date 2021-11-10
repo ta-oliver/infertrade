@@ -62,13 +62,12 @@ def test_evaluate_cross_prediction():
     test_df_two = simulated_market_data_4_years_gen()
     test_df_one = simulated_market_data_4_years_gen()
     test_df = simulated_market_data_4_years_gen()
-    sorted_dict = evaluate_cross_prediction([test_df, test_df_one, test_df_two],
-                                            number_of_results=3,
-                                            column_to_sort="percent_gain",
-                                            export_as_csv=False)
-    
-    assert isinstance(sorted_dict,dict)
-    
+    sorted_dict = evaluate_cross_prediction(
+        [test_df, test_df_one, test_df_two], number_of_results=3, column_to_sort="percent_gain", export_as_csv=False
+    )
+
+    assert isinstance(sorted_dict, dict)
+
     temp = np.NaN
     for _ in sorted_dict.keys():
         if temp is not np.NaN:
@@ -81,8 +80,7 @@ def test_evaluate_cross_prediction():
     except ValueError:
         pass
 
-    sorted_dict = evaluate_cross_prediction([test_df, test_df_one, test_df_two],
-                                            column_to_sort="percent_gain",
-                                            export_as_csv=False)
+    sorted_dict = evaluate_cross_prediction(
+        [test_df, test_df_one, test_df_two], column_to_sort="percent_gain", export_as_csv=False
+    )
     assert isinstance(sorted_dict, dict)
-
