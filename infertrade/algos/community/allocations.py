@@ -45,7 +45,7 @@ def buy_and_hold(dataframe: pd.DataFrame) -> pd.DataFrame:
     return dataframe
 
 
-def chande_kroll_crossover_strategy(dataframe: pd.DataFrame, ) -> pd.DataFrame:
+def chande_kroll_crossover_strategy(dataframe: pd.DataFrame,) -> pd.DataFrame:
     """
     This simple all-or-nothing rule:
     (1) allocates 100% of the portfolio to a long position on the asset when the price of the asset is above both the
@@ -60,10 +60,10 @@ def chande_kroll_crossover_strategy(dataframe: pd.DataFrame, ) -> pd.DataFrame:
 
     # Allocate positions according to the Chande Kroll lines
     is_price_above_lines = (dataframe["price"] > dataframe["chande_kroll_long"]) & (
-            dataframe["price"] > dataframe["chande_kroll_short"]
+        dataframe["price"] > dataframe["chande_kroll_short"]
     )
     is_price_below_lines = (dataframe["price"] < dataframe["chande_kroll_long"]) & (
-            dataframe["price"] < dataframe["chande_kroll_short"]
+        dataframe["price"] < dataframe["chande_kroll_short"]
     )
 
     dataframe.loc[is_price_above_lines, PandasEnum.ALLOCATION.value] = 1.0
@@ -121,7 +121,7 @@ def change_relationship_oos(dataframe: pd.DataFrame) -> pd.DataFrame:
 
 
 def calculate_change_relationship(
-        df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0, out_of_sample_error: bool = False
+    df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0, out_of_sample_error: bool = False
 ) -> pd.DataFrame:
     """Calculates allocations for change relationship."""
     dataframe = df.copy()
@@ -200,7 +200,7 @@ def combination_relationship_oos(dataframe: pd.DataFrame) -> pd.DataFrame:
 
 
 def calculate_combination_relationship(
-        df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0, out_of_sample_error: bool = False
+    df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0, out_of_sample_error: bool = False
 ):
     """Calculates allocations for combination relationship."""
     dataframe = df.copy()
@@ -300,7 +300,7 @@ def difference_relationship_oos(dataframe: pd.DataFrame) -> pd.DataFrame:
 
 
 def calculate_difference_relationship(
-        df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0, out_of_sample_error: bool = False
+    df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0, out_of_sample_error: bool = False
 ):
     """Calculates allocations for difference relationship."""
     dataframe = df.copy()
@@ -393,7 +393,7 @@ def level_relationship_oos(dataframe: pd.DataFrame) -> pd.DataFrame:
 
 
 def calculate_level_relationship(
-        df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0, out_of_sample_error: bool = False
+    df: pd.DataFrame, regression_period: int = 120, kelly_fraction: float = 1.0, out_of_sample_error: bool = False
 ):
     """Calculates allocations for level relationship."""
     dataframe = df.copy()
@@ -444,11 +444,11 @@ def sma_crossover_strategy(dataframe: pd.DataFrame, fast: int = 0, slow: int = 0
 
 
 def weighted_moving_averages(
-        dataframe: pd.DataFrame,
-        avg_price_coeff: float = 1.0,
-        avg_research_coeff: float = 1.0,
-        avg_price_length: int = 2,
-        avg_research_length: int = 2,
+    dataframe: pd.DataFrame,
+    avg_price_coeff: float = 1.0,
+    avg_research_coeff: float = 1.0,
+    avg_price_length: int = 2,
+    avg_research_length: int = 2,
 ) -> pd.DataFrame:
     """
     This rule uses weightings of two moving averages to determine trade positioning.
@@ -487,7 +487,7 @@ def weighted_moving_averages(
 
 
 def change_regression(
-        dataframe: pd.DataFrame, change_coefficient: float = 0.1, change_constant: float = 0.1
+    dataframe: pd.DataFrame, change_coefficient: float = 0.1, change_constant: float = 0.1
 ) -> pd.DataFrame:
     """
     This is a regression-type approach that directly calculates allocation from change in the research level.
@@ -503,7 +503,7 @@ def change_regression(
 
 
 def difference_regression(
-        dataframe: pd.DataFrame, difference_coefficient: float = 0.1, difference_constant: float = 0.1
+    dataframe: pd.DataFrame, difference_coefficient: float = 0.1, difference_constant: float = 0.1
 ) -> pd.DataFrame:
     """
     This trading rules regresses the 1-day price changes seen historical against the prior day's % change
@@ -522,7 +522,7 @@ def difference_regression(
 
 
 def level_regression(
-        dataframe: pd.DataFrame, level_coefficient: float = 0.1, level_constant: float = 0.1
+    dataframe: pd.DataFrame, level_coefficient: float = 0.1, level_constant: float = 0.1
 ) -> pd.DataFrame:
     """
     This is a regression-type approach that directly calculates allocation from research level.
@@ -539,10 +539,10 @@ def level_regression(
 
 
 def level_and_change_regression(
-        dataframe: pd.DataFrame,
-        level_coefficient: float = 0.1,
-        change_coefficient: float = 0.1,
-        level_and_change_constant: float = 0.1,
+    dataframe: pd.DataFrame,
+    level_coefficient: float = 0.1,
+    change_coefficient: float = 0.1,
+    level_and_change_constant: float = 0.1,
 ) -> pd.DataFrame:
     """
     This trading rules regresses the 1-day price changes seen historical against the prior day's % change of the
@@ -556,20 +556,20 @@ def level_and_change_regression(
 
     research = dataframe["research"]
     position = (
-            research * level_coefficient
-            + (research / research.shift(1) - 1) * change_coefficient
-            + level_and_change_constant
+        research * level_coefficient
+        + (research / research.shift(1) - 1) * change_coefficient
+        + level_and_change_constant
     )
     dataframe[PandasEnum.ALLOCATION.value] = position
     return dataframe
 
 
 def buy_golden_cross_sell_death_cross(
-        df: pd.DataFrame,
-        allocation_size: float = 0.5,
-        deallocation_size: float = 0.5,
-        short_term_moving_avg_length: int = 50,
-        long_term_moving_avg_length: int = 200,
+    df: pd.DataFrame,
+    allocation_size: float = 0.5,
+    deallocation_size: float = 0.5,
+    short_term_moving_avg_length: int = 50,
+    long_term_moving_avg_length: int = 200,
 ) -> pd.DataFrame:
     """
     This trading rule allocates specified percentage of strategy budget to asset when there is a golden cross
@@ -626,8 +626,7 @@ def WMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1)
 
 
 def MACD_strategy(
-        df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9,
-        max_investment: float = 0.1
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, max_investment: float = 0.1
 ) -> pd.DataFrame:
     """
     Moving average convergence divergence strategy which buys when MACD signal is above 0 and sells when MACD signal
@@ -694,7 +693,7 @@ def EMA_strategy(df: pd.DataFrame, window: int = 50, max_investment: float = 0.1
 
 
 def bollinger_band_strategy(
-        df: pd.DataFrame, window: int = 20, window_dev: int = 2, max_investment: float = 0.1
+    df: pd.DataFrame, window: int = 20, window_dev: int = 2, max_investment: float = 0.1
 ) -> pd.DataFrame:
     """
     This is Strategy that identify overbought or oversold market conditions.
@@ -753,8 +752,7 @@ def DPO_strategy(df: pd.DataFrame, window: int = 20, max_investment: float = 0.1
 
 
 def PPO_strategy(
-        df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9,
-        max_investment: float = 0.1
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, max_investment: float = 0.1
 ) -> pd.DataFrame:
     """
     Percentage Price Oscillator strategy which buys when signal is above zero and sells when signal is below zero
@@ -770,8 +768,7 @@ def PPO_strategy(
 
 
 def PVO_strategy(
-        df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9,
-        max_investment: float = 0.1
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, max_investment: float = 0.1
 ) -> pd.DataFrame:
     """
     Percentage volume Oscillator strategy which buys when signal is above zero and sells when signal is below zero
@@ -802,8 +799,7 @@ def TRIX_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.
 
 
 def TSI_strategy(
-        df: pd.DataFrame, window_slow: int = 25, window_fast: int = 13, window_signal: int = 13,
-        max_investment: float = 0.1
+    df: pd.DataFrame, window_slow: int = 25, window_fast: int = 13, window_signal: int = 13, max_investment: float = 0.1
 ) -> pd.DataFrame:
     """
     This is True Strength Index (TSI) strategy which buys when TSI is greater than signal and sells when TSI is below
@@ -821,13 +817,13 @@ def TSI_strategy(
 
 
 def STC_strategy(
-        df: pd.DataFrame,
-        window_slow: int = 50,
-        window_fast: int = 23,
-        cycle: int = 10,
-        smooth1: int = 3,
-        smooth2: int = 3,
-        max_investment: float = 0.1,
+    df: pd.DataFrame,
+    window_slow: int = 50,
+    window_fast: int = 23,
+    cycle: int = 10,
+    smooth1: int = 3,
+    smooth2: int = 3,
+    max_investment: float = 0.1,
 ) -> pd.DataFrame:
     """
     This is Schaff Trend Cycle (STC) strategy which indicate
@@ -848,7 +844,7 @@ def STC_strategy(
 
 
 def KAMA_strategy(
-        df: pd.DataFrame, window: int = 10, pow1: int = 2, pow2: int = 30, max_investment: float = 0.1
+    df: pd.DataFrame, window: int = 10, pow1: int = 2, pow2: int = 30, max_investment: float = 0.1
 ) -> pd.DataFrame:
     """
     Kaufman's Adaptive Moving Average (KAMA) strategy indicates
@@ -949,9 +945,14 @@ def vortex_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 
     return df
 
 
-def MACDADX_strategy(df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9,
-                     window_adx: int = 14,
-                     max_investment: float = 0.1):
+def MACDADX_strategy(
+    df: pd.DataFrame,
+    window_slow: int = 26,
+    window_fast: int = 12,
+    window_signal: int = 9,
+    window_adx: int = 14,
+    max_investment: float = 0.1,
+):
     """
     This strategy is combination of MACD, +DI and -DI from ADX.
 
@@ -961,11 +962,13 @@ def MACDADX_strategy(df: pd.DataFrame, window_slow: int = 26, window_fast: int =
     """
     df_with_signals = signals.macd_adx_system(df, window_slow, window_fast, window_signal, window_adx)
     up = df_with_signals[
-        ((df_with_signals["MACD_Line"] > 0) & (df_with_signals["MACD_Line"] > df_with_signals["SIGNAL_Line"])) & (
-                df_with_signals["ADX_POS"] > df_with_signals["ADX_NEG"])]
+        ((df_with_signals["MACD_Line"] > 0) & (df_with_signals["MACD_Line"] > df_with_signals["SIGNAL_Line"]))
+        & (df_with_signals["ADX_POS"] > df_with_signals["ADX_NEG"])
+    ]
     dwn = df_with_signals[
-        ((df_with_signals["MACD_Line"] < 0) & (df_with_signals["MACD_Line"] < df_with_signals["SIGNAL_Line"])) & (
-                df_with_signals["ADX_POS"] < df_with_signals["ADX_NEG"])]
+        ((df_with_signals["MACD_Line"] < 0) & (df_with_signals["MACD_Line"] < df_with_signals["SIGNAL_Line"]))
+        & (df_with_signals["ADX_POS"] < df_with_signals["ADX_NEG"])
+    ]
 
     # We now calculate the fraction of portfolio to invest.
     df_with_signals["allocation"] = 0.0
@@ -1094,9 +1097,9 @@ def get_latest_infertrade_commit() -> str:
 def get_latest_infertrade_allocation_file_url() -> str:
     """Gets the latest URL stub for the allocation file."""
     github_permalink = (
-            "https://github.com/ta-oliver/infertrade/blob/"
-            + get_latest_infertrade_commit()
-            + "/infertrade/algos/community/allocations.py"
+        "https://github.com/ta-oliver/infertrade/blob/"
+        + get_latest_infertrade_commit()
+        + "/infertrade/algos/community/allocations.py"
     )
     return github_permalink
 

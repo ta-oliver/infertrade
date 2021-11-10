@@ -24,7 +24,7 @@ import infertrade.utilities.api_automation
 def test_parse_csv_file():
     lbma_gold_location = Path(Path(__file__).absolute().parent.parent, "examples", "LBMA_Gold.csv")
     parsed_dict = infertrade.utilities.api_automation.parse_csv_file(file_location=lbma_gold_location)
-    assert isinstance(parsed_dict,dict)
+    assert isinstance(parsed_dict, dict)
 
     try:
         infertrade.utilities.api_automation.parse_csv_file()
@@ -72,27 +72,19 @@ def test_scrape_request_body():
 
 def test_find_and_replace_bracket():
     """Test checks if all lists have been removed"""
-    body = {"service": "privateapi",
-            "endpoint": "/",
-            "session_id": "session_id",
-            "payload": {
-                "library": "generatorlib",
-                "api_method": "algo_calculate",
-                "kwargs": {
-                    "algorithms": [
-                        {
-                            "name": "StochasticVolatilityWithJumps"
-                        }
-                    ],
-                    "inputs": [
-                        {
-                            "random_seed": 12,
-                            "number_of_price_series": 1,
-                            "number_of_research_series": 1
-                        }
-                    ]
-                }
-            }}
+    body = {
+        "service": "privateapi",
+        "endpoint": "/",
+        "session_id": "session_id",
+        "payload": {
+            "library": "generatorlib",
+            "api_method": "algo_calculate",
+            "kwargs": {
+                "algorithms": [{"name": "StochasticVolatilityWithJumps"}],
+                "inputs": [{"random_seed": 12, "number_of_price_series": 1, "number_of_research_series": 1}],
+            },
+        },
+    }
     body = infertrade.utilities.api_automation.find_and_replace_bracket(body)
     assert "[" not in body
     assert "]" not in body
@@ -101,12 +93,14 @@ def test_find_and_replace_bracket():
 def test_convert_string():
     """Test ensures that returned value is a dictionary and that supplied values have been used"""
     body, method = infertrade.utilities.api_automation.scrape_request_body(
-                                        request_name="Get available time series simulation models")
+        request_name="Get available time series simulation models"
+    )
     dictionary = infertrade.utilities.api_automation.convert_string(body)
     assert isinstance(dictionary, dict)
     filler = {"payload": "CHANGED"}
     body, method = infertrade.utilities.api_automation.scrape_request_body(
-        request_name="Get available time series simulation models",)
+        request_name="Get available time series simulation models",
+    )
     dictionary = infertrade.utilities.api_automation.convert_string(body, fillers=filler)
     assert isinstance(dictionary, dict)
     assert dictionary["payload"] == "CHANGED"
@@ -115,16 +109,14 @@ def test_convert_string():
 def test_execute_it_api_request():
     """Test checks if correct exception is returned and correctly decoded"""
     response = infertrade.utilities.api_automation.execute_it_api_request(
-                                                            request_name="Get available time series simulation models",
-                                                            api_key="None")
+        request_name="Get available time series simulation models", api_key="None"
+    )
     assert "Invalid API-Key provided" in response.text
     response = infertrade.utilities.api_automation.execute_it_api_request(
-        request_name="Get available time series simulation models",
-        api_key="None",
-        selected_module="http.client")
+        request_name="Get available time series simulation models", api_key="None", selected_module="http.client"
+    )
     assert "Invalid API-Key provided" in response
     response = infertrade.utilities.api_automation.execute_it_api_request(
-        request_name="Get available time series simulation models",
-        api_key="None",
-        execute_request=False)
-    assert isinstance(response,str)
+        request_name="Get available time series simulation models", api_key="None", execute_request=False
+    )
+    assert isinstance(response, str)

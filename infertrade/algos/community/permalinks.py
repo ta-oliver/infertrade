@@ -20,9 +20,8 @@ data_dictionary = {
         "parameters": {},
         "series": [],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L37"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L37"
         },
     },
     "buy_and_hold": {
@@ -30,9 +29,8 @@ data_dictionary = {
         "parameters": {},
         "series": [],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L43"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L43"
         },
     },
     "chande_kroll_crossover_strategy": {
@@ -40,9 +38,8 @@ data_dictionary = {
         "parameters": {},
         "series": ["high", "low", "price"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L49"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L49"
         },
     },
     "change_relationship": {
@@ -50,9 +47,8 @@ data_dictionary = {
         "parameters": {},
         "series": ["price", "research"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L79"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L79"
         },
     },
     "change_relationship_oos": {
@@ -60,9 +56,8 @@ data_dictionary = {
         "parameters": {},
         "series": ["price", "research"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L101"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L101"
         },
     },
     "combination_relationship": {
@@ -70,9 +65,8 @@ data_dictionary = {
         "parameters": {},
         "series": ["price", "research"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L156"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L156"
         },
     },
     "combination_relationship_oos": {
@@ -80,9 +74,8 @@ data_dictionary = {
         "parameters": {},
         "series": ["price", "research"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L179"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L179"
         },
     },
     "difference_relationship": {
@@ -90,9 +83,8 @@ data_dictionary = {
         "parameters": {},
         "series": ["price", "research"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L258"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L258"
         },
     },
     "difference_relationship_oos": {
@@ -100,9 +92,8 @@ data_dictionary = {
         "parameters": {},
         "series": ["price", "research"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L279"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L279"
         },
     },
     "level_relationship": {
@@ -110,9 +101,8 @@ data_dictionary = {
         "parameters": {},
         "series": ["price", "research"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L349"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L349"
         },
     },
     "level_relationship_oos": {
@@ -120,9 +110,8 @@ data_dictionary = {
         "parameters": {},
         "series": ["price", "research"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L370"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L370"
         },
     },
     "constant_allocation_size": {
@@ -130,9 +119,8 @@ data_dictionary = {
         "parameters": {"fixed_allocation_size": 1.0},
         "series": [],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L247"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L247"
         },
     },
     "high_low_difference": {
@@ -140,9 +128,8 @@ data_dictionary = {
         "parameters": {"scale": 1.0, "constant": 0.0},
         "series": ["high", "low"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L336"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L336"
         },
     },
     "sma_crossover_strategy": {
@@ -150,9 +137,8 @@ data_dictionary = {
         "parameters": {"fast": 0, "slow": 0},
         "series": ["price"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L423"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L423"
         },
     },
     "weighted_moving_averages": {
@@ -165,9 +151,8 @@ data_dictionary = {
         },
         "series": ["price", "research"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L443"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L443"
         },
     },
     "change_regression": {
@@ -175,9 +160,8 @@ data_dictionary = {
         "parameters": {"change_coefficient": 0.1, "change_constant": 0.1},
         "series": ["research"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L486"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L486"
         },
     },
     "difference_regression": {
@@ -185,9 +169,8 @@ data_dictionary = {
         "parameters": {"difference_coefficient": 0.1, "difference_constant": 0.1},
         "series": ["price", "research"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L502"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L502"
         },
     },
     "level_regression": {
@@ -195,9 +178,8 @@ data_dictionary = {
         "parameters": {"level_coefficient": 0.1, "level_constant": 0.1},
         "series": ["research"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L520"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L520"
         },
     },
     "level_and_change_regression": {
@@ -205,9 +187,8 @@ data_dictionary = {
         "parameters": {"level_coefficient": 0.1, "change_coefficient": 0.1, "level_and_change_constant": 0.1},
         "series": ["research"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L537"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L537"
         },
     },
     "buy_golden_cross_sell_death_cross": {
@@ -220,9 +201,8 @@ data_dictionary = {
         },
         "series": ["price"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L563"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L563"
         },
     },
     "SMA_strategy": {
@@ -230,9 +210,8 @@ data_dictionary = {
         "parameters": {"window": 1, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L596"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L596"
         },
     },
     "WMA_strategy": {
@@ -240,9 +219,8 @@ data_dictionary = {
         "parameters": {"window": 1, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L610"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L610"
         },
     },
     "MACD_strategy": {
@@ -250,9 +228,8 @@ data_dictionary = {
         "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L625"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L625"
         },
     },
     "RSI_strategy": {
@@ -260,9 +237,8 @@ data_dictionary = {
         "parameters": {"window": 14, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L642"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L642"
         },
     },
     "stochastic_RSI_strategy": {
@@ -270,9 +246,8 @@ data_dictionary = {
         "parameters": {"window": 14, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L659"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L659"
         },
     },
     "EMA_strategy": {
@@ -280,9 +255,8 @@ data_dictionary = {
         "parameters": {"window": 50, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L678"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L678"
         },
     },
     "bollinger_band_strategy": {
@@ -290,9 +264,8 @@ data_dictionary = {
         "parameters": {"window": 20, "window_dev": 2, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L692"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L692"
         },
     },
     "PPO_strategy": {
@@ -300,9 +273,8 @@ data_dictionary = {
         "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L752"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L752"
         },
     },
     "PVO_strategy": {
@@ -310,9 +282,8 @@ data_dictionary = {
         "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9, "max_investment": 0.1},
         "series": ["volume"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L768"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L768"
         },
     },
     "TRIX_strategy": {
@@ -320,9 +291,8 @@ data_dictionary = {
         "parameters": {"window": 14, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L784"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L784"
         },
     },
     "TSI_strategy": {
@@ -330,9 +300,8 @@ data_dictionary = {
         "parameters": {"window_slow": 25, "window_fast": 13, "window_signal": 13, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L798"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L798"
         },
     },
     "STC_strategy": {
@@ -347,9 +316,8 @@ data_dictionary = {
         },
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L815"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L815"
         },
     },
     "KAMA_strategy": {
@@ -357,9 +325,8 @@ data_dictionary = {
         "parameters": {"window": 10, "pow1": 2, "pow2": 30, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L842"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L842"
         },
     },
     "aroon_strategy": {
@@ -367,9 +334,8 @@ data_dictionary = {
         "parameters": {"window": 25, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L861"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L861"
         },
     },
     "ROC_strategy": {
@@ -377,9 +343,8 @@ data_dictionary = {
         "parameters": {"window": 12, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L882"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L882"
         },
     },
     "ADX_strategy": {
@@ -387,9 +352,8 @@ data_dictionary = {
         "parameters": {"window": 14, "max_investment": 0.1},
         "series": ["close", "high", "low"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L897"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L897"
         },
     },
     "vortex_strategy": {
@@ -397,9 +361,8 @@ data_dictionary = {
         "parameters": {"window": 14, "max_investment": 0.1},
         "series": ["close", "high", "low"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                "/algos/community/allocations.py#L929"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L929"
         },
     },
     "DPO_strategy": {
@@ -407,20 +370,23 @@ data_dictionary = {
         "parameters": {"window": 20, "max_investment": 0.1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
-                                "/algos/community/allocations.py#L738"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/6ce16a8518983587f25dc78118465973dfd92ad0/infertrade"
+            "/algos/community/allocations.py#L738"
         },
     },
     "MACDADX_strategy": {
         "function": "Not applicable.",
-        "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9, "window_adx": 14,
-                       "max_investment": 0.1},
+        "parameters": {
+            "window_slow": 26,
+            "window_fast": 12,
+            "window_signal": 9,
+            "window_adx": 14,
+            "max_investment": 0.1,
+        },
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
-                "/algos/community/signals.py#L321"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
+            "/algos/community/signals.py#L321"
         },  # TODO - permalink needs to be updated.
     },
 }

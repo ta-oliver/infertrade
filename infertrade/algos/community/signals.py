@@ -103,7 +103,7 @@ def exponentially_weighted_moving_average(df: pd.DataFrame, window: int = 50) ->
 
 
 def moving_average_convergence_divergence(
-        df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9
 ) -> pd.DataFrame:
     """
     This function is a trend-following momentum indicator that shows the relationship between two moving averages at
@@ -137,10 +137,10 @@ def stochastic_relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd
 
 
 def chande_kroll(
-        df: pd.DataFrame,
-        average_true_range_periods: int = 10,
-        average_true_range_multiplier: float = 1.0,
-        stop_periods: int = 9,
+    df: pd.DataFrame,
+    average_true_range_periods: int = 10,
+    average_true_range_multiplier: float = 1.0,
+    stop_periods: int = 9,
 ) -> pd.DataFrame:
     """
     Calculates signals for the Chande-Kroll stop.
@@ -210,7 +210,7 @@ def detrended_price_oscillator(df: pd.DataFrame, window: int = 20) -> pd.DataFra
 
 
 def percentage_price_oscillator(
-        df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9
 ) -> pd.DataFrame:
     """
     This is a technical momentum indicator that shows the relationship between two moving averages in percentage terms.
@@ -222,7 +222,7 @@ def percentage_price_oscillator(
 
 
 def percentage_volume_oscillator(
-        df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9
 ) -> pd.DataFrame:
     """
     This is a technical momentum indicator that shows the relationship between two moving averages of volume in
@@ -245,7 +245,7 @@ def triple_exponential_average(df: pd.DataFrame, window: int = 14) -> pd.DataFra
 
 
 def true_strength_index(
-        df: pd.DataFrame, window_slow: int = 25, window_fast: int = 13, window_signal: int = 13
+    df: pd.DataFrame, window_slow: int = 25, window_fast: int = 13, window_signal: int = 13
 ) -> pd.DataFrame:
     """
     This is a technical momentum oscillator that finds trends and reversals.
@@ -259,8 +259,7 @@ def true_strength_index(
 
 
 def schaff_trend_cycle(
-        df: pd.DataFrame, window_slow: int = 50, window_fast: int = 23, cycle: int = 10, smooth1: int = 3,
-        smooth2: int = 3
+    df: pd.DataFrame, window_slow: int = 50, window_fast: int = 23, cycle: int = 10, smooth1: int = 3, smooth2: int = 3
 ) -> pd.DataFrame:
     """
     The Schaff Trend Cycle (STC) is a trend indicator that
@@ -345,8 +344,9 @@ def scikit_signal_factory(signal_function: callable):
 
 
 # Trend following MACD, +DI and -DI strategy
-def macd_adx_system(df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9,
-                    window_adx: int = 14) -> pd.DataFrame:
+def macd_adx_system(
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, window_adx: int = 14
+) -> pd.DataFrame:
     """
     This is trend following strategy and it s a combination of
     Moving average convergence divergence (MACD) and
@@ -374,9 +374,8 @@ infertrade_export_signals = {
         "parameters": {},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade"
-                "/algos/community/signals.py#L31"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade"
+            "/algos/community/signals.py#L31"
         },
     },
     "high_low_diff": {
@@ -384,9 +383,8 @@ infertrade_export_signals = {
         "parameters": {},
         "series": ["high", "low"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade"
-                "/algos/community/signals.py#L42"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade"
+            "/algos/community/signals.py#L42"
         },
     },
     "high_low_diff_scaled": {
@@ -394,9 +392,8 @@ infertrade_export_signals = {
         "parameters": {"amplitude": 1.0},
         "series": ["high", "low"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade"
-                "/algos/community/signals.py#L153"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade"
+            "/algos/community/signals.py#L153"
         },
     },
     "simple_moving_average": {
@@ -404,9 +401,8 @@ infertrade_export_signals = {
         "parameters": {"window": 1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade"
-                "/algos/community/signals.py#L158"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade"
+            "/algos/community/signals.py#L158"
         },
     },
     "weighted_moving_average": {
@@ -414,9 +410,8 @@ infertrade_export_signals = {
         "parameters": {"window": 1},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade"
-                "/algos/community/signals.py#L60"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade"
+            "/algos/community/signals.py#L60"
         },
     },
     "exponentially_weighted_moving_average": {
@@ -424,9 +419,8 @@ infertrade_export_signals = {
         "parameters": {"window": 50},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade"
-                "/algos/community/signals.py#L69"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade"
+            "/algos/community/signals.py#L69"
         },
     },
     "moving_average_convergence_divergence": {
@@ -434,9 +428,8 @@ infertrade_export_signals = {
         "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
-                "/algos/community/signals.py#L76"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
+            "/algos/community/signals.py#L76"
         },
     },
     "relative_strength_index": {
@@ -444,9 +437,8 @@ infertrade_export_signals = {
         "parameters": {"window": 14},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
-                "/algos/community/signals.py#L100"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
+            "/algos/community/signals.py#L100"
         },
     },
     "stochastic_relative_strength_index": {
@@ -454,9 +446,8 @@ infertrade_export_signals = {
         "parameters": {"window": 14},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
-                "/algos/community/signals.py#L114"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
+            "/algos/community/signals.py#L114"
         },
     },
     "chande_kroll": {
@@ -464,9 +455,8 @@ infertrade_export_signals = {
         "parameters": {"average_true_range_periods": 10, "average_true_range_multiplier": 1.0, "stop_periods": 9},
         "series": ["high", "low"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade"
-                "/algos/community/signals.py#L125"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/e49334559ac5707db0b2261bd47cd73504a68557/infertrade"
+            "/algos/community/signals.py#L125"
         },
     },
     "bollinger_band": {
@@ -474,9 +464,8 @@ infertrade_export_signals = {
         "parameters": {"window": 20, "window_dev": 2},
         "series": ["close", "high", "low"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/5f74bdeb99eb26c15df0b5417de837466cefaee1/infertrade"
-                "/algos/community/signals.py#L155"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5f74bdeb99eb26c15df0b5417de837466cefaee1/infertrade"
+            "/algos/community/signals.py#L155"
         },
     },
     "detrended_price_oscillator": {
@@ -484,9 +473,8 @@ infertrade_export_signals = {
         "parameters": {"window": 20},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/5f74bdeb99eb26c15df0b5417de837466cefaee1/infertrade"
-                "/algos/community/signals.py#L186"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5f74bdeb99eb26c15df0b5417de837466cefaee1/infertrade"
+            "/algos/community/signals.py#L186"
         },
     },
     "percentage_price_oscillator": {
@@ -494,9 +482,8 @@ infertrade_export_signals = {
         "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
-                "/algos/community/signals.py#L196"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
+            "/algos/community/signals.py#L196"
         },
     },
     "percentage_volume_oscillator": {
@@ -504,9 +491,8 @@ infertrade_export_signals = {
         "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9},
         "series": ["volume"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
-                "/algos/community/signals.py#L204"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
+            "/algos/community/signals.py#L204"
         },
     },
     "triple_exponential_average": {
@@ -514,9 +500,8 @@ infertrade_export_signals = {
         "parameters": {"window": 14},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
-                "/algos/community/signals.py#L215"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
+            "/algos/community/signals.py#L215"
         },
     },
     "true_strength_index": {
@@ -524,9 +509,8 @@ infertrade_export_signals = {
         "parameters": {"window_slow": 25, "window_fast": 13},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
-                "/algos/community/signals.py#L228"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
+            "/algos/community/signals.py#L228"
         },
     },
     "schaff_trend_cycle": {
@@ -534,9 +518,8 @@ infertrade_export_signals = {
         "parameters": {"window_slow": 50, "window_fast": 23, "cycle": 10, "smooth1": 3, "smooth2": 3},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
-                "/algos/community/signals.py#L240"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
+            "/algos/community/signals.py#L240"
         },
     },
     "KAMA": {
@@ -544,9 +527,8 @@ infertrade_export_signals = {
         "parameters": {"window": 10, "pow1": 2, "pow2": 30},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
-                "/algos/community/signals.py#L257"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
+            "/algos/community/signals.py#L257"
         },
     },
     "aroon": {
@@ -554,9 +536,8 @@ infertrade_export_signals = {
         "parameters": {"window": 25},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
-                "/algos/community/signals.py#L268"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
+            "/algos/community/signals.py#L268"
         },
     },
     "rate_of_change": {
@@ -564,9 +545,8 @@ infertrade_export_signals = {
         "parameters": {"window": 12},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
-                "/algos/community/signals.py#L285"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
+            "/algos/community/signals.py#L285"
         },
     },
     "rate_of_change": {
@@ -574,9 +554,8 @@ infertrade_export_signals = {
         "parameters": {"window": 12},
         "series": ["close", "high", "low"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
-                "/algos/community/signals.py#L297"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
+            "/algos/community/signals.py#L297"
         },
     },
     "average_directional_movement_index": {
@@ -584,9 +563,8 @@ infertrade_export_signals = {
         "parameters": {"window": 14},
         "series": ["close", "high", "low"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
-                "/algos/community/signals.py#L306"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
+            "/algos/community/signals.py#L306"
         },
     },
     "vortex_indicator": {
@@ -594,9 +572,8 @@ infertrade_export_signals = {
         "parameters": {"window": 14},
         "series": ["close", "high", "low"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
-                "/algos/community/signals.py#L321"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
+            "/algos/community/signals.py#L321"
         },
     },
     "macd_adx_system": {
@@ -604,9 +581,8 @@ infertrade_export_signals = {
         "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9, "window_adx": 14},
         "series": ["close"],
         "available_representation_types": {
-            "github_permalink":
-                "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
-                "/algos/community/signals.py#L321"
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
+            "/algos/community/signals.py#L321"
         },  # TODO - permalink needs to be updated.
     },
 }
