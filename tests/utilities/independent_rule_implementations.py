@@ -260,8 +260,9 @@ def rate_of_change(df: pd.DataFrame, window: int = 25) -> pd.DataFrame:
     return df_with_signals
 
 
-def vortex_indicator(df: pd.DataFrame, window: int = 25) -> pd.DataFrame:
+def vortex_indicator(df: pd.DataFrame, window: int = 25, fillna: bool = True) -> pd.DataFrame:
     """Independent implementation of vortex indicator for testing purposes."""
+    min_periods = 0 if fillna else window
     df_with_signals = df.copy()
     high = df_with_signals["high"]
     low = df_with_signals["low"]
@@ -271,10 +272,10 @@ def vortex_indicator(df: pd.DataFrame, window: int = 25) -> pd.DataFrame:
     tr2 = (high - close_shift).abs()
     tr3 = (low - close_shift).abs()
     true_range = pd.DataFrame([tr1, tr2, tr3]).max()
-    trn = true_range.rolling(window, min_periods=1).sum()
+    trn = true_range.rolling(window, min_periods=min_periods).sum()
     vmp = np.abs(high - low.shift(1))
     vmm = np.abs(low - high.shift(1))
-    vip = vmp.rolling(window, min_periods=1).sum() / trn
-    vin = vmm.rolling(window, min_periods=1).sum() / trn
+    vip = vmp.rolling(window, min_periods=min_periods).sum() / trn
+    vin = vmm.rolling(window, min_periods=min_periods).sum() / trn
     df_with_signals["signal"] = vip - vin
     return df_with_signals
