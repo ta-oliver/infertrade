@@ -960,6 +960,37 @@ def MACDADX_Startegy(df: pd.DataFrame, window_slow: int = 26, window_fast: int =
     return (df_with_signals)
 
 
+def Donchain_Strategy(df: pd.DataFrame, window: int = 20, max_investment: float = 0.1) -> pd.DataFrame:
+
+    ''' This strategy is trend following. It contains one parameter that is window (n)
+     and three bands such as Upper band, lower band and middle band
+     rules:
+     Bullish: close>middle band and close <= upper band
+     here upper band acts as maximum threshold.
+     Bearish: close < middle band and close <= lower band
+     here lower band shows minimum threshold.
+     '''
+    df_data = df.copy()
+    df_sig = signals.donchainstrategy(df=df_data, window=window)
+    up_sig = df_sig.loc[(df_sig["close"]>df_sig["middleband"])&(df_sig["close"]<=df_sig["upperband"])]
+    dwn_sig = df_sig.loc[(df_sig["close"]<df_sig["middleband"])&(df_sig["close"]<=df_sig["upperband"])]
+    # allocation
+    df_sig["allocation"] = 0.0
+    df_sig.loc[up_sig.index, "allocation"] = max_investment
+    df_sig.loc[dwn_sig.index, "allocation"] = -max_investment
+    df_sig = df_sig.reset_index(drop=True)
+    return (df_sig)
+
+
+def rsipricechange_regression_strategy(df:pd.DataFrame, window: int=50,
+                            max_investment: float = 0.1) ->pd.DataFrame:
+    df_sig = signals.rsipricechange_regression(df=df, window=window)
+    df_sig["allocation"] = (df_sig["beta"]*((df_sig["return_t"]/df_sig["return_t-1"])-1.0))+df_sig["intercept"]
+    df_sig = df_sig.reset_index(drop=True)
+    return (df_sig)
+
+
+
 # Below we populate a function list and a required series list. This needs to be updated when adding new rules.
 
 function_list = [
@@ -1002,6 +1033,8 @@ function_list = [
     vortex_strategy,
     DPO_strategy,
     MACDADX_Startegy,
+    Donchain_Strategy,
+    rsipricechange_regression_strategy,
 ]
 
 required_series_dict = {
@@ -1044,6 +1077,8 @@ required_series_dict = {
     "vortex_strategy": ["close", "high", "low"],
     "DPO_strategy": ["close"],
     "MACDADX_Startegy": ["close", "high", "low"],
+    "Donchain_Strategy": ["close", "high", "low"],
+    "rsipricechange_regression_strategy": ["close"],
 }
 
 
