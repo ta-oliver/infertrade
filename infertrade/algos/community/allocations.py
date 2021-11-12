@@ -954,6 +954,7 @@ def MACDADX_Startegy(df: pd.DataFrame, window_slow: int = 26, window_fast: int =
     dwn = df_with_signals[((df_with_signals["MACD_Line"]<0)&(df_with_signals["MACD_Line"]<df_with_signals["SIGNAL_Line"]))&(
         df_with_signals["ADX_POS"]<df_with_signals["ADX_NEG"])]
     # allocation
+    df_with_signals = df_with_signals.reset_index(drop=True)
     df_with_signals["allocation"] = 0.0
     df_with_signals.loc[up.index, "allocation"] = max_investment
     df_with_signals.loc[dwn.index, "allocation"] = -max_investment
@@ -975,20 +976,11 @@ def Donchain_Strategy(df: pd.DataFrame, window: int = 20, max_investment: float 
     up_sig = df_sig.loc[(df_sig["close"]>df_sig["middleband"])&(df_sig["close"]<=df_sig["upperband"])]
     dwn_sig = df_sig.loc[(df_sig["close"]<df_sig["middleband"])&(df_sig["close"]<=df_sig["upperband"])]
     # allocation
+    df_sig = df_sig.reset_index(drop=True)
     df_sig["allocation"] = 0.0
     df_sig.loc[up_sig.index, "allocation"] = max_investment
     df_sig.loc[dwn_sig.index, "allocation"] = -max_investment
-    df_sig = df_sig.reset_index(drop=True)
     return (df_sig)
-
-
-def rsipricechange_regression_strategy(df:pd.DataFrame, window: int=50,
-                            max_investment: float = 0.1) ->pd.DataFrame:
-    df_sig = signals.rsipricechange_regression(df=df, window=window)
-    df_sig["allocation"] = (df_sig["beta"]*((df_sig["return_t"]/df_sig["return_t-1"])-1.0))+df_sig["intercept"]
-    df_sig = df_sig.reset_index(drop=True)
-    return (df_sig)
-
 
 
 # Below we populate a function list and a required series list. This needs to be updated when adding new rules.
@@ -1034,7 +1026,6 @@ function_list = [
     DPO_strategy,
     MACDADX_Startegy,
     Donchain_Strategy,
-    rsipricechange_regression_strategy,
 ]
 
 required_series_dict = {
@@ -1078,7 +1069,6 @@ required_series_dict = {
     "DPO_strategy": ["close"],
     "MACDADX_Startegy": ["close", "high", "low"],
     "Donchain_Strategy": ["close", "high", "low"],
-    "rsipricechange_regression_strategy": ["close"],
 }
 
 

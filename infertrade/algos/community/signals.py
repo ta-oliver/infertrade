@@ -357,7 +357,6 @@ def macd_adx_system(df: pd.DataFrame, window_slow: int = 26, window_fast: int = 
     df_macsig["SIGNAL_Line"] = ema_indicator(close=df_macsig["MACD_Line"], window=window_signal, fillna=True)
     # ADX
     df_macsig = average_directional_movement_index(df_macsig, window=window_adx)
-    df_macsig = df_macsig[["date", "close", "MACD_Line", "SIGNAL_Line", "ADX_POS", "ADX_NEG"]]
     return (df_macsig)
 
 
@@ -371,61 +370,24 @@ def donchainstrategy(df: pd.DataFrame, window: int = 20) -> pd.DataFrame:
     If window is 20, we will check past 20 days highest and lowest value
     '''
     df_data = df.copy()
-    allhigh, alllow, allmid, alldt, allcls = [], [], [], [], []
+    allhigh, alllow, allmid, allcls = [], [], [], []
     for i in range(df_data.shape[0]-window+1):
         dfs = df_data.iloc[i:i+window, :]
-        dtime = dfs["date"].iloc[-1]
         cls = dfs["close"].iloc[-1]
         maxh = dfs["high"].max()
         minl = dfs["low"].min()
         midb = (maxh+minl)/2.0
         allhigh.append(maxh)
         alllow.append(minl)
-        alldt.append(dtime)
         allmid.append(midb)
         allcls.append(cls)
     df_data = df_data.iloc[window-1:, :]
     df_data["upperband"] = allhigh
     df_data["middleband"] = allmid
     df_data["lowerband"] = alllow
-    df_data["date"] = alldt
     df_data["close"] = allcls
-    return(df_data)
-
-# Relation based RSI - Price change strategy
-def rsipricechange_regression (df:pd.DataFrame, window: int = 50) ->pd.DataFrame:
-    ''' This strategy is based on RSI and Price pct change
-    We are using RSI and price change data to calculate the
-    allocation.
-    The coefficient (beta) and intercept  here is calculated dynamically for every data
-    point using rsi and price change.
-    We use sklearn's Linear regression to get beta and intercept values
-    Total data used for calaculation depends on look back paramter(window)'''
-    df_data = df.copy()
-    df_data = relative_strength_index(df=df_data, window=window)
-    df_data["return_t"] = df_data["close"].pct_change(periods=1)
-    df_data["return_t-1"] = df_data["return_t"].shift(1)
-    df_data = df_data.dropna()
     df_data = df_data.reset_index(drop=True)
-    betalist = []
-    intcptlst = []
-    dts = []
-    for i in range(df_data.shape[0]-window+1):
-        dfs = df_data.iloc[i:i+window, :]
-        x = np.array(dfs["signal"]).reshape(-1,1)
-        y = dfs["return_t"].values
-        reg = LinearRegression().fit(x,y)
-        beta_ = reg.coef_
-        intercept_ = reg.intercept_
-        betalist.append(beta_[0])
-        intcptlst.append(intercept_)
-        dts.append(dfs["date"].iloc[-1])
-    df_data = df_data.iloc[window-1:, :]
-    df_data["beta"] = betalist
-    df_data["intercept"] = intcptlst
-    return (df_data)
-
-
+    return(df_data)
 
 infertrade_export_signals = {
     "normalised_close": {
@@ -626,14 +588,6 @@ infertrade_export_signals = {
         "series": ["close", "high", "low"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L364"
-        },
-    },
-    "rsipricechange_regression": {
-        "function": rsipricechange_regression,
-        "parameters": {"window": 50},
-        "series": ["close"],
-        "available_representation_types": {
-            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L396"
         },
     },
 }
