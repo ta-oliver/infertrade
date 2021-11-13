@@ -389,6 +389,27 @@ def donchainstrategy(df: pd.DataFrame, window: int = 20) -> pd.DataFrame:
     df_data = df_data.reset_index(drop=True)
     return(df_data)
 
+# Catapult Indicator
+def catapultindicator(df:pd.DataFrame, window_rvi: int = 21, window_rsi: int = 14,
+                      window_sma: int =200) -> pd.DataFrame:
+    '''This strategy is a part of an article from the medium by Sofien kaabar
+    https://medium.com/the-investors-handbook/the-catapult-indicator-innovative-trading-techniques-8910ac962c57
+    '''
+    df_data = df.copy()
+
+    # relative volatility index (RVI)
+    df_data["StandardDev"] = df_data["close"].rolling(window=window_rvi).std().fillna(0)
+    df_data["RVI"] = rsi(close=df_data["StandardDev"], window=window_rvi, fillna = True)
+
+    # RSI on close
+    df_data["RSI"] = relative_strength_index(df=df_data, window=window_rsi)["signal"].fillna(0)
+
+    # sma on price
+    df_data["SMA"] = df_data["close"].rolling(window=window_sma).mean().fillna(0)
+
+    return(df_data)
+
+
 infertrade_export_signals = {
     "normalised_close": {
         "function": normalised_close,
@@ -588,6 +609,14 @@ infertrade_export_signals = {
         "series": ["close", "high", "low"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L364"
+        },
+    },
+    "catapultindicator": {
+        "function": catapultindicator,
+        "parameters": {"window_rvi": 21, "window_rsi": 14, "window_sma": 200},
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L393"
         },
     },
 }

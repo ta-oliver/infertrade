@@ -982,6 +982,26 @@ def Donchain_Strategy(df: pd.DataFrame, window: int = 20, max_investment: float 
     df_sig.loc[dwn_sig.index, "allocation"] = -max_investment
     return (df_sig)
 
+def catapult_strategy(df: pd.DataFrame, window_rvi: int = 21, window_rsi: int = 14, window_sma: int = 200,
+                      max_investment: float = 0.1) -> pd.DataFrame:
+
+    '''This strategy is a part of an article from the medium by Sofien kaabar
+        https://medium.com/the-investors-handbook/the-catapult-indicator-innovative-trading-techniques-8910ac962c57
+    '''
+
+    df_data = df.copy()
+    df_with_signals = signals.catapultindicator(df=df_data, window_rvi=window_rvi, window_rsi=window_rsi,
+                                        window_sma=window_sma)
+    up = df_with_signals.loc[(df_with_signals["RVI"]>30)&(df_with_signals["RSI"]>50)&(df_with_signals["close"]>df_with_signals["SMA"])]
+    dwn = df_with_signals.loc[(df_with_signals["RVI"] > 30) & (df_with_signals["RSI"] < 50) & (
+                df_with_signals["close"] < df_with_signals["SMA"])]
+
+    df_with_signals["allocation"] = 0.0
+    df_with_signals.loc[up.index, "allocation"] = max_investment
+    df_with_signals.loc[dwn.index, "allocation"] = -max_investment
+
+    return (df_with_signals)
+
 
 # Below we populate a function list and a required series list. This needs to be updated when adding new rules.
 
@@ -1026,6 +1046,7 @@ function_list = [
     DPO_strategy,
     MACDADX_Startegy,
     Donchain_Strategy,
+    catapult_strategy,
 ]
 
 required_series_dict = {
@@ -1069,6 +1090,7 @@ required_series_dict = {
     "DPO_strategy": ["close"],
     "MACDADX_Startegy": ["close", "high", "low"],
     "Donchain_Strategy": ["close", "high", "low"],
+    "catapult_strategy": ["close"]
 }
 
 

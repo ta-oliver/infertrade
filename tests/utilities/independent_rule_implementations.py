@@ -23,6 +23,7 @@ from sklearn.linear_model import LinearRegression
 from ta.trend import ema_indicator, adx_pos, adx_neg, adx
 from infertrade.algos.community import allocations, signals as signals
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
+from ta.momentum import rsi
 
 def simple_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     """
@@ -321,3 +322,18 @@ def donchainstrategy(df: pd.DataFrame, window: int = 20) ->pd.DataFrame:
     df_data = df_data.reset_index(drop=True)
     return(df_data)
 
+def catapultindicator(df:pd.DataFrame, window_rvi: int = 21, window_rsi: int = 14,
+                      window_sma: int =200) -> pd.DataFrame:
+    """Independent implimentation of catapult indicator system"""
+    df_data = df.copy()
+
+    # relative volatility index (RVI)
+    df_data["StandardDev"] = df_data["close"].rolling(window=window_rvi).std().fillna(0)
+    df_data["RVI"] = rsi(close=df_data["StandardDev"], window=window_rvi, fillna = True)
+
+    # RSI on close
+    df_data["RSI"] = signals.relative_strength_index(df=df_data, window=window_rsi)["signal"]
+
+    # sma on price
+    df_data["SMA"] = df_data["close"].rolling(window=window_sma).mean().fillna(0)
+    return (df_data)

@@ -50,6 +50,7 @@ from tests.utilities.independent_rule_implementations import (
     vortex_indicator,
     macd_adx_system,
     donchainstrategy,
+    catapultindicator,
 )
 
 
@@ -378,5 +379,20 @@ def test_donchainstrategy(df):
     df_with_signals["allocation"] = 0.0
     df_with_signals.loc[up_sig.index, "allocation"] = max_investment
     df_with_signals.loc[dwn_sig.index, "allocation"] = -max_investment
+    assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
+
+
+@pytest.mark.parametrize("df", dataframes)
+def test_catapultindicator(df):
+    """Checks catapult system calculates correctly."""
+    df_data = df.copy()
+    df_with_signals = catapultindicator(df=df_data, window_rvi=21, window_rsi=14, window_sma=200)
+    df_with_allocations = allocations.catapult_strategy(df=df_data, window_rvi=21, window_rsi=14, window_sma=200, max_investment=max_investment)
+    up = df_with_signals.loc[(df_with_signals["RVI"]>30)&(df_with_signals["RSI"]>50)&(df_with_signals["close"]>df_with_signals["SMA"])]
+    dwn = df_with_signals.loc[(df_with_signals["RVI"] > 30) & (df_with_signals["RSI"] < 50) & (
+                df_with_signals["close"] < df_with_signals["SMA"])]
+    df_with_signals["allocation"] = 0.0
+    df_with_signals.loc[up.index, "allocation"] = max_investment
+    df_with_signals.loc[dwn.index, "allocation"] = -max_investment
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
 
