@@ -941,7 +941,7 @@ def vortex_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 
     return df
 
 
-def MACDADX_Startegy(df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, window_adx: int =14,
+def MACDADX_Strategy(df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, window_adx: int =14,
                      max_investment: float = 0.1):
     ''' This strategy is combination of MACD, +DI and -DI from ADX
     Rules:
@@ -1024,7 +1024,7 @@ function_list = [
     ADX_strategy,
     vortex_strategy,
     DPO_strategy,
-    MACDADX_Startegy,
+    MACDADX_Strategy,
     Donchain_Strategy,
 ]
 
@@ -1067,7 +1067,7 @@ required_series_dict = {
     "ADX_strategy": ["close", "high", "low"],
     "vortex_strategy": ["close", "high", "low"],
     "DPO_strategy": ["close"],
-    "MACDADX_Startegy": ["close", "high", "low"],
+    "MACDADX_Strategy": ["close", "high", "low"],
     "Donchain_Strategy": ["close", "high", "low"],
 }
 
