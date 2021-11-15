@@ -352,10 +352,10 @@ def test_vortex_strategy(df):
 '''
 
 @pytest.mark.parametrize("df", dataframes)
-def test_MACDADX_Startegy(df):
+def test_MACDADX_Strategy(df):
     """Checks MACDADX strategy calculates correctly."""
     df_with_signals = macd_adx_system(df, 26, 12, 9, 14)
-    df_with_allocations = allocations.MACDADX_Startegy(df, 26, 12, 9, 14, max_investment)
+    df_with_allocations = allocations.MACDADX_Strategy(df, 26, 12, 9, 14, max_investment)
     up = df_with_signals[
         ((df_with_signals["MACD_Line"] > 0) & (df_with_signals["MACD_Line"] > df_with_signals["SIGNAL_Line"])) & (
                 df_with_signals["ADX_POS"] > df_with_signals["ADX_NEG"])]
