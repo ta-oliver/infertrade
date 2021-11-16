@@ -335,10 +335,10 @@ def test_roc_strategy(df):
 
     assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
 
-'''@pytest.mark.parametrize("df", dataframes)
+@pytest.mark.parametrize("df", dataframes)
 def test_vortex_strategy(df):
     """Checks Vortex strategy calculates correctly."""
-    max_investment = 0.1
+
     df_with_signals = vortex_indicator(df, window=25)
     df_with_allocations = allocations.vortex_strategy(df, 25, max_investment)
 
@@ -349,7 +349,7 @@ def test_vortex_strategy(df):
     df_with_signals.loc[bullish, "allocation"] = max_investment
 
     assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
-'''
+
 
 @pytest.mark.parametrize("df", dataframes)
 def test_MACDADX_Strategy(df):
