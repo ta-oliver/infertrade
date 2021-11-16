@@ -280,6 +280,7 @@ def vortex_indicator(df: pd.DataFrame, window: int = 25) -> pd.DataFrame:
     vip = vmp.rolling(window, min_periods=1).sum() / trn
     vin = vmm.rolling(window, min_periods=1).sum() / trn
     df_with_signals["signal"] = vip - vin
+    df_with_signals = df_with_signals.fillna(0)
     return df_with_signals
 
 
