@@ -941,6 +941,68 @@ def vortex_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 
     return df
 
 
+def MACDADX_Startegy(df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, window_adx: int =14,
+                     max_investment: float = 0.1):
+    ''' This strategy is combination of MACD, +DI and -DI from ADX
+    Rules:
+    Bullish: MACD line > 0 and MACD line > Signal line and ADX +DI > ADX -DI
+    Bearish: MACD line < 0 and MACD line < signal line and ADX +DI < ADX -DI
+    '''
+    df_with_signals = signals.macd_adx_system(df, window_slow, window_fast, window_signal, window_adx)
+    up = df_with_signals[((df_with_signals["MACD_Line"] > 0) & (df_with_signals["MACD_Line"] > df_with_signals["SIGNAL_Line"])) & (
+            df_with_signals["ADX_POS"] > df_with_signals["ADX_NEG"])]
+    dwn = df_with_signals[((df_with_signals["MACD_Line"]<0)&(df_with_signals["MACD_Line"]<df_with_signals["SIGNAL_Line"]))&(
+        df_with_signals["ADX_POS"]<df_with_signals["ADX_NEG"])]
+    # allocation
+    df_with_signals = df_with_signals.reset_index(drop=True)
+    df_with_signals["allocation"] = 0.0
+    df_with_signals.loc[up.index, "allocation"] = max_investment
+    df_with_signals.loc[dwn.index, "allocation"] = -max_investment
+    return (df_with_signals)
+
+
+def Donchain_Strategy(df: pd.DataFrame, window: int = 20, max_investment: float = 0.1) -> pd.DataFrame:
+
+    ''' This strategy is trend following. It contains one parameter that is window (n)
+     and three bands such as Upper band, lower band and middle band
+     rules:
+     Bullish: close>middle band and close <= upper band
+     here upper band acts as maximum threshold.
+     Bearish: close < middle band and close <= lower band
+     here lower band shows minimum threshold.
+     '''
+    df_data = df.copy()
+    df_sig = signals.donchainstrategy(df=df_data, window=window)
+    up_sig = df_sig.loc[(df_sig["close"]>df_sig["middleband"])&(df_sig["close"]<=df_sig["upperband"])]
+    dwn_sig = df_sig.loc[(df_sig["close"]<df_sig["middleband"])&(df_sig["close"]<=df_sig["upperband"])]
+    # allocation
+    df_sig = df_sig.reset_index(drop=True)
+    df_sig["allocation"] = 0.0
+    df_sig.loc[up_sig.index, "allocation"] = max_investment
+    df_sig.loc[dwn_sig.index, "allocation"] = -max_investment
+    return (df_sig)
+
+def catapult_strategy(df: pd.DataFrame, window_rvi: int = 21, window_rsi: int = 14, window_sma: int = 200,
+                      max_investment: float = 0.1) -> pd.DataFrame:
+
+    '''This strategy is a part of an article from the medium by Sofien kaabar
+        https://medium.com/the-investors-handbook/the-catapult-indicator-innovative-trading-techniques-8910ac962c57
+    '''
+
+    df_data = df.copy()
+    df_with_signals = signals.catapultindicator(df=df_data, window_rvi=window_rvi, window_rsi=window_rsi,
+                                        window_sma=window_sma)
+    up = df_with_signals.loc[(df_with_signals["RVI"]>30)&(df_with_signals["RSI"]>50)&(df_with_signals["close"]>df_with_signals["SMA"])]
+    dwn = df_with_signals.loc[(df_with_signals["RVI"] > 30) & (df_with_signals["RSI"] < 50) & (
+                df_with_signals["close"] < df_with_signals["SMA"])]
+
+    df_with_signals["allocation"] = 0.0
+    df_with_signals.loc[up.index, "allocation"] = max_investment
+    df_with_signals.loc[dwn.index, "allocation"] = -max_investment
+
+    return (df_with_signals)
+
+
 # Below we populate a function list and a required series list. This needs to be updated when adding new rules.
 
 function_list = [
@@ -982,6 +1044,9 @@ function_list = [
     ADX_strategy,
     vortex_strategy,
     DPO_strategy,
+    MACDADX_Startegy,
+    Donchain_Strategy,
+    catapult_strategy,
 ]
 
 required_series_dict = {
@@ -1023,6 +1088,9 @@ required_series_dict = {
     "ADX_strategy": ["close", "high", "low"],
     "vortex_strategy": ["close", "high", "low"],
     "DPO_strategy": ["close"],
+    "MACDADX_Startegy": ["close", "high", "low"],
+    "Donchain_Strategy": ["close", "high", "low"],
+    "catapult_strategy": ["close"]
 }
 
 
@@ -1091,7 +1159,7 @@ def create_infertrade_export_allocations():
         infertrade_export_allocations_raw.update(
             {
                 function.__name__: {
-                    "function": function,
+                    "function": str(function),
                     "parameters": get_parameters(function),
                     "series": series_dict[function.__name__],
                     "available_representation_types": {"github_permalink": create_permalink_to_allocations(function)},
