@@ -612,7 +612,7 @@ def calculate_regression_with_kelly_optimum(
                         raise ZeroDivisionError("Volatility needs to be positive value.")
 
                     # Flooring volatility at last 20 step recent volatility.
-                    recent_fractional_realised_vol = np.std(regression_period_price_change.diff(1).iloc[-20:])
+                    recent_fractional_realised_vol = np.std(regression_period_price_change.diff(1)[-20:])
                     if volatility < recent_fractional_realised_vol:
                         volatility = recent_fractional_realised_vol
                         
