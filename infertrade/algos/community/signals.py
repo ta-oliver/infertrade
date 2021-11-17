@@ -340,8 +340,9 @@ def scikit_signal_factory(signal_function: callable):
 
 
 # Trend following MACD, +DI and -DI strategy
-def macd_adx_system(df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9,
-            window_adx: int =14) ->pd.DataFrame:
+def macd_adx_system(
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, window_adx: int = 14
+) -> pd.DataFrame:
     """
     This is trend following strategy and it s a combination of
     Moving average convergence divergence (MACD) and
@@ -353,41 +354,42 @@ def macd_adx_system(df: pd.DataFrame, window_slow: int = 26, window_fast: int = 
     # Macd line and Signal line
     df_macsig["SlowEMA"] = ema_indicator(close=df_macsig["close"], window=window_slow, fillna=True)
     df_macsig["FastEMA"] = ema_indicator(close=df_macsig["close"], window=window_fast, fillna=True)
-    df_macsig["MACD_Line"] = df_macsig["FastEMA"]-df_macsig["SlowEMA"]
+    df_macsig["MACD_Line"] = df_macsig["FastEMA"] - df_macsig["SlowEMA"]
     df_macsig["SIGNAL_Line"] = ema_indicator(close=df_macsig["MACD_Line"], window=window_signal, fillna=True)
     # ADX
     df_macsig = average_directional_movement_index(df_macsig, window=window_adx)
-    return (df_macsig)
+    return df_macsig
 
 
 # Trend following donchain strategy
 def donchainstrategy(df: pd.DataFrame, window: int = 20) -> pd.DataFrame:
-    '''
+    """
     This is trend following strategy - Donchain trading system by Richard donchain
     parameter takes window value and we use that window value to find the past n days
     high (upper band) and low (lower band).
     we calculate middle band by mean of upper and lower band.
     If window is 20, we will check past 20 days highest and lowest value
-    '''
+    """
     df_data = df.copy()
     allhigh, alllow, allmid, allcls = [], [], [], []
-    for i in range(df_data.shape[0]-window+1):
-        dfs = df_data.iloc[i:i+window, :]
+    for i in range(df_data.shape[0] - window + 1):
+        dfs = df_data.iloc[i : i + window, :]
         cls = dfs["close"].iloc[-1]
         maxh = dfs["high"].max()
         minl = dfs["low"].min()
-        midb = (maxh+minl)/2.0
+        midb = (maxh + minl) / 2.0
         allhigh.append(maxh)
         alllow.append(minl)
         allmid.append(midb)
         allcls.append(cls)
-    df_data = df_data.iloc[window-1:, :]
+    df_data = df_data.iloc[window - 1 :, :]
     df_data["upperband"] = allhigh
     df_data["middleband"] = allmid
     df_data["lowerband"] = alllow
     df_data["close"] = allcls
     df_data = df_data.reset_index(drop=True)
-    return(df_data)
+    return df_data
+
 
 infertrade_export_signals = {
     "normalised_close": {
@@ -576,7 +578,7 @@ infertrade_export_signals = {
     },
     "macd_adx_system": {
         "function": macd_adx_system,
-        "parameters": {"window_slow":26, "window_fast": 12, "window_signal": 9, "window_adx": 14},
+        "parameters": {"window_slow": 26, "window_fast": 12, "window_signal": 9, "window_adx": 14},
         "series": ["close", "high", "low"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L342"
@@ -591,8 +593,3 @@ infertrade_export_signals = {
         },
     },
 }
-
-
-
-
-

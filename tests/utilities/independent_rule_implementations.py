@@ -24,6 +24,7 @@ from ta.trend import ema_indicator, adx_pos, adx_neg, adx
 from infertrade.algos.community import allocations, signals as signals
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
+
 def simple_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     """
     Calculates smooth signal based on price trends by filtering out the noise from random short-term price fluctuations.
@@ -284,8 +285,9 @@ def vortex_indicator(df: pd.DataFrame, window: int = 25) -> pd.DataFrame:
     return df_with_signals
 
 
-def macd_adx_system(df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9,
-            window_adx: int =14) ->pd.DataFrame:
+def macd_adx_system(
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, window_adx: int = 14
+) -> pd.DataFrame:
     """Independent implimentation of MACD_ADX_System"""
     df_macsig = df.copy()
     # Macd line and Signal line
@@ -297,28 +299,27 @@ def macd_adx_system(df: pd.DataFrame, window_slow: int = 26, window_fast: int = 
     df_macsig["ADX_POS"] = adx_pos(df_macsig["high"], df_macsig["low"], df_macsig["close"], window_adx, fillna=True)
     df_macsig["ADX_NEG"] = adx_neg(df_macsig["high"], df_macsig["low"], df_macsig["close"], window_adx, fillna=True)
     df_macsig["ADX"] = adx(df["high"], df["low"], df["close"], window_adx, fillna=True)
-    return (df_macsig)
+    return df_macsig
 
 
-def donchainstrategy(df: pd.DataFrame, window: int = 20) ->pd.DataFrame:
+def donchainstrategy(df: pd.DataFrame, window: int = 20) -> pd.DataFrame:
     """Independent implimentation of donchain system"""
     df_data = df.copy()
     allhigh, alllow, allmid, allcls = [], [], [], []
-    for i in range(df_data.shape[0]-window+1):
-        dfs = df_data.iloc[i:i+window, :]
+    for i in range(df_data.shape[0] - window + 1):
+        dfs = df_data.iloc[i : i + window, :]
         cls = dfs["close"].iloc[-1]
         maxh = dfs["high"].max()
         minl = dfs["low"].min()
-        midb = (maxh+minl)/2.0
+        midb = (maxh + minl) / 2.0
         allhigh.append(maxh)
         alllow.append(minl)
         allmid.append(midb)
         allcls.append(cls)
-    df_data = df_data.iloc[window-1:, :]
+    df_data = df_data.iloc[window - 1 :, :]
     df_data["upperband"] = allhigh
     df_data["middleband"] = allmid
     df_data["lowerband"] = alllow
     df_data["close"] = allcls
     df_data = df_data.reset_index(drop=True)
-    return(df_data)
-
+    return df_data

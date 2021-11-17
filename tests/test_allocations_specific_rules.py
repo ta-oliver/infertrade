@@ -335,6 +335,7 @@ def test_roc_strategy(df):
 
     assert pd.Series.equals(df_with_allocations["allocation"], df_with_signals["allocation"])
 
+
 @pytest.mark.parametrize("df", dataframes)
 def test_vortex_strategy(df):
     """Checks Vortex strategy calculates correctly."""
@@ -357,15 +358,18 @@ def test_MACDADX_Strategy(df):
     df_with_signals = macd_adx_system(df, 26, 12, 9, 14)
     df_with_allocations = allocations.MACDADX_Strategy(df, 26, 12, 9, 14, max_investment)
     up = df_with_signals[
-        ((df_with_signals["MACD_Line"] > 0) & (df_with_signals["MACD_Line"] > df_with_signals["SIGNAL_Line"])) & (
-                df_with_signals["ADX_POS"] > df_with_signals["ADX_NEG"])]
+        ((df_with_signals["MACD_Line"] > 0) & (df_with_signals["MACD_Line"] > df_with_signals["SIGNAL_Line"]))
+        & (df_with_signals["ADX_POS"] > df_with_signals["ADX_NEG"])
+    ]
     dwn = df_with_signals[
-        ((df_with_signals["MACD_Line"] < 0) & (df_with_signals["MACD_Line"] < df_with_signals["SIGNAL_Line"])) & (
-                df_with_signals["ADX_POS"] < df_with_signals["ADX_NEG"])]
+        ((df_with_signals["MACD_Line"] < 0) & (df_with_signals["MACD_Line"] < df_with_signals["SIGNAL_Line"]))
+        & (df_with_signals["ADX_POS"] < df_with_signals["ADX_NEG"])
+    ]
     df_with_signals["allocation"] = 0.0
     df_with_signals.loc[up.index, "allocation"] = max_investment
     df_with_signals.loc[dwn.index, "allocation"] = -max_investment
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
+
 
 @pytest.mark.parametrize("df", dataframes)
 def test_donchainstrategy(df):
@@ -373,10 +377,15 @@ def test_donchainstrategy(df):
     df_data = df.copy()
     df_with_signals = donchainstrategy(df=df_data, window=20)
     df_with_allocations = allocations.Donchain_Strategy(df=df_data, window=20, max_investment=max_investment)
-    up_sig = df_with_signals.loc[(df_with_signals["close"] > df_with_signals["middleband"]) & (df_with_signals["close"] <= df_with_signals["upperband"])]
-    dwn_sig = df_with_signals.loc[(df_with_signals["close"] < df_with_signals["middleband"]) & (df_with_signals["close"] <= df_with_signals["upperband"])]
+    up_sig = df_with_signals.loc[
+        (df_with_signals["close"] > df_with_signals["middleband"])
+        & (df_with_signals["close"] <= df_with_signals["upperband"])
+    ]
+    dwn_sig = df_with_signals.loc[
+        (df_with_signals["close"] < df_with_signals["middleband"])
+        & (df_with_signals["close"] <= df_with_signals["upperband"])
+    ]
     df_with_signals["allocation"] = 0.0
     df_with_signals.loc[up_sig.index, "allocation"] = max_investment
     df_with_signals.loc[dwn_sig.index, "allocation"] = -max_investment
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
-
