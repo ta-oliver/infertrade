@@ -614,6 +614,7 @@ def calculate_regression_with_kelly_optimum(
                     # Flooring volatility at last 20 step recent volatility.
                     window_length_recent_vol = 20
                     recent_fractional_realised_vol = np.std(regression_period_price_change[-window_length_recent_vol:])
+
                     if volatility < recent_fractional_realised_vol:
                         volatility = recent_fractional_realised_vol
                         
