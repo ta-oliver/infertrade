@@ -54,7 +54,7 @@ def test_get_available_algorithms(algorithm):
     assert Api.determine_package_of_algorithm(algorithm) in Api.available_packages()
     try:
         Api.determine_package_of_algorithm("not_available_algo")
-    except (NameError):
+    except NameError:
         pass
 
     inputs = Api.required_inputs_for_algorithm(algorithm)
