@@ -19,6 +19,8 @@ Tests for the API facade that allows interaction with the library with strings a
 """
 
 # External imports
+import copy
+
 import pandas as pd
 import pytest
 
@@ -172,8 +174,8 @@ def test_return_representations(algorithm):
         )
     for representation in dict_of_properties[algorithm]["available_representation_types"]:
         assert (
-            returned_representations[representation]
-            == dict_of_properties[algorithm]["available_representation_types"][representation]
+                returned_representations[representation]
+                == dict_of_properties[algorithm]["available_representation_types"][representation]
         )
 
     # Check if the if the function returns the correct representation when given a string
@@ -185,8 +187,8 @@ def test_return_representations(algorithm):
                 type(returned_representations),
             )
         assert (
-            returned_representations[representation]
-            == dict_of_properties[algorithm]["available_representation_types"][representation]
+                returned_representations[representation]
+                == dict_of_properties[algorithm]["available_representation_types"][representation]
         )
 
     # Check if the function returns the correct representations when given a list
@@ -198,8 +200,8 @@ def test_return_representations(algorithm):
         )
     for representation in algorithm_representations:
         assert (
-            returned_representations[representation]
-            == dict_of_properties[algorithm]["available_representation_types"][representation]
+                returned_representations[representation]
+                == dict_of_properties[algorithm]["available_representation_types"][representation]
         )
 
 
@@ -357,3 +359,23 @@ def test_export_cross_prediction():
     )
 
     assert isinstance(sorted_dict, dict)
+
+
+@pytest.mark.parametrize("test_df", test_dfs)
+def test_allocation_limit(test_df):
+    """Test used to see if calculated allocation values are inside of specified limit"""
+
+    test_df_copy = copy.deepcopy(test_df)
+    df_with_allocations = Api.calculate_allocations(
+        df=test_df_copy, name_of_strategy=available_allocation_algorithms[0], name_of_price_series="close",
+        allocation_lower_limit=0, allocation_upper_limit=0
+    )
+    if all(df_with_allocations["allocation"] != 0):
+        raise ValueError("Allocation limits breached")
+
+    df_with_allocations = Api.calculate_allocations(
+        df=test_df_copy, name_of_strategy=available_allocation_algorithms[0], name_of_price_series="close",
+        allocation_lower_limit=-0.1, allocation_upper_limit=0.1
+    )
+    if all(-0.1 > df_with_allocations["allocation"]) or all(df_with_allocations["allocation"] > 0.1):
+        raise ValueError("Allocation limits breached")
