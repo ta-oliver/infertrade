@@ -370,7 +370,7 @@ def test_allocation_limit(test_df):
         df=test_df_copy, name_of_strategy=available_allocation_algorithms[0], name_of_price_series="close",
         allocation_lower_limit=0, allocation_upper_limit=0
     )
-    if all(df_with_allocations["allocation"] != 0):
+    if not all(df_with_allocations["allocation"] == 0.0):
         raise ValueError("Allocation limits breached")
 
     df_with_allocations = Api.calculate_allocations(
