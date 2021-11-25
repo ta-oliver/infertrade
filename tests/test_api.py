@@ -377,5 +377,5 @@ def test_allocation_limit(test_df):
         df=test_df_copy, name_of_strategy=available_allocation_algorithms[0], name_of_price_series="close",
         allocation_lower_limit=-0.1, allocation_upper_limit=0.1
     )
-    if all(-0.1 > df_with_allocations["allocation"]) or all(df_with_allocations["allocation"] > 0.1):
+    if any(-0.1 > df_with_allocations["allocation"]) or any(df_with_allocations["allocation"] > 0.1):
         raise ValueError("Allocation limits breached")
