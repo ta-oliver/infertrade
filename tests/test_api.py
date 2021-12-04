@@ -19,11 +19,12 @@ Tests for the API facade that allows interaction with the library with strings a
 """
 
 # External imports
+import copy
+
 import pandas as pd
 import pytest
 
 # Internal imports
-from ta.trend import AroonIndicator
 from infertrade.PandasEnum import PandasEnum
 from infertrade.algos.external import ta_export_regression_allocations
 from infertrade.api import Api
@@ -55,7 +56,7 @@ def test_get_available_algorithms(algorithm):
     assert Api.determine_package_of_algorithm(algorithm) in Api.available_packages()
     try:
         Api.determine_package_of_algorithm("not_available_algo")
-    except (NameError):
+    except NameError:
         pass
 
     inputs = Api.required_inputs_for_algorithm(algorithm)
@@ -173,8 +174,8 @@ def test_return_representations(algorithm):
         )
     for representation in dict_of_properties[algorithm]["available_representation_types"]:
         assert (
-            returned_representations[representation]
-            == dict_of_properties[algorithm]["available_representation_types"][representation]
+                returned_representations[representation]
+                == dict_of_properties[algorithm]["available_representation_types"][representation]
         )
 
     # Check if the if the function returns the correct representation when given a string
@@ -186,8 +187,8 @@ def test_return_representations(algorithm):
                 type(returned_representations),
             )
         assert (
-            returned_representations[representation]
-            == dict_of_properties[algorithm]["available_representation_types"][representation]
+                returned_representations[representation]
+                == dict_of_properties[algorithm]["available_representation_types"][representation]
         )
 
     # Check if the function returns the correct representations when given a list
@@ -199,8 +200,8 @@ def test_return_representations(algorithm):
         )
     for representation in algorithm_representations:
         assert (
-            returned_representations[representation]
-            == dict_of_properties[algorithm]["available_representation_types"][representation]
+                returned_representations[representation]
+                == dict_of_properties[algorithm]["available_representation_types"][representation]
         )
 
 
@@ -345,3 +346,36 @@ def test_export_to_csv():
     for _ in new_columns:
         if _ not in csv_data or _ not in csv_data2:
             raise ValueError("Missing expected column information")
+
+
+def test_export_cross_prediction():
+    """Test ensures that returned item is dictionary in the case of export_to_csv being false"""
+    test_df_two = simulated_market_data_4_years_gen()
+    test_df_one = simulated_market_data_4_years_gen()
+    test_df = simulated_market_data_4_years_gen()
+
+    sorted_dict = Api.export_cross_prediction(
+        [test_df, test_df_one, test_df_two], number_of_results=3, column_to_sort="percent_gain", export_as_csv=False
+    )
+
+    assert isinstance(sorted_dict, dict)
+
+
+@pytest.mark.parametrize("test_df", test_dfs)
+def test_allocation_limit(test_df):
+    """Test used to see if calculated allocation values are inside of specified limit"""
+
+    test_df_copy = copy.deepcopy(test_df)
+    df_with_allocations = Api.calculate_allocations(
+        df=test_df_copy, name_of_strategy=available_allocation_algorithms[0], name_of_price_series="close",
+        allocation_lower_limit=0, allocation_upper_limit=0
+    )
+    if not all(df_with_allocations["allocation"] == 0.0):
+        raise ValueError("Allocation limits breached")
+
+    df_with_allocations = Api.calculate_allocations(
+        df=test_df_copy, name_of_strategy=available_allocation_algorithms[0], name_of_price_series="close",
+        allocation_lower_limit=-0.1, allocation_upper_limit=0.1
+    )
+    if any(-0.1 > df_with_allocations["allocation"]) or any(df_with_allocations["allocation"] > 0.1):
+        raise ValueError("Allocation limits breached")

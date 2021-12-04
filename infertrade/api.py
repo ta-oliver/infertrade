@@ -25,7 +25,7 @@ import pandas as pd
 
 # InferTrade packages
 from infertrade.algos import algorithm_functions, ta_adaptor
-from infertrade.utilities.operations import ReturnsFromPositions
+from infertrade.utilities.operations import ReturnsFromPositions, restrict_allocation, limit_allocation
 from infertrade.PandasEnum import PandasEnum
 
 
@@ -159,13 +159,14 @@ class Api:
 
     @staticmethod
     def calculate_allocations(
-        df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = PandasEnum.MID.value
+        df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = PandasEnum.MID.value,
+            allocation_lower_limit: float = -1.0, allocation_upper_limit: float = 1.0
     ) -> pd.DataFrame:
         """Calculates the allocations using the supplied strategy."""
         if name_of_price_series is not PandasEnum.MID.value:
             df[PandasEnum.MID.value] = df[name_of_price_series]
         rule_function = Api._get_raw_callable(name_of_strategy)
-        df_with_positions = rule_function(df)
+        df_with_positions = limit_allocation(rule_function(df), allocation_lower_limit, allocation_upper_limit)
         return df_with_positions
 
     @staticmethod
@@ -176,10 +177,10 @@ class Api:
 
     @staticmethod
     def calculate_allocations_and_returns(
-        df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = PandasEnum.MID.value
+        df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = PandasEnum.MID.value, *args, **kwargs
     ) -> pd.DataFrame:
         """Calculates the returns using the supplied strategy."""
-        df_with_positions = Api.calculate_allocations(df, name_of_strategy, name_of_price_series)
+        df_with_positions = Api.calculate_allocations(df, name_of_strategy, name_of_price_series, *args, **kwargs)
         df_with_returns = ReturnsFromPositions().transform(df_with_positions)
         return df_with_returns
 
@@ -258,3 +259,22 @@ class Api:
                 return df.to_csv(str(rule_name) + "_performance_" + str(relationship) + ".csv")
             else:
                 return df.to_csv(str(rule_name) + ".csv")
+
+    @staticmethod
+    def export_cross_prediction(
+        list_of_dfs_of_asset_prices: list,
+        column_to_sort: str = "percent_gain",
+        number_of_results: int = False,
+        export_as_csv: bool = True,
+    ):
+        """Function that sequentially calculates the performance of trading strategy using pairwise combinations and
+        saves them as CSV files or returns rankings"""
+        from infertrade.utilities.export import evaluate_cross_prediction
+
+        # infertrade.utilities.export experiencing circular dependency issues
+        return evaluate_cross_prediction(
+            list_of_dfs_of_asset_prices,
+            number_of_results=number_of_results,
+            column_to_sort=column_to_sort,
+            export_as_csv=export_as_csv,
+        )
