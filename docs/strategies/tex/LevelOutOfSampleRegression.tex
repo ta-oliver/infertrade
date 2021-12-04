@@ -1,0 +1,67 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\include{OutOfSampleRegression}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Level - Out of Sample Regression for Technical Signals} %Argument is name of rule
+\tblofcontents
+
+\introtorule
+
+\relationshipdescription{
+\justify
+\Centering\textbf{In a level relationship, the current value of the signal directly affects future changes in price:}
+
+\begin{equation}
+\mathlarger{
+    \Delta \price_{\currenttime+1} \propto k S_\currenttime + c
+    }
+\end{equation}
+\justify where ~$\Delta \price_{\currenttime+1}$ represents the future price change, $S_\currenttime$ represents the current value of the research signal at current time $\currenttime$, $k$ is a scalar, and $c$ is a constant.\\
+}
+
+\howtotrade
+{Any of the technical indicators supported by InferTrade can be used as signal to forecast price change in asset. \\ \\ As an example we can consider Money Flow Index (MFI). MFI is a momentum indicator which varies between 0 and 100 and is used to define an overbought and oversold conditions. Usually MFI value above 80 is considered overbought and a sell signal is generated while a value below 20 is considered oversold and a buy signal is generated.\\ \\
+By using this trading strategy we compute the MFI of underlying asset using it's historical High, Low, Close \& Volume. Instead of using the MFI value to generate buy/sell signal as explained above, a forecast is made for expected change in price using MFI as a signal governed by Equation \ref{eqn:SignalRegression}. $\beta$ coefficient determines the relationship and impact of Signal $S$ on change in price of asset $\Delta \price$.\\ \\
+Unlike Signal Regression, Out of Sample regression uses initial 75\% of the data set to estimate model parameters remaining 25\% data set is used to compute error. Forecast values are then used to generate fractional portfolio investment using formulation mentioned in Equation \ref{eqn:portfolioallocation}.
+}
+
+\outofsampleparameters
+
+\section{Equation}
+Below is the equations which govern how this specific trading rule calculates a trading position. Equation 1 is the regression equation used to determine $\beta$ and $c$. Equation 2 is the subsequent calculation of position sizing.
+
+\begin{equation}
+\label{eqn:SignalRegression}
+\Delta \price_{\currenttime} = \beta \, S_{\currenttime-1} + c + \varepsilon_{\currenttime}
+\end{equation}
+\begin{equation}
+\label{eqn:portfolioallocation}
+    \position_{\currenttime} = \kellyfraction \, \frac{E[\Delta \price_{\currenttime}]}{\sigma^{2}} = \kellyfraction \, \frac{S_{\currenttime-1} + c}{\sigma^{2}}
+\end{equation}
+\\
+with:
+
+$\Delta \price_{\currenttime}:$ is the change in asset price at time $\currenttime$.
+
+$E[\Delta \price_{\currenttime}]$: is the expected change in price at time $\currenttime$.
+
+$S_{\currenttime-1}$: is the signal value at time $\currenttime-1$.
+
+$\beta$: is the relationship coefficient between $S_{\currenttime-1}$ and $\Delta \price_{\currenttime}$.
+
+$c$: is a constant bias.
+
+$\varepsilon_{\currenttime}$: is the error term.
+
+$\kellyfraction$: is the Kelly fraction.
+
+$\position_{\currenttime}$: is the resultant fractional portfolio investment at time \currenttime.
+
+
+\keyterms
+\furtherlinks %The footer
+\end{document}

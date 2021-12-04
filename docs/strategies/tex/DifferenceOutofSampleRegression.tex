@@ -1,0 +1,65 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\include{OutOfSampleRegression}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Difference - Out of Sample Regression for Technical Signals} %Argument is name of rule
+\tblofcontents
+
+\introtorule
+
+\relationshipdescription{
+\justify
+\Centering\textbf{In a difference relationship, recent change in the value of the signal directly affects future changes in the price:}
+
+\begin{equation}
+\mathlarger{
+    \Delta \price_{t+1} \propto k \left(\frac{S_\currenttime}{\price_\currenttime}-1\right)  + c
+    }
+\end{equation}
+\justify where ~$\Delta \price_{\currenttime+1}$ represents the future price change, $S_\currenttime$ represents the current value of the signal, $\price_\currenttime$ represents the current price of market, $k$ is a scalar, and $c$ is a constant.
+}%
+
+\trademethod
+
+\outofsampleparameters
+
+\section{Equation}
+Below is the equations which govern how this specific trading rule calculates a trading position. Equation 1 is the regression equation used to determine $\beta$ and $c$. Equation 2 is the subsequent calculation of position sizing.
+
+\begin{equation}
+\label{eqn:SignalRegression}
+\Delta \price_{\currenttime} = \beta \ \left(\frac{S_{\currenttime-1}}{\price_{\currenttime-1}}-1\right) + c + \varepsilon_{\currenttime}
+\end{equation}
+\begin{equation}
+\label{eqn:portfolioallocation}
+    \position_{\currenttime} = \kellyfraction \, \frac{E[\Delta \price_{\currenttime}]}{\sigma^{2}} = \kellyfraction \, \frac{S_{\currenttime-1} + c}{\sigma^{2}}
+\end{equation}
+\\
+with:
+
+$\Delta \price_{\currenttime}:$ is the change in asset price at time $\currenttime$.
+
+$E[\Delta \price_{\currenttime}]$: is the expected change in price at time $\currenttime$.
+
+$S_{\currenttime-1}$: is the signal value at time $\currenttime-1$.
+
+$\price_{\currenttime-1}$: is the price at time $\currenttime-1$.
+
+$\beta$: is the relationship coefficient between $\left(\frac{S_{\currenttime-1}}{\price_{\currenttime-1}}-1\right)$ and $\Delta \price_{\currenttime}$.
+
+$c$: is a constant bias.
+
+$\varepsilon_{\currenttime}$: is the error term.
+
+$\kellyfraction$: is the Kelly fraction.
+
+$\position_{\currenttime}$: is the resultant fractional portfolio investment at time \currenttime.
+
+
+\keyterms
+\furtherlinks %The footer
+\end{document}
