@@ -1,21 +1,12 @@
-\documentclass{article}
-\usepackage{tocloft}
 \include{common_symbols_and_format}
 \renewcommand{\cfttoctitlefont}{\Large\bfseries}
 
-\begin{document}
-\logo
-\rulename{Out of Sample Regression for Technical Signals} %Argument is name of rule
-\tblofcontents
 
+\newcommand{\introtorule}{
 \ruledescription{Out of Sample Regression is an enhanced version of \href{https://github.com/ta-oliver/infertrade/blob/main/docs/strategies/pdf/SignalRegression.pdf}{Signal Regression}. This strategy is a regression based approach that is used to forecast change in prices using signal values generated from technical indicators. Using this strategy we split data set in to two sets, in-sample and out-sample. In-sample set is used to learn model parameters while out-sample set is used to evaluate the error. The error results better depicts the performance of regressor in real world scenario and warns investors of any possibility of over-fitting.}
-
-\howtotrade
-{Any of the technical indicators supported by InferTrade can be used as signal to forecast price change in asset. \\ \\ As an example we can consider Money Flow Index (MFI). MFI is a momentum indicator which varies between 0 and 100 and is used to define an overbought and oversold conditions. Usually MFI value above 80 is considered overbought and a sell signal is generated while a value below 20 is considered oversold and a buy signal is generated.\\ \\
-By using this trading strategy we compute the MFI of underlying asset using it's historical High, Low, Close \& Volume. Instead of using the MFI value to generate buy/sell signal as explained above, a forecast is made for expected change in price using MFI as a signal governed by Equation \ref{eqn:SignalRegression}. $\beta$ coefficient determines the relationship and impact of Signal $S$ on change in price of asset $\Delta \price$.\\ \\
-Unlike Signal Regression, Out of Sample regression uses initial 75\% of the data set to estimate model parameters remaining 25\% data set is used to compute error. Forecast values are then used to generate fractional portfolio investment using formulation mentioned in Equation \ref{eqn:portfolioallocation}.
 }
 
+\newcommand{\outofsampleparameters}{
 \ruleparameters %You can include however many arguments (in groups of 4) as you want!
 {Regression Period}{120}{Previous data points used to fit a regression line.}{\lookbacklength}
 {Kelly fraction}{1.0}{Amplitude weighting. $1.0$ is maximum growth if regression is exact.
@@ -23,39 +14,4 @@ $<1.0$ scales down positions taken.}{$\kellyfraction$}
 {Volatility}{0.01}{Volatility used to compute the Kelly recommended optimum.}{$\sigma$}
 {Split Fraction}{0.75}{Percentage of data set used to fit model}{$f$}
 \stoptable %must be included or Tex engine runs infinitely
-
-
-\section{Equation}
-Below is the equations which govern how this specific trading rule calculates a trading position. Equation 1 is the regression equation used to determine $\beta$ and $c$. Equation 2 is the subsequent calculation of position sizing.
-
-\begin{equation}
-\label{eqn:SignalRegression}
-\Delta \price_{\currenttime} = \beta \, S_{\currenttime-1} + c + \varepsilon_{\currenttime}
-\end{equation}
-\begin{equation}
-\label{eqn:portfolioallocation}
-    \position_{\currenttime} = \kellyfraction \, \frac{E[\Delta \price_{\currenttime}]}{\sigma^{2}} = \kellyfraction \, \frac{S_{\currenttime-1} + c}{\sigma^{2}}
-\end{equation}
-\\
-with:
-
-$\Delta \price_{\currenttime}:$ is the change in asset price at time $\currenttime$.
-
-$E[\Delta \price_{\currenttime}]$: is the expected change in price at time $\currenttime$.
-
-$S_{\currenttime-1}$: is the signal value at time $\currenttime-1$.
-
-$\beta$: is the relationship coefficient between $S_{\currenttime-1}$ and $\Delta \price_{\currenttime}$.
-
-$c$: is a constant bias.
-
-$\varepsilon_{\currenttime}$: is the error term.
-
-$\kellyfraction$: is the Kelly fraction.
-
-$\position_{\currenttime}$: is the resultant fractional portfolio investment at time \currenttime.
-
-
-\keyterms
-\furtherlinks %The footer
-\end{document}
+}
