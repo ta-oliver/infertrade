@@ -22,6 +22,13 @@ Files and sub-directory information:
 /algos - contains trading strategies
 /data - sources of simulated and external data
 /utilities - performance calculations and other utilities
+api/py - API functionality for the package
 __init__.py - package identifier
 _version - package version number.
 """
+
+from infertrade.algos import *
+from infertrade.utilities import *
+from infertrade.data import *
+from infertrade.base import *
+from infertrade.api import *

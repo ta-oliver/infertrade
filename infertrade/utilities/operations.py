@@ -610,9 +610,20 @@ def calculate_regression_with_kelly_optimum(
                     # Kelly recommended optimum
                     if volatility < 0:
                         raise ZeroDivisionError("Volatility needs to be positive value.")
-                    if volatility == 0:
-                        volatility = 0.01
 
+                    # Flooring volatility at last 20 step recent volatility.
+                    window_length_recent_vol = 20
+                    recent_fractional_realised_vol = np.std(regression_period_price_change[-window_length_recent_vol:])
+
+                    if volatility < recent_fractional_realised_vol:
+                        volatility = recent_fractional_realised_vol
+                        
+                    # Absolute floor for volatility at 0.01% == 1bp
+                    minimum_volatility = 0.0001
+                    if volatility < minimum_volatility:
+                        volatility = minimum_volatility
+
+                    # Calculate Kelly fraction to invest
                     kelly_recommended_optimum = forecast_price_change / volatility ** 2
                     rule_recommended_allocation = kelly_fraction * kelly_recommended_optimum
 

@@ -37,6 +37,7 @@ from infertrade.PandasEnum import PandasEnum
 from infertrade.algos import algorithm_functions
 from infertrade.algos.community import allocations
 from infertrade.algos.community.allocations import create_infertrade_export_allocations
+from infertrade.api import Api
 
 
 def test_under_minimum_length_to_calculate():
@@ -115,3 +116,10 @@ def test_create_infertrade_export_allocations():
     """Checks that a valid dictionary can be created."""
     dictionary_algorithms = create_infertrade_export_allocations()
     assert isinstance(dictionary_algorithms, dict)  # could add checks for contents too
+
+
+def test_all_allocations_list_required_series():
+    """Checks that all allocation rules list required series."""
+    for ii_rule in Api.available_algorithms(filter_by_category="allocation"):
+        assert isinstance(Api.required_inputs_for_algorithm(ii_rule), list)
+

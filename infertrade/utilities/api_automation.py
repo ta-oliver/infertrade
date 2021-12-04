@@ -42,7 +42,7 @@ def parse_csv_file(file_name: str = None, file_location: str = None):
             raise ValueError("Please provide CSV file or add .csv to file location")
         file_path = file_location
     dataframe = pd.read_csv(file_path)
-    dictionary = dataframe.to_dict('list')
+    dictionary = dataframe.to_dict("list")
     return dictionary
 
 
@@ -247,7 +247,7 @@ def execute_it_api_request(
     additional_data: list() = None,
     Content_Type: str = "application/json",
     selected_module: str = "requests",
-    execute_request: bool = True
+    execute_request: bool = True,
 ):
     """Combines data and execute InferTrade API request, returns response"""
 

@@ -19,6 +19,10 @@
 # Standard Python packages
 import numpy as np
 import pandas as pd
+from sklearn.linear_model import LinearRegression
+from ta.trend import ema_indicator, adx_pos, adx_neg, adx
+from infertrade.algos.community import allocations, signals as signals
+from infertrade.data.simulate_data import simulated_market_data_4_years_gen
 
 
 def simple_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
@@ -277,4 +281,45 @@ def vortex_indicator(df: pd.DataFrame, window: int = 25) -> pd.DataFrame:
     vip = vmp.rolling(window, min_periods=1).sum() / trn
     vin = vmm.rolling(window, min_periods=1).sum() / trn
     df_with_signals["signal"] = vip - vin
+    df_with_signals = df_with_signals.fillna(0)
     return df_with_signals
+
+
+def macd_adx_system(
+    df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, window_adx: int = 14
+) -> pd.DataFrame:
+    """Independent implimentation of MACD_ADX_System"""
+    df_macsig = df.copy()
+    # Macd line and Signal line
+    df_macsig["SlowEMA"] = ema_indicator(close=df_macsig["close"], window=window_slow, fillna=True)
+    df_macsig["FastEMA"] = ema_indicator(close=df_macsig["close"], window=window_fast, fillna=True)
+    df_macsig["MACD_Line"] = df_macsig["FastEMA"] - df_macsig["SlowEMA"]
+    df_macsig["SIGNAL_Line"] = ema_indicator(close=df_macsig["MACD_Line"], window=window_signal, fillna=True)
+    # ADX
+    df_macsig["ADX_POS"] = adx_pos(df_macsig["high"], df_macsig["low"], df_macsig["close"], window_adx, fillna=True)
+    df_macsig["ADX_NEG"] = adx_neg(df_macsig["high"], df_macsig["low"], df_macsig["close"], window_adx, fillna=True)
+    df_macsig["ADX"] = adx(df["high"], df["low"], df["close"], window_adx, fillna=True)
+    return df_macsig
+
+
+def donchainstrategy(df: pd.DataFrame, window: int = 20) -> pd.DataFrame:
+    """Independent implimentation of donchain system"""
+    df_data = df.copy()
+    allhigh, alllow, allmid, allcls = [], [], [], []
+    for i in range(df_data.shape[0] - window + 1):
+        dfs = df_data.iloc[i : i + window, :]
+        cls = dfs["close"].iloc[-1]
+        maxh = dfs["high"].max()
+        minl = dfs["low"].min()
+        midb = (maxh + minl) / 2.0
+        allhigh.append(maxh)
+        alllow.append(minl)
+        allmid.append(midb)
+        allcls.append(cls)
+    df_data = df_data.iloc[window - 1 :, :]
+    df_data["upperband"] = allhigh
+    df_data["middleband"] = allmid
+    df_data["lowerband"] = alllow
+    df_data["close"] = allcls
+    df_data = df_data.reset_index(drop=True)
+    return df_data
