@@ -258,3 +258,22 @@ class Api:
                 return df.to_csv(str(rule_name) + "_performance_" + str(relationship) + ".csv")
             else:
                 return df.to_csv(str(rule_name) + ".csv")
+
+    @staticmethod
+    def export_cross_prediction(
+        list_of_dfs_of_asset_prices: list,
+        column_to_sort: str = "percent_gain",
+        number_of_results: int = False,
+        export_as_csv: bool = True,
+    ):
+        """Function that sequentially calculates the performance of trading strategy using pairwise combinations and
+        saves them as CSV files or returns rankings"""
+        from infertrade.utilities.export import evaluate_cross_prediction
+
+        # infertrade.utilities.export experiencing circular dependency issues
+        return evaluate_cross_prediction(
+            list_of_dfs_of_asset_prices,
+            number_of_results=number_of_results,
+            column_to_sort=column_to_sort,
+            export_as_csv=export_as_csv,
+        )
