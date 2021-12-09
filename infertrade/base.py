@@ -27,6 +27,7 @@ import pandas as pd
 
 # TODO - migrate last function to utilities.
 
+
 def get_signal_calc(func: callable, adapter: callable = None) -> callable or pd.DataFrame:
     """An adapter to calculate a signal prior to usage within a trading rule."""
     if adapter:
