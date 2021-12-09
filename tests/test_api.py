@@ -174,8 +174,8 @@ def test_return_representations(algorithm):
         )
     for representation in dict_of_properties[algorithm]["available_representation_types"]:
         assert (
-                returned_representations[representation]
-                == dict_of_properties[algorithm]["available_representation_types"][representation]
+            returned_representations[representation]
+            == dict_of_properties[algorithm]["available_representation_types"][representation]
         )
 
     # Check if the if the function returns the correct representation when given a string
@@ -187,8 +187,8 @@ def test_return_representations(algorithm):
                 type(returned_representations),
             )
         assert (
-                returned_representations[representation]
-                == dict_of_properties[algorithm]["available_representation_types"][representation]
+            returned_representations[representation]
+            == dict_of_properties[algorithm]["available_representation_types"][representation]
         )
 
     # Check if the function returns the correct representations when given a list
@@ -200,8 +200,8 @@ def test_return_representations(algorithm):
         )
     for representation in algorithm_representations:
         assert (
-                returned_representations[representation]
-                == dict_of_properties[algorithm]["available_representation_types"][representation]
+            returned_representations[representation]
+            == dict_of_properties[algorithm]["available_representation_types"][representation]
         )
 
 
@@ -367,15 +367,21 @@ def test_allocation_limit(test_df):
 
     test_df_copy = copy.deepcopy(test_df)
     df_with_allocations = Api.calculate_allocations(
-        df=test_df_copy, name_of_strategy=available_allocation_algorithms[0], name_of_price_series="close",
-        allocation_lower_limit=0, allocation_upper_limit=0
+        df=test_df_copy,
+        name_of_strategy=available_allocation_algorithms[0],
+        name_of_price_series="close",
+        allocation_lower_limit=0,
+        allocation_upper_limit=0,
     )
     if not all(df_with_allocations["allocation"] == 0.0):
         raise ValueError("Allocation limits breached")
 
     df_with_allocations = Api.calculate_allocations(
-        df=test_df_copy, name_of_strategy=available_allocation_algorithms[0], name_of_price_series="close",
-        allocation_lower_limit=-0.1, allocation_upper_limit=0.1
+        df=test_df_copy,
+        name_of_strategy=available_allocation_algorithms[0],
+        name_of_price_series="close",
+        allocation_lower_limit=-0.1,
+        allocation_upper_limit=0.1,
     )
     if any(-0.1 > df_with_allocations["allocation"]) or any(df_with_allocations["allocation"] > 0.1):
         raise ValueError("Allocation limits breached")
