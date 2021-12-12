@@ -408,6 +408,11 @@ def McGinleyDynamicMovingAverage(df: pd.DataFrame, smooth: float = 0.6,
 
 # Directional probablity index (DPI)
 def DirectionalProbablityIndex(df:pd.DataFrame, lookback:int=5) ->pd.DataFrame:
+    """
+    This signal looks at the number of occurrences of bullish patterns and calculates
+    the Directional Probability Index of the period by dividing the number of bullish patterns
+    with the "look back" period generating a sort of probability of the current regime
+    """
     dpi_list = []
     for i in range(lookback, df.shape[0]+1):
         d = df.iloc[i-lookback:i, :]
