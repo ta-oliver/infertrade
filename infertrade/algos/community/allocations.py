@@ -993,6 +993,9 @@ def Donchain_Strategy(df: pd.DataFrame, window: int = 20, max_investment: float 
     return df_sig
 
 def DPI_Strategy(df:pd.DataFrame, lookback:int = 5, max_investment:float = 0.1) ->pd.DataFrame:
+    """This strategy uses the Directional Probability Index to recognise good investment opportunities
+       Directional Probability Index < 10% indicates a long (buy) signal
+       Directional Probability Index > 80% indicates a short (sell) signal"""
     df_data = df.copy()
     df_signal = signals.DirectionalProbablityIndex(df=df_data, lookback=lookback)
     df_signal["allocation"] = 0.0
