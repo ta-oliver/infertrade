@@ -992,6 +992,18 @@ def Donchain_Strategy(df: pd.DataFrame, window: int = 20, max_investment: float 
     df_sig.loc[dwn_sig.index, "allocation"] = -max_investment
     return df_sig
 
+def DPI_Strategy(df:pd.DataFrame, lookback:int = 5, max_investment:float = 0.1, long_signal:int = 20, short_signal:int = 80 ) ->pd.DataFrame:
+    """This strategy uses the Directional Probability Index to recognise good investment opportunities
+       Directional Probability Index < 10% indicates a long (buy) signal
+       Directional Probability Index > 80% indicates a short (sell) signal"""
+    df_data = df.copy()
+    df_signal = signals.DirectionalProbablityIndex(df=df_data, lookback=lookback)
+    df_signal["allocation"] = 0.0
+    df_signal.loc[df_signal["DPI"]<long_signal, "allocation"] = max_investment
+    df_signal.loc[df_signal["DPI"]>short_signal, "allocation"] = -max_investment
+    df_signal = df_signal.reset_index(drop=True)
+    return(df_signal)
+
 
 # Below we populate a function list and a required series list. This needs to be updated when adding new rules.
 
@@ -1036,6 +1048,7 @@ function_list = [
     DPO_strategy,
     MACDADX_Strategy,
     Donchain_Strategy,
+    DPI_Strategy
 ]
 
 required_series_dict = {
@@ -1079,6 +1092,7 @@ required_series_dict = {
     "DPO_strategy": ["close"],
     "MACDADX_Strategy": ["close", "high", "low"],
     "Donchain_Strategy": ["close", "high", "low"],
+    "DPI_Strategy":["open", "close"]
 }
 
 

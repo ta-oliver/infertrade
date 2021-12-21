@@ -358,4 +358,12 @@ data_dictionary = {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/9cd54cae158e4a339af51868e4ed9e4a08cdd223/infertrade/algos/community/allocations.py#L963"
         },
     },
+    "DPI_Strategy": {
+        "function": "<function Donchain_Strategy at 0x000001AB1C8923A8>",
+        "parameters": {"lookback": 5, "max_investment": 0.1},
+        "series": ["open","close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/9cd54cae158e4a339af51868e4ed9e4a08cdd223/infertrade/algos/community/allocations.py#L963"
+        },
+    },
 }

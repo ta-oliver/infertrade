@@ -390,6 +390,40 @@ def donchainstrategy(df: pd.DataFrame, window: int = 20) -> pd.DataFrame:
     df_data = df_data.reset_index(drop=True)
     return df_data
 
+# Smoothing function McGinley dynamic moving average
+def McGinleyDynamicMovingAverage(df: pd.DataFrame, smooth: float = 0.6,
+                                 lookback: int = 5) -> pd.DataFrame:
+    '''https://www.investopedia.com/terms/m/mcginley-dynamic.asp'''
+    md = []
+    for ix, cl in enumerate(df["close"]):
+        if ix==0:
+            md.append(cl)
+        else:
+            fact = (cl/md[ix-1])**4
+            md_i = md[ix-1]+((cl-md[ix-1])/(smooth*lookback*fact))
+            md.append(md_i)
+    df["signal"] = md
+    df = df.reset_index(drop=True)
+    return (df)
+
+# Directional probablity index (DPI)
+def DirectionalProbablityIndex(df:pd.DataFrame, lookback:int=5) ->pd.DataFrame:
+    """
+    This signal looks at the number of occurrences of bullish patterns and calculates
+    the Directional Probability Index of the period by dividing the number of bullish patterns
+    with the "look back" period generating a sort of probability of the current regime
+    """
+    dpi_list = []
+    for i in range(lookback, df.shape[0]+1):
+        d = df.iloc[i-lookback:i, :]
+        d["Bullish"] = np.where(d["close"]>d["open"], 1, -1)
+        tot_bull = d[d["Bullish"]==1].shape[0]
+        prob = (tot_bull/lookback)*100
+        dpi_list.append(prob)
+    df = df.iloc[lookback-1:, :]
+    df["DPI"] = dpi_list
+    df = df.reset_index(drop=True)
+    return (df)
 
 infertrade_export_signals = {
     "normalised_close": {
@@ -590,6 +624,22 @@ infertrade_export_signals = {
         "series": ["close", "high", "low"],
         "available_representation_types": {
             "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L364"
+        },
+    },
+    "McGinleyDynamicMovingAverage": {
+        "function": McGinleyDynamicMovingAverage,
+        "parameters": {"lookback": 20, "smooth": 0.6},
+        "series": ["open", "close", "high", "low"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L393"
+        },
+    },
+    "DirectionalProbablityIndex": {
+        "function": DirectionalProbablityIndex,
+        "parameters": {"lookback": 5},
+        "series": ["open", "close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade/algos/community/signals.py#L408"
         },
     },
 }

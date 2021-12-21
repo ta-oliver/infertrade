@@ -50,6 +50,7 @@ from tests.utilities.independent_rule_implementations import (
     vortex_indicator,
     macd_adx_system,
     donchainstrategy,
+    DirectionalProbablityIndex,
 )
 
 
@@ -389,3 +390,15 @@ def test_donchainstrategy(df):
     df_with_signals.loc[up_sig.index, "allocation"] = max_investment
     df_with_signals.loc[dwn_sig.index, "allocation"] = -max_investment
     assert pd.Series.equals(df_with_signals["allocation"], df_with_allocations["allocation"])
+
+@pytest.mark.parametrize("df", dataframes)
+def test_DPI_Strategy(df):
+    """Checks DPI calculations correctly."""
+    df_data = df.copy()
+    df_signal = DirectionalProbablityIndex(df=df, lookback=5)
+    df_signal["allocation"] = 0.0
+    df_signal.loc[df_signal["DPI"] < 10, "allocation"] = max_investment
+    df_signal.loc[df_signal["DPI"] > 80, "allocation"] = -max_investment
+    df_with_alloc = allocations.DPI_Strategy(df=df_data, lookback=5, max_investment=max_investment)
+    assert pd.Series.equals(df_signal["allocation"], df_with_alloc["allocation"])
+

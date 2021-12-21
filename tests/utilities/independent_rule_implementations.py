@@ -21,9 +21,9 @@ import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from ta.trend import ema_indicator, adx_pos, adx_neg, adx
-from infertrade.algos.community import allocations, signals as signals
+from infertrade.algos.community import signals
 from infertrade.data.simulate_data import simulated_market_data_4_years_gen
-
+from infertrade.algos.community import allocations
 
 def simple_moving_average(df: pd.DataFrame, window: int = 1) -> pd.DataFrame:
     """
@@ -323,3 +323,18 @@ def donchainstrategy(df: pd.DataFrame, window: int = 20) -> pd.DataFrame:
     df_data["close"] = allcls
     df_data = df_data.reset_index(drop=True)
     return df_data
+
+def DirectionalProbablityIndex(df:pd.DataFrame, lookback:int = 5) ->pd.DataFrame:
+    """Independent implimentation of Directional probablity index"""
+    dpi_list = []
+    for i in range(lookback, df.shape[0]+1):
+        d = df.iloc[i-lookback:i, :]
+        d["Bullish"] = np.where(d["close"]>d["open"], 1, -1)
+        tot_bull = d[d["Bullish"]==1].shape[0]
+        prob = (tot_bull/lookback)*100
+        dpi_list.append(prob)
+    df = df.iloc[lookback-1:, :]
+    df["DPI"] = dpi_list
+    df = df.reset_index(drop=True)
+    return (df)
+
