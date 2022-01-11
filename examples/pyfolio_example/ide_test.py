@@ -11,15 +11,17 @@
 # limitations under the License.
 
 # Created by: Melroy Pereira and Nikola Rokvic
-# Created date: 5 Dec 2021
+# Created date: 9 Dec 2021
 # Copyright 2021 InferStat Ltd
 
-
-import pandas as pd
+import numpy as np
 import yfinance as yf
-from inferanalytics import infertrade_pyfolio
+import pandas as pd
+import matplotlib.pyplot as plt
 from infertrade.algos.community import allocations
 from infertrade.utilities.performance import calculate_portfolio_performance_python
+from infertrade_pyfolio.wrapper import InfertradePyfolio
+
 
 # data
 df = yf.download(tickers="AUDUSD=X", start="2010-01-01", end="2020-01-01")
@@ -27,7 +29,7 @@ df = df.rename(columns={"Close":"close", "Open":"open", "High":"high",
                         "Low":"low"})
 df["date"] = df.index
 
-'''# strategy 1
+# strategy function
 def buy_on_small_rises(df: pd.DataFrame) -> pd.DataFrame:
     """A rules that buys when the market rose between 2% and 10% from previous close."""
     df_signal = df.copy()
@@ -38,31 +40,13 @@ def buy_on_small_rises(df: pd.DataFrame) -> pd.DataFrame:
     return df_signal
 
 # signal and allocation
-df = buy_on_small_rises(df=df)'''
-
-# strategy 2
-df_alloc = allocations.DPI_Strategy(df=df, lookback=5, max_investment=0.2)
-
-'''# Strategy 3
-df_alloc = allocations.MACD_strategy(df=df, window_slow=26, window_fast=12, window_signal=9,
-                                     max_investment=0.2)'''
-
-'''# Strategy 4
-
-df_alloc = allocations.Donchain_Strategy(df=df, window=20, max_investment=0.1)'''
-
+df_alloc = buy_on_small_rises(df=df)
 
 # infertrade backtest
 df_portfolio = calculate_portfolio_performance_python(df_with_positions=df_alloc)
 
-# Non-cumulative return
-df_portfolio["diff_return"] = df_portfolio["portfolio_return"].diff().fillna(0)
-
 # index to timestamp
 df_portfolio = df_portfolio.set_index("date")
 
-# Infertrade analysis
-# Set notebook as False for IDE user and pdf as true for output
-
-infertrade_pyfolio.infertrade_full_tear_sheet(returns=df_portfolio["diff_return"],
-                                              NoteBook=False, pdf=True)
+# Infertrade pyfolio analysis
+InfertradePyfolio.infertrade_full_tear_sheet(returns=df_portfolio["portfolio_return"], notebook=False, pdf=True)

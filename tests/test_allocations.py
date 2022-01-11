@@ -122,3 +122,4 @@ def test_all_allocations_list_required_series():
     """Checks that all allocation rules list required series."""
     for ii_rule in Api.available_algorithms(filter_by_category="allocation"):
         assert isinstance(Api.required_inputs_for_algorithm(ii_rule), list)
+

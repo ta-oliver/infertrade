@@ -159,11 +159,8 @@ class Api:
 
     @staticmethod
     def calculate_allocations(
-        df: pd.DataFrame,
-        name_of_strategy: str,
-        name_of_price_series: str = PandasEnum.MID.value,
-        allocation_lower_limit: float = -1.0,
-        allocation_upper_limit: float = 1.0,
+        df: pd.DataFrame, name_of_strategy: str, name_of_price_series: str = PandasEnum.MID.value,
+            allocation_lower_limit: float = -1.0, allocation_upper_limit: float = 1.0
     ) -> pd.DataFrame:
         """Calculates the allocations using the supplied strategy."""
         if name_of_price_series is not PandasEnum.MID.value:

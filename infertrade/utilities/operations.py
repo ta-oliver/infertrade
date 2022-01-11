@@ -617,7 +617,7 @@ def calculate_regression_with_kelly_optimum(
 
                     if volatility < recent_fractional_realised_vol:
                         volatility = recent_fractional_realised_vol
-
+                        
                     # Absolute floor for volatility at 0.01% == 1bp
                     minimum_volatility = 0.0001
                     if volatility < minimum_volatility:
