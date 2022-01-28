@@ -1,0 +1,17 @@
+\include{common_symbols_and_format}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+
+\newcommand{\introtorule}{
+\ruledescription{Out of Sample Regression is an enhanced version of \href{https://github.com/ta-oliver/infertrade/blob/main/docs/strategies/pdf/SignalRegression.pdf}{Signal Regression}. This strategy is a regression based approach that is used to forecast change in prices using signal values generated from technical indicators. Using this strategy we split data set in to two sets, in-sample and out-sample. In-sample set is used to learn model parameters while out-sample set is used to evaluate the error. The error results better depict the performance of regressors in a real world scenario and warns investors of any possibility of over-fitting.}
+}
+
+\newcommand{\outofsampleparameters}{
+\ruleparameters %You can include however many arguments (in groups of 4) as you want!
+{Regression Period}{120}{Previous data points used to fit a regression line.}{\lookbacklength}
+{Kelly fraction}{1.0}{Amplitude weighting. $1.0$ is maximum growth if regression is exact.
+$<1.0$ scales down positions taken.}{$\kellyfraction$}
+{Volatility}{0.01}{Volatility used to compute the Kelly recommended optimum.}{$\sigma$}
+{Split Fraction}{0.75}{Percentage of data set used to fit model}{$f$}
+\stoptable %must be included or Tex engine runs infinitely
+}

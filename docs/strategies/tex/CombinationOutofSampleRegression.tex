@@ -1,0 +1,72 @@
+\documentclass{article}
+\usepackage{tocloft}
+\include{common_symbols_and_format}
+\include{OutOfSampleRegression}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+\begin{document}
+\logo
+\rulename{Combination - Out of Sample Regression for Technical Signals} %Argument is name of rule
+\tblofcontents
+
+\introtorule
+
+
+
+\relationshipdescription{
+\justify
+\Centering\textbf{In a combination relationship, the combination of (1) the current value of the signal, (2) recent changes in the value of the signal, and (3) the difference between the signal and the market directly affect future changes in the price:}
+
+\begin{equation}
+\mathlarger{
+    \Delta \price_{\currenttime+1} \propto k_1 S_t + k_2\left(\frac{S_t}{S_{t-1}}-1\right) + k_3\left(\frac{\price_t}{S_t}-1\right) + c
+    }
+\end{equation}
+\justify where ~$\Delta \price_{t+1}$ represents the future price change, $S_t$ represents the current value of the signal at current time $t$, $\price_t$ represents the current value of the market price at current time $t$, $k_1$ $k_2$ $k_3$ are scalars, and $c$ is a constant.
+}%
+
+\trademethod
+
+\outofsampleparameters
+
+\section{Equation}
+Below are the equations which govern how this specific trading rule calculates a trading position. Equation 1 is the regression equation used to determine $\beta$ and $c$. Equation 2 is the subsequent calculation of position sizing.
+
+\begin{equation}
+\label{eqn:SignalRegression}
+\Delta \price_{\currenttime} = \beta_{1} \ S_{\currenttime-1}
++ \beta_{2} \ \left(\frac{S_t}{S_{t-1}}-1\right)
++ \beta_{3} \ \left(\frac{\price_t}{S_t}-1\right)
++ c + \varepsilon_{\currenttime}
+\end{equation}
+\begin{equation}
+\label{eqn:portfolioallocation}
+    \position_{\currenttime} = \kellyfraction \, \frac{E[\Delta \price_{\currenttime}]}{\sigma^{2}} = \kellyfraction \, \frac{S_{\currenttime-1} + c}{\sigma^{2}}
+\end{equation}
+\\
+with:
+
+$\Delta \price_{\currenttime}:$ is the change in asset price at time $\currenttime$.
+
+$E[\Delta \price_{\currenttime}]$: is the expected change in price at time $\currenttime$.
+
+$S_{\currenttime-1}$: is the change in signal value at time $\currenttime-1$.
+
+$\beta_{1}$: is the relationship coefficient between $S_{\currenttime-1}$ and $\Delta \price_{\currenttime}$.
+
+$\beta_{2}$: is the relationship coefficient between $\left(\frac{S_t}{S_{t-1}}-1\right)$ and $\Delta \price_{\currenttime}$.
+
+$\beta_{3}$: is the relationship coefficient between $\left(\frac{\price_t}{S_t}-1\right)$ and $\Delta \price_{\currenttime}$.
+
+$c$: is a constant bias.
+
+$\varepsilon_{\currenttime}$: is the error term.
+
+$\kellyfraction$: is the Kelly fraction.
+
+$\position_{\currenttime}$: is the resultant fractional portfolio investment at time \currenttime.
+
+
+\keyterms
+\furtherlinks %The footer
+\end{document}
