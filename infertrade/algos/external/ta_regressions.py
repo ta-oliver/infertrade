@@ -15,7 +15,7 @@
 # Created date: 23rd Aug 2021
 
 # External packages
-from collections import Callable
+from abc.collections import Callable
 
 from infertrade.PandasEnum import PandasEnum
 import pandas as pd
