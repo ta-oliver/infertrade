@@ -6,3 +6,4 @@ matplotlib>=3.3.4
 typing_extensions>=3.7.4.3
 Markdown>=3.3.4
 requests>=2.26.0
+pillow>=10.2.0 # not directly required, pinned by Snyk to avoid a vulnerability
