@@ -3,5 +3,5 @@ sphinx==3.5.4
 pdftex==1.0.0
 myst-parser==0.14.0
 pytest-cov==2.12.1
-black==21.6b0
+black==24.3.0
 GitPython>=3.1.18
