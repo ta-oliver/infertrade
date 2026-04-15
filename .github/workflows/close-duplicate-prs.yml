@@ -13,23 +13,26 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # These PRs are duplicates or superseded by the consolidated security upgrades.
+          # All fixes proposed by these PRs are already present in main (at equal or
+          # newer versions). Closing them keeps the PR list clean.
           OLD_PRS=(
-            267  # setuptools 39.0.1->65.5.1 (superseded by consolidated upgrades)
-            269  # numpy 1.21.3->1.22.2
-            275  # fonttools 4.38.0->4.43.0
-            280  # black 21.6b0->24.3.0
-            282  # pillow 9.5.0->10.3.0
-            285  # scikit-learn 1.0.2->1.5.0
-            288  # zipp 3.15.0->3.19.1
-            289  # setuptools 40.5.0->70.0.0 (superseded by consolidated upgrades)
-            290  # setuptools 40.5.0->78.1.1
-            292  # requests 2.31.0->2.32.4
-            291  # requests 2.31.0->2.32.4 (duplicate of #292)
-            293  # urllib3 2.0.7->2.5.0 (superseded by urllib3 2.6.3 in #296)
-            294  # urllib3 2.0.7->2.5.0 (duplicate of #293)
-            295  # composite Snyk PR, superseded by consolidated upgrades
-            296  # urllib3 2.0.7->2.6.3 (changes incorporated into PR #297)
+            # --- still open, each superseded by what is already in main ---
+            267  # setuptools 39.0.1->65.5.1   | main has setuptools>=78.1.1
+            269  # numpy 1.21.3->1.22.2         | main has numpy>=1.22.2
+            275  # fonttools 4.38.0->4.43.0     | main has fonttools>=4.61.0
+            280  # black 21.6b0->24.3.0         | main has black==26.3.1
+            282  # pillow 9.5.0->10.3.0         | main has pillow>=12.2.0
+            285  # scikit-learn 1.0.2->1.5.0    | main has scikit-learn>=1.5.0
+            288  # zipp 3.15.0->3.19.1          | main has zipp>=3.19.1
+            290  # setuptools 40.5.0->78.1.1    | main has setuptools>=78.1.1
+            292  # requests 2.31.0->2.32.4      | main has requests>=2.32.4
+            295  # fonttools+urllib3 composite   | main has fonttools>=4.61.0, urllib3>=2.6.3
+            # --- already closed; kept here so re-runs just warn and continue ---
+            289  # setuptools 40.5.0->70.0.0    | duplicate/superseded
+            291  # requests 2.31.0->2.32.4      | duplicate of #292
+            293  # urllib3 2.0.7->2.5.0         | superseded by urllib3>=2.6.3
+            294  # urllib3 2.0.7->2.5.0         | duplicate of #293
+            296  # urllib3 2.0.7->2.6.3         | superseded by urllib3>=2.6.3
           )
 
           for pr in "${OLD_PRS[@]}"; do
