@@ -14,7 +14,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # These PRs are old duplicates or superseded by newer versions.
-          # All security upgrades have been applied in PR #297.
+          # All security upgrades have been consolidated into the current branch.
           OLD_PRS=(
             267  # setuptools 39.0.1->65.5.1 (superseded by setuptools 78.1.1 in #290)
             268  # numpy 1.21.3->1.22.2 (duplicate of #269)
@@ -43,7 +43,7 @@ jobs:
             echo "Closing PR #${pr}..."
             gh pr close "$pr" \
               --repo "${{ github.repository }}" \
-              --comment "Closing: this PR is superseded by security upgrades applied in PR #297." \
+              --comment "Closing: this PR is superseded by the consolidated security upgrades applied to the main branch." \
               && echo "Closed PR #${pr}" \
               || echo "Warning: could not close PR #${pr} (may already be closed)"
           done
