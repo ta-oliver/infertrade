@@ -1,0 +1,49 @@
+name: Close Duplicate Security PRs
+
+on:
+  workflow_dispatch:
+
+jobs:
+  close-duplicate-prs:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Close old duplicate/superseded Snyk PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # These PRs are old duplicates or superseded by newer versions.
+          # All security upgrades have been applied in PR #297.
+          OLD_PRS=(
+            267  # setuptools 39.0.1->65.5.1 (superseded by setuptools 78.1.1 in #290)
+            268  # numpy 1.21.3->1.22.2 (duplicate of #269)
+            270  # pillow 9.5.0->10.0.1 (superseded by pillow 10.3.0 in #282)
+            271  # pillow 9.5.0->10.0.1 (duplicate of #270)
+            272  # pillow 9.5.0->10.0.0 (superseded by pillow 10.3.0 in #282)
+            273  # pillow 9.5.0->10.0.0 (duplicate of #272)
+            274  # fonttools 4.38.0->4.43.0 (duplicate of #275)
+            276  # pillow 9.5.0->10.2.0 (superseded by pillow 10.3.0 in #282)
+            277  # pillow 9.5.0->10.2.0 (duplicate of #276)
+            278  # pillow 9.5.0->10.2.0 (duplicate of #276)
+            279  # pillow 9.5.0->10.2.0 (duplicate of #276)
+            281  # pillow 9.5.0->10.3.0 (duplicate of #282)
+            283  # requests 2.31.0->2.32.0 (superseded by requests 2.32.4 in #292)
+            284  # requests 2.31.0->2.32.0 (duplicate of #283)
+            286  # urllib3 2.0.7->2.2.2 (superseded by urllib3 2.6.3 in #296)
+            287  # zipp 3.15.0->3.19.1 (duplicate of #288)
+            289  # setuptools 40.5.0->70.0.0 (superseded by setuptools 78.1.1 in #290)
+            291  # requests 2.31.0->2.32.4 (duplicate of #292)
+            293  # urllib3 2.0.7->2.5.0 (superseded by urllib3 2.6.3 in #296)
+            294  # urllib3 2.0.7->2.5.0 (duplicate of #293)
+            296  # urllib3 2.0.7->2.6.3 (changes incorporated into PR #297)
+          )
+
+          for pr in "${OLD_PRS[@]}"; do
+            echo "Closing PR #${pr}..."
+            gh pr close "$pr" \
+              --repo "${{ github.repository }}" \
+              --comment "Closing: this PR is superseded by security upgrades applied in PR #297." \
+              && echo "Closed PR #${pr}" \
+              || echo "Warning: could not close PR #${pr} (may already be closed)"
+          done
