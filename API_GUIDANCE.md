@@ -4,7 +4,7 @@
 # InferTrade API Guidance
 
 
-InferTrade.com is a free webtool for evaluating signals (features in ML/AI) to determine their ability to predict financial markets.
+InferTrade.com is a free web tool for evaluating signals (features in ML/AI) to determine their ability to predict financial markets.
 
 This is the guidance for the main API functionality used to support InferTrade.com.
 
@@ -14,7 +14,7 @@ For the underlying Python code used to calculate the trading strategies used on 
 
 An API key is needed to access the InferTrade API. Please contact support@infertrade.com for access.
 
-Once you have an API key, you will need to it to the header of your requests as the keyword argument 'x-api-key'.
+Once you have an API key, you will need to add it to the header of your requests as the keyword argument `x-api-key`.
 
 The URL for all requests should be: https://prod.api.infertrade.com
 
@@ -35,8 +35,8 @@ execute_it_api_request( request_name="Get trading rule metadata",
                         api_key="YourApiKey")
 ```
 
-Calls that contain data inside of lists ("[]") need you to provide the specified 
-data.In this example, the API request ("Get available time series simulation models")
+Calls that contain data inside lists (`[]`) require you to provide the specified
+data. In this example, the API request ("Get available time series simulation models")
 contains two lists and those are : "research_1" and "price"
 To supply this data we simply pass the lists inside a dictionary as 
 "additional_data"
@@ -83,9 +83,9 @@ execute_it_api_request( request_name="Get trading rule metadata",
                         Content_Type="YourContentType")
 ```
 
-The default request are executed using the "request" module but if you prefer
-using the "http.client" you can use the "selected_module" argument inside
-the function call
+The default requests are executed using the `requests` module, but if you prefer
+using `http.client` you can use the `selected_module` argument inside
+the function call.
 
 ```python
 from infertrade.utilities.api_automation import execute_it_api_request
