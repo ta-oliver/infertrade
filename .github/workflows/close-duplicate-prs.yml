@@ -13,29 +13,22 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # These PRs are old duplicates or superseded by newer versions.
-          # All security upgrades have been consolidated into the current branch.
+          # These PRs are duplicates or superseded by the consolidated security upgrades.
           OLD_PRS=(
-            267  # setuptools 39.0.1->65.5.1 (superseded by setuptools 78.1.1 in #290)
-            268  # numpy 1.21.3->1.22.2 (duplicate of #269)
-            270  # pillow 9.5.0->10.0.1 (superseded by pillow 10.3.0 in #282)
-            271  # pillow 9.5.0->10.0.1 (duplicate of #270)
-            272  # pillow 9.5.0->10.0.0 (superseded by pillow 10.3.0 in #282)
-            273  # pillow 9.5.0->10.0.0 (duplicate of #272)
-            274  # fonttools 4.38.0->4.43.0 (duplicate of #275)
-            276  # pillow 9.5.0->10.2.0 (superseded by pillow 10.3.0 in #282)
-            277  # pillow 9.5.0->10.2.0 (duplicate of #276)
-            278  # pillow 9.5.0->10.2.0 (duplicate of #276)
-            279  # pillow 9.5.0->10.2.0 (duplicate of #276)
-            281  # pillow 9.5.0->10.3.0 (duplicate of #282)
-            283  # requests 2.31.0->2.32.0 (superseded by requests 2.32.4 in #292)
-            284  # requests 2.31.0->2.32.0 (duplicate of #283)
-            286  # urllib3 2.0.7->2.2.2 (superseded by urllib3 2.6.3 in #296)
-            287  # zipp 3.15.0->3.19.1 (duplicate of #288)
-            289  # setuptools 40.5.0->70.0.0 (superseded by setuptools 78.1.1 in #290)
+            267  # setuptools 39.0.1->65.5.1 (superseded by consolidated upgrades)
+            269  # numpy 1.21.3->1.22.2
+            275  # fonttools 4.38.0->4.43.0
+            280  # black 21.6b0->24.3.0
+            282  # pillow 9.5.0->10.3.0
+            285  # scikit-learn 1.0.2->1.5.0
+            288  # zipp 3.15.0->3.19.1
+            289  # setuptools 40.5.0->70.0.0 (superseded by consolidated upgrades)
+            290  # setuptools 40.5.0->78.1.1
+            292  # requests 2.31.0->2.32.4
             291  # requests 2.31.0->2.32.4 (duplicate of #292)
             293  # urllib3 2.0.7->2.5.0 (superseded by urllib3 2.6.3 in #296)
             294  # urllib3 2.0.7->2.5.0 (duplicate of #293)
+            295  # composite Snyk PR, superseded by consolidated upgrades
             296  # urllib3 2.0.7->2.6.3 (changes incorporated into PR #297)
           )
 
