@@ -1,0 +1,42 @@
+name: Close Duplicate Security PRs
+
+on:
+  workflow_dispatch:
+
+jobs:
+  close-duplicate-prs:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Close old duplicate/superseded Snyk PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # These PRs are duplicates or superseded by the consolidated security upgrades.
+          OLD_PRS=(
+            267  # setuptools 39.0.1->65.5.1 (superseded by consolidated upgrades)
+            269  # numpy 1.21.3->1.22.2
+            275  # fonttools 4.38.0->4.43.0
+            280  # black 21.6b0->24.3.0
+            282  # pillow 9.5.0->10.3.0
+            285  # scikit-learn 1.0.2->1.5.0
+            288  # zipp 3.15.0->3.19.1
+            289  # setuptools 40.5.0->70.0.0 (superseded by consolidated upgrades)
+            290  # setuptools 40.5.0->78.1.1
+            292  # requests 2.31.0->2.32.4
+            291  # requests 2.31.0->2.32.4 (duplicate of #292)
+            293  # urllib3 2.0.7->2.5.0 (superseded by urllib3 2.6.3 in #296)
+            294  # urllib3 2.0.7->2.5.0 (duplicate of #293)
+            295  # composite Snyk PR, superseded by consolidated upgrades
+            296  # urllib3 2.0.7->2.6.3 (changes incorporated into PR #297)
+          )
+
+          for pr in "${OLD_PRS[@]}"; do
+            echo "Closing PR #${pr}..."
+            gh pr close "$pr" \
+              --repo "${{ github.repository }}" \
+              --comment "Closing: this PR is superseded by the consolidated security upgrades applied to the main branch." \
+              && echo "Closed PR #${pr}" \
+              || echo "Warning: could not close PR #${pr} (may already be closed)"
+          done

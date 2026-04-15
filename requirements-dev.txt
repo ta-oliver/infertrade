@@ -1,7 +1,9 @@
-pytest==6.2.2
+pytest==9.0.3
 sphinx==3.5.4
 pdftex==1.0.0
 myst-parser==0.14.0
 pytest-cov==2.12.1
-black==24.3.0
+black==26.3.1
 GitPython>=3.1.18
+setuptools>=78.1.1 # not directly required, pinned by Snyk to avoid a vulnerability
+zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
