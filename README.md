@@ -28,4 +28,4 @@ See the `documentation/` folder for Sphinx docs and build instructions.
 
 ## Contributing
 
-Please read `/home/runner/work/infertrade/infertrade/CONTRIBUTING.md` before opening a pull request.
+Please read `CONTRIBUTING.md` before opening a pull request.
